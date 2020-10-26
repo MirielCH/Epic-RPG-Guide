@@ -45,8 +45,9 @@ async def on_command_error(ctx, error):
         return
     raise error
 
-# Return or set the prefix
+# Return or set the prefix (if use has "manage server" permission)
 @bot.command()
+@commands.has_permissions(manage_guild=True)
 async def prefix(ctx, new_prefix=None):
     if new_prefix:
         await ctx.send(f'Parameter detected')
