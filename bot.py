@@ -45,7 +45,7 @@ async def on_command_error(ctx, error):
         return
     raise error
 
-# Return or set the prefix (if use has "manage server" permission)
+# Return or set the prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
 async def prefix(ctx, new_prefix=None):
