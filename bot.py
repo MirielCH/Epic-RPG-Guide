@@ -7,7 +7,6 @@ import shutil
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
-#from discord.ext.commands import MissingPermissions
 
 # Read the bot token from the .env file
 load_dotenv()
@@ -19,8 +18,6 @@ default_prefix = '$'
 # Set name of database files
 dbfile = 'erg_db.db'
 default_dbfile = 'erg_db_default.db'
-#dbfile = os.path.abspath('erg_db.db')
-#default_dbfile = os.path.abspath('erg_db_default.db')
 
 # Check if database exists, if not, create empty one
 if not os.path.isfile(dbfile):
@@ -34,7 +31,7 @@ bot = discord.Client()
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 def get_prefix_all(bot, message):
     cur=erg_db.cursor()
-    cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
+    cur.execute('SELECT * FROM global_settings where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
     
     if record:
@@ -52,7 +49,7 @@ def get_prefix_all(bot, message):
 # Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix
 def get_prefix(bot, message):
     cur=erg_db.cursor()
-    cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
+    cur.execute('SELECT * FROM global_settings where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
     
     if record:
@@ -65,7 +62,7 @@ def get_prefix(bot, message):
 # Set new prefix
 def set_prefix(bot, message, new_prefix):
     cur=erg_db.cursor()
-    cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
+    cur.execute('SELECT * FROM global_settings where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
     
     if record:
@@ -93,7 +90,6 @@ async def on_command_error(ctx, error):
         return
     elif isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry, you are not allowed to use this command.')
-    raise error
 
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
