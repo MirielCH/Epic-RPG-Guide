@@ -2,5 +2,5 @@
 Discord bot that provides guidance for EPIC RPG.
 
 # Server settings
-• prefix : Shows the current prefix
+• prefix : Shows the current prefix\n
 • setprefix : Sets the prefix (requires _Manage Server_ permission)
