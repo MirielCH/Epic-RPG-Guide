@@ -27,34 +27,58 @@ if not os.path.isfile(dbfile):
     shutil.copy(default_dbfile,dbfile)
 
 # Open connection to the local database    
-erg_db = sqlite3.connect(dbfile)
+erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
 bot = discord.Client()
 
-# Check database for stored prefix, if none is found, the default prefix $ is used
+# Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 def get_prefix_all(bot, message):
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
-    a = cur.fetchone()
+    record = cur.fetchone()
     
-    if a:
-        prefix = a[1]
+    if record:
+        prefix = record[1]
     else:
+        try:
+            cur.execute('INSERT INTO global_settings VALUES (?, ?)', (message.guild.id, default_prefix,))
+        except sqlite3.Error as error:
+            print(f'Error inserting into database.\n{error}')
+
         prefix = default_prefix
         
     return commands.when_mentioned_or(*prefix)(bot, message)
 
+# Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix
 def get_prefix(bot, message):
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
-    a = cur.fetchone()
+    record = cur.fetchone()
     
-    if a:
-        prefix = a[1]
+    if record:
+        prefix = record[1]
     else:
         prefix = default_prefix
         
     return prefix
+
+# Set new prefix
+def set_prefix(bot, message, new_prefix):
+    cur=erg_db.cursor()
+    cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
+    record = cur.fetchone()
+    
+    if record:
+        try:
+            cur.execute('UPDATE global_settings SET prefix = ? where guild_id = ?', (new_prefix, message.guild.id,))
+        except sqlite3.Error as error:
+            print(f'Error updating record in database.\n{error}')           
+    else:
+        try:
+            cur.execute('INSERT INTO global_settings VALUES (?, ?)', (message.guild.id, new_prefix,))
+        except sqlite3.Error as error:
+            print(f'Error inserting into database.\n{error}')
+        
 
 bot = commands.Bot(command_prefix=get_prefix_all)
 
@@ -80,7 +104,8 @@ async def setprefix(ctx, *new_prefix):
         if len(new_prefix)>1:
             await ctx.send(f'Too many arguments.\nCommand syntax: `{current_prefix}setprefix [prefix]`')
         else:
-            await ctx.send(f'Prefix changed to `{new_prefix[0]}`')
+            set_prefix(bot, ctx, new_prefix[0])
+            await ctx.send(f'Prefix changed to `{get_prefix(bot, ctx)}`')
     else:
         await ctx.send(f'Command syntax: `{current_prefix}setprefix [prefix]`')
 
