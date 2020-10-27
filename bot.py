@@ -6,6 +6,7 @@ import sqlite3
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
+#from discord.ext.commands import MissingPermissions
 
 # Reads the bot token from the .env file
 load_dotenv()
@@ -20,7 +21,7 @@ default_prefix = '$'
 bot = discord.Client()
 
 # Check database for stored prefix, if none is found, the default prefix $ is used
-def get_prefix(bot, message):
+def get_prefix_all(bot, message):
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
     a = cur.fetchone()
@@ -32,7 +33,19 @@ def get_prefix(bot, message):
         
     return commands.when_mentioned_or(*prefix)(bot, message)
 
-bot = commands.Bot(command_prefix=get_prefix)
+def get_prefix(bot, message):
+    cur=erg_db.cursor()
+    cur.execute('SELECT * FROM global_settings where guild_id=?', [message.guild.id,])
+    a = cur.fetchone()
+    
+    if a:
+        prefix = a[1]
+    else:
+        prefix = default_prefix
+        
+    return prefix
+
+bot = commands.Bot(command_prefix=get_prefix_all)
 
 @bot.event
 async def on_ready():
@@ -43,16 +56,25 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
+    elif isinstance(error, (commands.MissingPermissions)):
+        await ctx.send(f'Sorry, you are not allowed to use that command.')
     raise error
 
-# Return or set the prefix (if user has "manage server" permission)
+# Set new prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
-async def prefix(ctx, new_prefix=None):
+async def setprefix(ctx, *new_prefix):
     if new_prefix:
-        await ctx.send(f'Parameter detected')
+        if len(new_prefix)>1:
+            await ctx.send('Too many arguments.\nCommand syntax: `setprefix [prefix]`')
+        else:
+            await ctx.send(f'Prefix changed to `{new_prefix[0]}`')
     else:
         a = get_prefix(bot, ctx)
-        await ctx.send(f'The prefix for this server is `{a[-1]}`')
+        await ctx.send(f'Command syntax: `setprefix [prefix]`')
+        
+@bot.command()
+async def prefix(ctx, *args):
+    await ctx.send(f'The prefix for this server is `{get_prefix(bot, ctx)}`\nTo change the prefix use `setprefix [prefix]`')
     
 bot.run(TOKEN)
