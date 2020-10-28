@@ -122,7 +122,7 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
-    if isinstance(error, (commands.MissingPermissions)):
+    elif isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry, you are not allowed to use this command.')
 
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
