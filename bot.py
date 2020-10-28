@@ -92,8 +92,8 @@ def get_settings(bot, message):
             cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (message.author.id, '0', 'false',))
             current_settings = get_settings(bot, message)
         except sqlite3.Error as error:
-            print(f'Error inserting into database.\n{error}')
-        
+            print(f'Error inserting into database.\n{error}')    
+  
     return current_settings
 
 # Set progress settings
@@ -153,8 +153,7 @@ async def settings(ctx, *args):
         current_ascension = 'ascended'
     else:
         current_ascension = 'not ascended'
-        
-    await ctx.send(f'You are currently set as TT{current_settings[0]}, {current_ascension}')
+    await ctx.send(f'You are currently set as TT{current_settings[0]}, {current_ascension}.')
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command()
@@ -171,40 +170,30 @@ async def setprogress(ctx, *args):
                 new_tt = int(answer_tt.content)
                 await ctx.send('Are you ascended? `[yes/no]`')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
-            
                 if answer_ascended.content.lower() in ['yes','y']:
                     new_ascended = 'true'         
                     set_progress(bot, ctx, new_tt, new_ascended)  
                     current_settings = get_settings(bot, ctx)
-                    
                     if current_settings[1] == 'true':
                         current_ascension = 'ascended'
                     else:
                         current_ascension = 'not ascended'
-                    
                     await ctx.send(f'Settings changed, you are now set as TT{current_settings[0]}, {current_ascension}.')     
-                
                 elif answer_ascended.content.lower() in ['no','n']:
                     new_ascended = 'false'
                     set_progress(bot, ctx, new_tt, new_ascended)        
                     current_settings = get_settings(bot, ctx)
-                
                     if current_settings[1] == 'true':
                         current_ascension = 'ascended'
                     else:
                         current_ascension = 'not ascended'
-                    
                     await ctx.send(f'Settings changed, you are now set as TT{current_settings[0]}, {current_ascension}.')     
-                
                 else:
                     await ctx.send('Please answer with `yes` or `no`. Aborting.')
-            
             else:
                 await ctx.send('Please enter a number from 0 to 999. Aborting.')
-        
         except:
-            await ctx.send('Please answer with a valid number. Aborting.')
-    
+            await ctx.send('Please answer with a valid number. Aborting.')  
     except asyncio.TimeoutError as error:
         await ctx.send('You took too long to answer. Aborting.')
 
