@@ -4,6 +4,8 @@ import discord
 import sqlite3
 import shutil
 import asyncio
+import dungeons
+import global_data
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -14,11 +16,15 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 # Set default prefix
-default_prefix = '$'
+default_prefix = global_data.default_prefix
+
+# Set general embed text
+footer_embed = f'Use \"guide\" or \"g\" to see all available guides.'
+#thumbnail_url = 'http://www.zoneseven.ch/epicrpg/d5.png'
 
 # Set name of database files
-dbfile = 'erg_db.db'
-default_dbfile = 'erg_db_default.db'
+dbfile = global_data.dbfile
+default_dbfile = global_data.default_dbfile
 
 # Check if database exists, if not, create empty one
 if not os.path.isfile(dbfile):
@@ -60,6 +66,18 @@ async def get_prefix(bot, message):
         
     return prefix
 
+async def get_dungeon_data(dungeon):
+    cur=erg_db.cursor()
+    cur.execute('SELECT dungeons.*, g1.emoji, g2.emoji FROM dungeons INNER JOIN gear g1 ON g1.name = dungeons.player_sword_name INNER JOIN gear g2 ON g2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
+    record = cur.fetchone()
+    
+    if record:
+        dungeon_data = record
+    else:
+        print('Error while getting dungeon data.')
+        
+    return dungeon_data
+
 # Set new prefix
 async def set_prefix(bot, message, new_prefix):
     cur=erg_db.cursor()
@@ -77,8 +95,6 @@ async def set_prefix(bot, message, new_prefix):
         except sqlite3.Error as error:
             print(f'Error inserting into database.\n{error}')
       
-bot = commands.Bot(command_prefix=get_prefix_all)
-
 # Check database for stored progress settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
 async def get_settings(bot, message):
     cur=erg_db.cursor()
@@ -100,9 +116,9 @@ async def get_settings(bot, message):
 
 async def first_time_user(bot, message):
     current_settings = await get_settings(bot, message)
-    await message.send(f'Hey there, **{message.author.name}**, looks like we haven\'t met before.\nI have set your progress to '\
+    await message.send(f'Hey there, **{message.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
                 f'**TT{current_settings[0]}**, **{current_settings[1]}**.\n'\
-                f'If I guessed wrong, please use `{await get_prefix(bot, message)}setprogress` to change your settings.')
+                f'If I guessed wrong, please use `setprogress` to change your settings.')
 
 # Set progress settings
 async def set_progress(bot, message, new_tt, new_ascended):
@@ -121,48 +137,49 @@ async def set_progress(bot, message, new_tt, new_ascended):
         except sqlite3.Error as error:
             print(f'Error inserting into database.\n{error}')
 
+bot = commands.Bot(command_prefix=get_prefix_all)
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
 
 # Suppresses errors if a command is entered that the bot doesn't recognize
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, CommandNotFound):
-        return
-    elif isinstance(error, (commands.MissingPermissions)):
-        await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to use this command.')
+#@bot.event
+#async def on_command_error(ctx, error):
+ #   if isinstance(error, CommandNotFound):
+  #      return
+  #  elif isinstance(error, (commands.MissingPermissions)):
+   #     await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to use this command.')
 
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
 async def setprefix(ctx, *new_prefix):
-    current_prefix = await get_prefix(bot, ctx)
     if new_prefix:
         if len(new_prefix)>1:
-            await ctx.send(f'Too many arguments.\nCommand syntax: `{current_prefix}setprefix [prefix]`')
+            await ctx.send(f'Too many arguments.\nCommand syntax: `setprefix [prefix]`')
         else:
             await set_prefix(bot, ctx, new_prefix[0])
             await ctx.send(f'Prefix changed to `{await get_prefix(bot, ctx)}`')
     else:
-        await ctx.send(f'Command syntax: `{current_prefix}setprefix [prefix]`')
+        await ctx.send(f'Command syntax: `setprefix [prefix]`')
 
 # Command "prefix" - Returns current prefix
 @bot.command()
-async def prefix(ctx, *args):
+async def prefix(ctx):
     current_prefix = await get_prefix(bot, ctx)
-    await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
+    await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `setprefix [prefix]`')
 
 # Command "settings" - Returns current user progress settings
 @bot.command()
-async def settings(ctx, *args):
+async def settings(ctx):
     current_settings = await get_settings(bot, ctx)
     await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT{current_settings[0]}**, **{current_settings[1]}**.\n'\
-        f'Use `{await get_prefix(bot, ctx)}setprogress` if you want to change your settings.')
+        f'Use `setprogress` if you want to change your settings.')
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command()
-async def setprogress(ctx, *args):
+async def setprogress(ctx):
     
     def check(m):
         return m.author == ctx.author
@@ -195,5 +212,13 @@ async def setprogress(ctx, *args):
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
 # Aliases: @commands.command(aliases=['testcommand', 'testing'])
+
+# Dungeon 5
+@bot.command()
+async def d5(ctx):
+    dungeon_data = await get_dungeon_data(5)
+    dungeon_embed = await dungeons.dungeon(dungeon_data, footer_embed)
+    
+    await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
 
 bot.run(TOKEN)
