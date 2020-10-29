@@ -18,10 +18,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 # Set default prefix
 default_prefix = global_data.default_prefix
 
-# Set general embed text
-footer_embed = f'Use \"guide\" or \"g\" to see all available guides.'
-#thumbnail_url = 'http://www.zoneseven.ch/epicrpg/d5.png'
-
 # Set name of database files
 dbfile = global_data.dbfile
 default_dbfile = global_data.default_dbfile
@@ -217,7 +213,7 @@ async def setprogress(ctx):
 @bot.command()
 async def d5(ctx):
     dungeon_data = await get_dungeon_data(5)
-    dungeon_embed = await dungeons.dungeon(dungeon_data, footer_embed)
+    dungeon_embed = await dungeons.dungeon(dungeon_data)
     
     await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
 
