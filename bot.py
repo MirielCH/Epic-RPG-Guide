@@ -15,9 +15,6 @@ from discord.ext.commands import CommandNotFound
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-# Set default prefix
-default_prefix = global_data.default_prefix
-
 # Set name of database files
 dbfile = global_data.dbfile
 default_dbfile = global_data.default_dbfile
@@ -41,11 +38,11 @@ async def get_prefix_all(bot, message):
         prefix = record[1]
     else:
         try:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (message.guild.id, default_prefix,))
+            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (message.guild.id, global_data.default_prefix,))
         except sqlite3.Error as error:
             print(f'Error inserting into database.\n{error}')
 
-        prefix = default_prefix
+        prefix = global_data.default_prefix
         
     return commands.when_mentioned_or(* prefix)(bot, message)
 
@@ -58,7 +55,7 @@ async def get_prefix(bot, message):
     if record:
         prefix = record[1]
     else:
-        prefix = default_prefix
+        prefix = global_data.default_prefix
         
     return prefix
 
@@ -102,7 +99,6 @@ async def get_settings(bot, message):
     else:
         try:
             cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (message.author.id, '0', 'not ascended',))
-            #current_settings = await get_settings(bot, message)
             await first_time_user(bot, message)
             return
         except sqlite3.Error as error:
@@ -110,6 +106,7 @@ async def get_settings(bot, message):
   
     return current_settings
 
+# Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, message):
     current_settings = await get_settings(bot, message)
     await message.send(f'Hey there, **{message.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
