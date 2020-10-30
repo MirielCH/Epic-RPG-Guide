@@ -27,6 +27,7 @@ if not os.path.isfile(dbfile):
 # Open connection to the local database    
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
+# Initialize bot
 bot = discord.Client()
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
@@ -47,7 +48,7 @@ async def get_prefix_all(bot, message):
         
     return commands.when_mentioned_or(* prefix)(bot, message)
 
-# Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix
+# Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
 async def get_prefix(bot, message):
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_guild where guild_id=?', (message.guild.id,))
@@ -60,6 +61,7 @@ async def get_prefix(bot, message):
         
     return prefix
 
+# Get all necessary dungeon data for the dungeon embeds
 async def get_dungeon_data(dungeon):
     cur=erg_db.cursor()
     cur.execute('SELECT dungeons.*, g1.emoji, g2.emoji FROM dungeons INNER JOIN gear g1 ON g1.name = dungeons.player_sword_name INNER JOIN gear g2 ON g2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
@@ -111,7 +113,7 @@ async def get_settings(bot, message):
 async def first_time_user(bot, message):
     current_settings = await get_settings(bot, message)
     await message.send(f'Hey there, **{message.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
-                f'**TT{current_settings[0]}**, **{current_settings[1]}**.\n'\
+                f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
                 f'If I guessed wrong, please use `setprogress` to change your settings.')
 
 # Set progress settings
@@ -133,6 +135,7 @@ async def set_progress(bot, message, new_tt, new_ascended):
 
 bot = commands.Bot(command_prefix=get_prefix_all)
 
+# Set bot status when ready
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
