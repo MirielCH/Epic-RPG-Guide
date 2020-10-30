@@ -16,6 +16,7 @@ duellife = ':anchor:'
 # Dungeons (--> boss emojis in database)
 dkey1 = '<:erg_key1:770324312355110982>'
 dkey10 = '<:erg_key10:770324312351047680>'
+timekey = '<:erg_key15:771814311421018123>'
 
 # Epic shop items
 arenatoken = '<:erg_arenatoken:770325239078191106>'
@@ -102,6 +103,7 @@ cdprogress = ':sparkles:'
 lifepotion = '<:erg_lifepotion:770327166956601425>'
 ticketlottery = '<:erg_lotteryticket:770327167044419624>'
 timetravel = ':cyclone:'
+blank = '<:blank:771777870498234378>'
 
 # Monsters
 mobkillerrobot = '<:erg_killerrobot:770341042196447292>'

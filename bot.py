@@ -6,6 +6,7 @@ import shutil
 import asyncio
 import dungeons
 import global_data
+import emojis
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -134,16 +135,18 @@ bot = commands.Bot(command_prefix=get_prefix_all)
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
+    print(f'{bot.user.name} has connected to Discord!')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'\"guide\"'))
 
 # Suppresses errors if a command is entered that the bot doesn't recognize
-#@bot.event
-#async def on_command_error(ctx, error):
- #   if isinstance(error, CommandNotFound):
-  #      return
-  #  elif isinstance(error, (commands.MissingPermissions)):
-   #     await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to use this command.')
-
+"""
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    elif isinstance(error, (commands.MissingPermissions)):
+        await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to use this command.')
+"""
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
@@ -167,7 +170,7 @@ async def prefix(ctx):
 @bot.command()
 async def settings(ctx):
     current_settings = await get_settings(bot, ctx)
-    await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT{current_settings[0]}**, **{current_settings[1]}**.\n'\
+    await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
         f'Use `setprogress` if you want to change your settings.')
     
 # Command "setprogress" - Sets TT and ascension
@@ -178,23 +181,23 @@ async def setprogress(ctx):
         return m.author == ctx.author
     
     try:
-        await ctx.send(f'**{ctx.author.name}**, what TT are you currently in? `[0-999]`')
+        await ctx.send(f'**{ctx.author.name}**, what {emojis.timetravel} **TT** are you currently in? `[0-999]`')
         answer_tt = await bot.wait_for('message', check=check, timeout = 30)
         try:            
             if 0 <= int(answer_tt.content) <= 999:
                 new_tt = int(answer_tt.content)
-                await ctx.send(f'**{ctx.author.name}**, are you ascended? `[yes/no]`')
+                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]`')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
                 if answer_ascended.content.lower() in ['yes','y']:
                     new_ascended = 'ascended'         
                     await set_progress(bot, ctx, new_tt, new_ascended)  
                     current_settings = await get_settings(bot, ctx)
-                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT{current_settings[0]}**, **{current_settings[1]}**.')     
+                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 elif answer_ascended.content.lower() in ['no','n']:
                     new_ascended = 'not ascended'
                     await set_progress(bot, ctx, new_tt, new_ascended)        
                     current_settings = await get_settings(bot, ctx)
-                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT{current_settings[0]}**, **{current_settings[1]}**.')     
+                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 else:
                     await ctx.send(f'**{ctx.author.name}**, please answer with `yes` or `no`. Aborting.')
             else:
@@ -204,14 +207,33 @@ async def setprogress(ctx):
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
-# Aliases: @commands.command(aliases=['testcommand', 'testing'])
+# Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
+dungeon_aliases = ['dungeon',]
+for x in range(1,16):
+    dungeon_aliases.append(f'd{x}')    
+    dungeon_aliases.append(f'dungeon{x}') 
 
-# Dungeon 5
-@bot.command()
-async def d5(ctx):
-    dungeon_data = await get_dungeon_data(5)
-    dungeon_embed = await dungeons.dungeon(dungeon_data)
-    
-    await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+@bot.command(name='d',aliases=(dungeon_aliases))
+async def dungeon(ctx, *args):
+    invoked = ctx.message.content
+    if args:
+        if len(args)>1:
+            return
+        else:
+            try:
+                if 1 <= int(args[0]) <= 15:
+                    dungeon_data = await get_dungeon_data(int(args[0]))
+                    dungeon_embed = await dungeons.dungeon(dungeon_data)
+                    await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+            except:
+                print(f'Error parsing command \"dungeon\"')
+    else:
+        try:
+            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')
+            dungeon_data = await get_dungeon_data(int(dungeon_no))
+            dungeon_embed = await dungeons.dungeon(dungeon_data)
+            await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+        except:
+            print(f'Error parsing command \"dungeon\"')
 
 bot.run(TOKEN)
