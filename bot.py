@@ -102,6 +102,19 @@ async def get_mats_data(user_tt):
         
     return mats_data
 
+# Get random tip
+async def get_tip():
+    cur=erg_db.cursor()
+    cur.execute(f'SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
+    record = cur.fetchone()
+    
+    if record:
+        tip = record
+    else:
+        print('Error while getting tips.')
+        
+    return tip
+
 # Set new prefix
 async def set_prefix(bot, message, new_prefix):
     cur=erg_db.cursor()
@@ -364,6 +377,20 @@ async def area(ctx, *args):
                 return
             else:
                 print(f'Error parsing command \"area\"')
-      
+
+# Command "tip" - Returns a random tip
+@bot.command(aliases=('tips',))
+async def tip(ctx):
+    tip = await get_tip()
+    
+    embed = discord.Embed(
+        color = 8983807,
+        title = f'TIP',
+        description = tip[0]
+    )    
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    await ctx.send(file=thumbnail, embed=embed)
 
 bot.run(TOKEN)
