@@ -133,7 +133,7 @@ async def set_progress(bot, message, new_tt, new_ascended):
         except sqlite3.Error as error:
             print(f'Error inserting into database.\n{error}')
 
-bot = commands.Bot(command_prefix=get_prefix_all)
+bot = commands.Bot(command_prefix=get_prefix_all, help_command=None)
 
 # Set bot status when ready
 @bot.event
@@ -173,8 +173,9 @@ async def prefix(ctx):
 @bot.command()
 async def settings(ctx):
     current_settings = await get_settings(bot, ctx)
-    await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
-        f'Use `setprogress` if you want to change your settings.')
+    if current_settings:
+        await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
+                       f'Use `setprogress` if you want to change your settings.')
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command()
@@ -209,6 +210,22 @@ async def setprogress(ctx):
             await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')  
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
+
+# Main guide (maybe make a short guide and a longer one with descriptions)
+@bot.command(aliases=('g','help',))
+async def guide(ctx, *args):
+    embed = discord.Embed(
+        color = 8983807,
+        title = 'EPIC RPG GUIDE',
+        description = f'Hello **{ctx.author.name}**, glad to be of service.\nAll commands use the prefix `{await get_prefix(bot, ctx)}`.'
+    )    
+    embed.set_footer(text='Tip: Use "shortcuts" to see a list of shorter aliases.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`', inline=True)
+    embed.add_field(name='USER SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
+    
+    await ctx.send(file=thumbnail, embed=embed)
 
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
 dungeon_aliases = ['dungeon',]
