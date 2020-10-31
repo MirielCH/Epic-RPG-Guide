@@ -41,7 +41,7 @@ async def design_field_rec_stats(field_rec_stats_data):
     if player_level == 0:
         player_level = '-'
     
-    field_name = 'RECOMMENDED MINIMUM STATS'
+    field_name = 'REC. MINIMUM STATS'
     field_value = f'{emojis.bp} {emojis.statat} **AT**: {player_at}\n'\
     f'{emojis.bp} {emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'\
     f'{emojis.bp} {emojis.statlife} **LIFE**: {player_life} {life_boost}\n'\
@@ -188,7 +188,7 @@ async def dungeon(dungeon_data):
     embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.bp} {key_price}', inline=False)
     embed.add_field(name='BOSS STATS', value=f'{emojis.bp} {emojis.statat} **AT**: {boss_at}\n'
                     f'{emojis.bp} {emojis.statlife} **LIFE**: {boss_life}', inline=False)
-    embed.add_field(name='RECOMMENDED MINIMUM GEAR', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
+    embed.add_field(name='REC. MINIMUM GEAR', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                     f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
     embed.add_field(name=field_rec_stats[0], value=field_rec_stats[1], inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)

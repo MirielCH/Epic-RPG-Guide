@@ -7,6 +7,7 @@ import asyncio
 import dungeons
 import global_data
 import emojis
+import areas
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -61,7 +62,7 @@ async def get_prefix(bot, message):
         
     return prefix
 
-# Get all necessary dungeon data for the dungeon embeds
+# Get all necessary data for the dungeon embeds
 async def get_dungeon_data(dungeon):
     cur=erg_db.cursor()
     cur.execute('SELECT dungeons.*, g1.emoji, g2.emoji FROM dungeons INNER JOIN gear g1 ON g1.name = dungeons.player_sword_name INNER JOIN gear g2 ON g2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
@@ -73,6 +74,33 @@ async def get_dungeon_data(dungeon):
         print('Error while getting dungeon data.')
         
     return dungeon_data
+
+# Get all necessary data for the area embeds
+async def get_area_data(area):
+    cur=erg_db.cursor()
+    select_columns = 'areas.*, g1.emoji, g2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
+    cur.execute(f'SELECT {select_columns} FROM areas INNER JOIN dungeons d ON d.dungeon = areas.dungeon INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE areas.area=?', (area,))
+    record = cur.fetchone()
+    
+    if record:
+        area_data = record
+    else:
+        print('Error while getting area data.')
+        
+    return area_data
+
+# Get needed mats for area 3 and 5
+async def get_mats_data(user_tt):
+    cur=erg_db.cursor()
+    cur.execute(f'SELECT * FROM tt_mats WHERE tt=?', (user_tt,))
+    record = cur.fetchone()
+    
+    if record:
+        mats_data = record
+    else:
+        print('Error while getting materials data.')
+        
+    return mats_data
 
 # Set new prefix
 async def set_prefix(bot, message, new_prefix):
@@ -133,7 +161,7 @@ async def set_progress(bot, message, new_tt, new_ascended):
         except sqlite3.Error as error:
             print(f'Error inserting into database.\n{error}')
 
-bot = commands.Bot(command_prefix=get_prefix_all, help_command=None)
+bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
 
 # Set bot status when ready
 @bot.event
@@ -222,7 +250,7 @@ async def guide(ctx, *args):
     embed.set_footer(text='Tip: Use "shortcuts" to see a list of shorter aliases.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`', inline=True)
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`\n{emojis.bp} `area [1-15]`', inline=True)
     embed.add_field(name='USER SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
     
     await ctx.send(file=thumbnail, embed=embed)
@@ -236,6 +264,7 @@ for x in range(1,16):
 @bot.command(name='d',aliases=(dungeon_aliases))
 async def dungeon(ctx, *args):
     invoked = ctx.message.content
+    invoked = invoked.lower()
     if args:
         if len(args)>1:
             return
@@ -246,14 +275,95 @@ async def dungeon(ctx, *args):
                     dungeon_embed = await dungeons.dungeon(dungeon_data)
                     await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
             except:
-                print(f'Error parsing command \"dungeon\"')
+                args_check = args[0]
+                if not args_check.isnumeric():
+                    return
+                else:
+                    print(f'Error parsing command \"dungeon\"')
     else:
         try:
-            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')
+            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')           
             dungeon_data = await get_dungeon_data(int(dungeon_no))
             dungeon_embed = await dungeons.dungeon(dungeon_data)
             await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
         except:
-            print(f'Error parsing command \"dungeon\"')
+            if (dungeon_no == '') or not dungeon_no.isnumeric():
+                return
+            else:
+                print(f'Error parsing command \"dungeon\"')
+
+# Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
+area_aliases = ['area',]
+for x in range(1,16):
+    area_aliases.append(f'a{x}')    
+    area_aliases.append(f'area{x}') 
+
+@bot.command(name='a',aliases=(area_aliases))
+async def area(ctx, *args):
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    if args:
+        if len(args) > 2:
+            return        
+        elif len(args) == 2:
+            try:
+                args_full = str(args[1])
+                args_full = args_full.lower()
+                if args_full == 'full':
+                    area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+                    area_data = await get_area_data(int(area_no))
+                    user_settings = await get_settings(bot, ctx)
+                    user_settings_override = (25, user_settings[1],'override',)
+                    if int(area_no) in (3,5):
+                        mats_data = await get_mats_data(user_settings_override[0])
+                    else:
+                        mats_data = ''
+                    area_embed = await areas.area(area_data, mats_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                    await ctx.send(file=area_embed[0], embed=area_embed[1])   
+            except:
+                return
+        else:
+            try:
+                if 1 <= int(args[0]) <= 15:
+                    area_data = await get_area_data(int(args[0]))
+                    user_settings = await get_settings(bot, ctx)
+                    if int(area_no) in (3,5):
+                        mats_data = await get_mats_data(user_settings[0])
+                    area_embed = await areas.area(area_data, mats_data, user_settings, ctx.author.name, ctx.prefix)
+                    await ctx.send(file=area_embed[0], embed=area_embed[1])
+            except:
+                try:
+                    args_full = str(args[0])
+                    args_full = args_full.lower()
+                    if args_full == 'full':
+                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+                        area_data = await get_area_data(int(area_no))
+                        user_settings = await get_settings(bot, ctx)
+                        user_settings_override = (25, user_settings[1],'override',)
+                        if int(area_no) in (3,5):
+                            mats_data = await get_mats_data(user_settings_override[0])
+                        else:
+                            mats_data = ''
+                        area_embed = await areas.area(area_data, mats_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                        await ctx.send(file=area_embed[0], embed=area_embed[1])   
+                except:
+                    return
+    else:
+        try:
+            area_no = invoked.replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+            area_data = await get_area_data(int(area_no))
+            user_settings = await get_settings(bot, ctx)
+            if int(area_no) in (3,5):
+                mats_data = await get_mats_data(user_settings[0])
+            else:
+                mats_data = ''
+            area_embed = await areas.area(area_data, mats_data, user_settings, ctx.author.name, ctx.prefix)
+            await ctx.send(file=area_embed[0], embed=area_embed[1])
+        except:
+            if area_no == '':
+                return
+            else:
+                print(f'Error parsing command \"area\"')
+      
 
 bot.run(TOKEN)
