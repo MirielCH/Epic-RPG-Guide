@@ -264,7 +264,8 @@ async def guide(ctx, *args):
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`\n{emojis.bp} `area [1-15]`', inline=True)
-    embed.add_field(name='USER SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `tip`', inline=True)
     
     await ctx.send(file=thumbnail, embed=embed)
 
