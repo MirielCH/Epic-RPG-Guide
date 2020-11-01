@@ -1,10 +1,10 @@
 # areas.py
 
 import discord
-import sqlite3
 import emojis
 import global_data
 import dungeons
+import trading
 
 # Create area embed
 async def area(area_data, mats_data, user_settings, user_name, prefix):
@@ -54,9 +54,19 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await dungeons.design_field_rec_stats(field_rec_stats_data)
     
+    if ((area_no == 12) and (user_tt < 1)) or ((area_no == 13) and (user_tt < 3)) or ((area_no == 14) and (user_tt < 5)) or ((area_no == 15) and (user_tt < 10)):
+        time_traveller_area_locked = True
+    else:
+        time_traveller_area_locked = False
+    
+    if ((area_no == 11) and (user_tt == 0)) or ((area_no == 12) and (1 <= user_tt <= 2)) or ((area_no == 13) and (3 <= user_tt <= 4)) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 24)):
+        time_traveller_prepare = True
+    else:
+        time_traveller_prepare = False
+        
     # Footer
-    if not ((area_no == 11) and (user_tt == 0)) and not ((area_no == 12) and (1 <= user_tt <= 2)) and not ((area_no == 13) and (3 <= user_tt <= 4)) and not ((area_no == 14) and (5 <= user_tt <= 9)) and not ((area_no == 15) and (10 <= user_tt <= 24)):
-        footer = f'Tip: See "dungeon {dungeon_no}" for details about the next dungeon'
+    if time_traveller_area_locked == False:
+        footer = f'Tip: Use "dungeon {dungeon_no}" for details about the next dungeon'
     else:
         footer = f'Tip: To see the full page use "area {area_no} full"'
         
@@ -68,10 +78,11 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
         description = f'This is the guide for **TT {user_tt}**, **{user_asc}**.\nIf this is wrong, run `{prefix}setprogress`.'
     
     # Area locked
-    area_locked = ''
-    if ((area_no == 12) and (user_tt < 1)) or ((area_no == 13) and (user_tt < 3)) or ((area_no == 14) and (user_tt < 5)) or ((area_no == 15) and (user_tt < 10)):
+    if time_traveller_area_locked == True:
         area_locked = f'{emojis.bp} **You can not reach this area in your current TT**\n{emojis.bp} The following information applies when ignoring TT'
         footer = f'Tip: See "timetravel" for details about time travelling'
+    else:
+        area_locked = ''
         
     # Quick Guide
     quick_guide_sword = ''
@@ -101,7 +112,7 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
                 quick_guide_enchant_armor = f'\n {emojis.bp} Enchant {player_armor_emoji} {player_armor} to [{player_armor_enchant}+]'
         player_armor_enchant = f'[{player_armor_enchant}]'
 
-    if ((area_no == 11) and (user_tt == 0)) or ((area_no == 12) and (1 <= user_tt <= 2)) or ((area_no == 13) and (3 <= user_tt <= 4)) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 24)):
+    if time_traveller_prepare == True:
         quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
     elif (1 <= area_no <= 4) and (user_tt == 0) :
         if not player_level == 0:
@@ -123,6 +134,8 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
                 quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
         else:
             quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+    if not (int(area_no) in (1,2,4,6,12,13,14,15)) and not (time_traveller_prepare == True):
+        quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
     
     # New commands
     new_cmd = ''
@@ -173,6 +186,9 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
     
     if (area_no == 3) and (user_tt > 4):
         materials = f'{emojis.bp} {mats_fish} {emojis.fish} normie fish'
+
+    # Trades
+    trades = await trading.get_area_trades(area_no)
             
     # Embed
     embed = discord.Embed(
@@ -190,11 +206,11 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
     if (area_no > 1) and (user_asc != 'ascended') and (new_cmd != ''):
         embed.add_field(name='NEW COMMANDS', value=f'{emojis.bp} {new_cmd}', inline=False)
     embed.add_field(name='BEST WORK COMMAND', value=work_cmd, inline=False)
-    if not ((area_no == 11) and (user_tt == 0)) and not ((area_no == 12) and (1 <= user_tt <= 2)) and not ((area_no == 13) and (3 <= user_tt <= 4)) and not ((area_no == 14) and (5 <= user_tt <= 9)) and not ((area_no == 15) and (10 <= user_tt <= 24)):
+    if not time_traveller_prepare == True:
         embed.add_field(name=f'REC. MINIMUM GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'{field_rec_stats[0]} FOR D{dungeon_no}', value=field_rec_stats[1], inline=False)
-        embed.add_field(name='TRADES BEFORE LEAVING', value=f'{emojis.bp} Not implemented yet', inline=False)
+        embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
         if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
             embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
     

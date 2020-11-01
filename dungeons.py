@@ -1,7 +1,6 @@
 # dungeons.py
 
 import discord
-import sqlite3
 import emojis
 import global_data
 

@@ -8,6 +8,7 @@ import dungeons
 import global_data
 import emojis
 import areas
+import trading
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -412,6 +413,13 @@ async def area(ctx, *args):
                 return
             else:
                 print(f'Error parsing command \"area\"')
+
+# Command "trades" - Returns recommended trades of all areas
+@bot.command(aliases=('tr',))
+async def trades(ctx):
+    embed = await trading.trades()
+    
+    await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
