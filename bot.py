@@ -34,6 +34,7 @@ bot = discord.Client()
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 async def get_prefix_all(bot, message):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_guild where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
@@ -52,6 +53,7 @@ async def get_prefix_all(bot, message):
 
 # Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
 async def get_prefix(bot, message):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_guild where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
@@ -65,6 +67,7 @@ async def get_prefix(bot, message):
 
 # Get all necessary data for the dungeon embeds
 async def get_dungeon_data(dungeon):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT dungeons.*, g1.emoji, g2.emoji FROM dungeons INNER JOIN gear g1 ON g1.name = dungeons.player_sword_name INNER JOIN gear g2 ON g2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
     record = cur.fetchone()
@@ -78,6 +81,7 @@ async def get_dungeon_data(dungeon):
 
 # Get all necessary data for the area embeds
 async def get_area_data(area):
+    
     cur=erg_db.cursor()
     select_columns = 'areas.*, g1.emoji, g2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
     cur.execute(f'SELECT {select_columns} FROM areas INNER JOIN dungeons d ON d.dungeon = areas.dungeon INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE areas.area=?', (area,))
@@ -92,6 +96,7 @@ async def get_area_data(area):
 
 # Get needed mats for area 3 and 5
 async def get_mats_data(user_tt):
+    
     cur=erg_db.cursor()
     cur.execute(f'SELECT * FROM tt_mats WHERE tt=?', (user_tt,))
     record = cur.fetchone()
@@ -105,6 +110,7 @@ async def get_mats_data(user_tt):
 
 # Get random tip
 async def get_tip():
+    
     cur=erg_db.cursor()
     cur.execute(f'SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
     record = cur.fetchone()
@@ -118,6 +124,7 @@ async def get_tip():
 
 # Set new prefix
 async def set_prefix(bot, message, new_prefix):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_guild where guild_id=?', (message.guild.id,))
     record = cur.fetchone()
@@ -135,6 +142,7 @@ async def set_prefix(bot, message, new_prefix):
       
 # Check database for stored progress settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
 async def get_settings(bot, message):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_user where user_id=?', (message.author.id,))
     record = cur.fetchone()
@@ -153,6 +161,7 @@ async def get_settings(bot, message):
 
 # Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, message):
+    
     current_settings = await get_settings(bot, message)
     await message.send(f'Hey there, **{message.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
                 f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
@@ -160,6 +169,7 @@ async def first_time_user(bot, message):
 
 # Set progress settings
 async def set_progress(bot, message, new_tt, new_ascended):
+    
     cur=erg_db.cursor()
     cur.execute('SELECT * FROM settings_user where user_id=?', (message.author.id,))
     record = cur.fetchone()
@@ -180,6 +190,7 @@ bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insens
 # Set bot status when ready
 @bot.event
 async def on_ready():
+    
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'\"guide\"'))
 
@@ -196,6 +207,7 @@ async def on_command_error(ctx, error):
 @bot.command()
 @commands.has_permissions(manage_guild=True)
 async def setprefix(ctx, *new_prefix):
+    
     if new_prefix:
         if len(new_prefix)>1:
             await ctx.send(f'Too many arguments.\nCommand syntax: `setprefix [prefix]`')
@@ -208,12 +220,14 @@ async def setprefix(ctx, *new_prefix):
 # Command "prefix" - Returns current prefix
 @bot.command()
 async def prefix(ctx):
+    
     current_prefix = await get_prefix(bot, ctx)
     await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `setprefix [prefix]`')
 
 # Command "settings" - Returns current user progress settings
 @bot.command()
 async def settings(ctx):
+    
     current_settings = await get_settings(bot, ctx)
     if current_settings:
         await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
@@ -256,8 +270,9 @@ async def setprogress(ctx):
 # Long guide
 @bot.command(name='guide',aliases=('help',))
 async def guide_long(ctx, *args):
+    
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = 'EPIC RPG GUIDE',
         description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
@@ -265,6 +280,7 @@ async def guide_long(ctx, *args):
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` : Area guides', inline=False)
+    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` : All area trades\n{emojis.bp} `traderates` : All area trade rates', inline=False)
     embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Shows your settings\n{emojis.bp} `setprogress` : Sets your settings', inline=False)
     embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : Shows a random tip\n{emojis.bp} `shortcuts` : Shows all shortcuts', inline=False)
     
@@ -273,8 +289,9 @@ async def guide_long(ctx, *args):
 # Short guide
 @bot.command(name='g')
 async def guide_short(ctx, *args):
+    
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = 'EPIC RPG GUIDE',
         description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
@@ -282,6 +299,7 @@ async def guide_short(ctx, *args):
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`\n{emojis.bp} `area [1-15]`', inline=True)
+    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades`\n {emojis.bp} `traderates`', inline=True)
     embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
     embed.add_field(name='MISC', value=f'{emojis.bp} `tip`\n{emojis.bp} `shortcuts`', inline=True)
     
@@ -290,8 +308,9 @@ async def guide_short(ctx, *args):
 # Shortcuts
 @bot.command(aliases=('shortcut','sc',))
 async def shortcuts(ctx, *args):
+    
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = 'EPIC RPG GUIDE SHORTCUTS',
         description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
@@ -299,6 +318,7 @@ async def shortcuts(ctx, *args):
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` : `d1`-`d15`\n{emojis.bp} `area [1-15]` : `a1`-`a15`', inline=False)
+    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` : `tr`\n{emojis.bp} `traderates` : `trr`', inline=False)
     embed.add_field(name='SETTINGS', value=f'{emojis.bp} `setprogress` : `sp`', inline=False)
     embed.add_field(name='MISC', value=f'{emojis.bp} `shortcuts` : `sc`', inline=False)
     
@@ -312,6 +332,7 @@ for x in range(1,16):
 
 @bot.command(name='d',aliases=(dungeon_aliases))
 async def dungeon(ctx, *args):
+    
     invoked = ctx.message.content
     invoked = invoked.lower()
     if args:
@@ -349,6 +370,7 @@ for x in range(1,16):
 
 @bot.command(name='a',aliases=(area_aliases))
 async def area(ctx, *args):
+    
     invoked = ctx.message.content
     invoked = invoked.lower()
     if args:
@@ -417,17 +439,29 @@ async def area(ctx, *args):
 # Command "trades" - Returns recommended trades of all areas
 @bot.command(aliases=('tr',))
 async def trades(ctx):
-    embed = await trading.trades()
+    
+    user_settings = await get_settings(bot, ctx)
+    
+    embed = await trading.trades(user_settings)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "trades" - Returns recommended trades of all areas
+@bot.command(aliases=('trr',))
+async def traderates(ctx):
+        
+    embed = await trading.traderates()
     
     await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
 async def tip(ctx):
+    
     tip = await get_tip()
     
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = f'TIP',
         description = tip[0]
     )    

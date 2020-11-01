@@ -173,7 +173,7 @@ async def dungeon(dungeon_data):
         strategy_name = 'STRATEGY'
         
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = f'DUNGEON {dungeon_no}',
         description = embed_description
     )    

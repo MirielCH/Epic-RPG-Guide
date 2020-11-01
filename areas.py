@@ -65,7 +65,7 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
         time_traveller_prepare = False
         
     # Footer
-    if time_traveller_area_locked == False:
+    if time_traveller_prepare == False:
         footer = f'Tip: Use "dungeon {dungeon_no}" for details about the next dungeon'
     else:
         footer = f'Tip: To see the full page use "area {area_no} full"'
@@ -192,7 +192,7 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
             
     # Embed
     embed = discord.Embed(
-        color = 8983807,
+        color = global_data.color,
         title = f'AREA {area_no}',
         description = description    
             
@@ -211,7 +211,7 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'{field_rec_stats[0]} FOR D{dungeon_no}', value=field_rec_stats[1], inline=False)
         embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
-        if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
-            embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
+    if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
+        embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
     
     return (thumbnail, embed)

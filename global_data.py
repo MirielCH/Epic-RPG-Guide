@@ -10,5 +10,8 @@ thumbnail = './images/erg.png'
 # Prefix
 default_prefix = '$'
 
+# Embed color
+color = 8983807
+
 # Set general embed text
 footer = f'Use \"guide\" or \"g\" to see all available guides.'
