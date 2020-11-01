@@ -219,7 +219,7 @@ async def settings(ctx):
                        f'Use `setprogress` if you want to change your settings.')
     
 # Command "setprogress" - Sets TT and ascension
-@bot.command()
+@bot.command(aliases=('sp',))
 async def setprogress(ctx):
     
     def check(m):
@@ -252,20 +252,54 @@ async def setprogress(ctx):
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
-# Main guide (maybe make a short guide and a longer one with descriptions)
-@bot.command(aliases=('g','help',))
-async def guide(ctx, *args):
+# Long guide
+@bot.command(name='guide',aliases=('help',))
+async def guide_long(ctx, *args):
     embed = discord.Embed(
         color = 8983807,
         title = 'EPIC RPG GUIDE',
-        description = f'Hello **{ctx.author.name}**, glad to be of service.\nAll commands use the prefix `{await get_prefix(bot, ctx)}`.'
+        description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
-    embed.set_footer(text='Tip: Use "shortcuts" to see a list of shorter aliases.')
+    embed.set_footer(text='Tip: Use "g" to see a more compact guide.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` : Area guides', inline=False)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Shows your settings\n{emojis.bp} `setprogress` : Sets your settings', inline=False)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : Shows a random tip\n{emojis.bp} `shortcuts` : Shows all shortcuts', inline=False)
+    
+    await ctx.send(file=thumbnail, embed=embed)
+
+# Short guide
+@bot.command(name='g')
+async def guide_short(ctx, *args):
+    embed = discord.Embed(
+        color = 8983807,
+        title = 'EPIC RPG GUIDE',
+        description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
+    )    
+    embed.set_footer(text='Tip: Use "guide" to see the full guide.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]`\n{emojis.bp} `area [1-15]`', inline=True)
     embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings`\n{emojis.bp} `setprogress`', inline=True)
-    embed.add_field(name='MISC', value=f'{emojis.bp} `tip`', inline=True)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `tip`\n{emojis.bp} `shortcuts`', inline=True)
+    
+    await ctx.send(file=thumbnail, embed=embed)
+    
+# Shortcuts
+@bot.command(aliases=('shortcut','sc',))
+async def shortcuts(ctx, *args):
+    embed = discord.Embed(
+        color = 8983807,
+        title = 'EPIC RPG GUIDE SHORTCUTS',
+        description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
+    )    
+    embed.set_footer(text='Tip: Use "guide" to see the full guide.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` : `d1`-`d15`\n{emojis.bp} `area [1-15]` : `a1`-`a15`', inline=False)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `setprogress` : `sp`', inline=False)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `shortcuts` : `sc`', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
 
