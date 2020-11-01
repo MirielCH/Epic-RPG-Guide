@@ -77,7 +77,7 @@ async def trades(user_settings):
 # Trade rates of all areas
 async def traderates():
     
-    area1 = f' 1 {emojis.fish} ⇄ {emojis.log} 1\n'\
+    area1 = f'1 {emojis.fish} ⇄ {emojis.log} 1\n'\
             f'{emojis.blank}' 
     
     area2 = area1

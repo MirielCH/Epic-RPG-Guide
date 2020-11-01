@@ -279,10 +279,10 @@ async def guide_long(ctx, *args):
     embed.set_footer(text='Tip: Use "g" to see a more compact guide.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` : Area guides', inline=False)
-    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` : All area trades\n{emojis.bp} `traderates` : All area trade rates', inline=False)
-    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Shows your settings\n{emojis.bp} `setprogress` : Sets your settings', inline=False)
-    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : Shows a random tip\n{emojis.bp} `shortcuts` : Shows all shortcuts', inline=False)
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides', inline=False)
+    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` / `tr` : All area trades\n{emojis.bp} `traderates` / `trr` : All area trade rates', inline=False)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Shows your settings\n{emojis.bp} `setprogress` / `sp` : Sets your settings', inline=False)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : Shows a random tip\n{emojis.bp} `shortcuts` / `sc` : Shows all shortcuts', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
 
