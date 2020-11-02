@@ -21,10 +21,10 @@ async def enchants():
             f'{emojis.bp} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.timetravel} TT 3\n'\
             f'{emojis.bp} **GODLY** - 200% buff, unlocked in {emojis.timetravel} TT 5'
             
-    commands = f'{emojis.bp} `enchant` - Unlocked in area 2, costs 1k * area\n'\
-               f'{emojis.bp} `refine` - Unlocked in area 7, costs 10k * area\n'\
-               f'{emojis.bp} `transmute` - Unlocked in area 13, costs 100k * area\n'\
-               f'{emojis.bp} `transcent` - Unlocked in area 15, costs 1m * area'
+    commands = f'{emojis.bp} `enchant` - unlocked in area 2, costs 1k * area\n'\
+               f'{emojis.bp} `refine` - unlocked in area 7, costs 10k * area\n'\
+               f'{emojis.bp} `transmute` - unlocked in area 13, costs 100k * area\n'\
+               f'{emojis.bp} `transcent` - unlocked in area 15, costs 1m * area'
 
     embed = discord.Embed(
         color = global_data.color,

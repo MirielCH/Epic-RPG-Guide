@@ -124,7 +124,6 @@ async def get_traderate_data(area):
     
     if record:
         traderate_data = record
-        print(record)
     else:
         print('Error while getting trade rate data.')
         
@@ -308,7 +307,7 @@ async def setprogress(ctx):
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
 # Long guide
-@bot.command(name='guide',aliases=('help','g'))
+@bot.command(name='guide',aliases=('help','g',))
 async def guide_long(ctx, *args):
     
     embed = discord.Embed(
@@ -316,11 +315,11 @@ async def guide_long(ctx, *args):
         title = 'EPIC RPG GUIDE',
         description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
-    embed.set_footer(text='Tip: You can quickly open the guide with "g"')
+    embed.set_footer(text='Tip: You can quickly open this guide with "g"')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides', inline=False)
-    embed.add_field(name='CRAFTING', value=f'{emojis.bp} `enchants` / `e` : All enchants', inline=False)
+    embed.add_field(name='CRAFTING', value=f'{emojis.bp} `enchants` / `e` : All enchants\n{emojis.bp} `drops` : Monster drops', inline=False)
     embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` / `tr` : All area trades\n{emojis.bp} `traderates` / `trr` : All area trade rates', inline=False)
     embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : See your settings\n{emojis.bp} `setprogress` / `sp` : Change your settings', inline=False)
     embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : See a random tip', inline=False)
@@ -508,6 +507,32 @@ async def enchants(ctx):
     embed = await crafting.enchants()
     
     await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "drops" - Returns all monster drops and where to get them
+@bot.command(aliases=('drop',))
+async def drops(ctx):
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'MONSTER DROPS',
+        description = f'These items drop when using `hunt` or `hunt together`.\n'\
+                      f'All items have a 2% base drop chance. This drop chance increases by ~25% each time you time travel.\n'\
+                      f'Note: You can also get these items from lootboxes.'
+    )    
+    embed.set_footer(text=global_data.footer)
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+
+    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Area: **1~2**\n{emojis.bp} Source: {emojis.mobwolf} **Wolf**', inline=False)
+    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Area: **3~4**\n{emojis.bp} Source: {emojis.mobzombie} **Zombie**', inline=False)
+    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Area: **5~6**\n{emojis.bp} Source: {emojis.mobunicorn} **Unicorn**', inline=False)
+    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Area: **7~8**\n{emojis.bp} Source: {emojis.mobmermaid} **Mermaid**', inline=False)
+    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Area: **9~10**\n{emojis.bp} Source: {emojis.mobkillerrobot} **Killer Robot**', inline=False)
+    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Area: **11~14**\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon} **Scaled Dragons**', inline=False)
+            
+    await ctx.send(file=thumbnail, embed=embed)
+
+
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
