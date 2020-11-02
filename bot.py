@@ -512,12 +512,12 @@ async def enchants(ctx):
 @bot.command(aliases=('drop',))
 async def drops(ctx):
 
-    items = f'{emojis.bp} {emojis.wolfskin} **Wolf Skin** - {emojis.mobwolf} Wolf in areas 1~2\n'\
-            f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas 3~4\n'\
-            f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas 5~6\n'\
-            f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas 7~8\n'\
-            f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas 9~10\n'\
-            f'{emojis.bp} {emojis.dragonscale} **Dragon Scale** - {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon} Scaled Dragon in areas 11~14'
+    items = f'{emojis.bp} {emojis.wolfskin} **Wolf Skin** - {emojis.mobwolf} Wolf in areas **1~2**\n'\
+            f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'\
+            f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas **5~6**\n'\
+            f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas **7~8**\n'\
+            f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'\
+            f'{emojis.bp} {emojis.dragonscale} **Dragon Scale** - {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon} Scaled Dragon in areas **11~14**'
 
     embed = discord.Embed(
         color = global_data.color,
