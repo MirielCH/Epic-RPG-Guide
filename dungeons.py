@@ -3,6 +3,7 @@
 import discord
 import emojis
 import global_data
+from humanfriendly import format_timespan
 
 # Create field "Recommended Stats"
 async def design_field_rec_stats(field_rec_stats_data):
@@ -70,8 +71,9 @@ async def dungeon(dungeon_data):
     player_sword_enchant = dungeon_data[16]
     player_armor = dungeon_data[17]
     player_armor_enchant = dungeon_data[18]
-    player_sword_emoji = dungeon_data[19]
-    player_armor_emoji = dungeon_data[20]
+    time_limit = format_timespan(dungeon_data[19])
+    player_sword_emoji = dungeon_data[20]
+    player_armor_emoji = dungeon_data[21]
     
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await design_field_rec_stats(field_rec_stats_data)
@@ -182,6 +184,7 @@ async def dungeon(dungeon_data):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='BOSS', value=f'{emojis.bp} {boss_emoji} {boss_name}', inline=False)
     embed.add_field(name='PLAYERS', value=players, inline=False)
+    embed.add_field(name='TIME LIMIT', value=f'{emojis.bp} {time_limit}', inline=False)
     embed.add_field(name='REWARDS', value=rewards, inline=False)
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.bp} {key_price}', inline=False)
