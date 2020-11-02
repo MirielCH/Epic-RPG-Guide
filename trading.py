@@ -5,7 +5,7 @@ import emojis
 import global_data
 
 # Trade for area X
-async def get_area_trades(area_no):
+async def design_field_trades(area_no):
     
     if int(area_no) in (1,2,4,6,12,13,14,15):
         field_value = f'{emojis.bp} None'
@@ -47,6 +47,17 @@ async def get_area_trades(area_no):
 
     return (field_value)
 
+# Create field "trade rates" for area
+async def design_field_traderate(traderate_data):
+    
+    field_value = f'{emojis.bp} 1 {emojis.fish} ⇄ {emojis.log} {traderate_data[1]}'
+    if not traderate_data[2] == 0:
+        field_value = f'{field_value}\n{emojis.bp} 1 {emojis.apple} ⇄ {emojis.log} {traderate_data[2]}'
+        if not traderate_data[3] == 0:
+            field_value = f'{field_value}\n{emojis.bp} 1 {emojis.ruby} ⇄ {emojis.log} {traderate_data[3]}'
+            
+    return (field_value)
+
 # Trades before leaving areas
 async def trades(user_settings):
     
@@ -75,93 +86,29 @@ async def trades(user_settings):
     return (thumbnail, embed)
 
 # Trade rates of all areas
-async def traderates(trading_data):
-    
-    try:
-        area1_data = trading_data[0]
-        area2_data = trading_data[1]
-        area3_data = trading_data[2]
-        area4_data = trading_data[3]
-        area5_data = trading_data[4]
-        area6_data = trading_data[5]
-        area7_data = trading_data[6]
-        area8_data = trading_data[7]
-        area9_data = trading_data[8]
-        area10_data = trading_data[9]
-        area11_data = trading_data[10]
-        area12_data = trading_data[11]
-        area13_data = trading_data[12]
-        area14_data = trading_data[13]
-        area15_data = trading_data[14]
-    except:
-        print('Error parsing trading data')
-        return
-        
-    area1 = f'1 {emojis.fish} ⇄ {emojis.log} {area1_data[1]}\n'\
-            f'{emojis.blank}' 
-    
-    area2 = area1
-    
-    area3 = f'1 {emojis.fish} ⇄ {emojis.log} {area3_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area3_data[2]}\n'\
-            f'{emojis.blank}'
-            
-    area4 = f'1 {emojis.fish} ⇄ {emojis.log} {area4_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area4_data[2]}\n'\
-            f'{emojis.blank}'
-    
-    area5 = f'1 {emojis.fish} ⇄ {emojis.log} {area5_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area5_data[2]}\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} {area5_data[3]}\n'\
-            f'{emojis.blank}'
-            
-    area6 = f'1 {emojis.fish} ⇄ {emojis.log} {area6_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area6_data[2]}\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} {area6_data[3]}\n'\
-            f'{emojis.blank}'
-    
-    area7 = area6
-            
-    area8 = f'1 {emojis.fish} ⇄ {emojis.log} {area8_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area8_data[2]}\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} {area8_data[3]}\n'\
-            f'{emojis.blank}'
-    
-    area9 = f'1 {emojis.fish} ⇄ {emojis.log} {area9_data[1]}\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} {area9_data[2]}\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} {area9_data[3]}\n'\
-            f'{emojis.blank}'
-            
-    area10 = f'1 {emojis.fish} ⇄ {emojis.log} {area10_data[1]}\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} {area10_data[2]}\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} {area10_data[3]}\n'\
-             f'{emojis.blank}'
-             
-    area11 = f'1 {emojis.fish} ⇄ {emojis.log} {area11_data[1]}\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} {area11_data[2]}\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} {area11_data[3]}\n'\
-             f'{emojis.blank}'
-
-    area12 = f'1 {emojis.fish} ⇄ {emojis.log} {area12_data[1]}\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} {area12_data[2]}\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} {area12_data[3]}\n'\
-             f'{emojis.blank}'
-
-    areas = [area1,area2,area3,area4,area5,area6,area7,area8,area9,area10,area11,area12,]
+async def traderates(traderate_data):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'TRADE RATES OF ALL AREAS',
+        title = f'TRADE RATES',
         description = f'The trades available to you depend on your **highest unlocked** area.'
     )    
     embed.set_footer(text=f'Tip: Use "trades" to see the trades you should do in each area.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
-    for index, area in enumerate(areas, start=1):
-        if index < 12:
-            embed.add_field(name=f'AREA {index}', value=area, inline=True)
-        else:
-            embed.add_field(name=f'AREA {index}+', value=area, inline=True)
+    area_limit = 0
+    for area_x in traderate_data:
+        area_limit = area_limit + 1
+        if area_limit < 13:
+            area_value = f'1 {emojis.fish} ⇄ {emojis.log} {area_x[1]}'
+            if not area_x[2] == 0:
+                area_value = f'{area_value}\n1 {emojis.apple} ⇄ {emojis.log} {area_x[2]}'
+            if not area_x[3] == 0:
+                area_value = f'{area_value}\n1 {emojis.ruby} ⇄ {emojis.log} {area_x[3]}'
+            if area_limit == 12:
+                embed.add_field(name=f'AREA {area_x[0]}+', value=area_value, inline=True)
+            else:
+                embed.add_field(name=f'AREA {area_x[0]}', value=area_value, inline=True)
             
     return (thumbnail, embed)

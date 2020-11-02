@@ -109,25 +109,25 @@ async def get_mats_data(user_tt):
         
     return mats_data
 
-# Get trading data
-async def get_trading_data(area):
+# Get trade rate data
+async def get_traderate_data(area):
     
     cur=erg_db.cursor()
     
     if area == 'all':
         cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
+        record = cur.fetchall()
     else:
         cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (area,))
-    
-    record = cur.fetchall()
+        record = cur.fetchone()
     
     if record:
-        trading_data = record
+        traderate_data = record
         print(record)
     else:
-        print('Error while getting area data.')
+        print('Error while getting trade rate data.')
         
-    return trading_data
+    return traderate_data
 
 # Get random tip
 async def get_tip():
@@ -405,12 +405,13 @@ async def area(ctx, *args):
                     area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
                     area_data = await get_area_data(int(area_no))
                     user_settings = await get_settings(bot, ctx)
+                    traderate_data = await get_traderate_data(area_no)
                     user_settings_override = (25, user_settings[1],'override',)
                     if int(area_no) in (3,5):
                         mats_data = await get_mats_data(user_settings_override[0])
                     else:
                         mats_data = ''
-                    area_embed = await areas.area(area_data, mats_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                    area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings_override, ctx.author.name, ctx.prefix)   
                     await ctx.send(file=area_embed[0], embed=area_embed[1])   
             except:
                 return
@@ -419,9 +420,10 @@ async def area(ctx, *args):
                 if 1 <= int(args[0]) <= 15:
                     area_data = await get_area_data(int(args[0]))
                     user_settings = await get_settings(bot, ctx)
+                    traderate_data = await get_traderate_data(area_no)
                     if int(area_no) in (3,5):
                         mats_data = await get_mats_data(user_settings[0])
-                    area_embed = await areas.area(area_data, mats_data, user_settings, ctx.author.name, ctx.prefix)
+                    area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings, ctx.author.name, ctx.prefix)
                     await ctx.send(file=area_embed[0], embed=area_embed[1])
             except:
                 try:
@@ -431,12 +433,13 @@ async def area(ctx, *args):
                         area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
                         area_data = await get_area_data(int(area_no))
                         user_settings = await get_settings(bot, ctx)
+                        traderate_data = await get_traderate_data(area_no)
                         user_settings_override = (25, user_settings[1],'override',)
                         if int(area_no) in (3,5):
                             mats_data = await get_mats_data(user_settings_override[0])
                         else:
                             mats_data = ''
-                        area_embed = await areas.area(area_data, mats_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                        area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings_override, ctx.author.name, ctx.prefix)   
                         await ctx.send(file=area_embed[0], embed=area_embed[1])   
                 except:
                     return
@@ -445,11 +448,12 @@ async def area(ctx, *args):
             area_no = invoked.replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
             area_data = await get_area_data(int(area_no))
             user_settings = await get_settings(bot, ctx)
+            traderate_data = await get_traderate_data(area_no)
             if int(area_no) in (3,5):
                 mats_data = await get_mats_data(user_settings[0])
             else:
                 mats_data = ''
-            area_embed = await areas.area(area_data, mats_data, user_settings, ctx.author.name, ctx.prefix)
+            area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings, ctx.author.name, ctx.prefix)
             await ctx.send(file=area_embed[0], embed=area_embed[1])
         except:
             if area_no == '':
@@ -471,9 +475,9 @@ async def trades(ctx):
 @bot.command(aliases=('trr',))
 async def traderates(ctx):
     
-    trading_data = await get_trading_data('all')
+    traderate_data = await get_traderate_data('all')
     
-    embed = await trading.traderates(trading_data)
+    embed = await trading.traderates(traderate_data)
     
     await ctx.send(file=embed[0], embed=embed[1])
 

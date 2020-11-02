@@ -7,7 +7,7 @@ import dungeons
 import trading
 
 # Create area embed
-async def area(area_data, mats_data, user_settings, user_name, prefix):
+async def area(area_data, mats_data, traderate_data, user_settings, user_name, prefix):
     
     area_no = area_data[0]
     work_cmd_poor = area_data[1]
@@ -195,7 +195,10 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
         materials = f'{emojis.bp} {mats_fish} {emojis.fish} normie fish'
 
     # Trades
-    trades = await trading.get_area_trades(area_no)
+    trades = await trading.design_field_trades(area_no)
+    
+    # Trade rates
+    traderates = await trading.design_field_traderate(traderate_data)
             
     # Embed
     embed = discord.Embed(
@@ -220,5 +223,6 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
         embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
     if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
         embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
+    embed.add_field(name='TRADE RATES', value=traderates, inline=False)
     
     return (thumbnail, embed)
