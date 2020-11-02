@@ -104,6 +104,7 @@ lifepotion = '<:erg_lifepotion:770327166956601425>'
 ticketlottery = '<:erg_lotteryticket:770327167044419624>'
 timetravel = ':cyclone:'
 blank = '<:blank:771777870498234378>'
+ascension = ':star2:'
 
 # Monsters
 mobkillerrobot = '<:erg_killerrobot:770341042196447292>'

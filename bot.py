@@ -9,6 +9,7 @@ import global_data
 import emojis
 import areas
 import trading
+import crafting
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -250,9 +251,27 @@ async def prefix(ctx):
 async def settings(ctx):
     
     current_settings = await get_settings(bot, ctx)
+    
     if current_settings:
-        await ctx.send(f'**{ctx.author.name}**, your progress is currently set to **TT {current_settings[0]}**, **{current_settings[1]}**.\n'\
-                       f'Use `setprogress` if you want to change your settings.')
+        username = ctx.author.name
+        ascension = current_settings[1]
+        settings = f'{emojis.bp} Current run: **TT {current_settings[0]}**\n'\
+                   f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
+        
+        embed = discord.Embed(
+        color = global_data.color,
+        #title = f'EPIC RPG GUIDE',
+        #description = f'Use `setprogress` to change your settings.'
+        )    
+        embed.set_footer(text='Use "setprogress" to change your settings.')
+        #thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+        embed.set_thumbnail(url='attachment://thumbnail.png')
+        
+        embed.add_field(name=f'{username.upper()}\'S SETTINGS', value=settings, inline=False)
+        
+        
+        
+        await ctx.send(embed=embed)
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp',))
@@ -262,7 +281,7 @@ async def setprogress(ctx):
         return m.author == ctx.author
     
     try:
-        await ctx.send(f'**{ctx.author.name}**, what {emojis.timetravel} **TT** are you currently in? `[0-999]`')
+        await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]`')
         answer_tt = await bot.wait_for('message', check=check, timeout = 30)
         try:            
             if 0 <= int(answer_tt.content) <= 999:
@@ -289,7 +308,7 @@ async def setprogress(ctx):
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
 # Long guide
-@bot.command(name='guide',aliases=('help',))
+@bot.command(name='guide',aliases=('help','g'))
 async def guide_long(ctx, *args):
     
     embed = discord.Embed(
@@ -297,16 +316,17 @@ async def guide_long(ctx, *args):
         title = 'EPIC RPG GUIDE',
         description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.'
     )    
-    embed.set_footer(text='Tip: Use "g" to see a more compact guide.')
+    embed.set_footer(text='Tip: You can quickly open the guide with "g"')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides', inline=False)
+    embed.add_field(name='CRAFTING', value=f'{emojis.bp} `enchants` / `e` : All enchants', inline=False)
     embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` / `tr` : All area trades\n{emojis.bp} `traderates` / `trr` : All area trade rates', inline=False)
-    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Shows your settings\n{emojis.bp} `setprogress` / `sp` : Sets your settings', inline=False)
-    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : Shows a random tip\n{emojis.bp} `shortcuts` / `sc` : Shows all shortcuts', inline=False)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : See your settings\n{emojis.bp} `setprogress` / `sp` : Change your settings', inline=False)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : See a random tip', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
-
+"""
 # Short guide
 @bot.command(name='g')
 async def guide_short(ctx, *args):
@@ -344,7 +364,7 @@ async def shortcuts(ctx, *args):
     embed.add_field(name='MISC', value=f'{emojis.bp} `shortcuts` : `sc`', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
-
+"""
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
 dungeon_aliases = ['dungeon',]
 for x in range(1,16):
@@ -478,6 +498,14 @@ async def traderates(ctx):
     traderate_data = await get_traderate_data('all')
     
     embed = await trading.traderates(traderate_data)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "enchants"
+@bot.command(aliases=('enchant','e',))
+async def enchants(ctx):
+    
+    embed = await crafting.enchants()
     
     await ctx.send(file=embed[0], embed=embed[1])
 
