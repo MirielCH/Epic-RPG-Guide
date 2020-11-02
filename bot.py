@@ -512,23 +512,25 @@ async def enchants(ctx):
 @bot.command(aliases=('drop',))
 async def drops(ctx):
 
+    items = f'{emojis.bp} {emojis.wolfskin} **Wolf Skin** - {emojis.mobwolf} Wolf in areas 1~2\n'\
+            f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas 3~4\n'\
+            f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas 5~6\n'\
+            f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas 7~8\n'\
+            f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas 9~10\n'\
+            f'{emojis.bp} {emojis.dragonscale} **Dragon Scale** - {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon} Scaled Dragon in areas 11~14'
+
     embed = discord.Embed(
         color = global_data.color,
         title = f'MONSTER DROPS',
-        description = f'These items drop when using `hunt` or `hunt together`.\n'\
-                      f'All items have a 2% base drop chance. This drop chance increases by ~25% each time you time travel.\n'\
-                      f'Note: You can also get these items from lootboxes.'
+        description = f'These items drop when using `hunt` or `hunt together` or when opening lootboxes.'
     )    
     embed.set_footer(text=global_data.footer)
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
-    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Area: **1~2**\n{emojis.bp} Source: {emojis.mobwolf} **Wolf**', inline=False)
-    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Area: **3~4**\n{emojis.bp} Source: {emojis.mobzombie} **Zombie**', inline=False)
-    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Area: **5~6**\n{emojis.bp} Source: {emojis.mobunicorn} **Unicorn**', inline=False)
-    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Area: **7~8**\n{emojis.bp} Source: {emojis.mobmermaid} **Mermaid**', inline=False)
-    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Area: **9~10**\n{emojis.bp} Source: {emojis.mobkillerrobot} **Killer Robot**', inline=False)
-    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Area: **11~14**\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon} **Scaled Dragons**', inline=False)
+    embed.add_field(name=f'SOURCE', value=items, inline=False)
+    embed.add_field(name=f'DROP CHANCE', value=f'{emojis.bp} All items have a 2% base drop chance\n{emojis.bp} The drop chance increases by ~25% every time you time travel', inline=False)
+    
             
     await ctx.send(file=thumbnail, embed=embed)
 
