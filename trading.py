@@ -75,56 +75,76 @@ async def trades(user_settings):
     return (thumbnail, embed)
 
 # Trade rates of all areas
-async def traderates():
+async def traderates(trading_data):
     
-    area1 = f'1 {emojis.fish} ⇄ {emojis.log} 1\n'\
+    try:
+        area1_data = trading_data[0]
+        area2_data = trading_data[1]
+        area3_data = trading_data[2]
+        area4_data = trading_data[3]
+        area5_data = trading_data[4]
+        area6_data = trading_data[5]
+        area7_data = trading_data[6]
+        area8_data = trading_data[7]
+        area9_data = trading_data[8]
+        area10_data = trading_data[9]
+        area11_data = trading_data[10]
+        area12_data = trading_data[11]
+        area13_data = trading_data[12]
+        area14_data = trading_data[13]
+        area15_data = trading_data[14]
+    except:
+        print('Error parsing trading data')
+        return
+        
+    area1 = f'1 {emojis.fish} ⇄ {emojis.log} {area1_data[1]}\n'\
             f'{emojis.blank}' 
     
     area2 = area1
     
-    area3 = f'1 {emojis.fish} ⇄ {emojis.log} 1\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 3\n'\
+    area3 = f'1 {emojis.fish} ⇄ {emojis.log} {area3_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area3_data[2]}\n'\
             f'{emojis.blank}'
             
-    area4 = f'1 {emojis.fish} ⇄ {emojis.log} 2\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 4\n'\
+    area4 = f'1 {emojis.fish} ⇄ {emojis.log} {area4_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area4_data[2]}\n'\
             f'{emojis.blank}'
     
-    area5 = f'1 {emojis.fish} ⇄ {emojis.log} 2\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 4\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} 450\n'\
+    area5 = f'1 {emojis.fish} ⇄ {emojis.log} {area5_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area5_data[2]}\n'\
+            f'1 {emojis.ruby} ⇄ {emojis.log} {area5_data[3]}\n'\
             f'{emojis.blank}'
             
-    area6 = f'1 {emojis.fish} ⇄ {emojis.log} 3\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 15\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} 675\n'\
+    area6 = f'1 {emojis.fish} ⇄ {emojis.log} {area6_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area6_data[2]}\n'\
+            f'1 {emojis.ruby} ⇄ {emojis.log} {area6_data[3]}\n'\
             f'{emojis.blank}'
     
     area7 = area6
             
-    area8 = f'1 {emojis.fish} ⇄ {emojis.log} 3\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 8\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} 675\n'\
+    area8 = f'1 {emojis.fish} ⇄ {emojis.log} {area8_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area8_data[2]}\n'\
+            f'1 {emojis.ruby} ⇄ {emojis.log} {area8_data[3]}\n'\
             f'{emojis.blank}'
     
-    area9 = f'1 {emojis.fish} ⇄ {emojis.log} 2\n'\
-            f'1 {emojis.apple} ⇄ {emojis.log} 12\n'\
-            f'1 {emojis.ruby} ⇄ {emojis.log} 850\n'\
+    area9 = f'1 {emojis.fish} ⇄ {emojis.log} {area9_data[1]}\n'\
+            f'1 {emojis.apple} ⇄ {emojis.log} {area9_data[2]}\n'\
+            f'1 {emojis.ruby} ⇄ {emojis.log} {area9_data[3]}\n'\
             f'{emojis.blank}'
             
-    area10 = f'1 {emojis.fish} ⇄ {emojis.log} 3\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} 12\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} 500\n'\
+    area10 = f'1 {emojis.fish} ⇄ {emojis.log} {area10_data[1]}\n'\
+             f'1 {emojis.apple} ⇄ {emojis.log} {area10_data[2]}\n'\
+             f'1 {emojis.ruby} ⇄ {emojis.log} {area10_data[3]}\n'\
              f'{emojis.blank}'
              
-    area11 = f'1 {emojis.fish} ⇄ {emojis.log} 3\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} 8\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} 500\n'\
+    area11 = f'1 {emojis.fish} ⇄ {emojis.log} {area11_data[1]}\n'\
+             f'1 {emojis.apple} ⇄ {emojis.log} {area11_data[2]}\n'\
+             f'1 {emojis.ruby} ⇄ {emojis.log} {area11_data[3]}\n'\
              f'{emojis.blank}'
 
-    area12 = f'1 {emojis.fish} ⇄ {emojis.log} 3\n'\
-             f'1 {emojis.apple} ⇄ {emojis.log} 8\n'\
-             f'1 {emojis.ruby} ⇄ {emojis.log} 350\n'\
+    area12 = f'1 {emojis.fish} ⇄ {emojis.log} {area12_data[1]}\n'\
+             f'1 {emojis.apple} ⇄ {emojis.log} {area12_data[2]}\n'\
+             f'1 {emojis.ruby} ⇄ {emojis.log} {area12_data[3]}\n'\
              f'{emojis.blank}'
 
     areas = [area1,area2,area3,area4,area5,area6,area7,area8,area9,area10,area11,area12,]

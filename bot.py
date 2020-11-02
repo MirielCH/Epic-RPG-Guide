@@ -83,8 +83,9 @@ async def get_dungeon_data(dungeon):
 async def get_area_data(area):
     
     cur=erg_db.cursor()
-    select_columns = 'areas.*, g1.emoji, g2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
-    cur.execute(f'SELECT {select_columns} FROM areas INNER JOIN dungeons d ON d.dungeon = areas.dungeon INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE areas.area=?', (area,))
+    select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.rich_threshold_m, a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.dungeon, g1.emoji, '\
+                     'g2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
+    cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE a.area=?', (area,))
     record = cur.fetchone()
     
     if record:
@@ -107,6 +108,26 @@ async def get_mats_data(user_tt):
         print('Error while getting materials data.')
         
     return mats_data
+
+# Get trading data
+async def get_trading_data(area):
+    
+    cur=erg_db.cursor()
+    
+    if area == 'all':
+        cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
+    else:
+        cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (area,))
+    
+    record = cur.fetchall()
+    
+    if record:
+        trading_data = record
+        print(record)
+    else:
+        print('Error while getting area data.')
+        
+    return trading_data
 
 # Get random tip
 async def get_tip():
@@ -446,11 +467,13 @@ async def trades(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
 
-# Command "trades" - Returns recommended trades of all areas
+# Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr',))
 async def traderates(ctx):
-        
-    embed = await trading.traderates()
+    
+    trading_data = await get_trading_data('all')
+    
+    embed = await trading.traderates(trading_data)
     
     await ctx.send(file=embed[0], embed=embed[1])
 

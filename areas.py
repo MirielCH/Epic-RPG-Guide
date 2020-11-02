@@ -36,6 +36,7 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
     player_armor_enchant = area_data[24]
     user_tt = user_settings[0]
     user_asc = user_settings[1]
+
     if not mats_data == '':
         mats_fish = mats_data[1] 
         mats_apple = mats_data[2]
@@ -138,6 +139,12 @@ async def area(area_data, mats_data, user_settings, user_name, prefix):
         quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
     
     # New commands
+    
+    if ((area_no == 4) and (user_tt > 0)) or ((area_no == 11) and (user_tt > 0)) or ((area_no == 12) and (user_tt > 1)):
+        new_cmd_1 = ''
+    elif ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 14)):
+        new_cmd_1 = 'time travel'
+        
     new_cmd = ''
     all_new_cmd = [new_cmd_1, new_cmd_2, new_cmd_3,]
     all_new_cmd = filter(lambda entry: entry != '', all_new_cmd)
