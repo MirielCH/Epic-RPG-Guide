@@ -10,6 +10,7 @@ import emojis
 import areas
 import trading
 import crafting
+import misc
 import logging
 import logging.handlers
 from dotenv import load_dotenv
@@ -120,7 +121,7 @@ async def get_area_data(ctx, area):
 async def get_mats_data(ctx, user_tt):
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT * FROM tt_mats WHERE tt=?', (user_tt,))
+        cur.execute(f'SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
         
         if record:
@@ -131,6 +132,22 @@ async def get_mats_data(ctx, user_tt):
         await log_error(ctx, error)
         
     return mats_data
+
+# Get tt unlocks
+async def get_tt_unlocks(ctx, user_tt):
+    try:
+        cur=erg_db.cursor()
+        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title FROM timetravel t WHERE tt=?', (user_tt,))
+        record = cur.fetchone()
+        
+        if record:
+            tt_unlock_data = record
+        else:
+            await log_error(ctx, 'No tt_unlock data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return tt_unlock_data
 
 # Get trade rate data
 async def get_traderate_data(ctx, area):
@@ -246,13 +263,13 @@ bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insens
 async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'\"guide\"'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'$guide'))
 
 # Error handling
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        return
+        await ctx.send(f'Uhm, what.')
     elif isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Servers` to use this command.')
     elif isinstance(error, commands.MissingRequiredArgument):
@@ -350,11 +367,11 @@ async def guide_long(ctx, *args):
     embed.set_footer(text=f'Tip: You can quickly open this guide with \'g\'')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides', inline=False)
+    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides\n{emojis.bp} `timetravel` / `tt` : Time travel guide', inline=False)
     embed.add_field(name='CRAFTING', value=f'{emojis.bp} `enchants` / `e` : All enchants\n{emojis.bp} `drops` : Monster drops', inline=False)
     embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` / `tr` : All area trades\n{emojis.bp} `traderates` / `trr` : All area trade rates', inline=False)
-    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : See your settings\n{emojis.bp} `setprogress` / `sp` : Change your settings', inline=False)
-    embed.add_field(name='MISC', value=f'{emojis.bp} `tip` : See a random tip', inline=False)
+    embed.add_field(name='MISC', value=f'{emojis.bp} `duel` : Duelling weapons\n{emojis.bp} `tip` : A handy dandy random tip', inline=False)
+    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Check your settings\n{emojis.bp} `setprogress` / `sp` : Change your settings', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
 
@@ -431,7 +448,7 @@ async def area(ctx, *args):
         else:
             try:
                 if 1 <= int(args[0]) <= 15:
-                    area_data = await get_area_data(ctx. int(args[0]))
+                    area_data = await get_area_data(ctx, int(args[0]))
                     user_settings = await get_settings(bot, ctx)
                     traderate_data = await get_traderate_data(ctx, area_no)
                     if int(area_no) in (3,5):
@@ -506,32 +523,72 @@ async def enchants(ctx):
 @bot.command(aliases=('drop',))
 async def drops(ctx):
 
-    items = f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'\
-            f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'\
-            f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas **5~6**\n'\
-            f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas **7~8**\n'\
-            f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'\
-            f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000 coins'
-
-    embed = discord.Embed(
-        color = global_data.color,
-        title = f'MONSTER DROPS',
-        description = f'These items drop when using `hunt` or `hunt together` or when opening lootboxes.\n{emojis.blank}'
-    )    
-    embed.set_footer(text=global_data.footer)
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
-
-    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Area: 1~2\n{emojis.bp} Source: {emojis.mobwolf}\n{emojis.bp} Value: 500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Area: 3~4\n{emojis.bp} Source: {emojis.mobzombie}\n{emojis.bp} Value: 2\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Area: 5~6\n{emojis.bp} Source: {emojis.mobunicorn}\n{emojis.bp} Value: 7\'500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Area: 7~8\n{emojis.bp} Source: {emojis.mobmermaid}\n{emojis.bp} Value: 30\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Area: 9~10\n{emojis.bp} Source: {emojis.mobkillerrobot}\n{emojis.bp} Value: 100\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'DROP CHANCE', value=f'{emojis.bp} All items have a 2% base drop chance\n{emojis.bp} The drop chance increases by ~25% every time you time travel\n{emojis.blank}', inline=False)
+    embed = await misc.drops()
     
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "duels" - Returns all duelling weapons
+@bot.command(aliases=('duel',))
+async def duels(ctx):
+
+    embed = await misc.duels()
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "ttX" - Specific tt information
+tt_aliases = ['timetravel',]
+for x in range(1,1000):
+    tt_aliases.append(f'tt{x}')    
+    tt_aliases.append(f'timetravel{x}') 
+
+@bot.command(name='tt',aliases=(tt_aliases))
+async def timetravel_specific(ctx, *args):
+    
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    
+    if args:
+        if len(args) > 1:
+            return        
+        else:
+            try:
+                if 1 <= int(args[0]) <= 25:
+                    tt_data = await get_tt_unlocks(ctx, int(args[0]))
+                else:
+                    tt_data = (int(args[0]), 0, 0, '', '')
+                    
+                tt_embed = await misc.timetravel_specific(tt_data)
+                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+            except:                    
+                return
+    else:
+        try:
+            tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
             
-    await ctx.send(file=thumbnail, embed=embed)
+            if tt_no == '':
+                tt_embed = await misc.timetravel()
+                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+            else:
+                if 1 <= int(tt_no) <= 25:
+                    tt_data = await get_tt_unlocks(ctx, int(tt_no))
+                else:
+                    tt_data = (int(tt_no), 0, 0, '', '')
+                    
+                tt_embed = await misc.timetravel_specific(tt_data)
+                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+        except:
+            return        
+
+# Command "mytt" - Information about user's next TT
+@bot.command(aliases=('nexttt',))
+async def mytt(ctx):
+    
+    user_settings = await get_settings(bot, ctx)
+    next_tt = int(user_settings[0])+1
+    
+    tt_data = await get_tt_unlocks(ctx, int(next_tt))
+    tt_embed = await misc.timetravel_specific(tt_data, True)
+    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
@@ -548,6 +605,12 @@ async def tip(ctx):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
     await ctx.send(file=thumbnail, embed=embed)
+    
+# Command "invite"
+@bot.command(aliases=('inv',))
+async def invite(ctx):
+    
+    await ctx.send(f'I\'m flattered by your interest, but this bot is still in development and not yet publicly available.')
     
 # Command "Panda" - because Panda
 @bot.command()

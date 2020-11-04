@@ -91,7 +91,7 @@ async def dungeon(dungeon_data):
     
     if not boss_life == 0:
         try:
-            boss_life = "{:,}".format(dungeon_data[5]).replace(',','\'')
+            boss_life = f'{dungeon_data[5]:,}'.replace(',','\'')
         except:
             boss_life = int(dungeon_data[5])
     else:
@@ -99,7 +99,7 @@ async def dungeon(dungeon_data):
     
     if not key_price == 0:
         try:
-            key_price = "{:,}".format(dungeon_data[8]).replace(',','\'')
+            key_price = f'{dungeon_data[8]:,}'.replace(',','\'')
         except:
             key_price = int(dungeon_data[8])
         key_price = f'{key_price} coins'

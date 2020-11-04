@@ -43,13 +43,13 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
         mats_apple = mats_data[2]
         if not mats_fish == 0:
             try:
-                mats_fish = "{:,}".format(mats_fish).replace(',','\'')
+                mats_fish = f'{mats_fish:,}'.replace(',','\'')
             except:
                 mats_fish = int(mats_fish)
             
         if not mats_apple == 0:
             try:
-                mats_apple = "{:,}".format(mats_apple).replace(',','\'')
+                mats_apple = f'{mats_apple:,}'.replace(',','\'')
             except:
                 mats_apple = int(mats_apple)
 
@@ -225,7 +225,7 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
         embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
     embed.add_field(name='TRADE RATES', value=traderates, inline=False)
-    embed.add_field(name=f'NOTE', value=f'{emojis.bp} This is the guide for **TT {user_tt}**, **{user_asc}**.\n{emojis.bp} If this is wrong, run `{prefix}setprogress`.', inline=False)
+    embed.add_field(name=f'NOTE', value=f'{emojis.bp} This is the guide for **TT {user_tt}**, **{user_asc}**.\n{emojis.bp} If this is wrong, run `setprogress`.', inline=False)
     
     
     
