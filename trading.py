@@ -66,7 +66,7 @@ async def trades(user_settings):
         title = f'AREA TRADES',
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
     )    
-    embed.set_footer(text=f'Tip: Use "traderates" to see the trade rates of all areas.')
+    embed.set_footer(text=f'Tip: Use \'trr\' to see the trade rates of all areas.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
@@ -76,10 +76,10 @@ async def trades(user_settings):
                 if user_settings[0]==0:
                     embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)    
                 else:
-                    field_value = await get_area_trades(x)
+                    field_value = await design_field_trades(x)
                     embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             else:
-                field_value = await get_area_trades(x)
+                field_value = await design_field_trades(x)
                 embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             
     
@@ -91,9 +91,9 @@ async def traderates(traderate_data):
     embed = discord.Embed(
         color = global_data.color,
         title = f'TRADE RATES',
-        description = f'The trades available to you depend on your **highest unlocked** area.'
+        description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.blank}'
     )    
-    embed.set_footer(text=f'Tip: Use "trades" to see the trades you should do in each area.')
+    embed.set_footer(text=f'Tip: Use \'tr\' to see the trades you should do in each area.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
@@ -106,9 +106,10 @@ async def traderates(traderate_data):
                 area_value = f'{area_value}\n1 {emojis.apple} ⇄ {emojis.log} {area_x[2]}'
             if not area_x[3] == 0:
                 area_value = f'{area_value}\n1 {emojis.ruby} ⇄ {emojis.log} {area_x[3]}'
+            
             if area_limit == 12:
-                embed.add_field(name=f'AREA {area_x[0]}+', value=area_value, inline=True)
+                embed.add_field(name=f'AREA {area_x[0]}+', value=f'{area_value}\n{emojis.blank}', inline=True)
             else:
-                embed.add_field(name=f'AREA {area_x[0]}', value=area_value, inline=True)
+                embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.blank}', inline=True)
             
     return (thumbnail, embed)

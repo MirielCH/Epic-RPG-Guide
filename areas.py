@@ -21,19 +21,20 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     upgrade_sword_enchant = area_data[9]
     upgrade_armor = area_data[10]
     upgrade_armor_enchant = area_data[11]
-    dungeon_no = area_data[12]
-    player_sword_emoji = area_data[13]
-    player_armor_emoji = area_data[14]
-    player_at = area_data[15]
-    player_def = area_data[16]
-    player_carry_def = area_data[17]
-    player_life = area_data[18]
-    life_boost = area_data[19]
-    player_level = area_data[20]
-    player_sword = area_data[21]
-    player_sword_enchant = area_data[22]
-    player_armor = area_data[23]
-    player_armor_enchant = area_data[24]
+    area_description = area_data[12]
+    dungeon_no = area_data[13]
+    player_sword_emoji = area_data[14]
+    player_armor_emoji = area_data[15]
+    player_at = area_data[16]
+    player_def = area_data[17]
+    player_carry_def = area_data[18]
+    player_life = area_data[19]
+    life_boost = area_data[20]
+    player_level = area_data[21]
+    player_sword = area_data[22]
+    player_sword_enchant = area_data[23]
+    player_armor = area_data[24]
+    player_armor_enchant = area_data[25]
     user_tt = user_settings[0]
     user_asc = user_settings[1]
 
@@ -67,21 +68,21 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
         
     # Footer
     if time_traveller_prepare == False:
-        footer = f'Tip: Use "dungeon {dungeon_no}" for details about the next dungeon'
+        footer = f'Tip: Use \'d{dungeon_no}\' for details about the next dungeon.'
     else:
-        footer = f'Tip: To see the full page use "area {area_no} full"'
+        footer = f'Tip: To see the full page use \'a{area_no} full\'.'
         
     # Description
     if len(user_settings) > 2:
         if user_settings[2] == 'override':
             description = f'This is the guide for **TT {user_tt}**, **{user_asc}**.\n**You are seeing TT 25 because you used the parameter** `full`.'
     else:
-        description = f'This is the guide for **TT {user_tt}**, **{user_asc}**.\nIf this is wrong, run `{prefix}setprogress`.'
+        description = f'{area_description}'
     
     # Area locked
     if time_traveller_area_locked == True:
-        area_locked = f'{emojis.bp} **You can not reach this area in your current TT**\n{emojis.bp} The following information applies when ignoring TT'
-        footer = f'Tip: See "timetravel" for details about time travelling'
+        area_locked = f'{emojis.bp} **You can not reach this area in your current TT**'
+        footer = f'Tip: See \'tt\' for details about time travelling'
     else:
         area_locked = ''
         
@@ -204,7 +205,7 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     embed = discord.Embed(
         color = global_data.color,
         title = f'AREA {area_no}',
-        description = description    
+        description = description  
             
     )    
     embed.set_footer(text=footer)
@@ -224,5 +225,9 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
         embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
     embed.add_field(name='TRADE RATES', value=traderates, inline=False)
+    embed.add_field(name=f'NOTE', value=f'{emojis.bp} This is the guide for **TT {user_tt}**, **{user_asc}**.\n{emojis.bp} If this is wrong, run `{prefix}setprogress`.', inline=False)
+    
+    
+    
     
     return (thumbnail, embed)

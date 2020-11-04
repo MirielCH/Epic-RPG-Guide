@@ -14,4 +14,7 @@ default_prefix = '$'
 color = 8983807
 
 # Set general embed text
-footer = f'Use \"guide\" or \"g\" to see all available guides.'
+footer = f'Use \'guide\' or \'g\' to see all available guides.'
+
+# Error log file
+logfile = './logs/discord.log'

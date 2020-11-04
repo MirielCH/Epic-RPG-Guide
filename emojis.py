@@ -134,6 +134,13 @@ petdragon = '<:erg_dragon:770327200372228097>'
 petgoldenbunny = '<:erg_goldenbunny:770327200674349056>'
 pethamster = '<:erg_hamster:770327200834388008>'
 
+# Professions
+prworker = logepic
+prcrafter = ':tools:'
+prlootboxer = lbedgy
+prmerchant = ':scales:'
+prenchanter = ':sparkles:'
+
 # Stats
 statat = '<:erg_sword_at:770327166952538153>'
 statdef = '<:erg_shield_def:770327167111266365>'
