@@ -10,6 +10,7 @@ import emojis
 import areas
 import trading
 import crafting
+import professions
 import misc
 import logging
 import logging.handlers
@@ -137,7 +138,7 @@ async def get_mats_data(ctx, user_tt):
 async def get_tt_unlocks(ctx, user_tt):
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
+        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
         
         if record:
@@ -609,7 +610,7 @@ async def timetravel_specific(ctx, *args):
                 if 1 <= int(tt_no) <= 25:
                     tt_data = await get_tt_unlocks(ctx, int(tt_no))
                 else:
-                    tt_data = (int(tt_no), 0, 0, '', '')
+                    tt_data = (int(tt_no), 0, 0, '', '', '')
                     
                 tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
@@ -640,6 +641,22 @@ async def mytt(ctx):
     tt_data = await get_tt_unlocks(ctx, int(next_tt))
     tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+    
+# Command "professions" - Overview about professions
+@bot.command(aliases=('pr','professions',))
+async def profession(ctx):
+    
+    embed = await professions.professions_overview(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "prlevel" - How to level up professions
+@bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionslevelling','professionlevelling','prlevels','prlevelling',))
+async def professionlevel(ctx):
+    
+    embed = await professions.professions_levelling(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))

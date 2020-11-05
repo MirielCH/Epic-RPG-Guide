@@ -3,9 +3,6 @@
 import discord
 import global_data
 import emojis
-import locale
-
-locale.setlocale(locale.LC_ALL, 'German')
 
 # Monster drops
 async def drops(prefix):
@@ -87,7 +84,7 @@ async def timetravel(prefix):
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel for TT 25+', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
     return (thumbnail, embed)
 
@@ -120,7 +117,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
         unlocks = f'{emojis.bp} Unlocks **{unlock_misc}**\n'
     
     if not unlock_dungeon == 0:
-        unlocks = f'{emojis.bp} Unlocks **dungeon {unlock_dungeon}**\n'
+        unlocks = f'{unlocks}{emojis.bp} Unlocks **dungeon {unlock_dungeon}**\n'
     
     if not unlock_area == 0:
         unlocks = f'{unlocks}{emojis.bp} Unlocks **area {unlock_area}**\n'
@@ -139,7 +136,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 
     preparations = f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
                    f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
-                   f'{emojis.bp} Level up professions if not done (see `{prefix}pr`)\n'\
+                   f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
                    f'{emojis.bp} Sell your leftover materials (if any)\n'\
                    f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                    f'{emojis.bp} Don\'t forget to sell your armor and sword!'
@@ -156,10 +153,11 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=preparations, inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
     return (thumbnail, embed)
 
-# Time travel
+# Super time travel
 async def supertimetravel(prefix):
 
     starter_bonuses =   f'{emojis.bp} {emojis.statlife} Start with +25 LIFE (50 score)\n'\
@@ -183,11 +181,12 @@ async def supertimetravel(prefix):
                         f'These bonuses cost score points which are calculated based on your leftover materials and your level.'
                       
     )    
-    embed.set_footer(text=f'Use {prefix}tt to see the general time travel guide')
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'STARTER BONUSES', value=starter_bonuses, inline=False)
     embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare', inline=False)
             
     return (thumbnail, embed)
