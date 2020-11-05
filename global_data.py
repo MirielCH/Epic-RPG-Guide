@@ -13,8 +13,11 @@ default_prefix = '$'
 # Embed color
 color = 8983807
 
-# Set general embed text
-footer = f'Use \'guide\' or \'g\' to see all available guides.'
+# Set default footer
+async def default_footer(prefix):
+    footer = f'Use {prefix}guide or {prefix}g to see all available guides.'
+    
+    return footer
 
 # Error log file
 logfile = './logs/discord.log'

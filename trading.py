@@ -22,26 +22,29 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 7:
         field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
-                      f'{emojis.bp} Dismantle {emojis.apple} to {emojis.log} logs'
+                      f'{emojis.bp} Dismantle {emojis.apple} to {emojis.log} logs\n'\
+                      f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 8:
-        field_value = f'{emojis.bp} Dismantle {emojis.logmega} MEGA logs and below if crafter < 90\n'\
-                      f'{emojis.bp} Dismantle {emojis.loghyper} HYPER logs and below if crafter 90+\n'\
+        field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'\
+                      f'{emojis.bp} If crafter 90+: Dismantle {emojis.loghyper} HYPER logs and below\n'\
                       f'{emojis.bp} Dismantle **all** fish\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 9:
-        field_value = f'{emojis.bp} Dismantle {emojis.logepic} EPIC logs if crafter < 90\n'\
-                      f'{emojis.bp} Dismantle {emojis.logsuper} SUPER logs and below if crafter 90+\n'\
+        field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logepic} EPIC logs\n'\
+                      f'{emojis.bp} If crafter 90+: Dismantle {emojis.logsuper} SUPER logs and below\n'\
                       f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
     elif int(area_no) == 10:
         field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
-                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
+                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
+                      f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 11:
-        field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs'
+        field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
+                      f'{emojis.bp} Ignore logs, fish and fruits'
     else:
         field_value = f'{emojis.bp} N/A'
 
@@ -49,7 +52,7 @@ async def design_field_trades(area_no):
 
 # Create field "trade rates" for area
 async def design_field_traderate(traderate_data):
-    
+        
     field_value = f'{emojis.bp} 1 {emojis.fish} ⇄ {emojis.log} {traderate_data[1]}'
     if not traderate_data[2] == 0:
         field_value = f'{field_value}\n{emojis.bp} 1 {emojis.apple} ⇄ {emojis.log} {traderate_data[2]}'
@@ -59,14 +62,14 @@ async def design_field_traderate(traderate_data):
     return (field_value)
 
 # Trades before leaving areas
-async def trades(user_settings):
+async def trades(user_settings, prefix):
     
     embed = discord.Embed(
         color = 8983807,
         title = f'AREA TRADES',
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
     )    
-    embed.set_footer(text=f'Tip: Use \'trr\' to see the trade rates of all areas.')
+    embed.set_footer(text=f'Tip: Use {prefix}trr to see the trade rates of all areas.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
@@ -86,14 +89,14 @@ async def trades(user_settings):
     return (thumbnail, embed)
 
 # Trade rates of all areas
-async def traderates(traderate_data):
+async def traderates(traderate_data, prefix):
 
     embed = discord.Embed(
         color = global_data.color,
         title = f'TRADE RATES',
         description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.blank}'
     )    
-    embed.set_footer(text=f'Tip: Use \'tr\' to see the trades you should do in each area.')
+    embed.set_footer(text=f'Tip: Use {prefix}tr to see the trades you should do in each area.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     

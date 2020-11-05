@@ -62,7 +62,7 @@ async def get_prefix_all(bot, ctx):
     except sqlite3.Error as error:
         await log_error(ctx, error)
         
-    return commands.when_mentioned_or(* prefix)(bot, ctx)
+    return commands.when_mentioned_or(prefix)(bot, ctx)
 
 # Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
 async def get_prefix(bot, ctx):
@@ -137,7 +137,7 @@ async def get_mats_data(ctx, user_tt):
 async def get_tt_unlocks(ctx, user_tt):
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title FROM timetravel t WHERE tt=?', (user_tt,))
+        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
         
         if record:
@@ -263,14 +263,14 @@ bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insens
 async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'$guide'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f'EPIC RPG'))
 
 # Error handling
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error, CommandNotFound):
-        await ctx.send(f'Uhm, what.')
-    elif isinstance(error, (commands.MissingPermissions)):
+    #if isinstance(error, CommandNotFound):
+        #await ctx.send(f'Uhm, what.')
+    if isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Servers` to use this command.')
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
@@ -284,19 +284,19 @@ async def setprefix(ctx, *new_prefix):
     
     if new_prefix:
         if len(new_prefix)>1:
-            await ctx.send(f'Too many arguments.\nCommand syntax: `setprefix [prefix]`')
+            await ctx.send(f'Too many arguments.\nThe command syntax is `{ctx.prefix}setprefix [prefix]`')
         else:
             await set_prefix(bot, ctx, new_prefix[0])
             await ctx.send(f'Prefix changed to `{await get_prefix(bot, ctx)}`')
     else:
-        await ctx.send(f'Command syntax: `setprefix [prefix]`')
+        await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
 
 # Command "prefix" - Returns current prefix
 @bot.command()
 async def prefix(ctx):
     
     current_prefix = await get_prefix(bot, ctx)
-    await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `setprefix [prefix]`')
+    await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
 
 # Command "settings" - Returns current user progress settings
 @bot.command()
@@ -314,7 +314,7 @@ async def settings(ctx):
         color = global_data.color,
         )    
         
-        embed.set_footer(text=f'Use \'setprogress\' to change your settings.')
+        embed.set_footer(text=f'Use {ctx.prefix}setprogress to change your settings.')
         embed.set_thumbnail(url='attachment://thumbnail.png')
         embed.add_field(name=f'{username.upper()}\'S SETTINGS', value=settings, inline=False)
         
@@ -358,20 +358,37 @@ async def setprogress(ctx):
 @bot.command(name='guide',aliases=('help','g',))
 async def guide_long(ctx, *args):
     
+    prefix = await get_prefix(bot, ctx)
+    
+    progress =  f'{emojis.bp} `{prefix}area [1-15]` / `{prefix}a[1-15]` : Area guides\n'\
+                f'{emojis.bp} `{prefix}dungeon [1-15]` / `{prefix}d[1-15]` : Dungeon guides\n'\
+                f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
+    
+    crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
+                f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : All enchants'
+    
+    trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
+                f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
+    
+    misc =      f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
+                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
+                
+    settings =  f'{emojis.bp} `{prefix}settings` : Check your settings\n'\
+                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your settings'
+    
     embed = discord.Embed(
         color = global_data.color,
         title = 'EPIC RPG GUIDE',
-        description = f'All commands use the prefix `{await get_prefix(bot, ctx)}`.\n'\
-                      '**Note: This bot is still in development, more content will be added soon.**'
+        description = f'**Note: This bot is still in development, more content will be added soon.**'
     )    
-    embed.set_footer(text=f'Tip: You can quickly open this guide with \'g\'')
+    embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with a command.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='PROGRESS', value=f'{emojis.bp} `dungeon [1-15]` / `d[1-15]` : Dungeon guides\n{emojis.bp} `area [1-15]` / `a[1-15]` : Area guides\n{emojis.bp} `timetravel` / `tt` : Time travel guide', inline=False)
-    embed.add_field(name='CRAFTING', value=f'{emojis.bp} `enchants` / `e` : All enchants\n{emojis.bp} `drops` : Monster drops', inline=False)
-    embed.add_field(name='TRADING', value=f'{emojis.bp} `trades` / `tr` : All area trades\n{emojis.bp} `traderates` / `trr` : All area trade rates', inline=False)
-    embed.add_field(name='MISC', value=f'{emojis.bp} `duel` : Duelling weapons\n{emojis.bp} `tip` : A handy dandy random tip', inline=False)
-    embed.add_field(name='SETTINGS', value=f'{emojis.bp} `settings` : Check your settings\n{emojis.bp} `setprogress` / `sp` : Change your settings', inline=False)
+    embed.add_field(name='PROGRESS', value=progress, inline=False)
+    embed.add_field(name='CRAFTING', value=crafting, inline=False)
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='MISC', value=misc, inline=False)
+    embed.add_field(name='SETTINGS', value=settings, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
 
@@ -393,7 +410,7 @@ async def dungeon(ctx, *args):
             try:
                 if 1 <= int(args[0]) <= 15:
                     dungeon_data = await get_dungeon_data(ctx, int(args[0]))
-                    dungeon_embed = await dungeons.dungeon(dungeon_data)
+                    dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                     await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
             except:
                 args_check = args[0]
@@ -405,7 +422,7 @@ async def dungeon(ctx, *args):
         try:
             dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')           
             dungeon_data = await get_dungeon_data(ctx, int(dungeon_no))
-            dungeon_embed = await dungeons.dungeon(dungeon_data)
+            dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
             await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
         except:
             if (dungeon_no == '') or not dungeon_no.isnumeric():
@@ -433,27 +450,37 @@ async def area(ctx, *args):
                 args_full = args_full.lower()
                 if args_full == 'full':
                     area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
-                    area_data = await get_area_data(ctx, int(area_no))
+                    area_no = int(area_no)
+                    area_data = await get_area_data(ctx, area_no)
                     user_settings = await get_settings(bot, ctx)
                     traderate_data = await get_traderate_data(ctx, area_no)
+                    if area_no < 15:
+                        traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                    else:
+                        traderate_data_next = ''
                     user_settings_override = (25, user_settings[1],'override',)
-                    if int(area_no) in (3,5):
+                    if area_no in (3,5):
                         mats_data = await get_mats_data(ctx, user_settings_override[0])
                     else:
                         mats_data = ''
-                    area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                    area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
                     await ctx.send(file=area_embed[0], embed=area_embed[1])   
             except:
                 return
         else:
             try:
                 if 1 <= int(args[0]) <= 15:
-                    area_data = await get_area_data(ctx, int(args[0]))
+                    area_no = int(args[0])
+                    area_data = await get_area_data(ctx, area_no)
                     user_settings = await get_settings(bot, ctx)
                     traderate_data = await get_traderate_data(ctx, area_no)
-                    if int(area_no) in (3,5):
+                    if area_no < 15:
+                        traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                    else:
+                        traderate_data_next = ''
+                    if area_no in (3,5):
                         mats_data = await get_mats_data(ctx, user_settings[0])
-                    area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings, ctx.author.name, ctx.prefix)
+                    area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
                     await ctx.send(file=area_embed[0], embed=area_embed[1])
             except:
                 try:
@@ -461,32 +488,42 @@ async def area(ctx, *args):
                     args_full = args_full.lower()
                     if args_full == 'full':
                         area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+                        area_no = int(area_no)
                         area_data = await get_area_data(ctx, int(area_no))
                         user_settings = await get_settings(bot, ctx)
                         traderate_data = await get_traderate_data(ctx, area_no)
+                        if area_no < 15:
+                            traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                        else:
+                            traderate_data_next = ''
                         user_settings_override = (25, user_settings[1],'override',)
-                        if int(area_no) in (3,5):
+                        if area_no in (3,5):
                             mats_data = await get_mats_data(ctx, user_settings_override[0])
                         else:
                             mats_data = ''
-                        area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings_override, ctx.author.name, ctx.prefix)   
+                        area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
                         await ctx.send(file=area_embed[0], embed=area_embed[1])   
                 except:
                     return
     else:
         try:
             area_no = invoked.replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
-            area_data = await get_area_data(ctx, int(area_no))
+            area_no = int(area_no)
+            area_data = await get_area_data(ctx, area_no)
             user_settings = await get_settings(bot, ctx)
             traderate_data = await get_traderate_data(ctx, area_no)
-            if int(area_no) in (3,5):
+            if area_no < 15:
+                traderate_data_next = await get_traderate_data(ctx, area_no+1)
+            else:
+                traderate_data_next = ''
+            if area_no in (3,5):
                 mats_data = await get_mats_data(ctx, user_settings[0])
             else:
                 mats_data = ''
-            area_embed = await areas.area(area_data, mats_data, traderate_data, user_settings, ctx.author.name, ctx.prefix)
+            area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
             await ctx.send(file=area_embed[0], embed=area_embed[1])
         except:
-            if area_no == '':
+            if (area_no == '') or (area_no == 0):
                 return
             else:
                 await log_error(ctx, 'Error parsing command "area"')
@@ -497,7 +534,7 @@ async def trades(ctx):
     
     user_settings = await get_settings(bot, ctx)
     
-    embed = await trading.trades(user_settings)
+    embed = await trading.trades(user_settings, ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
 
@@ -507,7 +544,7 @@ async def traderates(ctx):
     
     traderate_data = await get_traderate_data(ctx, 'all')
     
-    embed = await trading.traderates(traderate_data)
+    embed = await trading.traderates(traderate_data, ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     
@@ -515,7 +552,7 @@ async def traderates(ctx):
 @bot.command(aliases=('enchant','e',))
 async def enchants(ctx):
     
-    embed = await crafting.enchants()
+    embed = await crafting.enchants(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     
@@ -523,7 +560,7 @@ async def enchants(ctx):
 @bot.command(aliases=('drop',))
 async def drops(ctx):
 
-    embed = await misc.drops()
+    embed = await misc.drops(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     
@@ -531,7 +568,7 @@ async def drops(ctx):
 @bot.command(aliases=('duel',))
 async def duels(ctx):
 
-    embed = await misc.duels()
+    embed = await misc.duels(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
 
@@ -557,7 +594,7 @@ async def timetravel_specific(ctx, *args):
                 else:
                     tt_data = (int(args[0]), 0, 0, '', '')
                     
-                tt_embed = await misc.timetravel_specific(tt_data)
+                tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
             except:                    
                 return
@@ -566,7 +603,7 @@ async def timetravel_specific(ctx, *args):
             tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
             
             if tt_no == '':
-                tt_embed = await misc.timetravel()
+                tt_embed = await misc.timetravel(ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
             else:
                 if 1 <= int(tt_no) <= 25:
@@ -574,10 +611,24 @@ async def timetravel_specific(ctx, *args):
                 else:
                     tt_data = (int(tt_no), 0, 0, '', '')
                     
-                tt_embed = await misc.timetravel_specific(tt_data)
+                tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
         except:
-            return        
+            return
+
+# Command "supertimetravel" - Information about super time travel
+@bot.command(aliases=('stt',))
+async def supertimetravel(ctx):
+    
+    tt_embed = await misc.supertimetravel(ctx.prefix)
+    
+    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+
+# Command "tt1000" - Because they will try
+@bot.command(aliases=('timetravel1000',))
+async def tt1000(ctx):
+    
+    await ctx.send('https://tenor.com/view/doctorwho-hi-gif-7297611')
 
 # Command "mytt" - Information about user's next TT
 @bot.command(aliases=('nexttt',))
@@ -587,7 +638,7 @@ async def mytt(ctx):
     next_tt = int(user_settings[0])+1
     
     tt_data = await get_tt_unlocks(ctx, int(next_tt))
-    tt_embed = await misc.timetravel_specific(tt_data, True)
+    tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
 
 # Command "tip" - Returns a random tip

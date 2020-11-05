@@ -7,7 +7,7 @@ import dungeons
 import trading
 
 # Create area embed
-async def area(area_data, mats_data, traderate_data, user_settings, user_name, prefix):
+async def area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
     
     area_no = area_data[0]
     work_cmd_poor = area_data[1]
@@ -68,9 +68,9 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
         
     # Footer
     if time_traveller_prepare == False:
-        footer = f'Tip: Use \'d{dungeon_no}\' for details about the next dungeon.'
+        footer = f'Tip: Use {prefix}d{dungeon_no} for details about the next dungeon.'
     else:
-        footer = f'Tip: To see the full page use \'a{area_no} full\'.'
+        footer = f'Tip: To see the full page use {prefix}a{area_no} full.'
         
     # Description
     if len(user_settings) > 2:
@@ -82,7 +82,7 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     # Area locked
     if time_traveller_area_locked == True:
         area_locked = f'{emojis.bp} **You can not reach this area in your current TT**'
-        footer = f'Tip: See \'tt\' for details about time travelling'
+        footer = f'Tip: See {prefix}tt for details about time travelling'
     else:
         area_locked = ''
         
@@ -115,7 +115,7 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
         player_armor_enchant = f'[{player_armor_enchant}]'
 
     if time_traveller_prepare == True:
-        quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
+        quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}mytt`)'
     elif (1 <= area_no <= 4) and (user_tt == 0) :
         if not player_level == 0:
             quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
@@ -200,6 +200,8 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
     
     # Trade rates
     traderates = await trading.design_field_traderate(traderate_data)
+    if not traderate_data_next == '':
+        traderates_next = await trading.design_field_traderate(traderate_data_next)
             
     # Embed
     embed = discord.Embed(
@@ -221,11 +223,14 @@ async def area(area_data, mats_data, traderate_data, user_settings, user_name, p
         embed.add_field(name=f'REC. MINIMUM GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'{field_rec_stats[0]} FOR D{dungeon_no}', value=field_rec_stats[1], inline=False)
-        embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
     if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
         embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
-    embed.add_field(name='TRADE RATES', value=traderates, inline=False)
-    embed.add_field(name=f'NOTE', value=f'{emojis.bp} This is the guide for **TT {user_tt}**, **{user_asc}**.\n{emojis.bp} If this is wrong, run `setprogress`.', inline=False)
+    if not time_traveller_prepare == True:
+        embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
+    embed.add_field(name=f'TRADE RATES A{area_no}', value=traderates, inline=True)
+    if not (traderate_data_next == '') and not (time_traveller_prepare == True):
+        embed.add_field(name=f'TRADE RATES A{area_no+1}', value=traderates_next, inline=True)
+    embed.add_field(name=f'NOTE', value=f'This is the guide for **TT {user_tt}**, **{user_asc}**.\nIf this is wrong, run `{prefix}setprogress`.', inline=False)
     
     
     

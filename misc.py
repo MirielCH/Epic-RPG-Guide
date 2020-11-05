@@ -8,7 +8,7 @@ import locale
 locale.setlocale(locale.LC_ALL, 'German')
 
 # Monster drops
-async def drops():
+async def drops(prefix):
 
     items = f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'\
             f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'\
@@ -20,24 +20,24 @@ async def drops():
     embed = discord.Embed(
         color = global_data.color,
         title = f'MONSTER DROPS',
-        description = f'These items drop when using `hunt` or `hunt together` or when opening lootboxes.\n{emojis.blank}'
+        description = f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n{emojis.blank}'
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
-    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Area: 1~2\n{emojis.bp} Source: {emojis.mobwolf}\n{emojis.bp} Value: 500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Area: 3~4\n{emojis.bp} Source: {emojis.mobzombie}\n{emojis.bp} Value: 2\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Area: 5~6\n{emojis.bp} Source: {emojis.mobunicorn}\n{emojis.bp} Value: 7\'500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Area: 7~8\n{emojis.bp} Source: {emojis.mobmermaid}\n{emojis.bp} Value: 30\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Area: 9~10\n{emojis.bp} Source: {emojis.mobkillerrobot}\n{emojis.bp} Value: 100\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Areas: 1~2\n{emojis.bp} Source: {emojis.mobwolf}\n{emojis.bp} Value: 500\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Areas: 3~4\n{emojis.bp} Source: {emojis.mobzombie}\n{emojis.bp} Value: 2\'000\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Areas: 5~6\n{emojis.bp} Source: {emojis.mobunicorn}\n{emojis.bp} Value: 7\'500\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Areas: 7~8\n{emojis.bp} Source: {emojis.mobmermaid}\n{emojis.bp} Value: 30\'000\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Areas: 9~10\n{emojis.bp} Source: {emojis.mobkillerrobot}\n{emojis.bp} Value: 100\'000\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Areas: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
     embed.add_field(name=f'DROP CHANCE', value=f'{emojis.bp} All items have a 2% base drop chance\n{emojis.bp} The drop chance increases by ~25% every time you time travel\n{emojis.blank}', inline=False)    
             
     return (thumbnail, embed)
 
 # Duels
-async def duels():
+async def duels(prefix):
 
     weapons = f'{emojis.bp} {emojis.duelat}{emojis.duelat} - **AT**\n'\
               f'{emojis.bp} {emojis.dueldef}{emojis.dueldef} - **DEF**\n'\
@@ -52,7 +52,7 @@ async def duels():
         title = f'DUELS',
         description = f'Winning a duel depends on the chosen weapon and some luck.'
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
@@ -62,7 +62,7 @@ async def duels():
     return (thumbnail, embed)
 
 # Time travel
-async def timetravel():
+async def timetravel(prefix):
 
     keptitems = f'{emojis.bp} Coins (this includes your bank account)\n'\
                 f'{emojis.bp} Epic Coins\n'\
@@ -82,23 +82,25 @@ async def timetravel():
         description = f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'\
                       
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `mytt` : Details about your next TT and how to prepare\n{emojis.bp} `tt[1-25]` : Details about specific TTs and how to prepare\n{emojis.bp} `stt` : Details about SUPER time travel', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel for TT 25+', inline=False)
             
     return (thumbnail, embed)
 
 # Time travel X
-async def timetravel_specific(tt_data, mytt=False):
+async def timetravel_specific(tt_data, prefix, mytt=False):
 
     tt_no = int(tt_data[0])
     unlock_dungeon = int(tt_data[1])
     unlock_area = int(tt_data[2])
     unlock_enchant = tt_data[3]
     unlock_title = tt_data[4]
+    unlock_misc = tt_data[5]
+    
     bonus_xp = (99+tt_no)*tt_no/2
     bonus_duel_xp = (99+tt_no)*tt_no/4
     bonus_drop_chance = (49+tt_no)*tt_no/2
@@ -108,11 +110,15 @@ async def timetravel_specific(tt_data, mytt=False):
     bonus_drop_chance = f'{bonus_drop_chance:,}'.replace(',','\'').replace('.0','')
 
     if mytt == True:
-        embed_description = f'This is your next TT according to your settings.\n If this is wrong, run `setprogress`.'
+        embed_description = f'This is your next TT according to your settings.\n If this is wrong, run `{prefix}setprogress`.'
     else:
         embed_description = f'Allons-y !'
 
     unlocks = ''
+    
+    if not unlock_misc == '':
+        unlocks = f'{emojis.bp} Unlocks **{unlock_misc}**\n'
+    
     if not unlock_dungeon == 0:
         unlocks = f'{emojis.bp} Unlocks **dungeon {unlock_dungeon}**\n'
     
@@ -131,11 +137,11 @@ async def timetravel_specific(tt_data, mytt=False):
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
                   
 
-    preparations = f'{emojis.bp} If your horse is T6+: Get 30m coins\n'\
-                   f'{emojis.bp} If your horse is below T6: Get 50m coins\n'\
-                   f'{emojis.bp} Level up your professions if necessary (see `pr`)\n'\
+    preparations = f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
+                   f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
+                   f'{emojis.bp} Level up professions if not done (see `{prefix}pr`)\n'\
                    f'{emojis.bp} Sell your leftover materials (if any)\n'\
-                   f'{emojis.bp} Sell everything else **except** the items listed in `tt`\n'\
+                   f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                    f'{emojis.bp} Don\'t forget to sell your armor and sword!'
 
     embed = discord.Embed(
@@ -144,11 +150,44 @@ async def timetravel_specific(tt_data, mytt=False):
         description = embed_description
                       
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=preparations, inline=False)
+            
+    return (thumbnail, embed)
+
+# Time travel
+async def supertimetravel(prefix):
+
+    starter_bonuses =   f'{emojis.bp} {emojis.statlife} Start with +25 LIFE (50 score)\n'\
+                        f'{emojis.bp} {emojis.statat} Start with +50 AT (400 score)\n'\
+                        f'{emojis.bp} {emojis.statdef} Start with +50 DEF (400 score)\n'\
+                        f'{emojis.bp} {emojis.wolfskin} Start with 10 of each monster drop (400 score)\n'\
+                        f'{emojis.bp} :two: Start in area 2 (750 score)\n'\
+                        f'{emojis.bp} {emojis.lbomega} Start with an OMEGA lootbox (800 score)\n'\
+                        f'{emojis.bp} :three: Start in area 3 (1500 score)\n'\
+                        f'{emojis.bp} {emojis.logultra} Start with 10 ULTRA logs (2250 score)\n'\
+                        f'{emojis.bp} {emojis.lbgodly} Start with a GODLY lootbox (6500 score)'
+
+    requirements =  f'{emojis.bp} {emojis.timetravel} TT 25+\n'\
+                    f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15)\n'\
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'SUPER TIME TRAVEL',
+        description =   f'Super time travel is unlocked once you reach {emojis.timetravel} TT 25. From this point onward have to use `super time travel` to reach the next TT.\n'\
+                        f'Super time travel lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'\
+                        f'These bonuses cost score points which are calculated based on your leftover materials and your level.'
+                      
+    )    
+    embed.set_footer(text=f'Use {prefix}tt to see the general time travel guide')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+
+    embed.add_field(name=f'STARTER BONUSES', value=starter_bonuses, inline=False)
+    embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
             
     return (thumbnail, embed)

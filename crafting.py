@@ -5,7 +5,7 @@ import global_data
 import emojis
 
 # Trade rates of all areas
-async def enchants():
+async def enchants(prefix):
 
     buffs = f'{emojis.bp} **Normie** - 5% buff\n'\
             f'{emojis.bp} **Good** - 15% buff\n'\
@@ -24,7 +24,7 @@ async def enchants():
     commands = f'{emojis.bp} `enchant` - unlocked in area 2, costs 1k * area\n'\
                f'{emojis.bp} `refine` - unlocked in area 7, costs 10k * area\n'\
                f'{emojis.bp} `transmute` - unlocked in area 13, costs 100k * area\n'\
-               f'{emojis.bp} `transcent` - unlocked in area 15, costs 1m * area'
+               f'{emojis.bp} `transcend` - unlocked in area 15, costs 1m * area'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -33,7 +33,7 @@ async def enchants():
                       f'The chance to get better enchants can be increased by levelling up the enchanter profession and having a {emojis.horset9} T9 horse.\n'\
                       f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     

@@ -50,7 +50,7 @@ async def design_field_rec_stats(field_rec_stats_data):
     return (field_name, field_value)
 
 # Create dungeon embed
-async def dungeon(dungeon_data):
+async def dungeon(dungeon_data, prefix):
     
     dungeon_no = dungeon_data[0]
     dungeon_tt = dungeon_data[1]
@@ -179,7 +179,7 @@ async def dungeon(dungeon_data):
         title = f'DUNGEON {dungeon_no}',
         description = embed_description
     )    
-    embed.set_footer(text=global_data.footer)
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='BOSS', value=f'{emojis.bp} {boss_emoji} {boss_name}', inline=False)
