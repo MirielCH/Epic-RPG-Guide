@@ -432,7 +432,8 @@ async def guide_long(ctx, *args):
                 
     professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
-    misc =      f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
+    misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
+                f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
                 f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
                 
     settings =  f'{emojis.bp} `{prefix}settings` : Check your user settings\n'\
@@ -761,6 +762,14 @@ async def tip(ctx):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
     await ctx.send(file=thumbnail, embed=embed)
+    
+# Command "codes" - Redeemable codes
+@bot.command()
+async def codes(ctx):
+    
+    embed = await misc.codes(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "invite"
 @bot.command(aliases=('inv',))

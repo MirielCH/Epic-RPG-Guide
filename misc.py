@@ -161,3 +161,26 @@ async def supertimetravel(prefix):
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare', inline=False)
             
     return (thumbnail, embed)
+
+# Redeemable codes
+async def codes(prefix):
+
+    all_codes = f'{emojis.bp} `code` {emojis.blank} 20 {emojis.log}, 10 {emojis.fish}, 5\'000 {emojis.coin}\n'\
+                f'{emojis.bp} `epic` {emojis.blank} 1 {emojis.epiccoin}\n'\
+                f'{emojis.bp} `epicrpg` 10 {emojis.arenacookie}, 15\'000 {emojis.coin}\n'\
+                f'{emojis.bp} `lmao` {emojis.blank} 2 {emojis.logepic}, 50\'000 {emojis.coin}'
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'REDEEMABLE CODES',
+        description =   f'Use these codes with `rpg code` to get some free goodies.\n'\
+                        f'Every code can only be redeemed once.'
+                      
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+
+    embed.add_field(name=f'CODES', value=all_codes, inline=False)
+            
+    return (thumbnail, embed)
