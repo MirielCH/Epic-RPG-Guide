@@ -694,6 +694,14 @@ async def professionlevel(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
 
+# Command "ascension" - Ascension guide
+@bot.command(aliases=('asc',))
+async def ascension(ctx):
+    
+    embed = await professions.ascension(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
 async def tip(ctx):
@@ -714,7 +722,7 @@ async def tip(ctx):
 @bot.command(aliases=('inv',))
 async def invite(ctx):
     
-    await ctx.send(f'I\'m flattered by your interest, but this bot is still in development and not yet publicly available.')
+    await ctx.send(f'I\'m flattered by your interest, but this bot is still in development and not yet available publicly.')
     
 # Command "Panda" - because Panda
 @bot.command()

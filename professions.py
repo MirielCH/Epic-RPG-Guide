@@ -92,3 +92,32 @@ async def professions_levelling(prefix):
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}pr` : Professions overview\n{emojis.bp} `{prefix}asc` : Details about ascension', inline=False)
             
     return (thumbnail, embed)
+
+
+# Ascension
+async def ascension(prefix):
+    
+    requirements =  f'{emojis.bp} All 5 profession at level 100 (see `{prefix}prlevel`)'
+    
+    benefits =      f'{emojis.bp} Allows you to use every command ever unlocked in all areas\n'\
+                    f'{emojis.bp} Allows you to get materials normally unavailable in low areas'
+                
+    notes =          f'{emojis.bp} The syntax is `rpg ascended [command]`\n'\
+                    f'{emojis.bp} Trade rates are still area locked'
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'ASCENSION',
+        description =   f'Ascension allows you to use all commands (you unlocked at some point) in every area. One example would be `dynamite` in area 1.\n'\
+                        f'Thus ascension greatly helps in all your future runs.'
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
+    embed.add_field(name=f'BENEFITS', value=benefits, inline=False)
+    embed.add_field(name=f'NOTES', value=notes, inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}pr` : Professions overview\n{emojis.bp} `{prefix}prlevel` : How and when to level up your professions', inline=False)
+            
+    return (thumbnail, embed)
