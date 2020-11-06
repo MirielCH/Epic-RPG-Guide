@@ -58,6 +58,7 @@ async def professions_levelling(prefix):
                 f'{emojis.bp} Trade everything to {emojis.log} logs\n'\
                 f'{emojis.bp} For each level look up `pr merchant` and calculate the XP you need for the next level\n'\
                 f'{emojis.bp} Take 5x the XP amount and sell as many {emojis.log} logs\n'\
+                f'{emojis.bp} Tip: You can quickly calculate the amount of logs with `{prefix}prm`\n'\
                 f'{emojis.bp} Once you reach level 90, wait until lootboxer and worker are catching up'
                 
     lootboxer = f'{emojis.bp} Levels up automatically when opening lootboxes\n'\

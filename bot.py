@@ -713,6 +713,20 @@ async def professionlevel(ctx):
     embed = await professions.professions_levelling(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "prm" - Calculate logs to sell
+@bot.command()
+async def prm(ctx, *args):
+    
+    if (len(args) > 1) or (len(args) == 0):
+        await ctx.send(f'The command syntax is `{ctx.prefix}prm [merchant xp]`')
+    else:
+        try:
+            xp = int(args[0])
+            logs = xp*5
+            await ctx.send(f'You need to sell **{logs}** {emojis.log} wooden logs to get {xp} merchant XP.')
+        except:
+            await ctx.send(f'Please enter a valid number.')
 
 # Command "ascension" - Ascension guide
 @bot.command(aliases=('asc',))
