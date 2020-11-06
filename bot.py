@@ -14,6 +14,7 @@ import professions
 import misc
 import logging
 import logging.handlers
+
 from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime
@@ -200,6 +201,23 @@ async def get_tip(ctx):
         await log_error(ctx, error)
         
     return tip
+
+# Get user count
+async def get_user_number(ctx):
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute(f'SELECT COUNT(*) FROM settings_user')
+        record = cur.fetchone()
+        
+        if record:
+            user_number = record
+        else:
+            await log_error(ctx, 'No user data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return user_number
    
 # Check database for stored progress settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
 async def get_settings(bot, ctx):
@@ -306,6 +324,8 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Uhm, what.')
     elif isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Servers` to use this command.')
+    elif isinstance(error, (commands.NotOwner)):
+        await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to do that.')
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
     else:
@@ -763,5 +783,15 @@ async def shutdown(ctx):
     if answer_ascended.content.lower() in ['yes','y']:
         await ctx.send(f'Shutting down.')
         await ctx.bot.logout()
+
+# Statistics command (only I can use this)
+@bot.command(aliases=('stats',))
+@commands.is_owner()
+async def statistics(ctx):
+
+    guilds = len(list(bot.guilds))
+    user_number = await get_user_number(ctx)
+    
+    await ctx.send(f'I\'m currently in **{guilds} servers** and **{user_number[0]} users** have their settings stored.')
 
 bot.run(TOKEN)

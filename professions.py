@@ -44,7 +44,6 @@ async def professions_overview(prefix):
             
     return (thumbnail, embed)
 
-
 # Professions levelling guide
 async def professions_levelling(prefix):
     
@@ -93,7 +92,6 @@ async def professions_levelling(prefix):
             
     return (thumbnail, embed)
 
-
 # Ascension
 async def ascension(prefix):
     
@@ -102,7 +100,7 @@ async def ascension(prefix):
     benefits =      f'{emojis.bp} Allows you to use every command ever unlocked in all areas\n'\
                     f'{emojis.bp} Allows you to get materials normally unavailable in low areas'
                 
-    notes =          f'{emojis.bp} The syntax is `rpg ascended [command]`\n'\
+    notes =         f'{emojis.bp} The syntax is `rpg ascended [command]`\n'\
                     f'{emojis.bp} Trade rates are still area locked'
     
     embed = discord.Embed(
