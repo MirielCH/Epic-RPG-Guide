@@ -9,7 +9,7 @@ import trading
 # Create area embed
 async def area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
     
-    area_no = area_data[0]
+    area_no = int(area_data[0])
     work_cmd_poor = area_data[1]
     work_cmd_rich = area_data[2]
     work_cmd_asc = area_data[3]
@@ -35,7 +35,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     player_sword_enchant = area_data[23]
     player_armor = area_data[24]
     player_armor_enchant = area_data[25]
-    user_tt = user_settings[0]
+    user_tt = int(user_settings[0])
     user_asc = user_settings[1]
 
     if not mats_data == '':
@@ -115,7 +115,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         player_armor_enchant = f'[{player_armor_enchant}]'
 
     if time_traveller_prepare == True:
-        quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}mytt`)'
+        quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
     elif (1 <= area_no <= 4) and (user_tt == 0) :
         if not player_level == 0:
             quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'

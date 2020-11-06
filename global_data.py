@@ -1,11 +1,16 @@
 # global_data.py
 
+import os
+
+# Get bot directory
+bot_dir = os.path.dirname(__file__)
+
 # Databases
-dbfile = 'erg_db.db'
-default_dbfile = 'erg_db_default.db'
+dbfile = os.path.join(bot_dir, 'erg_db.db')
+default_dbfile = os.path.join(bot_dir, 'erg_db_default.db')
 
 # Pictures
-thumbnail = './images/erg.png'
+thumbnail = os.path.join(bot_dir, 'images/erg.png')
 
 # Prefix
 default_prefix = '$'
@@ -20,4 +25,4 @@ async def default_footer(prefix):
     return footer
 
 # Error log file
-logfile = './logs/discord.log'
+logfile = os.path.join(bot_dir, 'logs/discord.log')

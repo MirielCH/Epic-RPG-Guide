@@ -16,16 +16,18 @@ import logging
 import logging.handlers
 from dotenv import load_dotenv
 from discord.ext import commands
+from datetime import datetime
 from discord.ext.commands import CommandNotFound
 
 # Check if log file exists, if not, create empty one
-if not os.path.isfile(global_data.logfile):
-    open(global_data.logfile, 'a').close()
+logfile = global_data.logfile
+if not os.path.isfile(logfile):
+    open(logfile, 'a').close()
 
 # Initialize logger
 logger = logging.getLogger('discord')
 logger.setLevel(logging.WARNING)
-handler = logging.handlers.TimedRotatingFileHandler(filename=global_data.logfile,when='D',interval=1, encoding='utf-8', utc=True)
+handler = logging.handlers.TimedRotatingFileHandler(filename=logfile,when='D',interval=1, encoding='utf-8', utc=True)
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
@@ -37,9 +39,11 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 dbfile = global_data.dbfile
 default_dbfile = global_data.default_dbfile
 
+"""
 # Check if database exists, if not, create empty one
 if not os.path.isfile(dbfile):
     shutil.copy(default_dbfile,dbfile)
+"""
 
 # Open connection to the local database    
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
@@ -66,11 +70,16 @@ async def get_prefix_all(bot, ctx):
     return commands.when_mentioned_or(prefix)(bot, ctx)
 
 # Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
-async def get_prefix(bot, ctx):
+async def get_prefix(bot, ctx, guild_join=False):
+    
+    if guild_join == False:
+        guild = ctx.guild
+    else:
+        guild = ctx
     
     try:
         cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
+        cur.execute('SELECT * FROM settings_guild where guild_id=?', (guild.id,))
         record = cur.fetchone()
         
         if record:
@@ -78,7 +87,10 @@ async def get_prefix(bot, ctx):
         else:
             prefix = global_data.default_prefix
     except sqlite3.Error as error:
-        await log_error(ctx, error)
+        if guild_join == False:
+            await log_error(ctx, error)
+        else:
+            await log_error(ctx, error, True)
         
     return prefix
 
@@ -224,12 +236,20 @@ async def set_prefix(bot, ctx, new_prefix):
         await log_error(ctx, error)
 
 # Error logging
-async def log_error(ctx, error):
-    try:
-        cur=erg_db.cursor()
-        cur.execute('INSERT INTO errors VALUES (?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error)))
-    except sqlite3.Error as db_error:
-        print(print(f'Error inserting error (ha) into database.\n{db_error}'))
+async def log_error(ctx, error, guild_join=False):
+    
+    if guild_join == False:
+        try:
+            cur=erg_db.cursor()
+            cur.execute('INSERT INTO errors VALUES (?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error)))
+        except sqlite3.Error as db_error:
+            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
+    else:
+        try:
+            cur=erg_db.cursor()
+            cur.execute('INSERT INTO errors VALUES (?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error)))
+        except sqlite3.Error as db_error:
+            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
 
 # Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, ctx):
@@ -265,13 +285,26 @@ async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f'EPIC RPG'))
+    
+# Send message to system channel when joining a server
+@bot.event
+async def on_guild_join(guild):
+    
+    prefix = await get_prefix(bot, guild, True)
+    
+    welcome_message =   f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'\
+                        f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'\
+                        f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'\
+                        f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'\
+    
+    await guild.system_channel.send(welcome_message)
 
 # Error handling
 @bot.event
 async def on_command_error(ctx, error):
-    #if isinstance(error, CommandNotFound):
-        #await ctx.send(f'Uhm, what.')
-    if isinstance(error, (commands.MissingPermissions)):
+    if isinstance(error, CommandNotFound):
+        await ctx.send(f'Uhm, what.')
+    elif isinstance(error, (commands.MissingPermissions)):
         await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Servers` to use this command.')
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
@@ -370,12 +403,14 @@ async def guide_long(ctx, *args):
     
     trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
+                
+    professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
     misc =      f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
                 f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
                 
-    settings =  f'{emojis.bp} `{prefix}settings` : Check your settings\n'\
-                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your settings'
+    settings =  f'{emojis.bp} `{prefix}settings` : Check your user settings\n'\
+                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings'
     
     embed = discord.Embed(
         color = global_data.color,
@@ -388,6 +423,7 @@ async def guide_long(ctx, *args):
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)
     
@@ -631,14 +667,14 @@ async def tt1000(ctx):
     
     await ctx.send('https://tenor.com/view/doctorwho-hi-gif-7297611')
 
-# Command "mytt" - Information about user's next TT
-@bot.command(aliases=('nexttt',))
+# Command "mytt" - Information about user's TT
+@bot.command(aliases=('mytimetravel',))
 async def mytt(ctx):
     
     user_settings = await get_settings(bot, ctx)
-    next_tt = int(user_settings[0])+1
+    my_tt = int(user_settings[0])
     
-    tt_data = await get_tt_unlocks(ctx, int(next_tt))
+    tt_data = await get_tt_unlocks(ctx, int(my_tt))
     tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
     
@@ -705,5 +741,19 @@ async def brandon(ctx):
 async def me(ctx):
     
     await ctx.send(f'You are **{ctx.author.name}**.\nDid you really need me to remind you?')
+
+# Shutdown command (only I can use it obviously)
+@bot.command()
+@commands.is_owner()
+async def shutdown(ctx):
+
+    def check(m):
+        return m.author == ctx.author
+    
+    await ctx.send(f'**{ctx.author.name}**, are you **SURE**? `[yes/no]`')
+    answer_ascended = await bot.wait_for('message', check=check, timeout=30)
+    if answer_ascended.content.lower() in ['yes','y']:
+        await ctx.send(f'Shutting down.')
+        await ctx.bot.logout()
 
 bot.run(TOKEN)

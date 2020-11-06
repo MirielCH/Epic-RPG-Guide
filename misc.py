@@ -107,7 +107,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     bonus_drop_chance = f'{bonus_drop_chance:,}'.replace(',','\'').replace('.0','')
 
     if mytt == True:
-        embed_description = f'This is your next TT according to your settings.\n If this is wrong, run `{prefix}setprogress`.'
+        embed_description = f'This is your current TT according to your settings.\n If this is wrong, run `{prefix}setprogress`.'
     else:
         embed_description = f'Allons-y !'
 
@@ -136,7 +136,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 
     preparations = f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
                    f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
-                   f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                   f'{emojis.bp} Level up professions if necessary (see `{prefix}prlevel`)\n'\
                    f'{emojis.bp} Sell your leftover materials (if any)\n'\
                    f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                    f'{emojis.bp} Don\'t forget to sell your armor and sword!'
