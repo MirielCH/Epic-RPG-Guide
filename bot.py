@@ -361,18 +361,24 @@ async def settings(ctx):
     if current_settings:
         username = ctx.author.name
         ascension = current_settings[1]
+        
         settings = f'{emojis.bp} Current run: **TT {current_settings[0]}**\n'\
                    f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
         
         embed = discord.Embed(
         color = global_data.color,
+        title = f'USER SETTINGS',
+        description =   f'Hey there, **{ctx.author.name}**.\n'\
+                        f'These settings are used by some guides to tailor the information to your current progress.'
         )    
         
-        embed.set_footer(text=f'Use {ctx.prefix}setprogress to change your settings.')
+        thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
         embed.set_thumbnail(url='attachment://thumbnail.png')
-        embed.add_field(name=f'{username.upper()}\'S SETTINGS', value=settings, inline=False)
+        embed.set_footer(text=f'Tip: Use {ctx.prefix}setprogress to change your settings.')
+        embed.set_thumbnail(url='attachment://thumbnail.png')
+        embed.add_field(name=f'YOUR CURRENT SETTINGS', value=settings, inline=False)
         
-        await ctx.send(embed=embed)
+        await ctx.send(file=thumbnail, embed=embed)
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp',))
@@ -435,7 +441,8 @@ async def guide_long(ctx, *args):
     embed = discord.Embed(
         color = global_data.color,
         title = 'EPIC RPG GUIDE',
-        description = f'**Note: This bot is still in development, more content will be added soon.**'
+        description =   f'Note: Some guides show information based on your user settings.\n'\
+                        f'**This bot is still in development, more content will be added soon.**'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with a command.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
