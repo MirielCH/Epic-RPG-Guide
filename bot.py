@@ -724,6 +724,9 @@ async def prm(ctx, *args):
         try:
             xp = int(args[0])
             logs = xp*5
+            xp = f'{xp:,}'.replace(',','\'')
+            logs = f'{logs:,}'.replace(',','\'')
+            
             await ctx.send(f'You need to sell **{logs}** {emojis.log} wooden logs to get {xp} merchant XP.')
         except:
             await ctx.send(f'Please enter a valid number.')

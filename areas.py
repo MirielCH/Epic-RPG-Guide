@@ -123,11 +123,16 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
     elif (area_no == 3) and (user_tt > 4):
         quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
-    elif area_no == 5:
+    elif area_no in (5,7):
         if not player_level == 0:
             quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
         else:
             quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
+    elif area_no == 9:
+        if not player_level == 0:
+            quick_guide = f'{emojis.bp} Go back to previous areas if are missing materials (see `{prefix}drops`)\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
+        else:
+            quick_guide = f'{emojis.bp} Go back to previous areas if are missing materials (see `{prefix}drops`)\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
     else:
         if not player_level == 0:
             if area_no == 3:
@@ -184,17 +189,19 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
                    f'{emojis.bp} `dynamite` if you need coins'
     
-    # Materials area 3 and 5
+    # Materials areas 3, 5 and 7
     if area_no == 5:
         materials = f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'\
                     f'{emojis.bp} 30+ {emojis.zombieeye} zombie eyes\n'\
-                    f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns'
+                    f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns (after crafting)'
         if user_tt < 5:
             materials = f'{materials}\n{emojis.bp} {mats_apple} {emojis.apple} apples'
     
     if (area_no == 3) and (user_tt > 4):
         materials = f'{emojis.bp} {mats_fish} {emojis.fish} normie fish'
-
+        
+    if area_no == 7:
+        materials = f'{emojis.bp} 25+ {emojis.mermaidhair} mermaid hairs (after crafting)\n'
     # Trades
     trades = await trading.design_field_trades(area_no)
     
@@ -223,8 +230,8 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         embed.add_field(name=f'REC. MINIMUM GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'{field_rec_stats[0]} FOR D{dungeon_no}', value=field_rec_stats[1], inline=False)
-    if ((area_no == 3) and (user_tt > 4)) or (area_no == 5):
-        embed.add_field(name='MATERIALS BEFORE LEAVING', value=materials, inline=False)
+    if ((area_no == 3) and (user_tt > 4)) or (area_no in (5,7)):
+        embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveller_prepare == True:
         embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
     embed.add_field(name=f'TRADE RATES A{area_no}', value=traderates, inline=True)

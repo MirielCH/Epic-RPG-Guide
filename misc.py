@@ -17,7 +17,8 @@ async def drops(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'MONSTER DROPS',
-        description = f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n{emojis.blank}'
+        description =   f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'\
+                        f'You can go back to previous areas with `rpg area`.\n{emojis.blank}'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')

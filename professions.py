@@ -56,7 +56,7 @@ async def professions_levelling(prefix):
     merchant =  f'{emojis.bp} This is the second profession you should level up\n'\
                 f'{emojis.bp} Level **before time travelling** with leftover materials\n'\
                 f'{emojis.bp} Trade everything to {emojis.log} logs\n'\
-                f'{emojis.bp} For each level look up `pr merchant` and calculate the XP you need for the next level\n'\
+                f'{emojis.bp} For each level look up `rpg pr merchant` and calculate the XP you need for the next level\n'\
                 f'{emojis.bp} Take 5x the XP amount and sell as many {emojis.log} logs\n'\
                 f'{emojis.bp} Tip: You can quickly calculate the amount of logs with `{prefix}prm`\n'\
                 f'{emojis.bp} Once you reach level 90, wait until lootboxer and worker are catching up'
@@ -71,7 +71,7 @@ async def professions_levelling(prefix):
     enchanter = f'{emojis.bp} This is the last profession you should level up because of costs\n'\
                 f'{emojis.bp} Level **before time travelling** using `transmute`\n'\
                 f'{emojis.bp} XP gain is based on the quality of the enchant you get\n'\
-                f'{emojis.bp} You should have around 2 billion coins\n'\
+                f'{emojis.bp} You will need around 2 billion coins to reach level 100\n'\
                 f'{emojis.bp} A {emojis.horset8} T8 horse is helpful'
     
     embed = discord.Embed(
