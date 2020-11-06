@@ -617,7 +617,7 @@ async def enchants(ctx):
 @bot.command(aliases=('drop',))
 async def drops(ctx):
 
-    embed = await misc.drops(ctx.prefix)
+    embed = await crafting.drops(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     
