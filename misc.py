@@ -131,6 +131,9 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 # Super time travel
 async def supertimetravel(prefix):
 
+    requirements =      f'{emojis.bp} {emojis.timetravel} TT 25+\n'\
+                        f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15)'
+    
     starter_bonuses =   f'{emojis.bp} {emojis.statlife} Start with +25 LIFE (50 score)\n'\
                         f'{emojis.bp} {emojis.statat} Start with +50 AT (400 score)\n'\
                         f'{emojis.bp} {emojis.statdef} Start with +50 DEF (400 score)\n'\
@@ -140,25 +143,70 @@ async def supertimetravel(prefix):
                         f'{emojis.bp} :three: Start in area 3 (1500 score)\n'\
                         f'{emojis.bp} {emojis.logultra} Start with 10 ULTRA logs (2250 score)\n'\
                         f'{emojis.bp} {emojis.lbgodly} Start with a GODLY lootbox (6500 score)'
-
-    requirements =  f'{emojis.bp} {emojis.timetravel} TT 25+\n'\
-                    f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15)\n'\
+                        
+    guides =            f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
+                        f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n'\
+                        f'{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare'
 
     embed = discord.Embed(
         color = global_data.color,
         title = f'SUPER TIME TRAVEL',
         description =   f'Super time travel is unlocked once you reach {emojis.timetravel} TT 25. From this point onward have to use `super time travel` to reach the next TT.\n'\
                         f'Super time travel lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'\
-                        f'These bonuses cost score points which are calculated based on your leftover materials and your level.'
+                        f'These bonuses cost score points which are calculated based on your inventory and your gear (see `{prefix}sttscore`).'
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
-    embed.add_field(name=f'STARTER BONUSES', value=starter_bonuses, inline=False)
     embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare', inline=False)
+    embed.add_field(name=f'STARTER BONUSES', value=starter_bonuses, inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
+            
+    return (thumbnail, embed)
+
+# Super time travel score calculation
+async def supertimetravelscore(prefix):
+
+    gear =      f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 355.5 score'
+    
+    lootboxes = f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 10 score\n'\
+                f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 20 score\n'\
+                f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 30 score\n'\
+                f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 40 score\n'\
+                f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 50 score\n'\
+                f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 60 score\n'\
+                f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 60 score'
+                        
+    materials = f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'\
+                f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'\
+                f'{emojis.bp} 9 {emojis.zombieeye} zombie eyes = 1 score\n'\
+                f'{emojis.bp} 7 {emojis.unicornhorn} unicorn horns = 1 score\n'\
+                f'{emojis.bp} 5 {emojis.mermaidhair} mermaid hairs = 1 score\n'\
+                f'{emojis.bp} 4 {emojis.chip} chips = 1 score\n'\
+                f'{emojis.bp} 2 {emojis.dragonscale} dragon scales = 1 score\n'\
+                        
+                        
+    guides =    f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
+                f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n'\
+                f'{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n'\
+                f'{emojis.bp} `{prefix}stt` : Super time travel'
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'SUPER TIME TRAVEL SCORE CALCULATION',
+        description =   f'The score points for the starter bonuses of super time travel are calculated based on your inventory and your gear.'
+                      
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+
+    embed.add_field(name=f'GEAR', value=gear, inline=False)
+    embed.add_field(name=f'LOOTBOXES', value=lootboxes, inline=False)
+    embed.add_field(name=f'MATERIALS', value=materials, inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
     return (thumbnail, embed)
 

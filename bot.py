@@ -12,6 +12,7 @@ import trading
 import crafting
 import professions
 import misc
+import horses
 import logging
 import logging.handlers
 
@@ -269,7 +270,7 @@ async def get_settings(bot, ctx):
         else:
             cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, '0', 'not ascended',))
             await first_time_user(bot, ctx)
-            return
+            
     except sqlite3.Error as error:
         await log_error(ctx, error)    
   
@@ -316,12 +317,13 @@ async def log_error(ctx, error, guild_join=False):
 async def first_time_user(bot, ctx):
     
     current_settings = await get_settings(bot, ctx)
-    current_prefix = await get_prefix(bot, ctx)
     
     await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
                 f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
-                f'If I guessed wrong, please use `{current_prefix}setprogress` to change your settings.\n\n'\
+                f'If I guessed wrong, please use `{ctx.prefix}setprogress` to change your settings.\n\n'\
                 '**Note: This bot is still in development, more content will be added soon.**')
+    
+    raise Exception("First time user, no need to continue")
 
 # Set progress settings
 async def set_progress(bot, ctx, new_tt, new_ascended):
@@ -545,7 +547,7 @@ async def dungeon(ctx, *args):
                     if not args_check.isnumeric():
                         return
                     else:
-                        await log_error(ctx, 'Error parsing command "dungeon"')
+                        raise
     else:
         try:
             dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')           
@@ -556,7 +558,6 @@ async def dungeon(ctx, *args):
             if (dungeon_no == '') or not dungeon_no.isnumeric():
                 return
             else:
-                await log_error(ctx, 'Error parsing command "dungeon"')
                 raise
 
 # Command "dungeonstats" - Returns recommended stats for all dungeons
@@ -707,7 +708,6 @@ async def area(ctx, *args):
             if (area_no == '') or (area_no == 0):
                 return
             else:
-                await log_error(ctx, 'Error parsing command "area"')
                 raise
 
 # Command "trades" - Returns recommended trades of all areas
@@ -743,6 +743,30 @@ async def enchants(ctx):
 async def drops(ctx):
 
     embed = await crafting.drops(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "horses" - Returns horse overview
+@bot.command(name='horses', aliases=('horse','h',))
+async def horses_overview(ctx):
+
+    embed = await horses.horses(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "horsetier" - Returns horse tier bonuses
+@bot.command(aliases=('htier','horsestier','horsetiers','horsestiers',))
+async def horsetier(ctx):
+
+    embed = await horses.horsetiers(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "horsetype" - Returns horse type bonuses
+@bot.command(aliases=('htype','horsestype','horsetypes','horsestypes',))
+async def horsetype(ctx):
+
+    embed = await horses.horsetypes(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     
@@ -805,6 +829,14 @@ async def supertimetravel(ctx):
     tt_embed = await misc.supertimetravel(ctx.prefix)
     
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+    
+# Command "sttscore" - Returns super time travel score calculations
+@bot.command(aliases=('sttscore','superttscore','stts',))
+async def supertimetravelscore(ctx):
+
+    embed = await misc.supertimetravelscore(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "tt1000" - Because they will try
 @bot.command(aliases=('timetravel1000',))

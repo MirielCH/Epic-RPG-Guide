@@ -31,6 +31,8 @@ ultrabait = '<:erg_ultrabait:770325239506534441>'
 # Equipment (--> rest in database)
 armorbasic = '<:erg_basicarmor:770326606954102843>'
 swordbasic = '<:erg_basicsword:770326606870609991>'
+armorultraomega = '<:erg_ultraomegaarmor:770326606929461248>' # Needed for STT score list
+swordultraomega = '<:erg_ultraomegasword:770326606966292500>' # Needed for STT score list
 
 # Food
 foodapplejuice = '<:erg_applejuice:770325211513487380>'
