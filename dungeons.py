@@ -238,7 +238,7 @@ async def dungeon_rec_stats(rec_stats_data, prefix):
         title = f'RECOMMENDED STATS FOR ALL DUNGEONS',
         description = f'\u200b'
     )    
-    embed.set_footer(text=f'Tip: Use {prefix}dg to see the recommended gear for all dungeons.')
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
@@ -267,7 +267,7 @@ async def dungeon_rec_gear(rec_gear_data, prefix, page):
         title = title_value,
         description = description_value
     )    
-    embed.set_footer(text=f'Tip: Use {prefix}ds to see the recommended stats for all dungeons.')
+    embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
