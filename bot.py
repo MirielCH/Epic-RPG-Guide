@@ -13,6 +13,7 @@ import crafting
 import professions
 import misc
 import horses
+import timetravel
 import logging
 import logging.handlers
 
@@ -52,6 +53,9 @@ erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
 # Initialize bot
 bot = discord.Client()
+
+
+# --- Database: Get Data ---
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 async def get_prefix_all(bot, ctx):
@@ -276,6 +280,9 @@ async def get_settings(bot, ctx):
   
     return current_settings
 
+
+# --- Database: Write Data ---
+
 # Set new prefix
 async def set_prefix(bot, ctx, new_prefix):
 
@@ -290,6 +297,24 @@ async def set_prefix(bot, ctx, new_prefix):
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
         await log_error(ctx, error)
+
+# Set progress settings
+async def set_progress(bot, ctx, new_tt, new_ascended):
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
+        record = cur.fetchone()
+        
+        if record:
+            cur.execute('UPDATE settings_user SET timetravel = ?, ascended = ? where user_id = ?', (new_tt, new_ascended, ctx.author.id,))
+        else:
+            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, new_tt, new_ascended,))
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+
+
+# --- Error Logging ---
 
 # Error logging
 async def log_error(ctx, error, guild_join=False):
@@ -313,6 +338,9 @@ async def log_error(ctx, error, guild_join=False):
         except sqlite3.Error as db_error:
             print(print(f'Error inserting error (ha) into database.\n{db_error}'))
 
+
+# --- First Time User ---
+
 # Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, ctx):
     
@@ -325,22 +353,13 @@ async def first_time_user(bot, ctx):
     
     raise Exception("First time user, no need to continue")
 
-# Set progress settings
-async def set_progress(bot, ctx, new_tt, new_ascended):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
-        record = cur.fetchone()
-        
-        if record:
-            cur.execute('UPDATE settings_user SET timetravel = ?, ascended = ? where user_id = ?', (new_tt, new_ascended, ctx.author.id,))
-        else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, new_tt, new_ascended,))
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
+
+# --- Command Initialization ---
 
 bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
+
+
+# --- Ready & Join Events ---
 
 # Set bot status when ready
 @bot.event
@@ -362,6 +381,9 @@ async def on_guild_join(guild):
     
     await guild.system_channel.send(welcome_message)
 
+
+# --- Error Handling ---
+
 # Error handling
 @bot.event
 async def on_command_error(ctx, error):
@@ -375,7 +397,10 @@ async def on_command_error(ctx, error):
         await ctx.send(f'You\'re missing some arguments.')
     else:
         await log_error(ctx, error)
-        
+
+
+# --- Server Settings ---
+   
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
@@ -396,6 +421,9 @@ async def prefix(ctx):
     
     current_prefix = await get_prefix(bot, ctx)
     await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
+
+
+# --- User Settings ---
 
 # Command "settings" - Returns current user progress settings
 @bot.command()
@@ -459,6 +487,9 @@ async def setprogress(ctx):
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
+
+# --- Main Guide ---
+
 # Main guide
 @bot.command(name='guide',aliases=('help','g',))
 async def guide_long(ctx, *args):
@@ -504,6 +535,9 @@ async def guide_long(ctx, *args):
     embed.add_field(name='SETTINGS', value=settings, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
+
+
+# --- Dungeons ---
 
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
 dungeon_aliases = ['dungeon',]
@@ -603,6 +637,9 @@ async def dungeongear(ctx, *args):
                 return
 
     await ctx.send(file=embed[0], embed=embed[1])
+
+
+# --- Areas ---
 
 # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
 area_aliases = ['area',]
@@ -729,7 +766,10 @@ async def traderates(ctx):
     embed = await trading.traderates(traderate_data, ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
-    
+
+
+# --- Crafting ---
+
 # Command "enchants"
 @bot.command(aliases=('enchant','e',))
 async def enchants(ctx):
@@ -745,7 +785,10 @@ async def drops(ctx):
     embed = await crafting.drops(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
-    
+
+
+# --- Horses ---
+
 # Command "horses" - Returns horse overview
 @bot.command(name='horses', aliases=('horse','h',))
 async def horses_overview(ctx):
@@ -770,13 +813,8 @@ async def horsetype(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
     
-# Command "duels" - Returns all duelling weapons
-@bot.command(aliases=('duel',))
-async def duels(ctx):
 
-    embed = await misc.duels(ctx.prefix)
-    
-    await ctx.send(file=embed[0], embed=embed[1])
+# --- Time Travel ---
 
 # Command "ttX" - Specific tt information
 tt_aliases = ['timetravel',]
@@ -800,7 +838,7 @@ async def timetravel_specific(ctx, *args):
                 else:
                     tt_data = (int(args[0]), 0, 0, '', '')
                     
-                tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix)
+                tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
             except:                    
                 return
@@ -809,7 +847,7 @@ async def timetravel_specific(ctx, *args):
             tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
             
             if tt_no == '':
-                tt_embed = await misc.timetravel(ctx.prefix)
+                tt_embed = await timetravel.timetravel(ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
             else:
                 if 1 <= int(tt_no) <= 25:
@@ -817,7 +855,7 @@ async def timetravel_specific(ctx, *args):
                 else:
                     tt_data = (int(tt_no), 0, 0, '', '', '')
                     
-                tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix)
+                tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
         except:
             return
@@ -826,7 +864,7 @@ async def timetravel_specific(ctx, *args):
 @bot.command(aliases=('stt',))
 async def supertimetravel(ctx):
     
-    tt_embed = await misc.supertimetravel(ctx.prefix)
+    tt_embed = await timetravel.supertimetravel(ctx.prefix)
     
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
     
@@ -834,7 +872,7 @@ async def supertimetravel(ctx):
 @bot.command(aliases=('sttscore','superttscore','stts',))
 async def supertimetravelscore(ctx):
 
-    embed = await misc.supertimetravelscore(ctx.prefix)
+    embed = await timetravel.supertimetravelscore(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
 
@@ -852,9 +890,12 @@ async def mytt(ctx):
     my_tt = int(user_settings[0])
     
     tt_data = await get_tt_unlocks(ctx, int(my_tt))
-    tt_embed = await misc.timetravel_specific(tt_data, ctx.prefix, True)
+    tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
     
+
+# --- Professions ---
+
 # Command "professions" - Overview about professions
 @bot.command(aliases=('pr','professions',))
 async def profession(ctx):
@@ -896,6 +937,9 @@ async def ascension(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
 
+
+# --- Miscellaneous ---
+
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
 async def tip(ctx):
@@ -932,6 +976,17 @@ async def wiki(ctx):
     
     await ctx.send(f'You can find the EPIC RPG wiki here:\nhttps://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki')
     
+# Command "duels" - Returns all duelling weapons
+@bot.command(aliases=('duel',))
+async def duels(ctx):
+
+    embed = await misc.duels(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
+
+# --- Silly Stuff ---
+
 # Command "Panda" - because Panda
 @bot.command()
 async def panda(ctx):
@@ -957,6 +1012,9 @@ async def brandon(ctx):
 async def me(ctx):
     
     await ctx.send(f'You are **{ctx.author.name}**.\nDid you really need me to remind you?')
+
+
+# --- Owner Commands ---
 
 # Shutdown command (only I can use it obviously)
 @bot.command()
