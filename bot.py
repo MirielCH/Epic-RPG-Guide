@@ -557,6 +557,7 @@ async def dungeon(ctx, *args):
                 return
             else:
                 await log_error(ctx, 'Error parsing command "dungeon"')
+                raise
 
 # Command "dungeonstats" - Returns recommended stats for all dungeons
 @bot.command(aliases=('dstats','ds',))
@@ -707,6 +708,7 @@ async def area(ctx, *args):
                 return
             else:
                 await log_error(ctx, 'Error parsing command "area"')
+                raise
 
 # Command "trades" - Returns recommended trades of all areas
 @bot.command(aliases=('tr',))

@@ -176,8 +176,10 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             work_cmd = f'{emojis.bp} `drill` if you need coins'
         else:
             if user_asc == 'ascended':
-                work_cmd = f'{emojis.bp} `ascended dynamite` if not in round down TT (see `{prefix}tt`)\n'\
-                            f'{emojis.bp} `chainsaw` otherwise'
+                if user_tt in (2,3,6,7,9,10,12,15,17,20,22,24):
+                    work_cmd = f'{emojis.bp} `ascended dynamite`'
+                else:
+                    work_cmd = f'{emojis.bp} `ascended chainsaw`'
             else:
                 if rich_threshold == -1:
                     work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
@@ -229,7 +231,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     if not time_traveller_prepare == True:
         embed.add_field(name=f'REC. MINIMUM GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
-        embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
+        embed.add_field(name=f'REC. MINIMUM STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
     if ((area_no == 3) and (user_tt > 4)) or (area_no in (5,8)):
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveller_prepare == True:
