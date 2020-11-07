@@ -544,7 +544,12 @@ async def area(ctx, *args):
                     else:
                         traderate_data_next = ''
                     if area_no in (3,5):
-                        mats_data = await get_mats_data(ctx, user_settings[0])
+                        if user_settings[0] <= 25:
+                            mats_data = await get_mats_data(ctx, user_settings[0])
+                        else:
+                            mats_data = await get_mats_data(ctx, 25)
+                    else:
+                        mats_data = ''
                     area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
                     await ctx.send(file=area_embed[0], embed=area_embed[1])
             except:
@@ -582,7 +587,10 @@ async def area(ctx, *args):
             else:
                 traderate_data_next = ''
             if area_no in (3,5):
-                mats_data = await get_mats_data(ctx, user_settings[0])
+                if user_settings[0] <= 25:
+                    mats_data = await get_mats_data(ctx, user_settings[0])
+                else:
+                    mats_data = await get_mats_data(ctx, 25)
             else:
                 mats_data = ''
             area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
@@ -715,10 +723,10 @@ async def profession(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "prlevel" - How to level up professions
-@bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionslevelling','professionlevelling','prlevels','prlevelling',))
+@bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionsleveling','professionleveling','prlevels','prleveling',))
 async def professionlevel(ctx):
     
-    embed = await professions.professions_levelling(ctx.prefix)
+    embed = await professions.professions_leveling(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
     

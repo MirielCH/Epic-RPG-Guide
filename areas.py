@@ -82,7 +82,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     # Area locked
     if time_traveller_area_locked == True:
         area_locked = f'{emojis.bp} **You can not reach this area in your current TT**'
-        footer = f'Tip: See {prefix}tt for details about time travelling'
+        footer = f'Tip: See {prefix}tt for details about time traveling'
     else:
         area_locked = ''
         

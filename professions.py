@@ -44,17 +44,17 @@ async def professions_overview(prefix):
             
     return (thumbnail, embed)
 
-# Professions levelling guide
-async def professions_levelling(prefix):
+# Professions leveling guide
+async def professions_leveling(prefix):
     
     crafter =   f'{emojis.bp} This is the first profession you should level up\n'\
-                f'{emojis.bp} Level **before time travelling** with leftover materials\n'\
+                f'{emojis.bp} Level **before time traveling** with leftover materials\n'\
                 f'{emojis.bp} Trade everything to {emojis.log} logs and craft/dismantle {emojis.logepic} EPIC logs\n'\
                 f'{emojis.bp} Craft in batches of 500, dismantle in batches of 1000\n'\
-                f'{emojis.bp} Once you reach level 90, switch to levelling merchant'
+                f'{emojis.bp} Once you reach level 90, switch to leveling merchant'
     
     merchant =  f'{emojis.bp} This is the second profession you should level up\n'\
-                f'{emojis.bp} Level **before time travelling** with leftover materials\n'\
+                f'{emojis.bp} Level **before time traveling** with leftover materials\n'\
                 f'{emojis.bp} Trade everything to {emojis.log} logs\n'\
                 f'{emojis.bp} For each level look up `rpg pr merchant` and calculate the XP you need for the next level\n'\
                 f'{emojis.bp} Take 5x the XP amount and sell as many {emojis.log} logs\n'\
@@ -69,14 +69,14 @@ async def professions_levelling(prefix):
                 f'{emojis.bp} Higher tier work commands give more XP'
                 
     enchanter = f'{emojis.bp} This is the last profession you should level up because of costs\n'\
-                f'{emojis.bp} Level **before time travelling** using `transmute`\n'\
+                f'{emojis.bp} Level **before time traveling** using `transmute`\n'\
                 f'{emojis.bp} XP gain is based on the quality of the enchant you get\n'\
                 f'{emojis.bp} You will need around 2 billion coins to reach level 100\n'\
                 f'{emojis.bp} A {emojis.horset8} T8 horse is helpful'
     
     embed = discord.Embed(
         color = global_data.color,
-        title = f'LEVELLING UP PROFESSIONS',
+        title = f'LEVELING UP PROFESSIONS',
         description =   f'Don\'t stress about it too much, it usually takes around 10 time travels to reach ascension.\n'\
                         f'For detailed XP calculations check out the [Wiki](https://epic-rpg.fandom.com/wiki/Professions)'
     )    
