@@ -6,7 +6,7 @@ import global_data
 from humanfriendly import format_timespan
 
 # Create field "Recommended Stats"
-async def design_field_rec_stats(field_rec_stats_data):
+async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     
     player_at = field_rec_stats_data[0]
     player_def = field_rec_stats_data[1]
@@ -16,16 +16,26 @@ async def design_field_rec_stats(field_rec_stats_data):
     player_level = field_rec_stats_data[5]
     dungeon_no = field_rec_stats_data[6]
     
-    if life_boost == 'true':
-        if dungeon_no < 11:
-            life_boost = '(buy boost if necessary)'
+    player_at = f'{player_at:,}'.replace(',','\'')
+    player_def = f'{player_def:,}'.replace(',','\'')
+    player_life = f'{player_life:,}'.replace(',','\'')
+    
+    if short_version == False:
+        if life_boost == 'true':
+            if dungeon_no < 11:
+                life_boost = '(buy boost if necessary)'
+            else:
+                life_boost = '(buy boost and cook food if necessary)'
         else:
-            life_boost = '(buy boost and cook food if necessary)'
+            life_boost = ''
     else:
         life_boost = ''
     
     if not player_carry_def == 0:
-        player_carry_def = f'({player_carry_def}+ to carry)'
+        if short_version == False:
+            player_carry_def = f'({player_carry_def}+ to carry)'
+        else:
+            player_carry_def = f'({player_carry_def})'
     else:
         player_carry_def = ''
         
@@ -41,13 +51,39 @@ async def design_field_rec_stats(field_rec_stats_data):
     if player_level == 0:
         player_level = '-'
     
-    field_name = 'REC. MINIMUM STATS'
-    field_value = f'{emojis.bp} {emojis.statat} **AT**: {player_at}\n'\
-    f'{emojis.bp} {emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'\
-    f'{emojis.bp} {emojis.statlife} **LIFE**: {player_life} {life_boost}\n'\
-    f'{emojis.bp} {emojis.statlevel} **LEVEL**: {player_level}'
+    if short_version == False:
+        field_value =   f'{emojis.bp} {emojis.statat} **AT**: {player_at}\n'\
+                        f'{emojis.bp} {emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'\
+                        f'{emojis.bp} {emojis.statlife} **LIFE**: {player_life} {life_boost}\n'\
+                        f'{emojis.bp} {emojis.statlevel} **LEVEL**: {player_level}'
+    else:
+        field_value =   f'{emojis.statat} **AT**: {player_at}\n'\
+                        f'{emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'\
+                        f'{emojis.statlife} **LIFE**: {player_life} {life_boost}\n'\
+                        f'{emojis.statlevel} **LEVEL**: {player_level}\n{emojis.blank}'
     
-    return (field_name, field_value)
+    return field_value
+
+# Create field "Recommended gear"
+async def design_field_rec_gear(field_rec_gear_data):
+    
+    player_sword = field_rec_gear_data[0]
+    player_sword_enchant = field_rec_gear_data[1]
+    player_sword_emoji = field_rec_gear_data[2]
+    player_armor = field_rec_gear_data[3]
+    player_armor_enchant = field_rec_gear_data[4]
+    player_armor_emoji = field_rec_gear_data[5]
+    
+    if not player_armor_enchant == '':
+        player_armor_enchant = f'[{player_armor_enchant}]'
+    
+    if not player_sword_enchant == '':
+        player_sword_enchant = f'[{player_sword_enchant}]'
+    
+    field_value =   f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'\
+                    f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}'
+    
+    return field_value
 
 # Create dungeon embed
 async def dungeon(dungeon_data, prefix):
@@ -78,6 +114,9 @@ async def dungeon(dungeon_data, prefix):
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await design_field_rec_stats(field_rec_stats_data)
     
+    field_rec_gear_data = (player_sword, player_sword_enchant, player_sword_emoji, player_armor, player_armor_enchant, player_armor_emoji)
+    field_rec_gear = await design_field_rec_gear(field_rec_gear_data)
+    
     if min_players == max_players:
         players = f'{emojis.bp} {min_players}'
     else:
@@ -105,12 +144,6 @@ async def dungeon(dungeon_data, prefix):
         key_price = f'{key_price} coins'
     else:
         key_price = f'You can only enter this dungeon with a {emojis.horset6} T6+ horse.'
-    
-    if not player_armor_enchant == '':
-        player_armor_enchant = f'[{player_armor_enchant}]'
-    
-    if not player_sword_enchant == '':
-        player_sword_enchant = f'[{player_sword_enchant}]'
     
     if 1 <= dungeon_no <= 9:
         embed_description = 'This is a simple stats based dungeon.'
@@ -190,11 +223,60 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.bp} {key_price}', inline=False)
     embed.add_field(name='BOSS STATS', value=f'{emojis.bp} {emojis.statat} **AT**: {boss_at}\n'
                     f'{emojis.bp} {emojis.statlife} **LIFE**: {boss_life}', inline=False)
-    embed.add_field(name='REC. MINIMUM GEAR', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
-                    f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
-    embed.add_field(name=field_rec_stats[0], value=field_rec_stats[1], inline=False)
+    embed.add_field(name='REC. MINIMUM GEAR', value=field_rec_gear, inline=False)
+    embed.add_field(name='REC. MINIMUM STATS', value=field_rec_stats, inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear for all dungeons\n{emojis.bp} `{prefix}ds` : Recommended stats for all dungeons', inline=False)
     
     return (thumbnail, embed)
+    
+# Recommended stats for all dungeons
+async def dungeon_rec_stats(rec_stats_data, prefix):
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'RECOMMENDED STATS FOR ALL DUNGEONS',
+        description = f'\u200b'
+    )    
+    embed.set_footer(text=f'Tip: Use {prefix}dg to see the recommended gear for all dungeons.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    for dung_x in rec_stats_data:
+        dungeon_no = dung_x[6]
         
+        field_rec_stats = await design_field_rec_stats(dung_x, True)
+        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
+        
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d[1-15]` : Details about specific dungeons\n{emojis.bp} `{prefix}dg` : Recommended gear for all dungeons', inline=False)
+            
+    return (thumbnail, embed)
+
+# Recommended gear for all dungeons
+async def dungeon_rec_gear(rec_gear_data, prefix, page):
+
+    if page == 1:
+        title_value = f'RECOMMENDED GEAR FOR DUNGEONS 1 TO 9'
+        description_value = f'➜ See `{prefix}dg2` for dungeons 10 to 15.'
+    elif page == 2:
+        title_value = f'RECOMMENDED GEAR FOR DUNGEONS 10 TO 15'
+        description_value = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
+                    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = title_value,
+        description = description_value
+    )    
+    embed.set_footer(text=f'Tip: Use {prefix}ds to see the recommended stats for all dungeons.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    for dung_x in rec_gear_data:
+        dungeon_no = dung_x[6]
+        field_rec_gear = await design_field_rec_gear(dung_x)
+        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
+    
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d[1-15]` : Details about specific dungeons\n{emojis.bp} `{prefix}ds` : Recommended stats for all dungeons', inline=False)
+            
+    return (thumbnail, embed)
     

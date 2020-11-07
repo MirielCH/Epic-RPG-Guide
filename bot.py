@@ -112,6 +112,43 @@ async def get_dungeon_data(ctx, dungeon):
         
     return dungeon_data
 
+# Get all necessary data for the recommended stats of all dungeons
+async def get_rec_stats_data(ctx):
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d')
+        record = cur.fetchall()
+        
+        if record:
+            rec_stats_data = record
+        else:
+            await log_error(ctx, 'No recommended dungeon stats data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return rec_stats_data
+
+# Get all necessary data for the recommended gear of all dungeons
+async def get_rec_gear_data(ctx, page):
+    
+    try:
+        cur=erg_db.cursor()
+        if page == 1:
+            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, g1.emoji, d.player_armor_name, d.player_armor_enchant, g2.emoji, d.dungeon FROM dungeons d INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
+        elif page == 2:
+            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, g1.emoji, d.player_armor_name, d.player_armor_enchant, g2.emoji, d.dungeon FROM dungeons d INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 15')
+        record = cur.fetchall()
+        
+        if record:
+            rec_gear_data = record
+        else:
+            await log_error(ctx, 'No recommended dungeon gear data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return rec_gear_data
+
 # Get all necessary data for the area embeds
 async def get_area_data(ctx, area):
     
@@ -258,14 +295,20 @@ async def log_error(ctx, error, guild_join=False):
     
     if guild_join == False:
         try:
+            settings = ''
+            try:
+                user_settings = await get_settings(bot, ctx)
+                settings = f'TT{user_settings[0]}, {user_settings[1]}'
+            except:
+                settings = 'N/A'
             cur=erg_db.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error)))
+            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error), settings))
         except sqlite3.Error as db_error:
             print(print(f'Error inserting error (ha) into database.\n{db_error}'))
     else:
         try:
             cur=erg_db.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error)))
+            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
         except sqlite3.Error as db_error:
             print(print(f'Error inserting error (ha) into database.\n{db_error}'))
 
@@ -302,7 +345,7 @@ bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insens
 async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f'EPIC RPG'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
     
 # Send message to system channel when joining a server
 @bot.event
@@ -414,7 +457,7 @@ async def setprogress(ctx):
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
 
-# Long guide
+# Main guide
 @bot.command(name='guide',aliases=('help','g',))
 async def guide_long(ctx, *args):
     
@@ -422,6 +465,8 @@ async def guide_long(ctx, *args):
     
     progress =  f'{emojis.bp} `{prefix}area [1-15]` / `{prefix}a[1-15]` : Area guides\n'\
                 f'{emojis.bp} `{prefix}dungeon [1-15]` / `{prefix}d[1-15]` : Dungeon guides\n'\
+                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Recommended gear for all dungeons\n'\
+                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Recommended stats for all dungeons\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
@@ -437,7 +482,8 @@ async def guide_long(ctx, *args):
                 f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
                 
     settings =  f'{emojis.bp} `{prefix}settings` : Check your user settings\n'\
-                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings'
+                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'\
+                f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
     
     embed = discord.Embed(
         color = global_data.color,
@@ -469,8 +515,18 @@ async def dungeon(ctx, *args):
     invoked = ctx.message.content
     invoked = invoked.lower()
     if args:
-        if len(args)>1:
+        if len(args)>2:
             return
+        elif len(args)==2:
+            if args[0] == 'gear':
+                try:
+                    if int(args[1]) in (1,2):
+                        x = await dungeongear(ctx, int(args[1]))
+                        return
+                except:
+                    return
+            else:
+                return
         else:
             try:
                 if 1 <= int(args[0]) <= 15:
@@ -478,11 +534,18 @@ async def dungeon(ctx, *args):
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                     await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
             except:
-                args_check = args[0]
-                if not args_check.isnumeric():
+                if args[0] == 'gear':
+                    x = await dungeongear(ctx, 1)
+                    return
+                elif args[0] == 'stats':
+                    x = await dungeonstats(ctx)
                     return
                 else:
-                    await log_error(ctx, 'Error parsing command "dungeon"')
+                    args_check = args[0]
+                    if not args_check.isnumeric():
+                        return
+                    else:
+                        await log_error(ctx, 'Error parsing command "dungeon"')
     else:
         try:
             dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')           
@@ -494,6 +557,50 @@ async def dungeon(ctx, *args):
                 return
             else:
                 await log_error(ctx, 'Error parsing command "dungeon"')
+
+# Command "dungeonstats" - Returns recommended stats for all dungeons
+@bot.command(aliases=('dstats','ds',))
+async def dungeonstats(ctx):
+    
+    rec_stats_data = await get_rec_stats_data(ctx)
+    
+    embed = await dungeons.dungeon_rec_stats(rec_stats_data, ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "dungeongear" - Returns recommended gear for all dungeons
+@bot.command(aliases=('dgear','dg','dg1','dg2',))
+async def dungeongear(ctx, *args):
+    
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    
+    if len(args)>1:
+        return
+    elif len(args)==1:
+        try:
+            page = int(args[0])
+            if page in (1,2):
+                rec_gear_data = await get_rec_gear_data(ctx, page)
+                embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
+            else:
+                return
+        except:
+            return
+    else:
+        page = invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','').replace(f'{ctx.prefix}dg','')
+        try:
+            page = int(page)
+            rec_gear_data = await get_rec_gear_data(ctx, page)
+            embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
+        except:
+            if page == '':
+                rec_gear_data = await get_rec_gear_data(ctx, 1)
+                embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
+            else:
+                return
+
+    await ctx.send(file=embed[0], embed=embed[1])
 
 # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
 area_aliases = ['area',]
@@ -785,6 +892,12 @@ async def invite(ctx):
     
     await ctx.send(f'I\'m flattered by your interest, but this bot is still in development and not yet available publicly.')
     
+# Command "wiki"
+@bot.command()
+async def wiki(ctx):
+    
+    await ctx.send(f'You can find the EPIC RPG wiki here:\nhttps://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki')
+    
 # Command "Panda" - because Panda
 @bot.command()
 async def panda(ctx):
@@ -826,9 +939,9 @@ async def shutdown(ctx):
         await ctx.bot.logout()
 
 # Statistics command (only I can use this)
-@bot.command(aliases=('stats',))
+@bot.command()
 @commands.is_owner()
-async def statistics(ctx):
+async def devstats(ctx):
 
     guilds = len(list(bot.guilds))
     user_number = await get_user_number(ctx)

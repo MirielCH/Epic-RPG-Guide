@@ -55,7 +55,7 @@ async def timetravel(prefix):
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
     return (thumbnail, embed)
 
