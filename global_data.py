@@ -6,8 +6,8 @@ import os
 bot_dir = os.path.dirname(__file__)
 
 # Databases
-dbfile = os.path.join(bot_dir, 'erg_db.db')
-default_dbfile = os.path.join(bot_dir, 'erg_db_default.db')
+dbfile = os.path.join(bot_dir, 'database/erg_db.db')
+default_dbfile = os.path.join(bot_dir, 'database/erg_db_default.db')
 
 # Pictures
 thumbnail = os.path.join(bot_dir, 'images/erg.png')

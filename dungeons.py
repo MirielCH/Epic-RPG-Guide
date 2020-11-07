@@ -15,7 +15,7 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     life_boost = field_rec_stats_data[4]
     player_level = field_rec_stats_data[5]
     dungeon_no = field_rec_stats_data[6]
-    
+
     player_at = f'{player_at:,}'.replace(',','\'')
     player_def = f'{player_def:,}'.replace(',','\'')
     player_life = f'{player_life:,}'.replace(',','\'')
@@ -39,13 +39,13 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     else:
         player_carry_def = ''
         
-    if player_at == 0:
+    if player_at == '0':
         player_at = '-'
     
-    if player_def == 0:
+    if player_def == '0':
         player_def = '-'
         
-    if player_life == 0:
+    if player_life == '0':
         player_life = '-'
     
     if player_level == 0:
