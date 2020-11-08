@@ -61,7 +61,7 @@ async def design_field_traderate(traderate_data):
             
     return (field_value)
 
-# Trades before leaving areas
+# Trades before leaving all areas
 async def trades(user_settings, prefix):
     
     embed = discord.Embed(
@@ -69,7 +69,7 @@ async def trades(user_settings, prefix):
         title = f'AREA TRADES',
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
     )    
-    embed.set_footer(text=f'Tip: Use {prefix}trr to see the trade rates of all areas.')
+    embed.set_footer(text=f'Tip: Use {prefix}tr[1-15] to see the trades of a specific area only.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
@@ -85,6 +85,28 @@ async def trades(user_settings, prefix):
                 field_value = await design_field_trades(x)
                 embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             
+    
+    return (thumbnail, embed)
+
+# Trades before leaving area X
+async def trades_area_specific(user_settings, area_no, prefix):
+    
+    if area_no==11: 
+        if user_settings[0]==0:
+            description = f'{emojis.bp} No trades because of {emojis.timetravel} time travel'
+        else:
+            description = await design_field_trades(area_no)
+    else:
+        description = await design_field_trades(area_no)
+    
+    embed = discord.Embed(
+        color = 8983807,
+        title = f'TRADES BEFORE LEAVING AREA {area_no}',
+        description = description
+    )    
+    embed.set_footer(text=f'Tip: Use {prefix}tr to see the trades of ALL areas.')
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     return (thumbnail, embed)
 

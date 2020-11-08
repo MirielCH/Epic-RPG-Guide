@@ -497,10 +497,10 @@ async def guide_long(ctx, *args):
     
     prefix = await get_prefix(bot, ctx)
     
-    progress =  f'{emojis.bp} `{prefix}area [1-15]` / `{prefix}a[1-15]` : Area guides\n'\
-                f'{emojis.bp} `{prefix}dungeon [1-15]` / `{prefix}d[1-15]` : Dungeon guides\n'\
-                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Dungeon gear summary\n'\
-                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Dungeon stats summary\n'\
+    progress =  f'{emojis.bp} `{prefix}area [#]` / `{prefix}a[#]` : Guide for area 1~15\n'\
+                f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d[#]` : Guide for dungeon 1~15\n'\
+                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Rec. gear (summary)\n'\
+                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Rec. stats (summary)\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
@@ -509,8 +509,9 @@ async def guide_long(ctx, *args):
     animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
                 f'{emojis.bp} `{prefix}pets` : Pets guide\n'\
     
-    trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
-                f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
+    trading =   f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr[#]` : Trades in area 1~15\n'\
+                f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Area trades (summary)\n'\
+                f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
                 
     professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
@@ -752,15 +753,52 @@ async def area(ctx, *args):
             else:
                 raise
 
-# Command "trades" - Returns recommended trades of all areas
-@bot.command(aliases=('tr',))
-async def trades(ctx):
+# Command "trades" - Returns recommended trades of one area or all areas
+
+trades_aliases = ['tr',]
+for x in range(1,16):
+    trades_aliases.append(f'tr{x}')    
+    trades_aliases.append(f'trades{x}') 
+
+@bot.command(aliases=trades_aliases)
+async def trades(ctx, *args):
     
     user_settings = await get_settings(bot, ctx)
     
-    embed = await trading.trades(user_settings, ctx.prefix)
+    invoked = ctx.message.content
+    invoked = invoked.lower()
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    if args:
+        if len(args)>1:
+            return
+        elif len(args)==1:
+            try:
+                area_no = int(args[0])
+                if 1 <= area_no <= 15:
+                    embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
+                    await ctx.send(file=embed[0], embed=embed[1])
+                else:
+                    return
+            except:
+                embed = await trading.trades(user_settings, ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1]) 
+        else:
+            return
+    else:
+        try:
+            area_no = invoked.replace(f'{ctx.prefix}trades','').replace(f'{ctx.prefix}tr','')
+            area_no = int(area_no)
+            if 1 <= area_no <= 15:
+                embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+            else:
+                return
+        except:
+            if area_no == '':             
+                embed = await trading.trades(user_settings, ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+            else:
+                raise
 
 # Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr',))
