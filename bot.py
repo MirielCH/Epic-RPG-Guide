@@ -505,6 +505,8 @@ async def guide_long(ctx, *args):
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : All enchants'
     
+    animals =   f'{emojis.bp} `{prefix}horse` / `{prefix}h` : Horse guide' 
+    
     trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
                 
@@ -529,6 +531,7 @@ async def guide_long(ctx, *args):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
+    embed.add_field(name='HORSE', value=animals, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)

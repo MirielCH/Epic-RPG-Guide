@@ -199,7 +199,7 @@ async def dungeon(dungeon_data, prefix):
                        f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
         strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_15'
         strategy_name = 'STRATEGY'
-        rewards = f'{emojis.bp} {emojis.timekey} TIME key to unlock SUPER time travel'
+        rewards = f'{emojis.bp} {emojis.timekey} TIME key to unlock super time travel (see `{prefix}stt`)'
     else:
         embed_description = ''
         rewards = 'N/A'
