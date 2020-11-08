@@ -491,7 +491,7 @@ async def setprogress(ctx):
 # --- Main Guide ---
 
 # Main guide
-@bot.command(name='guide',aliases=('help','g',))
+@bot.command(name='guide',aliases=('help','g','h',))
 async def guide_long(ctx, *args):
     
     prefix = await get_prefix(bot, ctx)
@@ -505,7 +505,7 @@ async def guide_long(ctx, *args):
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : All enchants'
     
-    animals =   f'{emojis.bp} `{prefix}horse` / `{prefix}h` : Horse guide' 
+    animals =   f'{emojis.bp} `{prefix}horse` : Horse guide' 
     
     trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
@@ -523,7 +523,7 @@ async def guide_long(ctx, *args):
     embed = discord.Embed(
         color = global_data.color,
         title = 'EPIC RPG GUIDE',
-        description =   f'Note: Some guides show information based on your user settings.\n'\
+        description =   f'Hey **{ctx.author.name}**, what do you want to know?\n'\
                         f'**This bot is still in development, more content will be added soon.**'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with a command.')
@@ -793,7 +793,7 @@ async def drops(ctx):
 # --- Horses ---
 
 # Command "horses" - Returns horse overview
-@bot.command(name='horses', aliases=('horse','h',))
+@bot.command(name='horses', aliases=('horse',))
 async def horses_overview(ctx):
 
     embed = await horses.horses(ctx.prefix)
