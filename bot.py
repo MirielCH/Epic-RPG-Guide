@@ -816,6 +816,14 @@ async def horsetype(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
     
+# Command "horsebreed" - Returns horse breed details
+@bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding',))
+async def horsebreed(ctx):
+
+    embed = await horses.horsebreeding(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
 
 # --- Time Travel ---
 
