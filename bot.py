@@ -13,6 +13,7 @@ import crafting
 import professions
 import misc
 import horses
+import pets
 import timetravel
 import logging
 import logging.handlers
@@ -498,14 +499,15 @@ async def guide_long(ctx, *args):
     
     progress =  f'{emojis.bp} `{prefix}area [1-15]` / `{prefix}a[1-15]` : Area guides\n'\
                 f'{emojis.bp} `{prefix}dungeon [1-15]` / `{prefix}d[1-15]` : Dungeon guides\n'\
-                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Recommended gear for all dungeons\n'\
-                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Recommended stats for all dungeons\n'\
+                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Dungeon gear summary\n'\
+                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Dungeon stats summary\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : All enchants'
     
-    animals =   f'{emojis.bp} `{prefix}horse` : Horse guide' 
+    animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
+                f'{emojis.bp} `{prefix}pets` : Pets guide\n'\
     
     trading =   f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : All area trades\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : All area trade rates'
@@ -531,7 +533,7 @@ async def guide_long(ctx, *args):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
-    embed.add_field(name='HORSE', value=animals, inline=False)
+    embed.add_field(name='HORSE & PETS', value=animals, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
@@ -792,13 +794,32 @@ async def drops(ctx):
 
 # --- Horses ---
 
-# Command "horses" - Returns horse overview
+# Command "horses"
 @bot.command(name='horses', aliases=('horse',))
-async def horses_overview(ctx):
+async def horses_overview(ctx, *args):
 
-    embed = await horses.horses(ctx.prefix)
-    
-    await ctx.send(file=embed[0], embed=embed[1])
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    if args:
+        if len(args)>1:
+            return
+        elif len(args)==1:
+            if (args[0] == 'tier') or (args[0] == 'tiers'):
+                    x = await horsetier(ctx)
+                    return
+            elif (args[0] == 'type') or (args[0] == 'types'):
+                    x = await horsetype(ctx)
+                    return
+            elif (args[0] == 'breed') or (args[0] == 'breeding'):
+                    x = await horsebreed(ctx)
+                    return
+            else:
+                return
+        else:
+            return
+    else:
+        embed = await horses.horses(ctx.prefix)
+        await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "horsetier" - Returns horse tier bonuses
 @bot.command(aliases=('htier','horsestier','horsetiers','horsestiers',))
@@ -824,6 +845,71 @@ async def horsebreed(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
     
+
+# --- Pets ---
+
+# Command "pets" - Returns pets overview
+@bot.command(name='pets', aliases=('pet',))
+async def pets_overview(ctx, *args):
+
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    if args:
+        if len(args)>1:
+            return
+        elif len(args)==1:
+            if (args[0] == 'catch') or (args[0] == 'find') or (args[0] == 'finding') or (args[0] == 'catching'):
+                    x = await petcatch(ctx)
+                    return
+            elif (args[0] == 'fusion') or (args[0] == 'fusing'):
+                    x = await petfusion(ctx)
+                    return
+            elif (args[0] == 'skill') or (args[0] == 'skills'):
+                    x = await petskills(ctx)
+                    return
+            elif (args[0] == 'adv') or (args[0] == 'adventures') or (args[0] == 'adventure'):
+                    x = await petsadventure(ctx)
+                    return
+            else:
+                return
+        else:
+            return
+    else:
+        embed = await pets.pets(ctx.prefix)
+        await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "petcatch" - How to catch pets
+@bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding',))
+async def petcatch(ctx):
+
+    embed = await pets.petscatch(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "petfusion" - Pets fusion guide
+@bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing',))
+async def petfusion(ctx):
+
+    embed = await pets.petsfusion(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+# Command "petskills" - Pet skills
+@bot.command(aliases=('petsskills','petskill','skill','skills','petsskill',))
+async def petskills(ctx):
+
+    embed = await pets.petsskills(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "petsadventures" - Pet adventures
+@bot.command(aliases=('petsadv','petsadventures','petadv','petadventure','petadventures',))
+async def petsadventure(ctx):
+
+    embed = await pets.petsadventures(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
 
 # --- Time Travel ---
 
@@ -978,8 +1064,17 @@ async def codes(ctx):
 # Command "invite"
 @bot.command(aliases=('inv',))
 async def invite(ctx):
+       
+    embed = discord.Embed(
+    color = global_data.color,
+    title = f'NEED A GUIDE?',
+    description =   f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
+                    f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'
+    )    
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
     
-    await ctx.send(f'I\'m flattered by your interest, but this bot is still in development and not yet available publicly.')
+    await ctx.send(file=thumbnail, embed=embed)
     
 # Command "wiki"
 @bot.command()
