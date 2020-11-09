@@ -93,7 +93,7 @@ async def petscatch(prefix):
 # Pet fusion
 async def petsfusion(prefix):
           
-    general =       f'{emojis.bp} Use `pets fusion [ID1] [ID2]`\n'\
+    general =       f'{emojis.bp} Use `pets fusion [petID1] [petID2]`\n'\
                     f'{emojis.bp} You can fuse more than 2 pets but you shouldn\'t\n'\
                     f'{emojis.bp} You can **not** lose tiers when fusing\n'\
                     f'{emojis.bp} You **can** lose skills when fusing\n'\
@@ -111,7 +111,7 @@ async def petsfusion(prefix):
 
     type =          f'{emojis.bp} Fusing changes your pet type randomly\n'\
                     f'{emojis.bp} Exception: Fusing an event pet will give you the event pet back\n'\
-                    f'{emojis.bp} Note: If you fuse multiple event pets, you will **lose all but one**'
+                    f'{emojis.bp} Note: If you fuse 2+ event pets, you will **lose all but one**'
 
     whatfirst =     f'{emojis.bp} Try to tier up to T4+ before you start fusing for skills\n'\
                     f'{emojis.bp} The best skill to keep first is {emojis.skillhappy} happy'
@@ -186,7 +186,7 @@ async def petsskills(prefix):
         color = global_data.color,
         title = f'PET SKILLS',
         description =   f'Overview of all pet skills. See `{prefix}pets` on how to get skills.\n'\
-                        f'Note: Purple and yellow skills are rarer than the blue ones.'
+                        f'Note: Purple and yellow skills are rarer than blue ones.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
@@ -209,20 +209,20 @@ async def petsskills(prefix):
 # Pet adventures
 async def petsadventures(prefix):
           
-    usage =         f'{emojis.bp} Command: `rpg pets adv [pet ID] [type]`\n'\
+    usage =         f'{emojis.bp} Command: `pets adv [petID] [type]`\n'\
                     f'{emojis.bp} You can only send one pet unless it has the {emojis.skillepic} EPIC skill'
 
     types =         f'{emojis.bp} **Dig**: Pet is more likely to find items\n'\
                     f'{emojis.bp} **Drill**: Pet is more likely to find coins\n'\
                     f'{emojis.bp} **Dig**: Pet is more likely to find items\n'\
                     f'{emojis.bp} The type does **not** guarantee the outcome \n'\
-                    f'{emojis.bp} Your pet will never come back empty handed'
+                    f'{emojis.bp} Your pet will never come back emptyhanded'
 
     rewards =       f'{emojis.bp} **Items**: {emojis.log}{emojis.logepic}{emojis.logsuper}{emojis.logmega}{emojis.loghyper}{emojis.logultra} {emojis.fish}{emojis.fishgolden}{emojis.fishepic}\n'\
                     f'{emojis.bp} **Coins**: ~ 700k+\n'\
                     f'{emojis.bp} **Skill rank**: +1 rank of 1 random skill\n'\
                     f'{emojis.bp} **Pet**: Random T1-3 pet (only if pet has {emojis.skillascended} ascended skill)\n'\
-                    f'{emojis.bp} Note: You get a pet **in addition** to the other rewards'
+                    f'{emojis.bp} Note: You get a pet **in addition** to the other reward'
 
     skillsimpact =  f'{emojis.bp} {emojis.skillfast} **Fast**: Reduces the time to do adventures\n'\
                     f'{emojis.bp} {emojis.skilldigger} **Digger**: Increases the amount of coins you get\n'\

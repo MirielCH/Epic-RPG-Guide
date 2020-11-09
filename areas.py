@@ -103,7 +103,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             quick_guide_enchant_sword = f' and enchant to [{player_sword_enchant}+]'
         else:
             if upgrade_sword_enchant == 'true':
-                quick_guide_enchant_sword = f'\n {emojis.bp} Enchant {player_sword_emoji} {player_sword} to [{player_sword_enchant}+]'
+                quick_guide_enchant_sword = f'\n{emojis.bp} Enchant {player_sword_emoji} {player_sword} to [{player_sword_enchant}+]'
         player_sword_enchant = f'[{player_sword_enchant}]'
     
     if not player_armor_enchant == '':
@@ -111,7 +111,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             quick_guide_enchant_armor = f' and enchant to [{player_armor_enchant}+]'
         else:
             if upgrade_armor_enchant == 'true':
-                quick_guide_enchant_armor = f'\n {emojis.bp} Enchant {player_armor_emoji} {player_armor} to [{player_armor_enchant}+]'
+                quick_guide_enchant_armor = f'\n{emojis.bp} Enchant {player_armor_emoji} {player_armor} to [{player_armor_enchant}+]'
         player_armor_enchant = f'[{player_armor_enchant}]'
 
     if time_traveller_prepare == True:
@@ -122,23 +122,23 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         else:
             quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
     elif (area_no == 3) and (user_tt > 4):
-        quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+        quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
     elif area_no in (5,8):
         if not player_level == 0:
-            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
         else:
-            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
     elif area_no == 9:
         if not player_level == 0:
-            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
         else:
-            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
     else:
         if not player_level == 0:
             if area_no == 3:
-                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
             else:
-                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootbox on cooldown'
+                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
         else:
             quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
     if not (int(area_no) in (1,2,4,6,12,13,14,15)) and not (time_traveller_prepare == True):

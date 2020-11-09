@@ -226,7 +226,7 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='REC. MINIMUM GEAR', value=field_rec_gear, inline=False)
     embed.add_field(name='REC. MINIMUM STATS', value=field_rec_stats, inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)
-    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear for all dungeons\n{emojis.bp} `{prefix}ds` : Recommended stats for all dungeons', inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear (summary)\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
     
     return (thumbnail, embed)
     
@@ -248,7 +248,7 @@ async def dungeon_rec_stats(rec_stats_data, prefix):
         field_rec_stats = await design_field_rec_stats(dung_x, True)
         embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
         
-    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d[1-15]` : Details about specific dungeons\n{emojis.bp} `{prefix}dg` : Dungeon gear overview', inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}dg` : Recommended gear (summary)', inline=False)
             
     return (thumbnail, embed)
 
@@ -276,7 +276,7 @@ async def dungeon_rec_gear(rec_gear_data, prefix, page):
         field_rec_gear = await design_field_rec_gear(dung_x)
         embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
     
-    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d[1-15]` : Details about specific dungeons\n{emojis.bp} `{prefix}ds` : Dungeon stats overview', inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
             
     return (thumbnail, embed)
     

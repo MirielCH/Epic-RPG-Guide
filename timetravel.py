@@ -30,7 +30,7 @@ async def timetravel(prefix):
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n{emojis.bp} `{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
     return (thumbnail, embed)
 
@@ -75,7 +75,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
         unlocks = f'{unlocks}{emojis.bp} Unlocks the title **{unlock_title}**\n'
         
     unlocks = f"{unlocks}{emojis.bp} **{bonus_xp} %** increased **XP** from everything except duels\n"\
-              f'{emojis.bp} **{bonus_duel_xp} %** increased XP from **duels**\n'\
+              f'{emojis.bp} **{bonus_duel_xp} %** increased **XP** from **duels**\n'\
               f'{emojis.bp} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'\
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
                   
@@ -86,6 +86,11 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                    f'{emojis.bp} Sell your leftover materials (if any)\n'\
                    f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                    f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+                   
+    prep_stt =     f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
+                   f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
+                   f'{emojis.bp} Level up professions if necessary (see `{prefix}prlevel`)\n'\
+                   f'{emojis.bp} Trade to {emojis.ruby} rubies if you need a higher score (see `{prefix}sttscore`)'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -98,7 +103,11 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
-    embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=preparations, inline=False)
+    if not (mytt == True) and not (tt_no == 0):
+        if 1 <= tt_no <= 25:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=preparations, inline=False)
+        else:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
     return (thumbnail, embed)
@@ -120,8 +129,8 @@ async def supertimetravel(prefix):
                         f'{emojis.bp} {emojis.lbgodly} Start with a GODLY lootbox (6500 score)'
                         
     guides =            f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
-                        f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n'\
-                        f'{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare'
+                        f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n'\
+                        f'{emojis.bp} `{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -164,8 +173,8 @@ async def supertimetravelscore(prefix):
                         
                         
     guides =    f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
-                f'{emojis.bp} `{prefix}mytt` : Details about your next TT and how to prepare\n'\
-                f'{emojis.bp} `{prefix}tt[1-999]` : Details about specific TTs and how to prepare\n'\
+                f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n'\
+                f'{emojis.bp} `{prefix}tt1`-`{prefix}999` : Details about specific TTs and how to prepare\n'\
                 f'{emojis.bp} `{prefix}stt` : Super time travel'
 
     embed = discord.Embed(

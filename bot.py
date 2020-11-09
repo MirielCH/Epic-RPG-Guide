@@ -427,7 +427,7 @@ async def prefix(ctx):
 # --- User Settings ---
 
 # Command "settings" - Returns current user progress settings
-@bot.command()
+@bot.command(aliases=('me',))
 async def settings(ctx):
     
     current_settings = await get_settings(bot, ctx)
@@ -497,19 +497,19 @@ async def guide_long(ctx, *args):
     
     prefix = await get_prefix(bot, ctx)
     
-    progress =  f'{emojis.bp} `{prefix}area [#]` / `{prefix}a[#]` : Guide for area 1~15\n'\
-                f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d[#]` : Guide for dungeon 1~15\n'\
+    progress =  f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15\n'\
+                f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'\
                 f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Rec. gear (summary)\n'\
                 f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Rec. stats (summary)\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
-                f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : All enchants'
+                f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     
     animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
                 f'{emojis.bp} `{prefix}pets` : Pets guide\n'\
     
-    trading =   f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr[#]` : Trades in area 1~15\n'\
+    trading =   f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
                 f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Area trades (summary)\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
                 
@@ -517,9 +517,10 @@ async def guide_long(ctx, *args):
     
     misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
                 f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
-                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
+                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'\
+                f'{emojis.bp} `{prefix}invite` : Invite me to your server'
                 
-    settings =  f'{emojis.bp} `{prefix}settings` : Check your user settings\n'\
+    settings =  f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'\
                 f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'\
                 f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
     
@@ -546,10 +547,11 @@ async def guide_long(ctx, *args):
 # --- Dungeons ---
 
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
-dungeon_aliases = ['dungeon',]
+dungeon_aliases = ['dungeon','dung',]
 for x in range(1,16):
     dungeon_aliases.append(f'd{x}')    
     dungeon_aliases.append(f'dungeon{x}') 
+    dungeon_aliases.append(f'dung{x}')
 
 @bot.command(name='d',aliases=(dungeon_aliases))
 async def dungeon(ctx, *args):
@@ -590,7 +592,7 @@ async def dungeon(ctx, *args):
                         raise
     else:
         try:
-            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}d','')           
+            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}dung','').replace(f'{ctx.prefix}d','')           
             dungeon_data = await get_dungeon_data(ctx, int(dungeon_no))
             dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
             await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
@@ -801,7 +803,7 @@ async def trades(ctx, *args):
                 raise
 
 # Command "traderates" - Returns trade rates of all areas
-@bot.command(aliases=('trr',))
+@bot.command(aliases=('trr','rates',))
 async def traderates(ctx):
     
     traderate_data = await get_traderate_data(ctx, 'all')
@@ -814,7 +816,7 @@ async def traderates(ctx):
 # --- Crafting ---
 
 # Command "enchants"
-@bot.command(aliases=('enchant','e',))
+@bot.command(aliases=('enchant','e','enchanting',))
 async def enchants(ctx):
     
     embed = await crafting.enchants(ctx.prefix)
@@ -822,7 +824,7 @@ async def enchants(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "drops" - Returns all monster drops and where to get them
-@bot.command(aliases=('drop',))
+@bot.command(aliases=('drop','mobdrop','mobdrops',))
 async def drops(ctx):
 
     embed = await crafting.drops(ctx.prefix)
@@ -996,7 +998,7 @@ async def timetravel_specific(ctx, *args):
             return
 
 # Command "supertimetravel" - Information about super time travel
-@bot.command(aliases=('stt',))
+@bot.command(aliases=('stt','supertt',))
 async def supertimetravel(ctx):
     
     tt_embed = await timetravel.supertimetravel(ctx.prefix)
@@ -1032,7 +1034,7 @@ async def mytt(ctx):
 # --- Professions ---
 
 # Command "professions" - Overview about professions
-@bot.command(aliases=('pr','professions',))
+@bot.command(aliases=('pr','professions','prof','profs',))
 async def profession(ctx):
     
     embed = await professions.professions_overview(ctx.prefix)
@@ -1040,7 +1042,7 @@ async def profession(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "prlevel" - How to level up professions
-@bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionsleveling','professionleveling','prlevels','prleveling',))
+@bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionsleveling','professionleveling','prlevels','prleveling','proflevel','proflevels','profslevel','profslevels','prlvl',))
 async def professionlevel(ctx):
     
     embed = await professions.professions_leveling(ctx.prefix)
@@ -1065,7 +1067,7 @@ async def prm(ctx, *args):
             await ctx.send(f'Please enter a valid number.')
 
 # Command "ascension" - Ascension guide
-@bot.command(aliases=('asc',))
+@bot.command(aliases=('asc','ascended',))
 async def ascension(ctx):
     
     embed = await professions.ascension(ctx.prefix)
@@ -1092,7 +1094,7 @@ async def tip(ctx):
     await ctx.send(file=thumbnail, embed=embed)
     
 # Command "codes" - Redeemable codes
-@bot.command()
+@bot.command(aliases=('code',))
 async def codes(ctx):
     
     embed = await misc.codes(ctx.prefix)
@@ -1150,12 +1152,6 @@ async def brandon(ctx):
     embed.set_thumbnail(url='attachment://thumbnail.png')
     
     await ctx.send(file=thumbnail, embed=embed)
-    
-# Command "me" - because Panda
-@bot.command()
-async def me(ctx):
-    
-    await ctx.send(f'You are **{ctx.author.name}**.\nDid you really need me to remind you?')
 
 
 # --- Owner Commands ---
@@ -1173,15 +1169,17 @@ async def shutdown(ctx):
     if answer_ascended.content.lower() in ['yes','y']:
         await ctx.send(f'Shutting down.')
         await ctx.bot.logout()
+    else:
+        await ctx.send(f'Phew, was afraid there for a second.')
 
 # Statistics command (only I can use this)
-@bot.command()
+@bot.command(aliases=('devstat',))
 @commands.is_owner()
 async def devstats(ctx):
 
     guilds = len(list(bot.guilds))
     user_number = await get_user_number(ctx)
     
-    await ctx.send(f'I\'m currently in **{guilds} servers** and **{user_number[0]} users** have their settings stored.')
+    await ctx.send(f'I\'m currently in **{guilds} servers**, and **{user_number[0]} users** have their settings stored.')
 
 bot.run(TOKEN)

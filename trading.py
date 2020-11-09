@@ -22,7 +22,7 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 7:
         field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
-                      f'{emojis.bp} Dismantle {emojis.apple} to {emojis.log} logs\n'\
+                      f'{emojis.bp} Dismantle {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 8:
         field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'\
@@ -69,7 +69,7 @@ async def trades(user_settings, prefix):
         title = f'AREA TRADES',
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
     )    
-    embed.set_footer(text=f'Tip: Use {prefix}tr[1-15] to see the trades of a specific area only.')
+    embed.set_footer(text=f'Tip: Use {prefix}tr1-{prefix}tr15 to see the trades of a specific area only.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     

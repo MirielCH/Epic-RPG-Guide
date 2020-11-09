@@ -7,12 +7,16 @@ import emojis
 # Monster drops
 async def drops(prefix):
 
-    items = f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'\
-            f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'\
-            f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas **5~6**\n'\
-            f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas **7~8**\n'\
-            f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'\
-            f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000 coins'
+    items =     f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'\
+                f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'\
+                f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas **5~6**\n'\
+                f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas **7~8**\n'\
+                f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'\
+                f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000 coins'
+
+    chance =    f'{emojis.bp} All items have a 2% base drop chance\n'\
+                f'{emojis.bp} Every {emojis.timetravel} time travel increases the drop chance by ~25%\n'\
+                f'{emojis.bp} A {emojis.horset7} T7+ horse increases the drop chance by 20%\n{emojis.blank}'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -30,7 +34,7 @@ async def drops(prefix):
     embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Areas: 7~8\n{emojis.bp} Source: {emojis.mobmermaid}\n{emojis.bp} Value: 30\'000\n{emojis.blank}', inline=True)
     embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Areas: 9~10\n{emojis.bp} Source: {emojis.mobkillerrobot}\n{emojis.bp} Value: 100\'000\n{emojis.blank}', inline=True)
     embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Areas: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'DROP CHANCE', value=f'{emojis.bp} All items have a 2% base drop chance\n{emojis.bp} The drop chance increases by ~25% every time you time travel\n{emojis.blank}', inline=False)    
+    embed.add_field(name=f'DROP CHANCE', value=chance, inline=False)    
             
     return (thumbnail, embed)
 
