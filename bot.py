@@ -868,7 +868,7 @@ async def enchants(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "drops" - Returns all monster drops and where to get them
-@bot.command(aliases=('drop','mobdrop','mobdrops',))
+@bot.command(aliases=('drop','mobdrop','mobdrops','monsterdrop','monsterdrops',))
 async def drops(ctx):
 
     embed = await crafting.drops(ctx.prefix)
@@ -994,7 +994,7 @@ async def horsetype(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "horsebreed" - Returns horse breed details
-@bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding',))
+@bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding','breedhorse','breedhorses','breedinghorse','breedingshorses',))
 async def horsebreed(ctx):
 
     embed = await horses.horsebreeding(ctx.prefix)
@@ -1035,7 +1035,7 @@ async def pets_overview(ctx, *args):
         await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "petcatch" - How to catch pets
-@bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding',))
+@bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding','catchpet','findpet','catchingpet','findingpet','catchpets','findpets','catchingpets','findingpets',))
 async def petcatch(ctx):
 
     embed = await pets.petscatch(ctx.prefix)
@@ -1043,7 +1043,7 @@ async def petcatch(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
     
 # Command "petfusion" - Pets fusion guide
-@bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing',))
+@bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing','fusepet','fusepets','fusingpet','fusingpets',))
 async def petfusion(ctx):
 
     embed = await pets.petsfusion(ctx.prefix)
@@ -1273,7 +1273,7 @@ async def wiki(ctx):
     await ctx.send(file=thumbnail, embed=embed)
     
 # Command "duels" - Returns all duelling weapons
-@bot.command(aliases=('duel',))
+@bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
 async def duels(ctx):
 
     embed = await misc.duels(ctx.prefix)
