@@ -598,6 +598,9 @@ async def dungeon(ctx, *args):
     
     invoked = ctx.message.content
     invoked = invoked.lower()
+    prefix = ctx.prefix
+    prefix = prefix.lower()
+    
     if args:
         if len(args)>2:
             return
@@ -632,12 +635,12 @@ async def dungeon(ctx, *args):
                         raise
     else:
         try:
-            dungeon_no = invoked.replace(f'{ctx.prefix}dungeon','').replace(f'{ctx.prefix}dung','').replace(f'{ctx.prefix}d','')           
+            dungeon_no = invoked.replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','')           
             dungeon_data = await get_dungeon_data(ctx, int(dungeon_no))
             dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
             await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
         except:
-            if (dungeon_no == '') or not dungeon_no.isnumeric():
+            if (dungeon_no == '') or (dungeon_no == 0) or not dungeon_no.isnumeric():
                 return
             else:
                 raise
@@ -700,6 +703,8 @@ async def area(ctx, *args):
     
     invoked = ctx.message.content
     invoked = invoked.lower()
+    prefix = ctx.prefix
+    prefix = prefix.lower()
     if args:
         if len(args) > 2:
             return        
@@ -708,7 +713,7 @@ async def area(ctx, *args):
                 args_full = str(args[1])
                 args_full = args_full.lower()
                 if args_full == 'full':
-                    area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+                    area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
                     area_no = int(area_no)
                     area_data = await get_area_data(ctx, area_no)
                     user_settings = await get_settings(bot, ctx)
@@ -751,7 +756,7 @@ async def area(ctx, *args):
                     args_full = str(args[0])
                     args_full = args_full.lower()
                     if args_full == 'full':
-                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
                         area_no = int(area_no)
                         area_data = await get_area_data(ctx, int(area_no))
                         user_settings = await get_settings(bot, ctx)
@@ -771,7 +776,7 @@ async def area(ctx, *args):
                     return
     else:
         try:
-            area_no = invoked.replace(f'{ctx.prefix}area','').replace(f'{ctx.prefix}a','')
+            area_no = invoked.replace(f'{prefix}area','').replace(f'{prefix}a','')
             area_no = int(area_no)
             area_data = await get_area_data(ctx, area_no)
             user_settings = await get_settings(bot, ctx)
@@ -790,7 +795,7 @@ async def area(ctx, *args):
             area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
             await ctx.send(file=area_embed[0], embed=area_embed[1])
         except:
-            if (area_no == '') or (area_no == 0):
+            if (area_no == '') or (area_no == 0) or not (area_no.isnumeric()):
                 return
             else:
                 raise
@@ -869,6 +874,78 @@ async def drops(ctx):
     embed = await crafting.drops(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "craft" - Calculates mats you need for amount of items
+@bot.command(aliases=('materials','matsfor','mats',))
+async def craft(ctx, *args):
+
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    
+    if args:
+        itemname = ''
+        amount = 1
+        for arg in args:
+            if not arg.lstrip('-').isnumeric():
+                itemname = f'{itemname} {arg}'
+                itemname = itemname.strip()
+            else:
+                if (arg.find('-') != -1) or (int(arg) == 0):
+                    await ctx.send(f'You know, I\'m no Einstein, but crafting **{arg}** items is gonna be a challenge.')
+                    return
+                else:
+                    amount = int(arg)
+                
+        if not itemname == '' and amount >= 1:
+            try:
+                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ').replace('bananas','banana').replace('apples','apple')
+                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('supercookie','super cookie').replace('pickaxes','pickaxe')
+                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('ed armor','edgy armor').replace('ed sword','edgy sword')
+                itemname_replaced = itemname_replaced.replace('ultralog','ultra log').replace('hyperlog','hyper log').replace('megalog','mega log').replace('epiclog','epic log').replace('goldenfish','golden fish').replace('epicfish','epic fish')                
+                
+                shortcuts = {   
+                    'ed sw': 'edgy sword',
+                    'ue sw': 'ultra-edgy sword',
+                    'brandon': 'epic fish',
+                    'gf': 'golden fish',
+                    'ef': 'epic fish',
+                    'el': 'epic log',
+                    'sl': 'super log',
+                    'ml': 'mega log',
+                    'hl': 'hyper log',
+                    'ul': 'ultra log',
+                    'bf': 'baked fish',
+                    'mc': 'mutant creature',
+                    'fs': 'fruit salad',
+                    'aj': 'apple juice',
+                    'sc': 'super cookie',
+                    'bp': 'banana pickaxe',
+                    'ha': 'heavy apple',
+                    'fl': 'filled lootbox',
+                    'cs': 'coin sandwich'                   
+                }
+                
+                if itemname_replaced in shortcuts:
+                    itemname_replaced = shortcuts[itemname_replaced]                
+                
+                items_data = await get_item_data(ctx, itemname_replaced)
+            except:
+                await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+                return
+            
+            items_values = items_data[1]
+            itemtype = items_values[1]
+            
+            if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
+                await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
+                return
+            
+            response = await crafting.mats(items_data, amount, ctx.prefix)
+            await ctx.send(response)
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
 
 # --- Horses ---
@@ -1093,7 +1170,7 @@ async def professionlevel(ctx):
 async def prm(ctx, *args):
     
     if (len(args) > 1) or (len(args) == 0):
-        await ctx.send(f'The command syntax is `{ctx.prefix}prm [merchant xp]`')
+        await ctx.send(f'The command syntax is `{ctx.prefix}prm [merchant xp]`.\nExample: `{ctx.prefix}prm 1234`')
     else:
         try:
             xp = int(args[0])
@@ -1104,6 +1181,30 @@ async def prm(ctx, *args):
             await ctx.send(f'You need to sell **{logs}** {emojis.log} `wooden log` to get {xp} merchant XP.')
         except:
             await ctx.send(f'Please enter a valid number.')
+            
+# Command "prc" - Info about crafting
+@bot.command()
+async def prc(ctx):
+    
+    await ctx.send(f'To level up crafter, repeatedly craft {emojis.logepic} EPIC logs in batches of 500.\nSee `{ctx.prefix}prlevel` for more information.')
+    
+# Command "pre" - Info about enchanting
+@bot.command()
+async def pre(ctx):
+    
+    await ctx.send(f'To level up enchanter, repeatedly use `transmute`.\nSee `{ctx.prefix}prlevel` for more information.')
+    
+# Command "prw" - Info about worker
+@bot.command()
+async def prw(ctx):
+    
+    await ctx.send(f'To level up worker, use work commands!\nSee `{ctx.prefix}prlevel` for more information.')
+    
+# Command "prl" - Info about lootboxer
+@bot.command()
+async def prl(ctx):
+    
+    await ctx.send(f'To level up lootboxer, open lootboxes!\nSee `{ctx.prefix}prlevel` for more information.')
 
 # Command "ascension" - Ascension guide
 @bot.command(aliases=('asc','ascended',))
@@ -1113,80 +1214,6 @@ async def ascension(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
 
-
-# --- Mats calculator---
-
-# Command "mats" - Calculates mats you need for amount of items
-@bot.command(aliases=('materials','matsfor','mats',))
-async def craft(ctx, *args):
-
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    
-    if args:
-        itemname = ''
-        amount = 1
-        for arg in args:
-            if not arg.lstrip('-').isnumeric():
-                itemname = f'{itemname} {arg}'
-                itemname = itemname.strip()
-            else:
-                if (arg.find('-') != -1) or (int(arg) == 0):
-                    await ctx.send(f'You know, I\'m no Einstein, but crafting **{arg}** items is gonna be a challenge.')
-                    return
-                else:
-                    amount = int(arg)
-                
-        if not itemname == '' and amount >= 1:
-            try:
-                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ').replace('bananas','banana').replace('apples','apple')
-                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('supercookie','super cookie').replace('pickaxes','pickaxe')
-                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('ed armor','edgy armor').replace('ed sword','edgy sword')
-                itemname_replaced = itemname_replaced.replace('ultralog','ultra log').replace('hyperlog','hyper log').replace('megalog','mega log').replace('epiclog','epic log').replace('goldenfish','golden fish').replace('epicfish','epic fish')                
-                
-                shortcuts = {   
-                    'ed sw': 'edgy sword',
-                    'ue sw': 'ultra-edgy sword',
-                    'brandon': 'epic fish',
-                    'gf': 'golden fish',
-                    'ef': 'epic fish',
-                    'el': 'epic log',
-                    'sl': 'super log',
-                    'ml': 'mega log',
-                    'hl': 'hyper log',
-                    'ul': 'ultra log',
-                    'bf': 'baked fish',
-                    'mc': 'mutant creature',
-                    'fs': 'fruit salad',
-                    'aj': 'apple juice',
-                    'sc': 'super cookie',
-                    'bp': 'banana pickaxe',
-                    'ha': 'heavy apple',
-                    'fl': 'filled lootbox',
-                    'cs': 'coin sandwich'                   
-                }
-                
-                if itemname_replaced in shortcuts:
-                    itemname_replaced = shortcuts[itemname_replaced]                
-                
-                items_data = await get_item_data(ctx, itemname_replaced)
-            except:
-                await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
-                return
-            
-            items_values = items_data[1]
-            itemtype = items_values[1]
-            
-            if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
-                await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
-                return
-            
-            response = await crafting.mats(items_data, amount, ctx.prefix)
-            await ctx.send(response)
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-    else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
 # --- Miscellaneous ---
 

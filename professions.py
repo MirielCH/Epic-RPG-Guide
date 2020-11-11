@@ -50,7 +50,7 @@ async def professions_leveling(prefix):
     crafter =   f'{emojis.bp} This is the first profession you should level up\n'\
                 f'{emojis.bp} Level **before time traveling** with leftover materials\n'\
                 f'{emojis.bp} Trade everything to {emojis.log} logs and craft/dismantle {emojis.logepic} EPIC logs\n'\
-                f'{emojis.bp} Craft in batches of 500, dismantle in batches of 1000\n'\
+                f'{emojis.bp} Craft in batches of 500 (you can dismantle all at once)\n'\
                 f'{emojis.bp} Once you reach level 90, switch to leveling merchant'
     
     merchant =  f'{emojis.bp} This is the second profession you should level up\n'\
