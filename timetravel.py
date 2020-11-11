@@ -135,7 +135,7 @@ async def supertimetravel(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'SUPER TIME TRAVEL',
-        description =   f'Super time travel is unlocked once you reach {emojis.timetravel} TT 25. From this point onward have to use `super time travel` to reach the next TT.\n'\
+        description =   f'Super time travel is unlocked once you reach {emojis.timetravel} TT 25. From this point onward you have to use `super time travel` to reach the next TT.\n'\
                         f'Super time travel lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'\
                         f'These bonuses cost score points which are calculated based on your inventory and your gear (see `{prefix}sttscore`).'
                       
@@ -174,7 +174,7 @@ async def supertimetravelscore(prefix):
                         
     guides =    f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
                 f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n'\
-                f'{emojis.bp} `{prefix}tt1`-`{prefix}999` : Details about specific TTs and how to prepare\n'\
+                f'{emojis.bp} `{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare\n'\
                 f'{emojis.bp} `{prefix}stt` : Super time travel'
 
     embed = discord.Embed(

@@ -78,7 +78,7 @@ async def professions_leveling(prefix):
         color = global_data.color,
         title = f'LEVELING UP PROFESSIONS',
         description =   f'Don\'t stress about it too much, it usually takes around 10 time travels to reach ascension.\n'\
-                        f'For detailed XP calculations check out the [Wiki](https://epic-rpg.fandom.com/wiki/Professions)'
+                        f'For detailed XP calculations check out the [Wiki](https://epic-rpg.fandom.com/wiki/Professions).'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')

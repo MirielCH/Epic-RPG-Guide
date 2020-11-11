@@ -106,7 +106,7 @@ async def get_dungeon_data(ctx, dungeon):
     
     try:
         cur=erg_db.cursor()
-        cur.execute('SELECT dungeons.*, g1.emoji, g2.emoji FROM dungeons INNER JOIN gear g1 ON g1.name = dungeons.player_sword_name INNER JOIN gear g2 ON g2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
+        cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
         record = cur.fetchone()
         
         if record:
@@ -141,9 +141,9 @@ async def get_rec_gear_data(ctx, page):
     try:
         cur=erg_db.cursor()
         if page == 1:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, g1.emoji, d.player_armor_name, d.player_armor_enchant, g2.emoji, d.dungeon FROM dungeons d INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
+            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
         elif page == 2:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, g1.emoji, d.player_armor_name, d.player_armor_enchant, g2.emoji, d.dungeon FROM dungeons d INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 15')
+            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 15')
         record = cur.fetchall()
         
         if record:
@@ -160,9 +160,9 @@ async def get_area_data(ctx, area):
     
     try:
         cur=erg_db.cursor()
-        select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.rich_threshold_m, a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.description, a.dungeon, g1.emoji, '\
-                        'g2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
-        cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN gear g1 ON g1.name = d.player_sword_name INNER JOIN gear g2 ON g2.name = d.player_armor_name WHERE a.area=?', (area,))
+        select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.rich_threshold_m, a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.description, a.dungeon, i1.emoji, '\
+                        'i2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
+        cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE a.area=?', (area,))
         record = cur.fetchone()
         
         if record:
@@ -189,6 +189,45 @@ async def get_mats_data(ctx, user_tt):
         await log_error(ctx, error)
         
     return mats_data
+
+# Get item
+async def get_item_data(ctx, itemname):
+    try:
+        cur=erg_db.cursor()
+        
+        if itemname == 'ultra log':
+            itemnames = (itemname, 'hyper log', 'mega log', 'super log', 'epic log')
+        elif itemname == 'hyper log':
+            itemnames = (itemname, 'mega log', 'super log', 'epic log','')
+        elif itemname == 'mega log':
+            itemnames = (itemname, 'super log', 'epic log','','')
+        elif itemname == 'super log':
+            itemnames = (itemname, 'epic log','','','')
+        elif itemname == 'epic fish':
+            itemnames = (itemname, 'golden fish','','','')
+        else:
+            itemnames = (itemname,'','','','')
+            
+        cur.execute(f'SELECT * FROM items WHERE name IN (?,?,?,?,?) ORDER BY level DESC;', itemnames)
+        record = cur.fetchall()
+            
+        if record:
+            items_columns = []
+            colnames = cur.description
+            
+            for row in colnames:
+                items_columns.append(row[0])
+            items_data = [items_columns,]
+            
+            for row in record:
+                items_data.append(list(row))
+        else:
+            itemsdata = None
+        
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return items_data
 
 # Get tt unlocks
 async def get_tt_unlocks(ctx, user_tt):
@@ -503,7 +542,8 @@ async def guide_long(ctx, *args):
                 f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Rec. stats (summary)\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
-    crafting =  f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
+    crafting =  f'{emojis.bp} `{prefix}craft [amount] [item]` : Recipes mats calculator\n'\
+                f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     
     animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
@@ -756,7 +796,6 @@ async def area(ctx, *args):
                 raise
 
 # Command "trades" - Returns recommended trades of one area or all areas
-
 trades_aliases = ['tr',]
 for x in range(1,16):
     trades_aliases.append(f'tr{x}')    
@@ -1062,7 +1101,7 @@ async def prm(ctx, *args):
             xp = f'{xp:,}'.replace(',','\'')
             logs = f'{logs:,}'.replace(',','\'')
             
-            await ctx.send(f'You need to sell **{logs}** {emojis.log} wooden logs to get {xp} merchant XP.')
+            await ctx.send(f'You need to sell **{logs}** {emojis.log} `wooden log` to get {xp} merchant XP.')
         except:
             await ctx.send(f'Please enter a valid number.')
 
@@ -1074,6 +1113,80 @@ async def ascension(ctx):
     
     await ctx.send(file=embed[0], embed=embed[1])
 
+
+# --- Mats calculator---
+
+# Command "mats" - Calculates mats you need for amount of items
+@bot.command(aliases=('materials','matsfor','mats',))
+async def craft(ctx, *args):
+
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    
+    if args:
+        itemname = ''
+        amount = 1
+        for arg in args:
+            if not arg.lstrip('-').isnumeric():
+                itemname = f'{itemname} {arg}'
+                itemname = itemname.strip()
+            else:
+                if (arg.find('-') != -1) or (int(arg) == 0):
+                    await ctx.send(f'You know, I\'m no Einstein, but crafting **{arg}** items is gonna be a challenge.')
+                    return
+                else:
+                    amount = int(arg)
+                
+        if not itemname == '' and amount >= 1:
+            try:
+                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ').replace('bananas','banana').replace('apples','apple')
+                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('supercookie','super cookie').replace('pickaxes','pickaxe')
+                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('ed armor','edgy armor').replace('ed sword','edgy sword')
+                itemname_replaced = itemname_replaced.replace('ultralog','ultra log').replace('hyperlog','hyper log').replace('megalog','mega log').replace('epiclog','epic log').replace('goldenfish','golden fish').replace('epicfish','epic fish')                
+                
+                shortcuts = {   
+                    'ed sw': 'edgy sword',
+                    'ue sw': 'ultra-edgy sword',
+                    'brandon': 'epic fish',
+                    'gf': 'golden fish',
+                    'ef': 'epic fish',
+                    'el': 'epic log',
+                    'sl': 'super log',
+                    'ml': 'mega log',
+                    'hl': 'hyper log',
+                    'ul': 'ultra log',
+                    'bf': 'baked fish',
+                    'mc': 'mutant creature',
+                    'fs': 'fruit salad',
+                    'aj': 'apple juice',
+                    'sc': 'super cookie',
+                    'bp': 'banana pickaxe',
+                    'ha': 'heavy apple',
+                    'fl': 'filled lootbox',
+                    'cs': 'coin sandwich'                   
+                }
+                
+                if itemname_replaced in shortcuts:
+                    itemname_replaced = shortcuts[itemname_replaced]                
+                
+                items_data = await get_item_data(ctx, itemname_replaced)
+            except:
+                await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+                return
+            
+            items_values = items_data[1]
+            itemtype = items_values[1]
+            
+            if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
+                await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
+                return
+            
+            response = await crafting.mats(items_data, amount, ctx.prefix)
+            await ctx.send(response)
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
 # --- Miscellaneous ---
 
@@ -1117,10 +1230,20 @@ async def invite(ctx):
     await ctx.send(file=thumbnail, embed=embed)
     
 # Command "wiki"
-@bot.command()
+@bot.command(aliases=('links','link',))
 async def wiki(ctx):
     
-    await ctx.send(f'You can find the EPIC RPG wiki here:\nhttps://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki')
+    embed = discord.Embed(
+    color = global_data.color,
+    title = f'THERE\'S A WHOLE WORLD OUT THERE',
+    description =   f'{emojis.bp} [EPIC RPG Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
+                    f'{emojis.bp} [EPIC RPG Official Server](https://discord.gg/w5dej5m)\n'\
+                    f'\nPlease note that I am not involved with the official EPIC RPG team.'       
+    )    
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    await ctx.send(file=thumbnail, embed=embed)
     
 # Command "duels" - Returns all duelling weapons
 @bot.command(aliases=('duel',))

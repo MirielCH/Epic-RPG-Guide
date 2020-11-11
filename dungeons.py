@@ -16,9 +16,9 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     player_level = field_rec_stats_data[5]
     dungeon_no = field_rec_stats_data[6]
 
-    player_at = f'{player_at:,}'.replace(',','\'')
-    player_def = f'{player_def:,}'.replace(',','\'')
-    player_life = f'{player_life:,}'.replace(',','\'')
+    player_at = f'{player_at:,}'
+    player_def = f'{player_def:,}'
+    player_life = f'{player_life:,}'
     
     if short_version == False:
         if life_boost == 'true':
@@ -69,10 +69,10 @@ async def design_field_rec_gear(field_rec_gear_data):
     
     player_sword = field_rec_gear_data[0]
     player_sword_enchant = field_rec_gear_data[1]
-    player_sword_emoji = field_rec_gear_data[2]
+    player_sword_emoji = getattr(emojis, field_rec_gear_data[2])
     player_armor = field_rec_gear_data[3]
     player_armor_enchant = field_rec_gear_data[4]
-    player_armor_emoji = field_rec_gear_data[5]
+    player_armor_emoji = getattr(emojis, field_rec_gear_data[5])
     
     if not player_armor_enchant == '':
         player_armor_enchant = f'[{player_armor_enchant}]'
@@ -91,7 +91,7 @@ async def dungeon(dungeon_data, prefix):
     dungeon_no = dungeon_data[0]
     dungeon_tt = dungeon_data[1]
     boss_name = dungeon_data[2]
-    boss_emoji = dungeon_data[3]
+    boss_emoji = getattr(emojis, dungeon_data[3])
     boss_at = dungeon_data[4]
     boss_life = dungeon_data[5]
     min_players = dungeon_data[6]
@@ -108,13 +108,13 @@ async def dungeon(dungeon_data, prefix):
     player_armor = dungeon_data[17]
     player_armor_enchant = dungeon_data[18]
     time_limit = format_timespan(dungeon_data[19])
-    player_sword_emoji = dungeon_data[20]
-    player_armor_emoji = dungeon_data[21]
+    player_sword_emoji = getattr(emojis, dungeon_data[20])
+    player_armor_emoji = getattr(emojis, dungeon_data[21])
     
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await design_field_rec_stats(field_rec_stats_data)
     
-    field_rec_gear_data = (player_sword, player_sword_enchant, player_sword_emoji, player_armor, player_armor_enchant, player_armor_emoji)
+    field_rec_gear_data = (player_sword, player_sword_enchant, dungeon_data[20], player_armor, player_armor_enchant, dungeon_data[21])
     field_rec_gear = await design_field_rec_gear(field_rec_gear_data)
     
     if min_players == max_players:
@@ -130,7 +130,7 @@ async def dungeon(dungeon_data, prefix):
     
     if not boss_life == 0:
         try:
-            boss_life = f'{dungeon_data[5]:,}'.replace(',','\'')
+            boss_life = f'{dungeon_data[5]:,}'
         except:
             boss_life = int(dungeon_data[5])
     else:
@@ -138,7 +138,7 @@ async def dungeon(dungeon_data, prefix):
     
     if not key_price == 0:
         try:
-            key_price = f'{dungeon_data[8]:,}'.replace(',','\'')
+            key_price = f'{dungeon_data[8]:,}'
         except:
             key_price = int(dungeon_data[8])
         key_price = f'{key_price} coins'

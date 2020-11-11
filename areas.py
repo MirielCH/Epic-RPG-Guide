@@ -23,8 +23,8 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     upgrade_armor_enchant = area_data[11]
     area_description = area_data[12]
     dungeon_no = area_data[13]
-    player_sword_emoji = area_data[14]
-    player_armor_emoji = area_data[15]
+    player_sword_emoji = getattr(emojis, area_data[14])
+    player_armor_emoji = getattr(emojis, area_data[15])
     player_at = area_data[16]
     player_def = area_data[17]
     player_carry_def = area_data[18]
@@ -43,13 +43,13 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         mats_apple = mats_data[2]
         if not mats_fish == 0:
             try:
-                mats_fish = f'{mats_fish:,}'.replace(',','\'')
+                mats_fish = f'{mats_fish:,}'
             except:
                 mats_fish = int(mats_fish)
             
         if not mats_apple == 0:
             try:
-                mats_apple = f'{mats_apple:,}'.replace(',','\'')
+                mats_apple = f'{mats_apple:,}'
             except:
                 mats_apple = int(mats_apple)
 
