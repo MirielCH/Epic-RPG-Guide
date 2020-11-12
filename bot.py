@@ -557,8 +557,10 @@ async def guide_long(ctx, *args):
     
     misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
                 f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
-                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'\
-                f'{emojis.bp} `{prefix}invite` : Invite me to your server'
+                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
+                
+    botlinks =  f'{emojis.bp} `{prefix}invite` : Invite me to your server'
+                #f'{emojis.bp} `{prefix}links` : A few links you might be interested in\n'\
                 
     settings =  f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'\
                 f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'\
@@ -578,6 +580,7 @@ async def guide_long(ctx, *args):
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
+    embed.add_field(name='INVITE', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
@@ -1257,32 +1260,53 @@ async def invite(ctx):
     embed = discord.Embed(
     color = global_data.color,
     title = f'NEED A GUIDE?',
-    description =   f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
-                    f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'
+    description =   f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).\n\n'\
+                    f'**If the invite fails, please read!**\n'
+                    f'I am currently in the process of being verified by Discord.\n'
+                    f'Until the verification is complete, I can not join more than 100 servers.\n\n'\
+                    f'**What does this mean?**\n'\
+                    f'It means for you, that if the invitation fails, you unfortunately have to wait until that\'s done.\n'\
+                    f'There is nothing the dev can do to speed this up.\n\n'\
+                    f'**How to see when it\'s done?**\n'\
+                    f'Once a check mark appears before the `BOT` label after my name, I\'m verified.'
+                    #f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
+                    
     )    
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
     await ctx.send(file=thumbnail, embed=embed)
-    
-# Command "wiki"
-@bot.command(aliases=('links','link',))
+
+"""    
+# Command "links"
+@bot.command(aliases=('links','link','support','supportserver',))
 async def wiki(ctx):
+    
+    epicrpgguide =  f'{emojis.bp} [Support server](https://discord.gg/v7WbhnhbgN)\n'\
+                    f'{emojis.bp} [Bot invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot) (**please see `{ctx.prefix}inv` if the invitation fails**)'  
+    
+    epicrpg =       f'{emojis.bp} [Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
+                    f'{emojis.bp} [Official server](https://discord.gg/w5dej5m)\n'\
+                    f'_Please note that I am not involved with the official EPIC RPG team._'       
     
     embed = discord.Embed(
     color = global_data.color,
-    title = f'THERE\'S A WHOLE WORLD OUT THERE',
-    description =   f'{emojis.bp} [EPIC RPG Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
-                    f'{emojis.bp} [EPIC RPG Official Server](https://discord.gg/w5dej5m)\n'\
-                    f'\nPlease note that I am not involved with the official EPIC RPG team.'       
+    title = f'SOME HELPFUL LINKS',
+    description =   f'There\'s a whole world out there.\n'\
+
     )    
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+    embed.add_field(name=f'EPIC RPG GUIDE', value=epicrpgguide, inline=False)
+    embed.add_field(name=f'EPIC RPG', value=epicrpg, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
-    
+"""
 # Command "duels" - Returns all duelling weapons
 @bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
+
 async def duels(ctx):
 
     embed = await misc.duels(ctx.prefix)
