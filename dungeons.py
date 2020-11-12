@@ -110,6 +110,7 @@ async def dungeon(dungeon_data, prefix):
     time_limit = format_timespan(dungeon_data[19])
     player_sword_emoji = getattr(emojis, dungeon_data[20])
     player_armor_emoji = getattr(emojis, dungeon_data[21])
+    image_url = ''
     
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await design_field_rec_stats(field_rec_stats_data)
@@ -180,9 +181,15 @@ async def dungeon(dungeon_data, prefix):
         embed_description = f'This is a trivia themed strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
                        f'{emojis.bp} {player_sword_emoji} {player_sword}\n{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
-        strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_13'
+        strategy =  f'{emojis.bp} You start in room 1, 2 or 3\n'\
+                    f'{emojis.bp} Your goal is to reach the dragon\'s room\n'\
+                    f'{emojis.bp} In each room you will be asked one question\n'\
+                    f'{emojis.bp} Your answer determines your next room\n'\
+                    f'{emojis.bp} Refer to the image below for a walkthrough\n'\
+                    f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_13)'
         strategy_name = 'STRATEGY'
         rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        image_url = 'http://www.zoneseven.ch/epic_rpg_guide/dungeon13.png'
     elif dungeon_no == 14:
         embed_description = f'This is a strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -227,6 +234,9 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='REC. MINIMUM STATS', value=field_rec_stats, inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear (summary)\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
+    if not image_url == '':
+        embed.set_image(url=image_url)
+        embed.add_field(name='WALKTHROUGH', value=f'** **', inline=False)
     
     return (thumbnail, embed)
     

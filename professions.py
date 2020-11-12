@@ -64,15 +64,20 @@ async def professions_leveling(prefix):
     lootboxer = f'{emojis.bp} Levels up automatically when opening lootboxes\n'\
                 f'{emojis.bp} Better lootboxes give more XP\n'\
                 f'{emojis.bp} To maximize XP gain, buy {emojis.lbedgy} EDGY lootboxes on cooldown\n'\
+                f'{emojis.bp} Use `hunt hardmode` whenever you have access (unlocks in A13)\n'\
+                f'{emojis.bp} Try to keep the level at about the same as worker\n'\
+                f'{emojis.bp} If lower than worker, consider cooking {emojis.foodbananapickaxe} banana pickaxes\n'\
                     
     worker =    f'{emojis.bp} Levels up automatically when using work commands\n'\
-                f'{emojis.bp} Higher tier work commands give more XP'
+                f'{emojis.bp} Higher tier work commands give more XP\n'\
+                f'{emojis.bp} Try to keep the level at about the same as lootboxer\n'\
+                f'{emojis.bp} If lower than lootboxer, consider cooking {emojis.foodfilledlootbox} filled lootboxes\n'\
                 
     enchanter = f'{emojis.bp} This is the last profession you should level up because of costs\n'\
                 f'{emojis.bp} Level **before time traveling** using `transmute`\n'\
                 f'{emojis.bp} XP gain is based on the quality of the enchant you get\n'\
-                f'{emojis.bp} You will need around 2 billion coins to reach level 100\n'\
-                f'{emojis.bp} A {emojis.horset8} T8 horse is helpful'
+                f'{emojis.bp} Costs around 3 billion coins without {emojis.horset8} T8+ horse\n'\
+                f'{emojis.bp} Costs around 2 billion coins with {emojis.horset8} T8+ horse'
     
     embed = discord.Embed(
         color = global_data.color,

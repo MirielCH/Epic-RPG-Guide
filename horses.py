@@ -13,7 +13,7 @@ async def horses(prefix):
             f'{emojis.bp} __Very__ small chance of increasing in horse races'
             
     level = f'{emojis.bp} Levels range from 1 to (tier * 10)\n'\
-            f'{emojis.bp} Leveling up increases the horse type bonus (see the [Wiki page](https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'\
+            f'{emojis.bp} Leveling up increases the horse type bonus (see the [Wiki](https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'\
             f'{emojis.bp} Increased by using `horse training` which costs coins\n'\
             f'{emojis.bp} Training cost is reduced by leveling up lootboxer (see `{prefix}pr`)'
             

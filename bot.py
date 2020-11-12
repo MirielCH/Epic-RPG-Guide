@@ -178,7 +178,7 @@ async def get_area_data(ctx, area):
 async def get_mats_data(ctx, user_tt):
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
+        cur.execute('SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
         
         if record:
@@ -208,7 +208,7 @@ async def get_item_data(ctx, itemname):
         else:
             itemnames = (itemname,'','','','')
             
-        cur.execute(f'SELECT * FROM items WHERE name IN (?,?,?,?,?) ORDER BY level DESC;', itemnames)
+        cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?) ORDER BY level DESC;', itemnames)
         record = cur.fetchall()
             
         if record:
@@ -233,7 +233,7 @@ async def get_item_data(ctx, itemname):
 async def get_tt_unlocks(ctx, user_tt):
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
+        cur.execute('SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
         
         if record:
@@ -252,10 +252,10 @@ async def get_traderate_data(ctx, area):
         cur=erg_db.cursor()
         
         if area == 'all':
-            cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
+            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
             record = cur.fetchall()
         else:
-            cur.execute(f'SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (area,))
+            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (area,))
             record = cur.fetchone()
         
         if record:
@@ -272,7 +272,7 @@ async def get_tip(ctx):
     
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
+        cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
         record = cur.fetchone()
         
         if record:
@@ -289,7 +289,7 @@ async def get_user_number(ctx):
     
     try:
         cur=erg_db.cursor()
-        cur.execute(f'SELECT COUNT(*) FROM settings_user')
+        cur.execute('SELECT COUNT(*) FROM settings_user')
         record = cur.fetchone()
         
         if record:
@@ -389,7 +389,7 @@ async def first_time_user(bot, ctx):
     await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
                 f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
                 f'If I guessed wrong, please use `{ctx.prefix}setprogress` to change your settings.\n\n'\
-                '**Note: This bot is still in development, more content will be added soon.**')
+                'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
     
     raise Exception("First time user, no need to continue")
 
@@ -567,8 +567,7 @@ async def guide_long(ctx, *args):
     embed = discord.Embed(
         color = global_data.color,
         title = 'EPIC RPG GUIDE',
-        description =   f'Hey **{ctx.author.name}**, what do you want to know?\n'\
-                        f'**This bot is still in development, more content will be added soon.**'
+        description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with a command.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
@@ -795,16 +794,18 @@ async def area(ctx, *args):
             area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
             await ctx.send(file=area_embed[0], embed=area_embed[1])
         except:
-            if (area_no == '') or (area_no == 0) or not (area_no.isnumeric()):
+            area_no = str(area_no)
+            if (area_no == '') or (area_no == '0') or not (area_no.isnumeric()):
                 return
             else:
                 raise
 
 # Command "trades" - Returns recommended trades of one area or all areas
-trades_aliases = ['tr',]
+trades_aliases = ['tr','trade',]
 for x in range(1,16):
     trades_aliases.append(f'tr{x}')    
-    trades_aliases.append(f'trades{x}') 
+    trades_aliases.append(f'trades{x}')
+    trades_aliases.append(f'trade{x}') 
 
 @bot.command(aliases=trades_aliases)
 async def trades(ctx, *args):
@@ -847,7 +848,7 @@ async def trades(ctx, *args):
                 raise
 
 # Command "traderates" - Returns trade rates of all areas
-@bot.command(aliases=('trr','rates',))
+@bot.command(aliases=('trr','rates','rate','traderate',))
 async def traderates(ctx):
     
     traderate_data = await get_traderate_data(ctx, 'all')
@@ -876,7 +877,7 @@ async def drops(ctx):
     await ctx.send(file=embed[0], embed=embed[1])
 
 # Command "craft" - Calculates mats you need for amount of items
-@bot.command(aliases=('materials','matsfor','mats',))
+@bot.command(aliases=('materials','matsfor','mats','cook',))
 async def craft(ctx, *args):
 
     invoked = ctx.message.content
@@ -907,6 +908,13 @@ async def craft(ctx, *args):
                     'ed sw': 'edgy sword',
                     'ue sw': 'ultra-edgy sword',
                     'brandon': 'epic fish',
+                    'salad': 'fruit salad',
+                    'creature': 'mutant creature',
+                    'cookie': 'super cookie',
+                    'juice': 'apple juice',
+                    'pickaxe': 'banana pickaxe',
+                    'sandwich': 'coin sandwich',
+                    'lootbox': 'filled lootbox',
                     'gf': 'golden fish',
                     'ef': 'epic fish',
                     'el': 'epic log',
@@ -922,7 +930,8 @@ async def craft(ctx, *args):
                     'bp': 'banana pickaxe',
                     'ha': 'heavy apple',
                     'fl': 'filled lootbox',
-                    'cs': 'coin sandwich'                   
+                    'cs': 'coin sandwich',
+                    'lb': 'filled lootbox'                   
                 }
                 
                 if itemname_replaced in shortcuts:
@@ -943,9 +952,9 @@ async def craft(ctx, *args):
             response = await crafting.mats(items_data, amount, ctx.prefix)
             await ctx.send(response)
         else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+            await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
     else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}craft [item name] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+        await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
 
 # --- Horses ---

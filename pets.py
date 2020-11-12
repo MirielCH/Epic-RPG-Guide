@@ -214,7 +214,7 @@ async def petsadventures(prefix):
 
     types =         f'{emojis.bp} **Dig**: Pet is more likely to find items\n'\
                     f'{emojis.bp} **Drill**: Pet is more likely to find coins\n'\
-                    f'{emojis.bp} **Dig**: Pet is more likely to find items\n'\
+                    f'{emojis.bp} **Learn**: Pet is more likely to rank up a skill\n'\
                     f'{emojis.bp} The type does **not** guarantee the outcome \n'\
                     f'{emojis.bp} Your pet will never come back emptyhanded'
 
