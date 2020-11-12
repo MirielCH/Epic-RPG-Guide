@@ -412,14 +412,17 @@ async def on_ready():
 @bot.event
 async def on_guild_join(guild):
     
-    prefix = await get_prefix(bot, guild, True)
-    
-    welcome_message =   f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'\
-                        f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'\
-                        f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'\
-                        f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'\
-    
-    await guild.system_channel.send(welcome_message)
+    try:
+        prefix = await get_prefix(bot, guild, True)
+        
+        welcome_message =   f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'\
+                            f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'\
+                            f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'\
+                            f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'\
+        
+        await guild.system_channel.send(welcome_message)
+    except:
+        return
 
 
 # --- Error Handling ---
@@ -571,7 +574,7 @@ async def guide_long(ctx, *args):
         title = 'EPIC RPG GUIDE',
         description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
-    embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with a command.')
+    embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='PROGRESS', value=progress, inline=False)
@@ -836,7 +839,7 @@ async def trades(ctx, *args):
             return
     else:
         try:
-            area_no = invoked.replace(f'{ctx.prefix}trades','').replace(f'{ctx.prefix}tr','')
+            area_no = invoked.replace(f'{ctx.prefix}trades','').replace(f'{ctx.prefix}trade','').replace(f'{ctx.prefix}tr','')
             area_no = int(area_no)
             if 1 <= area_no <= 15:
                 embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
