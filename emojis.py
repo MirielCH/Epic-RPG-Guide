@@ -115,7 +115,7 @@ lbuncommon = '<:erg_uncommonlootbox:770547275528667137>'
 
 # Materials
 apple = '<:erg_apple:770324897645723650>'
-banana = '<:erg_banana:770324898081406986>'
+fruitbanana = '<:erg_banana:770324898081406986>'
 chip = '<:erg_chip:770324898152579133>'
 dragonscale = '<:erg_dragonscale:770746004420558898>'
 fish = '<:erg_normiefish:770324897884536865>'

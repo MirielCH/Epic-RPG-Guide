@@ -195,20 +195,78 @@ async def get_item_data(ctx, itemname):
     try:
         cur=erg_db.cursor()
         
+        items_data = []
+        
         if itemname == 'ultra log':
-            itemnames = (itemname, 'hyper log', 'mega log', 'super log', 'epic log')
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
         elif itemname == 'hyper log':
-            itemnames = (itemname, 'mega log', 'super log', 'epic log','')
+            itemnames = (itemname,'mega log','super log','epic log','','','','')
         elif itemname == 'mega log':
-            itemnames = (itemname, 'super log', 'epic log','','')
+            itemnames = (itemname,'super log','epic log','','','','','')
         elif itemname == 'super log':
-            itemnames = (itemname, 'epic log','','','')
+            itemnames = (itemname,'epic log','','','','','','')
         elif itemname == 'epic fish':
-            itemnames = (itemname, 'golden fish','','','')
+            itemnames = (itemname,'golden fish','','','','','','')
+        elif itemname == 'wooden sword':
+            itemnames = (itemname,'epic log','','','','','','')
+        elif itemname == 'fish sword':
+            itemnames = (itemname,'golden fish','','','','','','')
+        elif itemname == 'wolf armor':
+            itemnames = (itemname,'epic log','','','','','','')
+        elif itemname == 'apple sword':
+            itemnames = (itemname,'super log','epic log','','','','','')
+        elif itemname == 'eye armor':
+            itemnames = (itemname,'super log','epic log','','','','','')
+        elif itemname == 'zombie sword':
+            itemnames = (itemname,'super log','epic log','','','','','')
+        elif itemname == 'banana armor':
+            itemnames = (itemname,'super log','epic log','banana','','','','')
+        elif itemname == 'ruby sword':
+            itemnames = (itemname,'mega log','super log','epic log','','','','')
+        elif itemname == 'epic armor':
+            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
+        elif itemname == 'unicorn sword':
+            itemnames = (itemname,'super log','epic log','','','','','')
+        elif itemname == 'ruby armor':
+            itemnames = (itemname,'mega log','super log','epic log','','','','')
+        elif itemname == 'hair sword':
+            itemnames = (itemname,'mega log','super log','epic log','','','','')
+        elif itemname == 'coin armor':
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+        elif itemname == 'coin sword':
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+        elif itemname == 'mermaid armor':
+            itemnames = (itemname,'mega log','super log','epic log','golden fish','','','')
+        elif itemname == 'electronical sword':
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+        elif itemname == 'electronical armor':
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+        elif itemname == 'edgy sword':
+            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
+        elif itemname == 'ultra-edgy sword':
+            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','epic fish','golden fish')
+        elif itemname == 'ultra-edgy armor':
+            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
+        elif itemname == 'omega sword':
+            itemnames = (itemname,'mega log','super log','epic log','', '','','')
+        elif itemname == 'ultra-omega sword':
+            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
+        elif itemname == 'baked fish':
+            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
+        elif itemname == 'fruit salad':
+            itemnames = (itemname,'banana','','','','','','')
+        elif itemname == 'apple juice':
+            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+        elif itemname == 'banana pickaxe':
+            itemnames = (itemname,'mega log','super log','epic log','banana','','','')
+        elif itemname == 'filled lootbox':
+            itemnames = (itemname,'banana','','','','','','')
+        elif itemname == 'coin sandwich':
+            itemnames = (itemname,'epic fish','golden fish','','','','','')
         else:
-            itemnames = (itemname,'','','','')
+            itemnames = (itemname,'','','','','','','')
             
-        cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?) ORDER BY level DESC;', itemnames)
+        cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?,?,?,?) ORDER BY level DESC;', itemnames)
         record = cur.fetchall()
             
         if record:
@@ -222,7 +280,7 @@ async def get_item_data(ctx, itemname):
             for row in record:
                 items_data.append(list(row))
         else:
-            itemsdata = None
+            items_data = ''
         
     except sqlite3.Error as error:
         await log_error(ctx, error)
@@ -820,6 +878,8 @@ async def trades(ctx, *args):
     
     invoked = ctx.message.content
     invoked = invoked.lower()
+    prefix = ctx.prefix
+    prefix = prefix.lower()
     
     if args:
         if len(args)>1:
@@ -839,7 +899,7 @@ async def trades(ctx, *args):
             return
     else:
         try:
-            area_no = invoked.replace(f'{ctx.prefix}trades','').replace(f'{ctx.prefix}trade','').replace(f'{ctx.prefix}tr','')
+            area_no = invoked.replace(f'{prefix}trades','').replace(f'{prefix}trade','').replace(f'{prefix}tr','')
             area_no = int(area_no)
             if 1 <= area_no <= 15:
                 embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
@@ -905,9 +965,9 @@ async def craft(ctx, *args):
                 
         if not itemname == '' and amount >= 1:
             try:
-                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ')
+                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ')
                 itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
-                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich')       
+                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple')       
                 
                 shortcuts = {   
                     'ed sw': 'edgy sword',
@@ -924,7 +984,6 @@ async def craft(ctx, *args):
                     'sandwich': 'coin sandwich',
                     'lootbox': 'filled lootbox',
                     'bananas': 'banana',
-                    'apples': 'apple',
                     'ultralog': 'ultra log',
                     'hyperlog': 'hyper log',
                     'megalog': 'mega log',
@@ -954,6 +1013,9 @@ async def craft(ctx, *args):
                     itemname_replaced = shortcuts[itemname_replaced]                
                 
                 items_data = await get_item_data(ctx, itemname_replaced)
+                if items_data == '':
+                    await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+                    return
             except:
                 await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
                 return
@@ -965,8 +1027,8 @@ async def craft(ctx, *args):
                 await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
                 return
             
-            response = await crafting.mats(items_data, amount, ctx.prefix)
-            await ctx.send(response)
+            mats = await crafting.mats(items_data, amount, ctx.prefix)
+            await ctx.send(mats)
         else:
             await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
     else:

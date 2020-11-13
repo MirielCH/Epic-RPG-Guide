@@ -6,116 +6,246 @@ import emojis
 from operator import itemgetter
 
 
+# Aufschlüsseln von Subamounts
+async def get_submats(items_data, amount, ingredient):
+        
+    item1 = ''
+    item2 = ''
+    item3 = ''
+    item4 = ''
+    item5 = ''
+    breakdown = ''
+    ingredient_name = ingredient[0]
+    ingredient_emoji = ingredient[1]
+    
+    breakdown = f'> {amount:,} {ingredient_emoji}'                
+    
+    mats_ultralog = ['ULTRA log','HYPER log', 'MEGA log', 'SUPER log', 'EPIC log',]
+    mats_hyperlog = ['HYPER log','MEGA log', 'SUPER log', 'EPIC log',]
+    mats_megalog = ['MEGA log','SUPER log', 'EPIC log',]
+    mats_superlog = ['SUPER log','EPIC log',]
+    mats_epiclog = ['EPIC log',]
+    mats_epicfish = ['EPIC fish','golden fish',]
+    mats_goldenfish = ['golden fish',]
+    mats_banana = ['banana',]
+    mats_all = [mats_ultralog, mats_hyperlog, mats_megalog, mats_superlog, mats_epiclog, mats_epicfish, mats_goldenfish, mats_banana,]
+    
+    items_subitems = {
+        'ULTRA log': 'HYPER log',
+        'HYPER log': 'MEGA log',
+        'MEGA log': 'SUPER log',
+        'SUPER log': 'EPIC log',
+        'EPIC log': 'wooden log',
+        'EPIC fish': 'golden fish',
+        'golden fish': 'normie fish',
+        'banana': 'apple'
+    }
+    
+    subitems_emojis = {
+        'HYPER log': emojis.loghyper,
+        'MEGA log': emojis.logmega,
+        'SUPER log': emojis.logsuper,
+        'EPIC log': emojis.logepic,
+        'wooden log': emojis.log,
+        'golden fish': emojis.fishgolden,
+        'normie fish': emojis.fish,
+        'apple': emojis.apple
+    }
+    
+    last_item_amount = 0
+    
+    for mats_item in mats_all:
+        if ingredient_name == mats_item[0]:
+            last_item_amount = amount
+            for data_index, item in enumerate(items_data[1:]):
+                item_name = item[2]
+                if item_name in mats_item:
+                    subitem_name = items_subitems[item_name]
+                    subitem_emoji = subitems_emojis[subitem_name]
+                    item_filtered = list(dict.fromkeys(item))
+                    item_filtered = list(filter(lambda num: num != 0, item_filtered))
+                    item_amount = item_filtered[4]
+                    subitem_amount = item_amount*last_item_amount
+                    last_item_amount = subitem_amount
+                    breakdown = f'{breakdown} ➜ {subitem_amount:,} {subitem_emoji}'
+    
+    return (breakdown, last_item_amount)
+            
+
 # List needed items for recipe
 async def mats(items_data, amount, prefix):
     
     items_headers = items_data[0]
     
-    for data_index, item in enumerate(items_data[1:]):
-        item_name = item[2]            
-        item_emoji = getattr(emojis, item[3])
+    item_crafted = items_data[1]
+    item_crafted_name = item_crafted[2]
+    item_crafted_emoji = getattr(emojis, item_crafted[3])
     
-        ingredients = []
-    
-        for item_index, value in enumerate(item[6:]):
-            header_index = item_index+6
-            if not value == 0:               
-                if items_headers[header_index] == 'log':
-                    ingredients.append([value, emojis.log, 'wooden log'])
-                elif items_headers[header_index] == 'epiclog':
-                    ingredients.append([value, emojis.logepic, 'EPIC log'])
-                elif items_headers[header_index] == 'superlog':
-                    ingredients.append([value, emojis.logsuper, 'SUPER log'])
-                elif items_headers[header_index] == 'megalog':
-                    ingredients.append([value, emojis.logmega, 'MEGA log'])
-                elif items_headers[header_index] == 'hyperlog':
-                    ingredients.append([value, emojis.loghyper, 'HYPER log'])
-                elif items_headers[header_index] == 'ultralog':
-                    ingredients.append([value, emojis.logultra, 'ULTRA log'])
-                elif items_headers[header_index] == 'fish':
-                    ingredients.append([value, emojis.fish, 'normie fish'])
-                elif items_headers[header_index] == 'goldenfish':
-                    ingredients.append([value, emojis.fishgolden, 'golden fish'])
-                elif items_headers[header_index] == 'epicfish':
-                    ingredients.append([value, emojis.fishepic, 'EPIC fish'])
-                elif items_headers[header_index] == 'apple':
-                    ingredients.append([value, emojis.apple, 'apple'])
-                elif items_headers[header_index] == 'banana':
-                    ingredients.append([value, emojis.banana, 'banana'])
-                elif items_headers[header_index] == 'ruby':
-                    ingredients.append([value, emojis.ruby, 'ruby'])
-                elif items_headers[header_index] == 'wolfskin':
-                    ingredients.append([value, emojis.wolfskin, 'wolf skin'])
-                elif items_headers[header_index] == 'zombieeye':
-                    ingredients.append([value, emojis.zombieeye, 'zombie eye'])
-                elif items_headers[header_index] == 'unicornhorn':
-                    ingredients.append([value, emojis.unicornhorn, 'unicorn horn'])
-                elif items_headers[header_index] == 'mermaidhair':
-                    ingredients.append([value, emojis.mermaidhair, 'mermaid hair'])
-                elif items_headers[header_index] == 'chip':
-                    ingredients.append([value, emojis.chip, 'chip'])
-                elif items_headers[header_index] == 'dragonscale':
-                    ingredients.append([value, emojis.dragonscale, 'dragon scale'])
-                elif items_headers[header_index] == 'coin':
-                    ingredients.append([value, emojis.coin, 'coin'])
-                elif items_headers[header_index] == 'life':
-                    ingredients.append([value, emojis.statlife, 'LIFE'])
-                elif items_headers[header_index] == 'lifepotion':
-                    ingredients.append([value, emojis.lifepotion, 'life potion'])
-                elif items_headers[header_index] == 'cookies':
-                    ingredients.append([value, emojis.arenacookie, 'arena cookie'])
-                elif items_headers[header_index] == 'lbrare':
-                    ingredients.append([value, emojis.lbrare, 'rare lootbox'])
-                elif items_headers[header_index] == 'lbomega':
-                    ingredients.append([value, emojis.lbomega, 'OMEGA lootbox'])
-                elif items_headers[header_index] == 'armoredgy':
-                    ingredients.append([value, emojis.armoredgy, 'EDGY Armor'])
-                elif items_headers[header_index] == 'swordedgy':
-                    ingredients.append([value, emojis.swordedgy, 'EDGY Sword'])
-                elif items_headers[header_index] == 'armorultraedgy':
-                    ingredients.append([value, emojis.armorultraedgy, 'ULTRA-EDGY Armor'])
-                elif items_headers[header_index] == 'swordultraedgy':
-                    ingredients.append([value, emojis.swordultraedgy, 'ULTRA-EDGY Sword'])
-                elif items_headers[header_index] == 'armoromega':
-                    ingredients.append([value, emojis.armoromega, 'OMEGA Armor'])
-                elif items_headers[header_index] == 'swordomega':
-                    ingredients.append([value, emojis.swordomega, 'OMEGA Sword'])
-                elif items_headers[header_index] == 'armorultraomega':
-                    ingredients.append([value, emojis.armoromega, 'ULTRA-OMEGA Armor'])
-                elif items_headers[header_index] == 'swordultraomega':
-                    ingredients.append([value, emojis.swordultraomega, 'ULTRA-OMEGA Sword'])
+    ingredients = []
+
+    for item_index, value in enumerate(item_crafted[6:]):
+        header_index = item_index+6
+        if not value == 0:               
+            if items_headers[header_index] == 'log':
+                ingredients.append([value, emojis.log, 'wooden log'])
+            elif items_headers[header_index] == 'epiclog':
+                ingredients.append([value, emojis.logepic, 'EPIC log'])
+            elif items_headers[header_index] == 'superlog':
+                ingredients.append([value, emojis.logsuper, 'SUPER log'])
+            elif items_headers[header_index] == 'megalog':
+                ingredients.append([value, emojis.logmega, 'MEGA log'])
+            elif items_headers[header_index] == 'hyperlog':
+                ingredients.append([value, emojis.loghyper, 'HYPER log'])
+            elif items_headers[header_index] == 'ultralog':
+                ingredients.append([value, emojis.logultra, 'ULTRA log'])
+            elif items_headers[header_index] == 'fish':
+                ingredients.append([value, emojis.fish, 'normie fish'])
+            elif items_headers[header_index] == 'goldenfish':
+                ingredients.append([value, emojis.fishgolden, 'golden fish'])
+            elif items_headers[header_index] == 'epicfish':
+                ingredients.append([value, emojis.fishepic, 'EPIC fish'])
+            elif items_headers[header_index] == 'apple':
+                ingredients.append([value, emojis.apple, 'apple'])
+            elif items_headers[header_index] == 'banana':
+                ingredients.append([value, emojis.fruitbanana, 'banana'])
+            elif items_headers[header_index] == 'ruby':
+                ingredients.append([value, emojis.ruby, 'ruby'])
+            elif items_headers[header_index] == 'wolfskin':
+                ingredients.append([value, emojis.wolfskin, 'wolf skin'])
+            elif items_headers[header_index] == 'zombieeye':
+                ingredients.append([value, emojis.zombieeye, 'zombie eye'])
+            elif items_headers[header_index] == 'unicornhorn':
+                ingredients.append([value, emojis.unicornhorn, 'unicorn horn'])
+            elif items_headers[header_index] == 'mermaidhair':
+                ingredients.append([value, emojis.mermaidhair, 'mermaid hair'])
+            elif items_headers[header_index] == 'chip':
+                ingredients.append([value, emojis.chip, 'chip'])
+            elif items_headers[header_index] == 'dragonscale':
+                ingredients.append([value, emojis.dragonscale, 'dragon scale'])
+            elif items_headers[header_index] == 'coin':
+                ingredients.append([value, emojis.coin, 'coin'])
+            elif items_headers[header_index] == 'life':
+                ingredients.append([value, emojis.statlife, 'LIFE'])
+            elif items_headers[header_index] == 'lifepotion':
+                ingredients.append([value, emojis.lifepotion, 'life potion'])
+            elif items_headers[header_index] == 'cookies':
+                ingredients.append([value, emojis.arenacookie, 'arena cookie'])
+            elif items_headers[header_index] == 'lbrare':
+                ingredients.append([value, emojis.lbrare, 'rare lootbox'])
+            elif items_headers[header_index] == 'lbomega':
+                ingredients.append([value, emojis.lbomega, 'OMEGA lootbox'])
+            elif items_headers[header_index] == 'armoredgy':
+                ingredients.append([value, emojis.armoredgy, 'EDGY Armor'])
+            elif items_headers[header_index] == 'swordedgy':
+                ingredients.append([value, emojis.swordedgy, 'EDGY Sword'])
+            elif items_headers[header_index] == 'armorultraedgy':
+                ingredients.append([value, emojis.armorultraedgy, 'ULTRA-EDGY Armor'])
+            elif items_headers[header_index] == 'swordultraedgy':
+                ingredients.append([value, emojis.swordultraedgy, 'ULTRA-EDGY Sword'])
+            elif items_headers[header_index] == 'armoromega':
+                ingredients.append([value, emojis.armoromega, 'OMEGA Armor'])
+            elif items_headers[header_index] == 'swordomega':
+                ingredients.append([value, emojis.swordomega, 'OMEGA Sword'])
+            elif items_headers[header_index] == 'armorultraomega':
+                ingredients.append([value, emojis.armoromega, 'ULTRA-OMEGA Armor'])
+            elif items_headers[header_index] == 'swordultraomega':
+                ingredients.append([value, emojis.swordultraomega, 'ULTRA-OMEGA Sword'])
         
-        if len(ingredients) == 1:
-            ingredient = ingredients[0]
-            if data_index == 0:
-                submats = f'\n{amount:,} {item_emoji} `{item_name}`\n= {amount*ingredient[0]:,} {ingredient[1]} `{ingredient[2]}`'  # Initialisiere Aufschlüsselung der Materialien, falls benötigt.
-                original_item_name = item_name # Speichere originalen Itemnamen, damit ich den für die erste Zeile am Schluss noch habe
-                original_item_emoji = item_emoji # Speichere originales Emoji, damit ich das für die erste Zeile am Schluss noch habe
-                if amount == 1:
-                    mats = f'To craft {item_emoji} `{item_name}` you need {ingredient[0]} {ingredient[1]} `{ingredient[2]}`.'
-                else:
-                    mats = f'To craft {amount:,} {item_emoji} `{item_name}` you need {amount*ingredient[0]:,} {ingredient[1]} `{ingredient[2]}`.'
-            else:
-                ingredient_name = ingredient[2]
-                if ingredient_name.find('log') != -1: # Falls das Item ein Log ist, berechne die Menge der Logs anhand des Index
-                    subamount = (10**data_index) * amount
-                    submats = f'{submats}\n= {ingredient[0]*subamount:,} {ingredient[1]} `{ingredient[2]}`'
-                elif ingredient_name.find('fish') != -1: # Falls das Item ein Fisch ist, berechne die Menge der Logs anhand des Index
-                    subamount = 100 * amount
-                    submats = f'{submats}\n= {ingredient[0]*subamount:,} {ingredient[1]} `{ingredient[2]}`'
-                    
-                if data_index == (len(items_data)-2): # Falls es der letzte Durchlauf ist, stelle die finale Message zusammen (überschreibt die im allerersten Durchlauf erstellte, Items mit nur einem Record kommen gar nie hierhin)
-                    if amount == 1:
-                        mats = f'To craft {original_item_emoji} `{original_item_name}` you need {subamount*ingredient[0]:,} {ingredient[1]} `{ingredient[2]}`.\n{submats}'
-                    else:
-                        mats = f'To craft {amount:,} {original_item_emoji} `{original_item_name}` you need {subamount*ingredient[0]:,} {ingredient[1]} `{ingredient[2]}`.\n{submats}'         
+    breakdown_logs = ''
+    breakdown_fish = ''
+    breakdown_banana = ''
+    
+    breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
+    breakdown_list_fish = ['EPIC fish', 'golden fish',]
+    
+    ingredient_submats_logs = ['',0]
+    ingredient_submats_fish = ['',0]
+    ingredient_submats_banana = ['',0]
+    ingredient_submats = ''
+    mats = ''
+    total_logs = 0
+    total_fish = 0
+    total_apple = 0
+    mats_total_logs = ''
+    mats_total_fish = ''
+    mats_total_apple = ''
+    
+    if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
+        ingredient = ingredients[0]
+        ingredient_amount = ingredient[0]*amount
+        ingredient_emoji = ingredient[1]
+        ingredient_name = ingredient[2]
+        
+        if ingredient_name == 'wooden log':
+            total_logs = total_logs+ingredient_amount
+        elif ingredient_name == 'normie fish':
+            total_fish = total_fish+ingredient_amount
+        elif ingredient_name == 'apple':
+            total_apple = total_apple+ingredient_amount
+        
+        if ingredient_name in breakdown_list_logs:
+            ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            total_logs = total_logs+ingredient_submats_logs[1]
+        elif ingredient_name in breakdown_list_fish:
+            ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            total_fish = total_fish+ingredient_submats_fish[1]
+        elif ingredient_name == 'banana':
+            ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            total_apple = total_apple+ingredient_submats_banana[1]
+        
+        ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
+        
+        if amount == 1:
+            mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
         else:
-            if amount == 1:
-                mats = f'To craft {item_emoji} `{item_name}` you need:'
-            else:
-                mats = f'To craft {amount:,} {item_emoji} `{item_name}` you need:'
-            for ingredient in ingredients:
-                mats = f'{mats}\n{emojis.bp} {amount*ingredient[0]:,} {ingredient[1]} `{ingredient[2]}`'
+            mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
+            
+    else:
+        if amount == 1:
+            mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need:'
+        else:
+            mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need:'
+        
+        for ingredient in ingredients:
+            ingredient_amount = ingredient[0]*amount
+            ingredient_emoji = ingredient[1]
+            ingredient_name = ingredient[2]
+            
+            if ingredient_name == 'wooden log':
+                total_logs = total_logs+ingredient_amount
+            elif ingredient_name == 'normie fish':
+                total_fish = total_fish+ingredient_amount
+            elif ingredient_name == 'apple':
+                total_apple = total_apple+ingredient_amount
+            
+            mats = f'{mats}\n> {ingredient_amount} {ingredient_emoji} `{ingredient_name}`'
+    
+            if ingredient_name in breakdown_list_logs:
+                ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                total_logs = total_logs+ingredient_submats_logs[1]
+                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_logs[0]}'
+            elif ingredient_name in breakdown_list_fish:
+                ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                total_fish = total_fish+ingredient_submats_fish[1]
+                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_fish[0]}'
+            elif ingredient_name == 'banana':
+                ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                total_apple = total_apple+ingredient_submats_banana[1]
+                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_banana[0]}'
+        
+    if not total_logs == 0:    
+        mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
+    if not total_fish == 0:    
+        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'    
+    if not total_apple == 0:    
+        mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
+    
+    if not ingredient_submats == '':
+        ingredient_submats = ingredient_submats.strip()
+        mats = f'{mats}\n\n**Ingredients breakdown**\n{ingredient_submats}'
+    
+    if not (total_logs == 0) or not (total_fish == 0) or not (total_apple == 0):
+        mats = f'{mats}\n\n**Base materials total**{mats_total_logs}{mats_total_fish}{mats_total_apple}'
 
     return mats
 
@@ -129,7 +259,9 @@ async def drops(prefix):
                 f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'\
                 f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000 coins'
 
-    chance =    f'{emojis.bp} All items have a 2% base drop chance\n'\
+    chance =    f'{emojis.bp} The chance to encounter a mob that drops items is 50 %\n'\
+                f'{emojis.bp} These mobs have a base chance of 4 % to drop an item\n'\
+                f'{emojis.bp} Thus you have a total base drop chance of 2 % when hunting\n'\
                 f'{emojis.bp} Every {emojis.timetravel} time travel increases the drop chance by ~25%\n'\
                 f'{emojis.bp} A {emojis.horset7} T7+ horse increases the drop chance by 20%\n{emojis.blank}'
 
