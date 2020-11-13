@@ -66,12 +66,12 @@ async def professions_leveling(prefix):
                 f'{emojis.bp} To maximize XP gain, buy {emojis.lbedgy} EDGY lootboxes on cooldown\n'\
                 f'{emojis.bp} Use `hunt hardmode` whenever you have access (unlocks in A13)\n'\
                 f'{emojis.bp} Try to keep the level at about the same as worker\n'\
-                f'{emojis.bp} If lower than worker, consider cooking {emojis.foodbananapickaxe} banana pickaxes\n'\
+                f'{emojis.bp} If lower than worker, consider cooking {emojis.foodfilledlootbox} filled lootboxes\n'\
                     
     worker =    f'{emojis.bp} Levels up automatically when using work commands\n'\
                 f'{emojis.bp} Higher tier work commands give more XP\n'\
                 f'{emojis.bp} Try to keep the level at about the same as lootboxer\n'\
-                f'{emojis.bp} If lower than lootboxer, consider cooking {emojis.foodfilledlootbox} filled lootboxes\n'\
+                f'{emojis.bp} If lower than lootboxer, consider cooking {emojis.foodbananapickaxe} banana pickaxes\n'\
                 
     enchanter = f'{emojis.bp} This is the last profession you should level up because of costs\n'\
                 f'{emojis.bp} Level **before time traveling** using `transmute`\n'\

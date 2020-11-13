@@ -433,7 +433,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send(f'Uhm, what.')
     elif isinstance(error, (commands.MissingPermissions)):
-        await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Servers` to use this command.')
+        await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Server` to use this command.')
     elif isinstance(error, (commands.NotOwner)):
         await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to do that.')
     elif isinstance(error, commands.MissingRequiredArgument):
@@ -905,22 +905,32 @@ async def craft(ctx, *args):
                 
         if not itemname == '' and amount >= 1:
             try:
-                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ').replace('bananas','banana').replace('apples','apple')
-                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('supercookie','super cookie').replace('pickaxes','pickaxe')
-                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('ed armor','edgy armor').replace('ed sword','edgy sword')
-                itemname_replaced = itemname_replaced.replace('ultralog','ultra log').replace('hyperlog','hyper log').replace('megalog','mega log').replace('epiclog','epic log').replace('goldenfish','golden fish').replace('epicfish','epic fish')                
+                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omegy').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ')
+                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
+                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich')       
                 
                 shortcuts = {   
                     'ed sw': 'edgy sword',
+                    'ed sword': 'edgy sword',
+                    'ed armor': 'edgy armor',
                     'ue sw': 'ultra-edgy sword',
                     'brandon': 'epic fish',
                     'salad': 'fruit salad',
                     'creature': 'mutant creature',
                     'cookie': 'super cookie',
+                    'supercookie': 'super cookie',
                     'juice': 'apple juice',
                     'pickaxe': 'banana pickaxe',
                     'sandwich': 'coin sandwich',
                     'lootbox': 'filled lootbox',
+                    'bananas': 'banana',
+                    'apples': 'apple',
+                    'ultralog': 'ultra log',
+                    'hyperlog': 'hyper log',
+                    'megalog': 'mega log',
+                    'epiclog': 'epic log',
+                    'goldenfish': 'golden fish',
+                    'epicfish': 'epic fish',
                     'gf': 'golden fish',
                     'ef': 'epic fish',
                     'el': 'epic log',
@@ -1222,7 +1232,7 @@ async def prl(ctx):
     await ctx.send(f'To level up lootboxer, open lootboxes!\nSee `{ctx.prefix}prlevel` for more information.')
 
 # Command "ascension" - Ascension guide
-@bot.command(aliases=('asc','ascended',))
+@bot.command(aliases=('asc','ascended','ascend',))
 async def ascension(ctx):
     
     embed = await professions.ascension(ctx.prefix)
