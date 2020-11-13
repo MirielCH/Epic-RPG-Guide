@@ -55,7 +55,7 @@ erg_db = sqlite3.connect(dbfile, isolation_level=None)
 # Initialize bot
 bot = discord.Client()
 
-
+            
 # --- Database: Get Data ---
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
@@ -359,7 +359,7 @@ async def get_user_number(ctx):
         
     return user_number
    
-# Check database for stored progress settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
+# Check database for user settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
 async def get_settings(bot, ctx):
     
     try:
@@ -442,20 +442,28 @@ async def log_error(ctx, error, guild_join=False):
 # Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, ctx):
     
-    current_settings = await get_settings(bot, ctx)
-    
-    await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
-                f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
-                f'If I guessed wrong, please use `{ctx.prefix}setprogress` to change your settings.\n\n'\
-                'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
-    
-    raise Exception("First time user, no need to continue")
+    try:
+        current_settings = await get_settings(bot, ctx)
+        
+        await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
+                    f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
+                    f'If I guessed wrong, please use `{ctx.prefix}setprogress` to change your settings.\n\n'\
+                    'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
+    except:
+        raise
+    else:
+        raise FirstTimeUser("First time user, pls ignore")
 
 
 # --- Command Initialization ---
 
 bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
 
+
+# Custom exception for first time users so they stop spamming my database
+class FirstTimeUser(commands.CommandError):
+        def __init__(self, argument):
+            self.argument = argument
 
 # --- Ready & Join Events ---
 
@@ -496,6 +504,8 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to do that.')
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
+    elif isinstance(error, FirstTimeUser):
+        return
     else:
         await log_error(ctx, error)
 

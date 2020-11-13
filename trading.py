@@ -10,7 +10,7 @@ async def design_field_trades(area_no):
     if int(area_no) in (1,2,4,6,12,13,14,15):
         field_value = f'{emojis.bp} None'
     elif int(area_no) == 3:
-        field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
+        field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
                       f'{emojis.bp} Dismantle **all** logs\n'\
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
@@ -21,7 +21,7 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 7:
-        field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
+        field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
                       f'{emojis.bp} Dismantle {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 8:
@@ -34,12 +34,12 @@ async def design_field_trades(area_no):
     elif int(area_no) == 9:
         field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logepic} EPIC logs\n'\
                       f'{emojis.bp} If crafter 90+: Dismantle {emojis.logsuper} SUPER logs and below\n'\
-                      f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
+                      f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
     elif int(area_no) == 10:
-        field_value = f'{emojis.bp} Dismantle {emojis.banana} bananas\n'\
+        field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 11:
