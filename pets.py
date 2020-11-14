@@ -55,7 +55,7 @@ async def pets(prefix):
 # Catching pets
 async def petscatch(prefix):
           
-    source =        f'{emojis.bp} By using `training` (4% chance, 10% with {emojis.horset9} T9 horse)\n'\
+    source =        f'{emojis.bp} After using `training` (4% chance, 10% with {emojis.horset9} T9 horse)\n'\
                     f'{emojis.bp} By ranking at least 3rd in {emojis.horset9} T9 horse races\n'\
                     f'{emojis.bp} In some seasonal events (these are not TT locked)\n'\
                     f'{emojis.bp} In some dev giveaways (these are not TT locked)\n'\

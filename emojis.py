@@ -13,6 +13,13 @@ duelgear = ':tools:'
 duellevel = ':straight_ruler:'
 duellife = ':anchor:'
 
+# Dungeon Check
+checkok = ':white_check_mark:'
+checkfail = ':x:'
+checkwarn = ':warning:'
+checkignore = ':ballot_box_with_check:'
+checkunclear = ':grey_question:'
+
 # Dungeons
 dkey1 = '<:erg_key1:770324312355110982>'
 dkey10 = '<:erg_key10:770324312351047680>'
@@ -146,6 +153,7 @@ ticketlottery = '<:erg_lotteryticket:770327167044419624>'
 timetravel = ':cyclone:'
 blank = '<:blank:771777870498234378>'
 ascension = ':star2:'
+lifeboost = ':sparkles:'
 
 # Monsters
 mobadultdragon = '<:erg_adultdragon:772908868102914079>'

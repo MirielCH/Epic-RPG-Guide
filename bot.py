@@ -101,7 +101,7 @@ async def get_prefix(bot, ctx, guild_join=False):
         
     return prefix
 
-# Get all necessary data for the dungeon embeds
+# Get dungeon data for the dungeon commands
 async def get_dungeon_data(ctx, dungeon):
     
     try:
@@ -118,7 +118,7 @@ async def get_dungeon_data(ctx, dungeon):
         
     return dungeon_data
 
-# Get all necessary data for the recommended stats of all dungeons
+# Get dungeon data for the recommended stats of all dungeons
 async def get_rec_stats_data(ctx):
     
     try:
@@ -135,7 +135,7 @@ async def get_rec_stats_data(ctx):
         
     return rec_stats_data
 
-# Get all necessary data for the recommended gear of all dungeons
+# Get dungeon data for the recommended gear of all dungeons
 async def get_rec_gear_data(ctx, page):
     
     try:
@@ -155,7 +155,29 @@ async def get_rec_gear_data(ctx, page):
         
     return rec_gear_data
 
-# Get all necessary data for the area embeds
+# Get dungeon data for the dungeon check command
+async def get_dungeon_check_data(ctx, dungeon_no=0):
+    
+    try:
+        cur=erg_db.cursor()
+        if dungeon_no == 0:
+            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons')
+            record = cur.fetchall()
+        else:
+            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
+            record = cur.fetchone()
+            
+        if record:
+            dungeon_check_data = record
+        else:
+            await log_error(ctx, 'No recommended dungeon check data found in database.')            
+    
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return dungeon_check_data
+
+# Get area data for the area embeds
 async def get_area_data(ctx, area):
     
     try:
@@ -174,7 +196,7 @@ async def get_area_data(ctx, area):
         
     return area_data
 
-# Get needed mats for area 3 and 5
+# Get mats data for the needed mats of area 3 and 5
 async def get_mats_data(ctx, user_tt):
     try:
         cur=erg_db.cursor()
@@ -190,7 +212,7 @@ async def get_mats_data(ctx, user_tt):
         
     return mats_data
 
-# Get item
+# Get items
 async def get_item_data(ctx, itemname):
     try:
         cur=erg_db.cursor()
@@ -569,16 +591,22 @@ async def settings(ctx):
 async def setprogress(ctx):
     
     def check(m):
-        return m.author == ctx.author
+        return m.author == ctx.author and m.channel == ctx.channel
     
     try:
-        await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]`')
+        await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]` (type `abort` to abort).')
         answer_tt = await bot.wait_for('message', check=check, timeout = 30)
+        if (answer_tt.content == 'abort') or (answer_tt.content == 'cancel'):
+            await ctx.send(f'Aborting.')
+            return
         try:            
             if 0 <= int(answer_tt.content) <= 999:
                 new_tt = int(answer_tt.content)
-                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]`')
+                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` or `abort` to abort.')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
+                if (answer_ascended.content == 'abort') or (answer_ascended.content == 'cancel'):
+                            await ctx.send(f'Aborting.')
+                            return
                 if answer_ascended.content.lower() in ['yes','y']:
                     new_ascended = 'ascended'         
                     await set_progress(bot, ctx, new_tt, new_ascended)  
@@ -596,7 +624,7 @@ async def setprogress(ctx):
         except:
             await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')  
     except asyncio.TimeoutError as error:
-        await ctx.send(f'**{ctx.author.name}**, you took too long to answer. Aborting.')
+        await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
 
 
 # --- Main Guide ---
@@ -609,8 +637,10 @@ async def guide_long(ctx, *args):
     
     progress =  f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15\n'\
                 f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'\
-                f'{emojis.bp} `{prefix}dungeongear` / `{prefix}dg` : Rec. gear (summary)\n'\
-                f'{emojis.bp} `{prefix}dungeonstats` / `{prefix}ds` : Rec. stats (summary)\n'\
+                f'{emojis.bp} `{prefix}dc1`-`{prefix}dc15` : Check if you\'re ready for dungeon 1~15\n'\
+                f'{emojis.bp} `{prefix}dcheck` / `{prefix}dc` : Dungeon stat check (summary)\n'\
+                f'{emojis.bp} `{prefix}dgear` / `{prefix}dg` : Recommended gear (summary)\n'\
+                f'{emojis.bp} `{prefix}dstats` / `{prefix}ds` : Recommended stats (summary)\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}craft [amount] [item]` : Recipes mats calculator\n'\
@@ -676,7 +706,15 @@ async def dungeon(ctx, *args):
     
     if args:
         if len(args)>2:
-            return
+            if len(args)==3:
+                arg1 = args[0]
+                arg2 = args[1]
+                arg3 = args[2]
+                if arg1.isnumeric() and arg2.isnumeric() and arg3.isnumeric():
+                    await ctx.send(f'Uhm, you may have confused this command with the command `{ctx.prefix}dc`.')
+                    return
+            else:
+                return
         elif len(args)==2:
             if args[0] == 'gear':
                 try:
@@ -761,6 +799,174 @@ async def dungeongear(ctx, *args):
                 return
 
     await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "dungeoncheck" - Checks user stats against recommended stats
+@bot.command(aliases=('dcheck','dungcheck','dc',))
+async def dungeoncheck(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and str(m.embeds[0].fields).find('**Level**:') > 1
+    
+    try: 
+        if len(args)==3:
+            user_at = args[0]
+            user_def = args[1]
+            user_life = args[2]
+            if (user_at.find('-') != -1) or (user_def.find('-') != -1) or (user_life.find('-') != -1):
+                await ctx.send(f'Did you play backwards? Send a post card from area -5.')
+                return
+            else:
+                if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
+                    user_at = int(args[0])
+                    user_def = int(args[1])
+                    user_life = int(args[2])
+                    if (user_at == 0) or (user_def == 0) or (user_life == 0) or (user_at > 10000) or (user_def > 10000) or (user_life > 10000):
+                        await ctx.send(f'NICE STATS. Not gonna buy it though.')
+                        return 
+                    else:
+                        dungeon_check_data = await get_dungeon_check_data(ctx)
+                        user_stats = [user_at, user_def, user_life]
+                        embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
+                        await ctx.send(file=embed[0], embed=embed[1])
+                else:
+                    await ctx.send(f'These stats look suspicious. Try actual numbers.')
+        elif len(args) == 0:
+            try:
+                await ctx.send(f'**{ctx.author.name}**, please type `rpg p` so I can read your profile (type `abort` to abort).')
+                answer_user_profile = await bot.wait_for('message', check=check, timeout = 30)
+                if (answer_user_profile.content == 'rpg p') or (answer_user_profile.content == 'rpg profile'):
+                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    profile = str(answer_bot_at.embeds[0].fields)
+                    start_at = profile.find('**AT**') + 8
+                    end_at = profile.find('<:', start_at) - 2
+                    user_at = profile[start_at:end_at]
+                    start_def = profile.find('**DEF**') + 9
+                    end_def = profile.find(':', start_def) - 2
+                    user_def = profile[start_def:end_def]
+                    start_current_life = profile.find('**LIFE**') + 10
+                    start_life = profile.find('/', start_current_life) + 1
+                    end_life = profile.find('\',', start_life)
+                    user_life = profile[start_life:end_life]
+                elif (answer_user_profile.content == 'abort') or (answer_user_profile.content == 'cancel'):
+                    await ctx.send(f'Aborting.')
+                    return
+                else:
+                    await ctx.send(f'Wrong input. Aborting.')
+                    return
+                if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
+                    user_at = int(user_at)
+                    user_def = int(user_def)
+                    user_life = int(user_life)
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry. Aborting.')
+                    return
+                dungeon_check_data = await get_dungeon_check_data(ctx)
+                user_stats = [user_at, user_def, user_life]
+                embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
+                await ctx.send(file=embed[0], embed=embed[1])
+            except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]`.\nExample: `{ctx.prefix}{ctx.invoked_with} 162 164 240`\n**Or** you can just use `{ctx.prefix}{ctx.invoked_with}` and let me read your profile instead.')
+    except:
+        raise            
+
+# Command "dungeoncheckX" - Checks user stats against recommended stats of a specific dungeon
+
+dungeon_check_aliases = ['dcheck1','dungcheck1','dc1',]
+for x in range(2,16):
+    dungeon_check_aliases.append(f'dcheck{x}')    
+    dungeon_check_aliases.append(f'dungeoncheck{x}') 
+    dungeon_check_aliases.append(f'dungcheck{x}')
+    dungeon_check_aliases.append(f'dc{x}')
+
+@bot.command(aliases=dungeon_check_aliases)
+async def dungeoncheck1(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+        
+    def epic_rpg_check(m):
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and str(m.embeds[0].fields).find('**Level**:') > 1
+    
+    try: 
+        invoked = ctx.invoked_with
+        invoked = invoked.lower()
+        
+        dungeon_no = invoked.replace(f'dungeoncheck','').replace(f'dungcheck','').replace(f'dcheck','').replace(f'dc','')
+        dungeon_no = int(dungeon_no)
+        
+        if len(args)==3:
+            user_at = args[0]
+            user_def = args[1]
+            user_life = args[2]
+            if (user_at.find('-') != -1) or (user_def.find('-') != -1) or (user_life.find('-') != -1):
+                await ctx.send(f'Did you play backwards? Send a post card from area -5.')
+                return
+            else:
+                if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
+                    user_at = int(args[0])
+                    user_def = int(args[1])
+                    user_life = int(args[2])
+                    if (user_at == 0) or (user_def == 0) or (user_life == 0) or (user_at > 10000) or (user_def > 10000) or (user_life > 10000):
+                        await ctx.send(f'NICE STATS. Not gonna buy it though.')
+                        return 
+                    else:
+                        dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                        user_stats = [user_at, user_def, user_life]
+                        embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
+                        await ctx.send(file=embed[0], embed=embed[1])
+                else:
+                    await ctx.send(f'These stats look suspicious. Try actual numbers.')
+        elif len(args) == 0:
+            if dungeon_no in (10,15):
+                user_stats = (0,0,0)
+                dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
+                await ctx.send(file=embed[0], embed=embed[1])
+            else:
+                try:
+                    await ctx.send(f'**{ctx.author.name}**, please type `rpg p` so I can read your profile (type `abort` to abort).')
+                    answer_user_at = await bot.wait_for('message', check=check, timeout = 30)
+                    if (answer_user_at.content == 'rpg p') or (answer_user_at.content == 'rpg profile'):
+                        answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                        profile = str(answer_bot_at.embeds[0].fields)
+                        start_at = profile.find('**AT**') + 8
+                        end_at = profile.find('<:', start_at) - 2
+                        user_at = profile[start_at:end_at]
+                        start_def = profile.find('**DEF**') + 9
+                        end_def = profile.find(':', start_def) - 2
+                        user_def = profile[start_def:end_def]
+                        start_current_life = profile.find('**LIFE**') + 10
+                        start_life = profile.find('/', start_current_life) + 1
+                        end_life = profile.find('\',', start_life)
+                        user_life = profile[start_life:end_life]
+                    elif (answer_user_at.content == 'abort') or (answer_user_at.content == 'cancel'):
+                        await ctx.send(f'Aborting.')
+                        return
+                    else:
+                        await ctx.send(f'Wrong input. Aborting.')
+                        return
+                    if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
+                        user_at = int(user_at)
+                        user_def = int(user_def)
+                        user_life = int(user_life)
+                    else:
+                        await ctx.send(f'Whelp, something went wrong here, sorry. Aborting.')
+                        return
+                    dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                    user_stats = [user_at, user_def, user_life]
+                    embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
+                    await ctx.send(file=embed[0], embed=embed[1])
+                except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]`.\nExample: `{ctx.prefix}{ctx.invoked_with} 162 164 240`\n**Or** you can just use `{ctx.prefix}{ctx.invoked_with}` and let me read your profile instead.')
+    except:
+        raise            
 
 
 # --- Areas ---
@@ -1430,7 +1636,7 @@ async def brandon(ctx):
 async def shutdown(ctx):
 
     def check(m):
-        return m.author == ctx.author
+        return m.author == ctx.author and m.channel == ctx.channel
     
     await ctx.send(f'**{ctx.author.name}**, are you **SURE**? `[yes/no]`')
     answer_ascended = await bot.wait_for('message', check=check, timeout=30)
