@@ -1488,7 +1488,10 @@ async def mytt(ctx):
     user_settings = await get_settings(bot, ctx)
     my_tt = int(user_settings[0])
     
-    tt_data = await get_tt_unlocks(ctx, int(my_tt))
+    if 1 <= my_tt <= 25:    
+        tt_data = await get_tt_unlocks(ctx, int(my_tt))
+    else:
+        tt_data = (my_tt,0,0,'','','')
     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(file=tt_embed[0], embed=tt_embed[1])
     
