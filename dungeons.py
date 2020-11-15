@@ -159,16 +159,26 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
         elif user_at >= player_at:
             user_at_check_result = 'pass'
         if user_life < player_life:
-            if player_life - user_life <= 10:
-                user_life_check_result = 'passA'
-            elif 11 <= (player_life - user_life) <= 25:
-                user_life_check_result = 'passB'
-            elif 26 <= (player_life - user_life) <= 50:
-                user_life_check_result = 'passC'
-            elif (player_life - user_life) <= 200:
-                user_life_check_result = 'warn'
+            if user_at_check_result == 'pass':
+                if player_life - user_life <= 10:
+                    user_life_check_result = 'passA'
+                elif 11 <= (player_life - user_life) <= 25:
+                    user_life_check_result = 'passB'
+                elif 26 <= (player_life - user_life) <= 50:
+                    user_life_check_result = 'passC'
+                elif (player_life - user_life) <= 200:
+                    user_life_check_result = 'warn'
+                else:
+                    user_life_check_result = 'fail'
             else:
-                user_life_check_result = 'fail'
+                if player_life - user_life <= 10:
+                    user_life_check_result = 'passA'
+                elif 11 <= (player_life - user_life) <= 25:
+                    user_life_check_result = 'passB'
+                elif 26 <= (player_life - user_life) <= 50:
+                    user_life_check_result = 'passC'
+                else:
+                    user_life_check_result = 'fail'
         elif user_life >= player_life:
             user_life_check_result = 'pass'
             
@@ -184,14 +194,7 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
   
     elif dungeon_no == 13:
         if user_life < player_life:
-            if player_life - user_life <= 10:
-                user_life_check_result = 'passA'
-            elif 11 <= (player_life - user_life) <= 25:
-                user_life_check_result = 'passB'
-            elif 26 <= (player_life - user_life) <= 50:
-                user_life_check_result = 'passC'
-            else:
-                user_life_check_result = 'fail'
+            user_life_check_result = 'fail'
         else:
             user_life_check_result = 'pass'
   
@@ -277,7 +280,7 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             if user_at_check_result == 'fail':
                 check_results = f'{emojis.bp} You are not yet ready for this dungeon\n'\
                                 f'{emojis.bp} You should increase your **AT** to **{player_at}**'
-                if (user_life_check_result == 'warn') or (user_life_check_result == 'fail'):
+                if user_life_check_result == 'fail':
                     check_results = f'{check_results}\n{emojis.bp} You should increase your **LIFE** to **{player_life}** or more'
             else:
                 if user_life_check_result == 'warn':
@@ -314,7 +317,8 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             if user_life_check_result == 'fail':
                 check_results = f'{emojis.bp} You are not yet ready for this dungeon\n'\
                                 f'{emojis.bp} You should increase your **LIFE** to **{player_life}** or more\n'\
-                                f'{emojis.bp} Note: The **LIFE** is needed for crafting the {emojis.swordomega} OMEGA Sword, not the dungeon itself'
+                                f'{emojis.bp} The **LIFE** is for crafting the {emojis.swordomega} OMEGA Sword, not the dungeon\n'\
+                                f'{emojis.bp} **Important**: This is **base LIFE**, before buying a {emojis.lifeboost} LIFE boost'
             else:
                 check_results = f'{emojis.bp} Your stats are high enough for this dungeon'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
@@ -504,8 +508,8 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.bp} {key_price}', inline=False)
     embed.add_field(name='BOSS STATS', value=f'{emojis.bp} {emojis.statat} **AT**: {boss_at}\n'
                     f'{emojis.bp} {emojis.statlife} **LIFE**: {boss_life}', inline=False)
-    embed.add_field(name='REC. MINIMUM GEAR', value=field_rec_gear, inline=False)
-    embed.add_field(name='REC. MINIMUM STATS', value=field_rec_stats, inline=False)
+    embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
+    embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear (summary)\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
     if not image_url == '':
@@ -574,8 +578,8 @@ async def dungeon_check_stats(dungeon_check_data, user_stats, ctx):
                 f'{emojis.bp} {emojis.lifeboost} : LIFE boost you have to buy to reach recommendation'
     
     notes =     f'{emojis.bp} You can ignore this check for D1-D9 if you get carried\n'\
-                f'{emojis.bp} This check does **not** take into account required gear for D10+!\n'\
-                f'{emojis.bp} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for a few more details'
+                f'{emojis.bp} This only checks stats, you may still need certain gear for D10+!\n'\
+                f'{emojis.bp} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for individual checks with more details'
     
     embed = discord.Embed(
         color = global_data.color,

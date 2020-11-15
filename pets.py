@@ -106,7 +106,7 @@ async def petsfusion(prefix):
                     f'{emojis.bp} The more skills you already have, the lower the chance\n'\
                     f'{emojis.bp} If your sole goal is getting skills, fuse with T1 pets\n'\
                     f'{emojis.bp} You can keep skills you already have, but the chance depends on the skill rank (see `{prefix}petskills`)\n'\
-                    f'{emojis.bp} To maximize the chance to keep skills rank them to SS+ first\n'\
+                    f'{emojis.bp} To maximize the chance to keep skills, rank them to SS+ first\n'\
                     f'{emojis.bp} The max chance to keep a skill is 90%'
 
     type =          f'{emojis.bp} Fusing changes your pet type randomly\n'\
