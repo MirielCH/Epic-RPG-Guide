@@ -629,7 +629,7 @@ async def setprogress(ctx):
 
 # --- Main Guide ---
 
-# Main guide
+# Main menu
 @bot.command(name='guide',aliases=('help','g','h',))
 async def guide_long(ctx, *args):
     
@@ -651,7 +651,7 @@ async def guide_long(ctx, *args):
                 f'{emojis.bp} `{prefix}pets` : Pets guide\n'\
     
     trading =   f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
-                f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Area trades (summary)\n'\
+                f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
                 f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
                 
     professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
@@ -681,7 +681,7 @@ async def guide_long(ctx, *args):
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
-    embed.add_field(name='INVITE', value=botlinks, inline=False)
+    embed.add_field(name='INVITE & LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
