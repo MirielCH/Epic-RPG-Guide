@@ -843,13 +843,16 @@ async def dungeoncheckmanual(ctx, *args):
                     start_at = profile.find('**AT**') + 8
                     end_at = profile.find('<:', start_at) - 2
                     user_at = profile[start_at:end_at]
+                    user_at = user_at.replace(',','')
                     start_def = profile.find('**DEF**') + 9
                     end_def = profile.find(':', start_def) - 2
                     user_def = profile[start_def:end_def]
+                    user_def = user_def.replace(',','')
                     start_current_life = profile.find('**LIFE**') + 10
                     start_life = profile.find('/', start_current_life) + 1
                     end_life = profile.find('\',', start_life)
                     user_life = profile[start_life:end_life]
+                    user_life = user_life.replace(',','')
                 elif (answer_user_profile.content == 'abort') or (answer_user_profile.content == 'cancel'):
                     await ctx.send(f'Aborting.')
                     return
@@ -906,13 +909,16 @@ async def dungeoncheck(ctx, *args):
                     start_at = profile.find('**AT**') + 8
                     end_at = profile.find('<:', start_at) - 2
                     user_at = profile[start_at:end_at]
+                    user_at = user_at.replace(',','')
                     start_def = profile.find('**DEF**') + 9
                     end_def = profile.find(':', start_def) - 2
                     user_def = profile[start_def:end_def]
+                    user_def = user_def.replace(',','')
                     start_current_life = profile.find('**LIFE**') + 10
                     start_life = profile.find('/', start_current_life) + 1
                     end_life = profile.find('\',', start_life)
                     user_life = profile[start_life:end_life]
+                    user_life = user_life.replace(',','')
                 elif (answer_user_profile.content == 'abort') or (answer_user_profile.content == 'cancel'):
                     await ctx.send(f'Aborting.')
                     return
