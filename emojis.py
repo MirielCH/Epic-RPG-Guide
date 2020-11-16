@@ -1,5 +1,15 @@
 # emojis.py
 
+
+# Badges
+badge1 = '<:erg_badge1:777885669350834176>'
+badge100 = '<:erg_badge100:777885669199446036>'
+badge200 = '<:erg_badge200:777885668868882434>'
+badge500 = '<:erg_badge500:777885669237456927>'
+badge1000 = '<:erg_badge1000:777885668927471638>'
+badgea15 = '<:erg_badge_a15:777885668772675647>'
+badgeomega = '<:erg_badge_omega:777885669170348042>'
+
 # Currency
 coin = '<:erg_coin:770327166830510151>'
 epiccoin = '<:erg_epiccoin:770327323575844922>'

@@ -631,13 +631,14 @@ async def setprogress(ctx):
 
 # Main menu
 @bot.command(name='guide',aliases=('help','g','h',))
-async def guide_long(ctx, *args):
+async def guide_long(ctx):
     
     prefix = await get_prefix(bot, ctx)
     
     progress =  f'{emojis.bp} `{prefix}areas` : Area guides overview\n'\
                 f'{emojis.bp} `{prefix}dungeons` : Dungeon guides overview\n'\
-                f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
+                f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'\
+                f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
     
     crafting =  f'{emojis.bp} `{prefix}craft [amount] [item]` : Recipes mats calculator\n'\
                 f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
@@ -646,9 +647,7 @@ async def guide_long(ctx, *args):
     animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
                 f'{emojis.bp} `{prefix}pets` : Pets guide\n'\
     
-    trading =   f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
-                f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
-                f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
+    trading =   f'{emojis.bp} `{prefix}trading` : Trading guides overview'
                 
     professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
@@ -685,7 +684,7 @@ async def guide_long(ctx, *args):
 
 # Areas menu
 @bot.command()
-async def areaguide(ctx, *args):
+async def areaguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
     
@@ -693,7 +692,7 @@ async def areaguide(ctx, *args):
                     
     trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
                     f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
-                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
+                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates (all areas)'
     
     drops =         f'{emojis.bp} `{prefix}drops` : Monster drops'
     
@@ -705,7 +704,7 @@ async def areaguide(ctx, *args):
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='GUIDES', value=area_guide, inline=False)
+    embed.add_field(name='AREAS', value=area_guide, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='MONSTER DROPS', value=drops, inline=False)
     
@@ -713,7 +712,7 @@ async def areaguide(ctx, *args):
     
 # Dungeons menu
 @bot.command()
-async def dungeonguide(ctx, *args):
+async def dungeonguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
     
@@ -732,11 +731,33 @@ async def dungeonguide(ctx, *args):
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-    embed.add_field(name='GUIDES', value=dungeon_guide, inline=False)
+    embed.add_field(name='DUNGEONS', value=dungeon_guide, inline=False)
     embed.add_field(name='STATS CHECK', value=statscheck, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
+
+# Trading menu
+@bot.command(aliases=('trading',))
+async def tradingguide(ctx):
     
+    prefix = await get_prefix(bot, ctx)
+                    
+    trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
+                    f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
+                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'TRADING GUIDES',
+        description =   f'Hey **{ctx.author.name}**, what do you want to know?'
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    
+    await ctx.send(file=thumbnail, embed=embed)
+
 
 # --- Dungeons ---
 
@@ -1291,35 +1312,40 @@ async def trades(ctx, *args):
     
     if args:
         if len(args)>1:
+            await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
             return
         elif len(args)==1:
-            try:
-                area_no = int(args[0])
+            area_no = args[0]
+            if area_no.isnumeric():
+                area_no = int(area_no)
                 if 1 <= area_no <= 15:
                     embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
                     await ctx.send(file=embed[0], embed=embed[1])
                 else:
+                    await ctx.send(f'There is no area {area_no}, lol.')
                     return
-            except:
-                embed = await trading.trades(user_settings, ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1]) 
+            else:
+                await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
+                return
         else:
+            await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
             return
     else:
-        try:
-            area_no = invoked.replace(f'{prefix}trades','').replace(f'{prefix}trade','').replace(f'{prefix}tr','')
+        area_no = invoked.replace(f'{prefix}trades','').replace(f'{prefix}trade','').replace(f'{prefix}tr','')
+        if area_no.isnumeric():
             area_no = int(area_no)
             if 1 <= area_no <= 15:
                 embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
                 await ctx.send(file=embed[0], embed=embed[1])
             else:
-                return
-        except:
+                await ctx.send(f'There is no area {area_no}, lol.')
+                return       
+        else:
             if area_no == '':             
                 embed = await trading.trades(user_settings, ctx.prefix)
                 await ctx.send(file=embed[0], embed=embed[1])
             else:
-                raise
+                await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
 
 # Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr','rates','rate','traderate',))
@@ -1738,7 +1764,37 @@ async def codes(ctx):
     embed = await misc.codes(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "duels" - Returns all duelling weapons
+@bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
+
+async def duels(ctx):
+
+    embed = await misc.duels(ctx.prefix)
     
+    await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "coolness" - Coolness guide
+@bot.command(aliases=('cool',))
+
+async def coolness(ctx):
+
+    embed = await misc.coolness(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+
+# Command "badges" - Badge guide
+@bot.command(aliases=('badge',))
+
+async def badges(ctx):
+
+    embed = await misc.badges(ctx.prefix)
+    
+    await ctx.send(file=embed[0], embed=embed[1])
+    
+
+# --- Links --- 
+
 # Command "invite"
 @bot.command(aliases=('inv',))
 async def invite(ctx):
@@ -1807,15 +1863,6 @@ async def links(ctx):
     embed.add_field(name=f'EPIC RPG COMMUNITIES', value=others, inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
-
-# Command "duels" - Returns all duelling weapons
-@bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
-
-async def duels(ctx):
-
-    embed = await misc.duels(ctx.prefix)
-    
-    await ctx.send(file=embed[0], embed=embed[1])
 
 
 # --- Silly Stuff ---
