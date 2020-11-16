@@ -80,17 +80,27 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
                   
 
-    preparations = f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
-                   f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
-                   f'{emojis.bp} Level up professions if necessary (see `{prefix}prlevel`)\n'\
-                   f'{emojis.bp} Sell your leftover materials (if any)\n'\
-                   f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
-                   f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+    prep_tt1 =          f'{emojis.bp} If your horse is T6+: Get 30m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 50m coins\n'\
+                        f'{emojis.bp} If you need money: Use `drill` and sell mob drops\n'\
+                        f'{emojis.bp} Level up professions (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+    
+    prep_tt2_to_25 =    f'{emojis.bp} If your horse is T6+: Get 30m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 50m coins\n'\
+                        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
+                        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
                    
-    prep_stt =     f'{emojis.bp} If your horse is T6+: Have 30m coins\n'\
-                   f'{emojis.bp} If your horse is <T6: Have 50m coins\n'\
-                   f'{emojis.bp} Level up professions if necessary (see `{prefix}prlevel`)\n'\
-                   f'{emojis.bp} Trade to {emojis.ruby} rubies if you need a higher score (see `{prefix}sttscore`)'
+    prep_stt =          f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} If you need a higher score: Trade to {emojis.ruby} rubies (see `{prefix}sttscore`)\n'\
+                        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+                        
 
     embed = discord.Embed(
         color = global_data.color,
@@ -104,8 +114,10 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
     if not (mytt == True) and not (tt_no == 0):
-        if 1 <= tt_no <= 25:
-            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=preparations, inline=False)
+        if tt_no == 1:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1, inline=False)
+        elif 2 <= tt_no <= 25:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt2_to_25, inline=False)
         else:
             embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)

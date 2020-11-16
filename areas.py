@@ -229,9 +229,9 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         embed.add_field(name='NEW COMMANDS', value=f'{emojis.bp} {new_cmd}', inline=False)
     embed.add_field(name='BEST WORK COMMAND', value=work_cmd, inline=False)
     if not time_traveller_prepare == True:
-        embed.add_field(name=f'REC. MINIMUM GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
+        embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
-        embed.add_field(name=f'REC. MINIMUM STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
+        embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
     if ((area_no == 3) and (user_tt > 4)) or (area_no in (5,8)):
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveller_prepare == True:

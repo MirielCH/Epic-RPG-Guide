@@ -511,7 +511,7 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
     embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
     embed.add_field(name=strategy_name, value=strategy, inline=False)
-    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dg` : Recommended gear (summary)\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dc{dungeon_no}` : Check if you\'re ready for this dungeon\n{emojis.bp} `{prefix}dg` : Recommended gear (all dungeons)\n{emojis.bp} `{prefix}ds` : Recommended stats (all dungeons)', inline=False)
     if not image_url == '':
         embed.set_image(url=image_url)
         embed.add_field(name='WALKTHROUGH', value=f'** **', inline=False)
