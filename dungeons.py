@@ -107,6 +107,8 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
     user_def_check_result = 'N/A'
     user_carry_def_check_result = 'N/A'
     user_life_check_result = 'N/A'
+    
+    check_results = ''
 
     if dungeon_no <= 9:
         if not player_at == 0:

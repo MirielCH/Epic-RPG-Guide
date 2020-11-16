@@ -627,7 +627,7 @@ async def setprogress(ctx):
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
 
 
-# --- Main Guide ---
+# --- Main menus ---
 
 # Main menu
 @bot.command(name='guide',aliases=('help','g','h',))
@@ -635,12 +635,8 @@ async def guide_long(ctx, *args):
     
     prefix = await get_prefix(bot, ctx)
     
-    progress =  f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15\n'\
-                f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'\
-                f'{emojis.bp} `{prefix}dc1`-`{prefix}dc15` : Dungeon 1~15 stats check\n'\
-                f'{emojis.bp} `{prefix}dcheck` / `{prefix}dc` : Dungeon stats check (all dungeons)\n'\
-                f'{emojis.bp} `{prefix}dgear` / `{prefix}dg` : Recommended gear (all dungeons)\n'\
-                f'{emojis.bp} `{prefix}dstats` / `{prefix}ds` : Recommended stats (all dungeons)\n'\
+    progress =  f'{emojis.bp} `{prefix}areas` : Area guides overview\n'\
+                f'{emojis.bp} `{prefix}dungeons` : Dungeon guides overview\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide'
     
     crafting =  f'{emojis.bp} `{prefix}craft [amount] [item]` : Recipes mats calculator\n'\
@@ -687,11 +683,65 @@ async def guide_long(ctx, *args):
     
     await ctx.send(file=thumbnail, embed=embed)
 
+# Areas menu
+@bot.command()
+async def areaguide(ctx, *args):
+    
+    prefix = await get_prefix(bot, ctx)
+    
+    area_guide =    f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
+                    
+    trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
+                    f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
+                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
+    
+    drops =         f'{emojis.bp} `{prefix}drops` : Monster drops'
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'AREA GUIDES',
+        description =   f'Hey **{ctx.author.name}**, what do you want to know?'
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='GUIDES', value=area_guide, inline=False)
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='MONSTER DROPS', value=drops, inline=False)
+    
+    await ctx.send(file=thumbnail, embed=embed)
+    
+# Dungeons menu
+@bot.command()
+async def dungeonguide(ctx, *args):
+    
+    prefix = await get_prefix(bot, ctx)
+    
+    dungeon_guide = f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'\
+                    f'{emojis.bp} `{prefix}dgear` / `{prefix}dg` : Recommended gear (all dungeons)\n'\
+                    f'{emojis.bp} `{prefix}dstats` / `{prefix}ds` : Recommended stats (all dungeons)'
+    
+    statscheck =    f'{emojis.bp} `{prefix}dc1`-`{prefix}dc15` : Dungeon 1~15 stats check\n'\
+                    f'{emojis.bp} `{prefix}dcheck` / `{prefix}dc` : Dungeon stats check (all dungeons)'
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'DUNGEON GUIDES',
+        description =   f'Hey **{ctx.author.name}**, what do you want to know?'
+    )    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='GUIDES', value=dungeon_guide, inline=False)
+    embed.add_field(name='STATS CHECK', value=statscheck, inline=False)
+    
+    await ctx.send(file=thumbnail, embed=embed)
+    
 
 # --- Dungeons ---
 
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
-dungeon_aliases = ['dungeon','dung',]
+dungeon_aliases = ['dungeon','dung','dungeons',]
 for x in range(1,16):
     dungeon_aliases.append(f'd{x}')    
     dungeon_aliases.append(f'dungeon{x}') 
@@ -716,46 +766,56 @@ async def dungeon(ctx, *args):
                     return
             else:
                 return
-        elif len(args)==2:
-            if args[0] == 'gear':
-                try:
-                    if int(args[1]) in (1,2):
-                        x = await dungeongear(ctx, int(args[1]))
+        elif len(args) == 2:
+            arg = args[0]
+            arg = arg.lower()
+            if arg == 'gear':
+                page = args[1]
+                if page.isnumeric():
+                    page = int(page)
+                    if page in (1,2):
+                        await dungeongear(ctx, page)
                         return
-                except:
-                    return
+                else:
+                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')           
             else:
-                return
-        else:
-            try:
-                if 1 <= int(args[0]) <= 15:
-                    dungeon_data = await get_dungeon_data(ctx, int(args[0]))
+                await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
+        elif len(args) == 1:
+            arg = args[0]
+            arg = arg.lower()
+            if arg.isnumeric():
+                arg = int(arg)
+                if 1 <= arg <= 15:
+                    dungeon_data = await get_dungeon_data(ctx, arg)
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                     await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
-            except:
-                if args[0] == 'gear':
-                    x = await dungeongear(ctx, 1)
+                else:
+                    await ctx.send(f'There is no dungeon {arg}, lol.') 
+            else:
+                if arg == 'gear':
+                    await dungeongear(ctx, 1)
                     return
-                elif args[0] == 'stats':
-                    x = await dungeonstats(ctx)
+                elif arg == 'stats':
+                    await dungeonstats(ctx)
                     return
                 else:
-                    args_check = args[0]
-                    if not args_check.isnumeric():
-                        return
-                    else:
-                        raise
+                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
     else:
-        try:
-            dungeon_no = invoked.replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','')           
-            dungeon_data = await get_dungeon_data(ctx, int(dungeon_no))
-            dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
-            await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
-        except:
-            if (dungeon_no == '') or (dungeon_no == 0) or not dungeon_no.isnumeric():
+        dungeon_no = invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','')           
+        if dungeon_no.isnumeric():
+            dungeon_no = int(dungeon_no)
+            if 1 <= dungeon_no <= 15:
+                dungeon_data = await get_dungeon_data(ctx, dungeon_no)
+                dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
+                await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+            else:
+                await ctx.send(f'There is no dungeon {dungeon_no}, lol.') 
+        else:
+            if dungeon_no == '':
+                await dungeonguide(ctx)
                 return
             else:
-                raise
+                await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
 
 # Command "dungeonstats" - Returns recommended stats for all dungeons
 @bot.command(aliases=('dstats','ds',))
@@ -1089,7 +1149,7 @@ async def dungeoncheck1(ctx, *args):
 # --- Areas ---
 
 # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
-area_aliases = ['area',]
+area_aliases = ['area','areas',]
 for x in range(1,16):
     area_aliases.append(f'a{x}')    
     area_aliases.append(f'area{x}') 
@@ -1103,99 +1163,114 @@ async def area(ctx, *args):
     prefix = prefix.lower()
     if args:
         if len(args) > 2:
-            return        
+            await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
         elif len(args) == 2:
             try:
                 args_full = str(args[1])
                 args_full = args_full.lower()
                 if args_full == 'full':
                     area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
-                    area_no = int(area_no)
-                    area_data = await get_area_data(ctx, area_no)
-                    user_settings = await get_settings(bot, ctx)
-                    traderate_data = await get_traderate_data(ctx, area_no)
-                    if area_no < 15:
-                        traderate_data_next = await get_traderate_data(ctx, area_no+1)
-                    else:
-                        traderate_data_next = ''
-                    user_settings_override = (25, user_settings[1],'override',)
-                    if area_no in (3,5):
-                        mats_data = await get_mats_data(ctx, user_settings_override[0])
-                    else:
-                        mats_data = ''
-                    area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                    await ctx.send(file=area_embed[0], embed=area_embed[1])   
+                    if area_no.isnumeric():
+                        area_no = int(area_no)
+                        if 1<= area_no <= 15:
+                            area_data = await get_area_data(ctx, area_no)
+                            user_settings = await get_settings(bot, ctx)
+                            traderate_data = await get_traderate_data(ctx, area_no)
+                            if area_no < 15:
+                                traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                            else:
+                                traderate_data_next = ''
+                            user_settings_override = (25, user_settings[1],'override',)
+                            if area_no in (3,5):
+                                mats_data = await get_mats_data(ctx, user_settings_override[0])
+                            else:
+                                mats_data = ''
+                            area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
+                            await ctx.send(file=area_embed[0], embed=area_embed[1])   
+                        else:
+                            await ctx.send(f'There is no area {area_no}, lol.')           
             except:
                 return
         else:
             try:
-                if 1 <= int(args[0]) <= 15:
-                    area_no = int(args[0])
-                    area_data = await get_area_data(ctx, area_no)
-                    user_settings = await get_settings(bot, ctx)
-                    traderate_data = await get_traderate_data(ctx, area_no)
-                    if area_no < 15:
-                        traderate_data_next = await get_traderate_data(ctx, area_no+1)
-                    else:
-                        traderate_data_next = ''
-                    if area_no in (3,5):
-                        if user_settings[0] <= 25:
-                            mats_data = await get_mats_data(ctx, user_settings[0])
-                        else:
-                            mats_data = await get_mats_data(ctx, 25)
-                    else:
-                        mats_data = ''
-                    area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
-                    await ctx.send(file=area_embed[0], embed=area_embed[1])
-            except:
-                try:
-                    args_full = str(args[0])
-                    args_full = args_full.lower()
-                    if args_full == 'full':
-                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
-                        area_no = int(area_no)
-                        area_data = await get_area_data(ctx, int(area_no))
+                area_no = args[0]
+                if area_no.isnumeric():
+                    area_no = int(area_no)
+                    if 1 <= area_no <= 15:
+                        area_data = await get_area_data(ctx, area_no)
                         user_settings = await get_settings(bot, ctx)
                         traderate_data = await get_traderate_data(ctx, area_no)
                         if area_no < 15:
                             traderate_data_next = await get_traderate_data(ctx, area_no+1)
                         else:
                             traderate_data_next = ''
-                        user_settings_override = (25, user_settings[1],'override',)
                         if area_no in (3,5):
-                            mats_data = await get_mats_data(ctx, user_settings_override[0])
+                            if user_settings[0] <= 25:
+                                mats_data = await get_mats_data(ctx, user_settings[0])
+                            else:
+                                mats_data = await get_mats_data(ctx, 25)
                         else:
                             mats_data = ''
-                        area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                        await ctx.send(file=area_embed[0], embed=area_embed[1])   
-                except:
-                    return
-    else:
-        try:
-            area_no = invoked.replace(f'{prefix}area','').replace(f'{prefix}a','')
-            area_no = int(area_no)
-            area_data = await get_area_data(ctx, area_no)
-            user_settings = await get_settings(bot, ctx)
-            traderate_data = await get_traderate_data(ctx, area_no)
-            if area_no < 15:
-                traderate_data_next = await get_traderate_data(ctx, area_no+1)
-            else:
-                traderate_data_next = ''
-            if area_no in (3,5):
-                if user_settings[0] <= 25:
-                    mats_data = await get_mats_data(ctx, user_settings[0])
+                        area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
+                        await ctx.send(file=area_embed[0], embed=area_embed[1])
+                    else:
+                        await ctx.send(f'There is no area {area_no}, lol.')
                 else:
-                    mats_data = await get_mats_data(ctx, 25)
-            else:
-                mats_data = ''
-            area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
-            await ctx.send(file=area_embed[0], embed=area_embed[1])
-        except:
-            area_no = str(area_no)
-            if (area_no == '') or (area_no == '0') or not (area_no.isnumeric()):
+                    args_full = str(args[0])
+                    args_full = args_full.lower()
+                    if args_full == 'full':
+                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
+                        if area_no.isnumeric():
+                            area_no = int(area_no)
+                            if 1 <= area_no <= 15:
+                                area_data = await get_area_data(ctx, int(area_no))
+                                user_settings = await get_settings(bot, ctx)
+                                traderate_data = await get_traderate_data(ctx, area_no)
+                                if area_no < 15:
+                                    traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                                else:
+                                    traderate_data_next = ''
+                                user_settings_override = (25, user_settings[1],'override',)
+                                if area_no in (3,5):
+                                    mats_data = await get_mats_data(ctx, user_settings_override[0])
+                                else:
+                                    mats_data = ''
+                                area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
+                                await ctx.send(file=area_embed[0], embed=area_embed[1])
+                            else:
+                                await ctx.send(f'There is no area {area_no}, lol.')
+                    else:
+                        await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
+            except:
+                await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
+    else:
+        area_no = invoked.replace(f'{prefix}areas','').replace(f'{prefix}area','').replace(f'{prefix}a','')
+        if area_no.isnumeric():
+            area_no = int(area_no)
+            if not area_no == 0:
+                area_data = await get_area_data(ctx, area_no)
+                user_settings = await get_settings(bot, ctx)
+                traderate_data = await get_traderate_data(ctx, area_no)
+                if area_no < 15:
+                    traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                else:
+                    traderate_data_next = ''
+                if area_no in (3,5):
+                    if user_settings[0] <= 25:
+                        mats_data = await get_mats_data(ctx, user_settings[0])
+                    else:
+                        mats_data = await get_mats_data(ctx, 25)
+                else:
+                    mats_data = ''
+                area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
+        else:
+            if area_no == '':
+                await areaguide(ctx)
                 return
             else:
-                raise
+                await ctx.send(f'Uhm, what.')           
+                return
+        await ctx.send(file=area_embed[0], embed=area_embed[1])
 
 # Command "trades" - Returns recommended trades of one area or all areas
 trades_aliases = ['tr','trade',]
