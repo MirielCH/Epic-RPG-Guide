@@ -10,7 +10,7 @@ async def horses(prefix):
     tier =  f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}htier`)\n'\
             f'{emojis.bp} Every tier unlocks new bonuses\n'\
             f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}hbreed`)'\
-            f'{emojis.bp} __Very__ small chance of increasing in horse races'
+            f'{emojis.bp} Small chance of increasing in horse races (see `{prefix}event race`)'
             
     level = f'{emojis.bp} Levels range from 1 to (tier * 10)\n'\
             f'{emojis.bp} Leveling up increases the horse type bonus (see the [Wiki](https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'\

@@ -15,6 +15,7 @@ import misc
 import horses
 import pets
 import timetravel
+import events
 import logging
 import logging.handlers
 
@@ -602,7 +603,7 @@ async def setprogress(ctx):
         try:            
             if 0 <= int(answer_tt.content) <= 999:
                 new_tt = int(answer_tt.content)
-                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` or `abort` to abort.')
+                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
                 if (answer_ascended.content == 'abort') or (answer_ascended.content == 'cancel'):
                             await ctx.send(f'Aborting.')
@@ -649,7 +650,9 @@ async def guide_long(ctx):
     
     trading =   f'{emojis.bp} `{prefix}trading` : Trading guides overview'
                 
-    professions_value =   f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
+    professions_value = f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
+    
+    event_overview =    f'{emojis.bp} `{prefix}events` : Event guides overview'
     
     misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
                 f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
@@ -676,6 +679,7 @@ async def guide_long(ctx):
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
+    embed.add_field(name='EVENTS', value=event_overview, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)
@@ -855,113 +859,41 @@ async def dungeongear(ctx, *args):
     invoked = ctx.message.content
     invoked = invoked.lower()
     
-    if len(args)>1:
-        return
-    elif len(args)==1:
-        try:
-            page = int(args[0])
-            if page in (1,2):
-                rec_gear_data = await get_rec_gear_data(ctx, page)
-                embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
-            else:
-                return
-        except:
+    if args:
+        if len(args)>1:
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
             return
+        elif len(args)==1:
+            page = args[0]
+            if page.isnumeric():
+                    page = int(page)
+                    if page in (1,2):
+                        rec_gear_data = await get_rec_gear_data(ctx, page)
+                        embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
+                        await ctx.send(file=embed[0], embed=embed[1])
+                    else:
+                        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                        return
+            else:
+                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                return
     else:
         page = invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','').replace(f'{ctx.prefix}dg','')
-        try:
+        if page.isnumeric():
             page = int(page)
             rec_gear_data = await get_rec_gear_data(ctx, page)
             embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
-        except:
+            await ctx.send(file=embed[0], embed=embed[1])
+        else:
             if page == '':
                 rec_gear_data = await get_rec_gear_data(ctx, 1)
                 embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
-            else:
-                return
-
-    await ctx.send(file=embed[0], embed=embed[1])
-
-# Command "dungeoncheckmanual" - Checks user stats against recommended stats with manual option - removed this from menu, just kept it in here for future reference
-@bot.command(aliases=('dcheckmanual','dungcheckmanual','dcmanual','checkmanual',))
-async def dungeoncheckmanual(ctx, *args):
-    
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-    
-    def epic_rpg_check(m):
-        return m.author.id == 555955826880413696 and m.channel == ctx.channel and str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1
-    
-    try: 
-        if len(args)==3:
-            user_at = args[0]
-            user_def = args[1]
-            user_life = args[2]
-            if (user_at.find('-') != -1) or (user_def.find('-') != -1) or (user_life.find('-') != -1):
-                await ctx.send(f'Did you play backwards? Send a post card from area -5.')
-                return
-            else:
-                if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
-                    user_at = int(args[0])
-                    user_def = int(args[1])
-                    user_life = int(args[2])
-                    if (user_at == 0) or (user_def == 0) or (user_life == 0) or (user_at > 10000) or (user_def > 10000) or (user_life > 10000):
-                        await ctx.send(f'NICE STATS. Not gonna buy it though.')
-                        return 
-                    else:
-                        dungeon_check_data = await get_dungeon_check_data(ctx)
-                        user_stats = [user_at, user_def, user_life]
-                        embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
-                        await ctx.send(file=embed[0], embed=embed[1])
-                else:
-                    await ctx.send(f'These stats look suspicious. Try actual numbers.')
-        elif len(args) == 0:
-            try:
-                await ctx.send(f'**{ctx.author.name}**, please type `rpg p` so I can read your profile (type `abort` to abort).')
-                answer_user_profile = await bot.wait_for('message', check=check, timeout = 30)
-                answer = answer_user_profile.content
-                answer = answer.lower()
-                if (answer_user_profile.content == 'rpg p') or (answer_user_profile.content == 'rpg profile'):
-                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                    profile = str(answer_bot_at.embeds[0].fields[1])
-                    start_at = profile.find('**AT**') + 8
-                    end_at = profile.find('<:', start_at) - 2
-                    user_at = profile[start_at:end_at]
-                    user_at = user_at.replace(',','')
-                    start_def = profile.find('**DEF**') + 9
-                    end_def = profile.find(':', start_def) - 2
-                    user_def = profile[start_def:end_def]
-                    user_def = user_def.replace(',','')
-                    start_current_life = profile.find('**LIFE**') + 10
-                    start_life = profile.find('/', start_current_life) + 1
-                    end_life = profile.find('\',', start_life)
-                    user_life = profile[start_life:end_life]
-                    user_life = user_life.replace(',','')
-                elif (answer_user_profile.content == 'abort') or (answer_user_profile.content == 'cancel'):
-                    await ctx.send(f'Aborting.')
-                    return
-                else:
-                    await ctx.send(f'Wrong input. Aborting.')
-                    return
-                if user_at.isnumeric() and user_def.isnumeric() and user_life.isnumeric():
-                    user_at = int(user_at)
-                    user_def = int(user_def)
-                    user_life = int(user_life)
-                else:
-                    await ctx.send(f'Whelp, something went wrong here, sorry. Aborting.')
-                    return
-                dungeon_check_data = await get_dungeon_check_data(ctx)
-                user_stats = [user_at, user_def, user_life]
-                embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
                 await ctx.send(file=embed[0], embed=embed[1])
-            except asyncio.TimeoutError as error:
-                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]`.\nExample: `{ctx.prefix}{ctx.invoked_with} 162 164 240`\n**Or** you can just use `{ctx.prefix}{ctx.invoked_with}` and let me read your profile instead.')
-    except:
-        raise            
+            else:
+                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                return
 
-# Command "dungeoncheckauto" - Checks user stats against recommended stats
+# Command "dungeoncheck" - Checks user stats against recommended stats
 @bot.command(aliases=('dcheck','dungcheck','dc','check',))
 async def dungeoncheck(ctx, *args):
     
@@ -990,7 +922,11 @@ async def dungeoncheck(ctx, *args):
                     answer = answer.lower()
                     if (answer == 'rpg p') or (answer == 'rpg profile'):
                         answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                        profile = str(answer_bot_at.embeds[0].fields[1])
+                        try:
+                            profile = str(answer_bot_at.embeds[0].fields[1])
+                        except:
+                            await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
+                            return
                         start_at = profile.find('**AT**') + 8
                         end_at = profile.find('<:', start_at) - 2
                         user_at = profile[start_at:end_at]
@@ -1106,7 +1042,11 @@ async def dungeoncheck1(ctx, *args):
                         answer = answer.lower()
                         if (answer == 'rpg p') or (answer == 'rpg profile'):
                             answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                            profile = str(answer_bot_at.embeds[0].fields[1])
+                            try:
+                                profile = str(answer_bot_at.embeds[0].fields[1])
+                            except:
+                                await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
+                                return
                             start_at = profile.find('**AT**') + 8
                             end_at = profile.find('<:', start_at) - 2
                             user_at = profile[start_at:end_at]
@@ -1586,6 +1526,123 @@ async def petsadventure(ctx):
     embed = await pets.petsadventures(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
+
+
+# --- Events ---
+
+# Command "events" - Main event command
+@bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
+                                    'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
+                                    'race','racing','hrace','horserace','horseracing'))
+async def events_overview(ctx, *args):
+
+    invoked = ctx.invoked_with
+    invoked = invoked.lower()
+
+    if args:
+        event_name = ''
+        for arg in args:
+            event_name = f'{event_name}{arg}'
+        event_name = event_name.lower().replace(' ','').strip()
+        if event_name.find('enchant') > -1:
+                embed = await events.event_enchant(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
+                embed = await events.event_epicguard(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif event_name.find('god') > -1:
+                embed = await events.event_god(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
+                embed = await events.event_heal(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
+                embed = await events.event_legendary(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
+                embed = await events.event_lootbox(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif event_name == 'arena':
+                embed = await events.event_arena(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
+                embed = await events.event_coinrain(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
+                embed = await events.event_epictree(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
+                embed = await events.event_megalodon(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif event_name == 'miniboss':
+                embed = await events.event_miniboss(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('specialtrade') > -1) or (event_name.find('trade') > -1):
+                embed = await events.event_specialtrade(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('bigarena') > -1):
+                embed = await events.event_bigarena(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('horserace') > -1) or (event_name.find('race') > -1):
+                embed = await events.event_horserace(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('lottery') > -1) or (event_name.find('ticket') > -1):
+                embed = await events.event_lottery(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        elif (event_name.find('notsomini') > -1):
+                embed = await events.event_notsominiboss(ctx.prefix)
+                await ctx.send(file=embed[0], embed=embed[1])
+        else:
+            await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
+    else:
+        if invoked.find('enchant') > -1:
+            embed = await events.event_enchant(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('guard') > -1) or (invoked.find('jail') > -1):
+            embed = await events.event_epicguard(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('heal') > -1):
+            embed = await events.event_heal(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif invoked in ('arena','arenaevent'):
+            embed = await events.event_arena(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('rain') > -1) or (invoked.find('trumpet') > -1) or (invoked.find('catch') > -1):
+            embed = await events.event_coinrain(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('tree') > -1) or (invoked.find('seed') > -1) or (invoked.find('chop') > -1):
+            embed = await events.event_epictree(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif invoked.find('god') > -1:
+            embed = await events.event_god(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked in ('boss','bossevent')) or (invoked.find('legendary') > -1):
+            embed = await events.event_legendary(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('megalodon') > -1) or (invoked.find('fish') > -1):
+            embed = await events.event_megalodon(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif invoked in ('miniboss','minibossevent'):
+            embed = await events.event_miniboss(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('trade') > -1):
+            embed = await events.event_specialtrade(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('bigarena') > -1) or (invoked.find('arenabig') > -1):
+            embed = await events.event_bigarena(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('race') > -1) or (invoked.find('racing') > -1):
+            embed = await events.event_horserace(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('lottery') > -1) or (invoked.find('ticket') > -1):
+            embed = await events.event_lottery(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('notsomini') > -1):
+            embed = await events.event_notsominiboss(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        else:
+            embed = await events.events_overview(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
 
 
 # --- Time Travel ---
