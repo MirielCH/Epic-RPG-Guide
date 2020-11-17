@@ -1533,7 +1533,7 @@ async def petsadventure(ctx):
 # Command "events" - Main event command
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
-                                    'race','racing','hrace','horserace','horseracing'))
+                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent'))
 async def events_overview(ctx, *args):
 
     invoked = ctx.invoked_with
@@ -1639,6 +1639,9 @@ async def events_overview(ctx, *args):
             await ctx.send(file=embed[0], embed=embed[1])
         elif (invoked.find('notsomini') > -1):
             embed = await events.event_notsominiboss(ctx.prefix)
+            await ctx.send(file=embed[0], embed=embed[1])
+        elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
+            embed = await events.event_lootbox(ctx.prefix)
             await ctx.send(file=embed[0], embed=embed[1])
         else:
             embed = await events.events_overview(ctx.prefix)
