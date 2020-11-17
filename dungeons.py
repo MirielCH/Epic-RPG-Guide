@@ -351,7 +351,7 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
                     if check[1] == 'fail':
                         check_results = f'{check_results}\n{emojis.bp} You should increase your **{check[0]}** to **{player_stats_check[x]}**'
                 check_results = f'{check_results}\n{emojis.bp} However, you can still do this dungeon if you get carried'
-            elif (user_at_check_result == 'pass') and (user_def_check_result == 'pass') and ((user_life_check_result == 'pass') or (user_life_check_result == 'passA') or (user_life_check_result == 'passB') or (user_life_check_result == 'passB')):
+            elif (user_at_check_result == 'pass') and (user_def_check_result == 'pass') and ((user_life_check_result == 'pass') or (user_life_check_result == 'passA') or (user_life_check_result == 'passB') or (user_life_check_result == 'passC')):
                 check_results = f'{emojis.bp} Your stats are high enough for this dungeon'
                 if (user_life_check_result == 'passA'):
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach recommended **LIFE**'

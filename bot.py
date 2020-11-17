@@ -542,7 +542,7 @@ async def setprefix(ctx, *new_prefix):
     
     if new_prefix:
         if len(new_prefix)>1:
-            await ctx.send(f'Too many arguments.\nThe command syntax is `{ctx.prefix}setprefix [prefix]`')
+            await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
         else:
             await set_prefix(bot, ctx, new_prefix[0])
             await ctx.send(f'Prefix changed to `{await get_prefix(bot, ctx)}`')
@@ -600,9 +600,10 @@ async def setprogress(ctx):
         if (answer_tt.content == 'abort') or (answer_tt.content == 'cancel'):
             await ctx.send(f'Aborting.')
             return
-        try:            
-            if 0 <= int(answer_tt.content) <= 999:
-                new_tt = int(answer_tt.content)
+        new_tt = answer_tt.content
+        if new_tt.isnumeric():
+            new_tt = int(answer_tt.content)            
+            if 0 <= new_tt <= 999:
                 await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
                 if (answer_ascended.content == 'abort') or (answer_ascended.content == 'cancel'):
@@ -622,7 +623,7 @@ async def setprogress(ctx):
                     await ctx.send(f'**{ctx.author.name}**, please answer with `yes` or `no`. Aborting.')
             else:
                 await ctx.send(f'**{ctx.author.name}**, please enter a number from 0 to 999. Aborting.')
-        except:
+        else:
             await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')  
     except asyncio.TimeoutError as error:
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
@@ -1664,35 +1665,47 @@ async def timetravel_specific(ctx, *args):
     
     if args:
         if len(args) > 1:
-            return        
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+            return       
         else:
-            try:
-                if 1 <= int(args[0]) <= 25:
-                    tt_data = await get_tt_unlocks(ctx, int(args[0]))
+            tt_no = args[0]
+            if tt_no.isnumeric():
+                tt_no = int(tt_no)
+                if 1 <= tt_no <= 999:
+                    if 1 <= tt_no <= 25:
+                        tt_data = await get_tt_unlocks(ctx, tt_no)
+                    else:
+                        tt_data = (tt_no, 0, 0, '', '')
                 else:
-                    tt_data = (int(args[0]), 0, 0, '', '')
+                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+                    return
                     
                 tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
-            except:                    
-                return
-    else:
-        try:
-            tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
-            
-            if tt_no == '':
-                tt_embed = await timetravel.timetravel(ctx.prefix)
                 await ctx.send(file=tt_embed[0], embed=tt_embed[1])
             else:
-                if 1 <= int(tt_no) <= 25:
-                    tt_data = await get_tt_unlocks(ctx, int(tt_no))
+                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+    else:
+        tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
+        
+        if tt_no == '':
+            tt_embed = await timetravel.timetravel(ctx.prefix)
+            await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+        else:
+            if tt_no.isnumeric():
+                tt_no = int(tt_no)
+                if 1 <= tt_no <= 999:
+                    if 1 <= tt_no <= 25:
+                        tt_data = await get_tt_unlocks(ctx, int(tt_no))
+                    else:
+                        tt_data = (tt_no, 0, 0, '', '', '')
+                    tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
+                    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
                 else:
-                    tt_data = (int(tt_no), 0, 0, '', '', '')
-                    
-                tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
-        except:
-            return
+                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+                    return
+            else:
+                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+                return
 
 # Command "supertimetravel" - Information about super time travel
 @bot.command(aliases=('stt','supertt',))

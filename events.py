@@ -29,7 +29,7 @@ async def events_overview(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'EVENTS',
-        description =   f'This page lists the name of all possible events.\n'\
+        description =   f'This page lists the names of all possible events.\n'\
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -95,7 +95,7 @@ async def event_epicguard(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'EPIC GUARD EVENT',
-        description =   f'This is a random captcha event to prevent bot usage.'
+        description =   f'This is a random captcha event to prevent autotyping.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
