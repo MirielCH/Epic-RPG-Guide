@@ -22,7 +22,7 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 7:
         field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
-                      f'{emojis.bp} Dismantle {emojis.apple} apples to {emojis.log} logs\n'\
+                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Ignore logs and fish'
     elif int(area_no) == 8:
         field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'\

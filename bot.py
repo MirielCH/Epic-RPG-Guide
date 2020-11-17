@@ -909,7 +909,7 @@ async def dungeoncheck(ctx, *args):
         if len(args) == 0:
             explanation =   f'This command shows you for which dungeons your stats are high enough.\n'\
                             f'You have the following options:\n'\
-                            f'• `{ctx.prefix}{ctx.invoked_with} auto` if you do **not** have a profile background\n'\
+                            f'• `{ctx.prefix}{ctx.invoked_with} auto` to let me read your profile. Does **not** work with a profile background!\n'\
                             f'• `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
             await ctx.send(explanation)
         elif len(args) == 1:
@@ -1029,7 +1029,7 @@ async def dungeoncheck1(ctx, *args):
             if len(args) == 0:
                 explanation =   f'This command shows you if your stats are high enough for dungeon **{dungeon_no}**.\n'\
                                 f'You have the following options:\n'\
-                                f'• `{ctx.prefix}{ctx.invoked_with} auto` if you do **not** have a profile background\n'\
+                                f'• `{ctx.prefix}{ctx.invoked_with} auto` to let me read your profile. Does **not** work with a profile background!\n'\
                                 f'• `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
                 await ctx.send(explanation)
             elif len(args) == 1:
@@ -1328,12 +1328,18 @@ async def craft(ctx, *args):
         itemname = ''
         amount = 1
         for arg in args:
-            if not arg.lstrip('-').isnumeric():
+            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
                 itemname = f'{itemname} {arg}'
                 itemname = itemname.strip()
             else:
-                if (arg.find('-') != -1) or (int(arg) == 0):
-                    await ctx.send(f'You know, I\'m no Einstein, but crafting **{arg}** items is gonna be a challenge.')
+                if (arg.find('.') != -1) or (arg.find(',') != -1):
+                    await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with numbers only. :eyes:')
+                    return
+                elif (arg.find('-') != -1) or (int(arg) == 0):
+                    await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
+                    return
+                elif int(arg) >= 100000000000:
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
                     return
                 else:
                     amount = int(arg)
