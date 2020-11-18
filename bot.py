@@ -904,7 +904,7 @@ async def dungeoncheck(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1) or (str(m.embeds[0].author).find(f'{ctx.author.name}\'s stats') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -918,25 +918,28 @@ async def dungeoncheck(ctx, *args):
         if len(args) == 0:
             explanation =   f'This command shows you for which dungeons your stats are high enough.\n'\
                             f'You have the following options:\n'\
-                            f'• `{ctx.prefix}{ctx.invoked_with} auto` to let me read your profile. Does **not** work with a profile background!\n'\
-                            f'• `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
+                            f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} auto` to let me read your stats.\n{emojis.blank} This works with default profiles (no background) and `rpg stats`.\n'\
+                            f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
             await ctx.send(explanation)
         elif len(args) == 1:
             try:
                 arg = args[0]
                 arg = arg.lower()
                 if arg == 'auto':
-                    await ctx.send(f'**{ctx.author.name}**, please type `rpg p` so I can read your profile (type `abort` to abort).\nThis does **not** work with profile backgrounds!')
+                    await ctx.send(f'**{ctx.author.name}**, please type:\n{emojis.bp} `rpg stats` if you are an EPIC RPG donor\n{emojis.blank} or\n{emojis.bp} `rpg p` if you are not\n{emojis.blank} or\n{emojis.bp} `abort` to abort\n\nNote: `rpg p` does **not** work with profile backgrounds.\nIf you have a background and are not a donor, please use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` instead.')
                     answer_user_profile = await bot.wait_for('message', check=check, timeout = 30)
                     answer = answer_user_profile.content
                     answer = answer.lower()
-                    if (answer == 'rpg p') or (answer == 'rpg profile'):
+                    if (answer == 'rpg p') or (answer == 'rpg profile') or (answer == 'rpg stats'):
                         answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                         try:
                             profile = str(answer_bot_at.embeds[0].fields[1])
                         except:
-                            await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
-                            return
+                            try:
+                                profile = str(answer_bot_at.embeds[0].fields[0])
+                            except:
+                                await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
+                                return
                         start_at = profile.find('**AT**') + 8
                         end_at = profile.find('<:', start_at) - 2
                         user_at = profile[start_at:end_at]
@@ -1022,7 +1025,7 @@ async def dungeoncheck1(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1) or (str(m.embeds[0].author).find(f'{ctx.author.name}\'s stats') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -1047,25 +1050,28 @@ async def dungeoncheck1(ctx, *args):
             if len(args) == 0:
                 explanation =   f'This command shows you if your stats are high enough for dungeon **{dungeon_no}**.\n'\
                                 f'You have the following options:\n'\
-                                f'• `{ctx.prefix}{ctx.invoked_with} auto` to let me read your profile. Does **not** work with a profile background!\n'\
-                                f'• `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
+                                f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} auto` to let me read your stats.\n{emojis.blank} This works with default profiles (no background) and `rpg stats`.\n'\
+                                f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually'
                 await ctx.send(explanation)
             elif len(args) == 1:
                 arg = args[0]
                 arg = arg.lower()
                 if arg == 'auto':
                     try:
-                        await ctx.send(f'**{ctx.author.name}**, please type `rpg p` so I can read your profile (type `abort` to abort).\nThis does **not** work with profile backgrounds!\n')
+                        await ctx.send(f'**{ctx.author.name}**, please type:\n{emojis.bp} `rpg stats` if you are an EPIC RPG donor\n{emojis.blank} or\n{emojis.bp} `rpg p` if you are not\n{emojis.blank} or\n{emojis.bp} `abort` to abort\n\nNote: `rpg p` does **not** work with profile backgrounds.\nIf you have a background and are not a donor, please use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` instead.')
                         answer_user_at = await bot.wait_for('message', check=check, timeout = 30)
                         answer = answer_user_at.content
                         answer = answer.lower()
-                        if (answer == 'rpg p') or (answer == 'rpg profile'):
+                        if (answer == 'rpg p') or (answer == 'rpg profile') or (answer == 'rpg stats'):
                             answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                             try:
                                 profile = str(answer_bot_at.embeds[0].fields[1])
                             except:
-                                await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
-                                return
+                                try:
+                                    profile = str(answer_bot_at.embeds[0].fields[0])
+                                except:
+                                    await ctx.send(f'Whelp, something went wrong here, sorry.\nIf you have a profile background, use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` to provide your stats manually.')
+                                    return
                             start_at = profile.find('**AT**') + 8
                             end_at = profile.find('<:', start_at) - 2
                             user_at = profile[start_at:end_at]
@@ -1918,7 +1924,7 @@ async def invite(ctx):
     await ctx.send(file=thumbnail, embed=embed)
 
 # Command "support"
-@bot.command(aliases=('supportserver',))
+@bot.command(aliases=('supportserver','server',))
 async def support(ctx):
        
     embed = discord.Embed(
