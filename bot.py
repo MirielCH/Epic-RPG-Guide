@@ -902,7 +902,16 @@ async def dungeoncheck(ctx, *args):
         return m.author == ctx.author and m.channel == ctx.channel
     
     def epic_rpg_check(m):
-        return m.author.id == 555955826880413696 and m.channel == ctx.channel and str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1
+        correct_embed = False
+        try:
+            if str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1:
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
     
     try: 
         dungeon_no = 0
@@ -1011,7 +1020,16 @@ async def dungeoncheck1(ctx, *args):
         return m.author == ctx.author and m.channel == ctx.channel
         
     def epic_rpg_check(m):
-        return m.author.id == 555955826880413696 and m.channel == ctx.channel and str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1
+        correct_embed = False
+        try:
+            if str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1:
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
     
     try: 
         invoked = ctx.invoked_with
