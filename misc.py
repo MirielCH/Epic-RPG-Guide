@@ -30,12 +30,12 @@ async def duels(prefix):
     return (thumbnail, embed)
 
 # Redeemable codes
-async def codes(prefix):
+async def codes(prefix, codes):
 
-    all_codes = f'{emojis.bp} `code` {emojis.blank} 20 {emojis.log}, 10 {emojis.fish}, 5\'000 {emojis.coin}\n'\
-                f'{emojis.bp} `epic` {emojis.blank} 1 {emojis.epiccoin}\n'\
-                f'{emojis.bp} `epicrpg` 10 {emojis.arenacookie}, 15\'000 {emojis.coin}\n'\
-                f'{emojis.bp} `lmao` {emojis.blank} 2 {emojis.logepic}, 50\'000 {emojis.coin}'
+    field_value = ''
+
+    for code in codes:  
+        field_value = f'{field_value}\n{emojis.bp} `{code[0]}`'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -47,8 +47,8 @@ async def codes(prefix):
     embed.set_footer(text=await global_data.default_footer(prefix))
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
-
-    embed.add_field(name=f'CODES', value=all_codes, inline=False)
+    
+    embed.add_field(name=f'CODES', value=field_value, inline=False)
             
     return (thumbnail, embed)
 

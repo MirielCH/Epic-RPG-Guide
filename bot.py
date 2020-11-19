@@ -285,7 +285,7 @@ async def get_item_data(ctx, itemname):
         elif itemname == 'filled lootbox':
             itemnames = (itemname,'banana','','','','','','')
         elif itemname == 'coin sandwich':
-            itemnames = (itemname,'epic fish','golden fish','','','','','')
+            itemnames = (itemname,'epic fish','golden fish','banana','','','','')
         else:
             itemnames = (itemname,'','','','','','','')
             
@@ -364,6 +364,23 @@ async def get_tip(ctx):
         await log_error(ctx, error)
         
     return tip
+
+# Get redeemable codes
+async def get_codes(ctx):
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute('SELECT * FROM codes ORDER BY code')
+        record = cur.fetchall()
+        
+        if record:
+            codes = record
+        else:
+            await log_error(ctx, 'No codes data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return codes
 
 # Get user count
 async def get_user_number(ctx):
@@ -1864,7 +1881,9 @@ async def tip(ctx):
 @bot.command(aliases=('code',))
 async def codes(ctx):
     
-    embed = await misc.codes(ctx.prefix)
+    codes = await get_codes(ctx)
+    
+    embed = await misc.codes(ctx.prefix, codes)
     
     await ctx.send(file=embed[0], embed=embed[1])
 
