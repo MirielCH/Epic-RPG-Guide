@@ -35,7 +35,7 @@ async def codes(prefix, codes):
     field_value = ''
 
     for code in codes:  
-        field_value = f'{field_value}\n{emojis.bp} `{code[0]}`'
+        field_value = f'{field_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
 
     embed = discord.Embed(
         color = global_data.color,

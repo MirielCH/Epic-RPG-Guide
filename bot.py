@@ -605,7 +605,7 @@ async def settings(ctx):
         await ctx.send(file=thumbnail, embed=embed)
     
 # Command "setprogress" - Sets TT and ascension
-@bot.command(aliases=('sp',))
+@bot.command(aliases=('sp','setpr','setp',))
 async def setprogress(ctx):
     
     def check(m):
@@ -1373,17 +1373,21 @@ async def craft(ctx, *args):
                 itemname = f'{itemname} {arg}'
                 itemname = itemname.strip()
             else:
-                if (arg.find('.') != -1) or (arg.find(',') != -1):
-                    await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with numbers only. :eyes:')
-                    return
-                elif (arg.find('-') != -1) or (int(arg) == 0):
-                    await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
-                    return
-                elif int(arg) >= 100000000000:
+                try:
+                    if (arg.find('.') != -1) or (arg.find(',') != -1):
+                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with numbers only. :eyes:')
+                        return
+                    elif (arg.find('-') != -1) or (int(arg) == 0):
+                        await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
+                        return
+                    elif int(arg) >= 100000000000:
+                        await ctx.send(f'Are you trying to break me or something? :thinking:')
+                        return
+                    else:
+                        amount = int(arg)
+                except:
                     await ctx.send(f'Are you trying to break me or something? :thinking:')
                     return
-                else:
-                    amount = int(arg)
                 
         if not itemname == '' and amount >= 1:
             try:
