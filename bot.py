@@ -537,11 +537,17 @@ async def on_guild_join(guild):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        await ctx.send(f'Uhm, what.')
+        return
     elif isinstance(error, (commands.MissingPermissions)):
-        await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission `Manage Server` to use this command.')
+        missing_perms = ''
+        for missing_perm in error.missing_perms:
+            if not missing_perms == '':
+                missing_perms = f'{missing_perms}, `{missing_perm}`'
+            else:
+                missing_perms = f'`{missing_perm}`'
+        await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission(s) {missing_perms} to use this command.')
     elif isinstance(error, (commands.NotOwner)):
-        await ctx.send(f'Sorry **{ctx.author.name}**, you are not allowed to do that.')
+        return
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
     elif isinstance(error, FirstTimeUser):
@@ -1391,7 +1397,7 @@ async def craft(ctx, *args):
                 
         if not itemname == '' and amount >= 1:
             try:
-                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('ue ','ultra-edgy ').replace('uo ','ultra-omega ')
+                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('uo ','ultra-omega ')
                 itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
                 itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple')       
                 
@@ -1400,6 +1406,7 @@ async def craft(ctx, *args):
                     'ed sword': 'edgy sword',
                     'ed armor': 'edgy armor',
                     'ue sw': 'ultra-edgy sword',
+                    'ue armor': 'ultra-edgy armor',
                     'brandon': 'epic fish',
                     'salad': 'fruit salad',
                     'creature': 'mutant creature',
@@ -1928,17 +1935,8 @@ async def invite(ctx):
     embed = discord.Embed(
     color = global_data.color,
     title = f'NEED A GUIDE?',
-    description =   f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).\n\n'\
-                    f'**If the invite fails, please read!**\n'
-                    f'I am currently in the process of being verified by Discord.\n'
-                    f'Until the verification is complete, I can not join more than 100 servers.\n\n'\
-                    f'**What does this mean?**\n'\
-                    f'It means for you, that if the invitation fails, you unfortunately have to wait until that\'s done.\n'\
-                    f'There is nothing the dev can do to speed this up.\n\n'\
-                    f'**How to see when it\'s done?**\n'\
-                    f'Once a check mark appears before the `BOT` label after my name, I\'m verified.'
-                    #f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
-                    
+    description =   f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
+                    f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'                  
     )    
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
@@ -2010,6 +2008,47 @@ async def brandon(ctx):
     )    
     thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
     embed.set_thumbnail(url='attachment://thumbnail.png')
+    
+    await ctx.send(file=thumbnail, embed=embed)
+
+
+# --- Testing ---
+@bot.command()
+@commands.is_owner()
+async def test(ctx):
+    
+    seconds = 86400
+    days = seconds // 86400
+    hours = (seconds % 86400) // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    
+    seconds1 = 77760
+    days1 = seconds1 // 86400
+    hours1 = (seconds1 % 86400) // 3600
+    minutes1 = (seconds1 % 3600) // 60
+    seconds1 = seconds1 % 60
+    
+    seconds2 = 69120
+    days2 = seconds2 // 86400
+    hours2 = (seconds2 % 86400) // 3600
+    minutes2 = (seconds2 % 3600) // 60
+    seconds2 = seconds2 % 60
+    
+    seconds3 = 56160
+    days3 = seconds3 // 86400
+    hours3 = (seconds3 % 86400) // 3600
+    minutes3 = (seconds3 % 3600) // 60
+    seconds3 = seconds3 % 60
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'COMMAND COOLDOWNS',
+        description = f'This page shows all the **default** cooldowns. If you want to see all donator cooldowns, use `{ctx.prefix}cd [command]`'
+    )    
+    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
+    embed.set_thumbnail(url='attachment://thumbnail.png')
+    embed.add_field(name='COOLDOWN', value=f'{emojis.bp} `dungeon | miniboss | not so mini boss`\n{emojis.blank}:one: {days}d / :two: {hours1}h {minutes1}m {seconds1}s / :three: {hours2}h {minutes2}m {seconds2}s / :four: {hours3}h {minutes3}m {seconds3}s', inline=False)
     
     await ctx.send(file=thumbnail, embed=embed)
 
