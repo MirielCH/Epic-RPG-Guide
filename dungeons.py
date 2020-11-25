@@ -190,7 +190,14 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
         elif user_def >= player_def:
             user_def_check_result = 'pass'
         if user_life < player_life:
-            user_life_check_result = 'fail'
+            if player_life - user_life <= 10:
+                user_life_check_result = 'passA'
+            elif 11 <= (player_life - user_life) <= 25:
+                user_life_check_result = 'passB'
+            elif 26 <= (player_life - user_life) <= 50:
+                user_life_check_result = 'passC'
+            else:
+                user_life_check_result = 'fail'
         elif user_life >= player_life:
             user_life_check_result = 'pass'
   
@@ -292,11 +299,11 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
                     check_results = f'{emojis.bp} Your stats are high enough for this dungeon\n'\
                                     f'{emojis.bp} Note that this dungeon is luck based, so you can still die'
                     if (user_life_check_result == 'passA'):
-                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach the recommended **LIFE**'
+                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach recommended **LIFE**'
                     if (user_life_check_result == 'passB'):
-                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach the recommended **LIFE**'
+                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach recommended **LIFE**'
                     if (user_life_check_result == 'passC'):
-                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach the recommended **LIFE**'
+                        check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
         elif dungeon_no == 12:
             if (user_def_check_result == 'fail') or (check_life == 'fail'):
@@ -308,11 +315,11 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             else:
                 check_results = f'{emojis.bp} You are ready for this dungeon'
                 if (user_life_check_result == 'passA'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach recommended **LIFE**'
                 if (user_life_check_result == 'passB'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach recommended **LIFE**'
                 if (user_life_check_result == 'passC'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
                 check_results = f'{check_results}\n{emojis.bp} Note that higher **LIFE** will still help in beating the dungeon'    
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
         elif dungeon_no == 13:
@@ -332,11 +339,11 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             else:
                 check_results = f'{emojis.bp} Your stats are high enough for this dungeon'
                 if (user_life_check_result == 'passA'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost A to reach recommended **LIFE**'
                 if (user_life_check_result == 'passB'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach recommended **LIFE**'
                 if (user_life_check_result == 'passC'):
-                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach the recommended **LIFE**'
+                    check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
                 
         else:

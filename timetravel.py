@@ -80,7 +80,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
                   
 
-    prep_tt1 =          f'{emojis.bp} If your horse is T6+: get 30m coins\n'\
+    prep_tt1_to_2 =     f'{emojis.bp} If your horse is T6+: get 30m coins\n'\
                         f'{emojis.bp} If your horse is <T6: get 50m coins\n'\
                         f'{emojis.bp} If you need money: Use `drill` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
@@ -88,15 +88,49 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
     
-    prep_tt2_to_25 =    f'{emojis.bp} If your horse is T6+: get 30m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 50m coins\n'\
+    prep_tt3_to_4 =     f'{emojis.bp} If your horse is T6+: get 50m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: get 150m coins\n'\
                         f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
+                        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
                         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'\
                         f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
-                   
-    prep_stt =          f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+    
+    prep_tt5_to_9 =     f'{emojis.bp} If your horse is T6+: get 150m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: get 350m coins\n'\
+                        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
+                        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
+                        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'\
+                        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+    
+    prep_tt10_to_24 =   f'{emojis.bp} If your horse is T6+: get 350m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: get 850m coins\n'\
+                        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
+                        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
+                        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'\
+                        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+
+    prep_tt25 =         f'{emojis.bp} If your horse is T6+: get 350m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: get 850m coins\n'\
+                        f'{emojis.bp} Note: You **need** a T6+ horse to do Dungeon 15\n'\
+                        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
+                        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
+                        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
+                        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'\
+                        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
+                        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
+                        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+    
+    prep_stt =          f'{emojis.bp} Get 850m coins\n'\
+                        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
                         f'{emojis.bp} If you need a higher score: Trade to {emojis.ruby} rubies (see `{prefix}sttscore`)\n'\
                         f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'\
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
@@ -115,10 +149,16 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
     if not (mytt == True) and not (tt_no == 0):
-        if tt_no == 1:
-            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1, inline=False)
-        elif 2 <= tt_no <= 25:
-            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt2_to_25, inline=False)
+        if 1 <= tt_no <= 2:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1_to_2, inline=False)
+        elif 3 <= tt_no <= 4:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt3_to_4, inline=False)
+        elif 5 <= tt_no <= 9:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt5_to_9, inline=False)
+        elif 10 <= tt_no <= 24:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt10_to_24, inline=False)
+        elif tt_no == 25:
+            embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt25, inline=False)
         else:
             embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
