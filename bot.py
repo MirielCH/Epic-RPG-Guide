@@ -1823,20 +1823,67 @@ async def professionlevel(ctx):
     
 # Command "prm" - Calculate logs to sell
 @bot.command()
-async def prm(ctx, *args):
+async def prm(ctx):
     
-    if (len(args) > 1) or (len(args) == 0):
-        await ctx.send(f'The command syntax is `{ctx.prefix}prm [merchant xp]`.\nExample: `{ctx.prefix}prm 1234`')
-    else:
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
         try:
-            xp = int(args[0])
-            logs = xp*5
-            xp = f'{xp:,}'.replace(',','\'')
-            logs = f'{logs:,}'.replace(',','\'')
-            
-            await ctx.send(f'You need to sell **{logs}** {emojis.log} `wooden log` to get {xp} merchant XP.')
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
         except:
-            await ctx.send(f'Please enter a valid number.')
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    await ctx.send(f'**{ctx.author.name}**, please type `rpg pr merchant` (or `abort` to abort)')
+    answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+    answer = answer_user_merchant.content
+    answer = answer.lower()
+    if (answer == 'rpg pr merchant'):
+        answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+        try:
+            pr_merchant = str(answer_bot_at.embeds[0].fields[0])
+            print(pr_merchant)
+        except:
+            await ctx.send(f'Whelp, something went wrong here, sorry.')
+            return
+        start_level = pr_merchant.find('**Level**') + 11
+        end_level = pr_merchant.find('(', start_level) - 1
+        pr_level = pr_merchant[start_level:end_level]
+        start_current_xp = pr_merchant.find('**XP**') + 8
+        end_current_xp = pr_merchant.find('/', start_current_xp)
+        pr_current_xp = pr_merchant[start_current_xp:end_current_xp]
+        pr_current_xp = pr_current_xp.replace(',','')
+        start_needed_xp = pr_merchant.find('/', start_current_xp) + 1
+        end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
+        pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
+        pr_needed_xp = pr_needed_xp.replace(',','')
+    elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+        await ctx.send(f'Aborting.')
+        return
+    else:
+        await ctx.send(f'Wrong input. Aborting.')
+        return
+    if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+        pr_level = int(pr_level)
+        pr_current_xp = int(pr_current_xp)
+        pr_needed_xp = int(pr_needed_xp)
+        
+        if pr_level == 100:
+            await ctx.send(f'Congratulations on reaching max level merchant. I have no idea why you need this command though. :thinking:')
+            return
+        
+        xp = pr_needed_xp - pr_current_xp
+        logs = xp * 5        
+        await ctx.send(f'You need {xp:,} XP to reach Level {pr_level+1:,}.\nYou need to sell **{logs:,}** {emojis.log} `wooden log` to get {xp:,} merchant XP.')
+    else:
+        await ctx.send(f'Whelp, something went wrong here, sorry.')
+        return
             
 # Command "prc" - Info about crafting
 @bot.command()
@@ -2065,8 +2112,8 @@ async def shutdown(ctx):
         return m.author == ctx.author and m.channel == ctx.channel
     
     await ctx.send(f'**{ctx.author.name}**, are you **SURE**? `[yes/no]`')
-    answer_ascended = await bot.wait_for('message', check=check, timeout=30)
-    if answer_ascended.content.lower() in ['yes','y']:
+    answer = await bot.wait_for('message', check=check, timeout=30)
+    if answer.content.lower() in ['yes','y']:
         await ctx.send(f'Shutting down.')
         await ctx.bot.logout()
     else:
