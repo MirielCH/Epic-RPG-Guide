@@ -1966,7 +1966,7 @@ async def support(ctx):
 async def links(ctx):
     
     epicrpgguide =  f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'\
-                    f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot) (**please see `{ctx.prefix}inv` if the invitation fails**)'  
+                    f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)'  
     
     epicrpg =       f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
                     f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
