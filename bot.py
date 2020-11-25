@@ -1734,7 +1734,7 @@ async def timetravel_specific(ctx, *args):
                     if 1 <= tt_no <= 25:
                         tt_data = await get_tt_unlocks(ctx, tt_no)
                     else:
-                        tt_data = (tt_no, 0, 0, '', '')
+                        tt_data = (tt_no, 0, 0, '', '', '')
                 else:
                     await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
                     return
