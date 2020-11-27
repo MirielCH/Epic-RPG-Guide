@@ -95,6 +95,7 @@ async def professions_leveling(prefix):
     embed.add_field(name=f'WORKER {emojis.prworker}', value=worker, inline=False)
     embed.add_field(name=f'ENCHANTER {emojis.prenchanter}', value=enchanter, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}pr` : Professions overview\n{emojis.bp} `{prefix}asc` : Details about ascension', inline=False)
+    embed.add_field(name=f'CALCULATORS', value=f'{emojis.bp} `{prefix}prm` : Logs you need to sell for your next merchant levels\n{emojis.bp} `{prefix}prmtotal [level]` : Total logs you need to reach `[level]`', inline=False)
             
     return (thumbnail, embed)
 

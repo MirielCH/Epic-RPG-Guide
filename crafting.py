@@ -263,7 +263,9 @@ async def drops(prefix):
                 f'{emojis.bp} These mobs have a base chance of 4 % to drop an item\n'\
                 f'{emojis.bp} Thus you have a total base drop chance of 2 % when hunting\n'\
                 f'{emojis.bp} Every {emojis.timetravel} time travel increases the drop chance by ~25%\n'\
-                f'{emojis.bp} A {emojis.horset7} T7+ horse increases the drop chance by 20%\n{emojis.blank}'
+                f'{emojis.bp} A {emojis.horset7} T7 horse increases the drop chance by 20%\n'\
+                f'{emojis.bp} A {emojis.horset8} T8 horse increases the drop chance by 50%\n'\
+                f'{emojis.bp} A {emojis.horset9} T9 horse increases the drop chance by 100%\n{emojis.blank}'
 
     embed = discord.Embed(
         color = global_data.color,

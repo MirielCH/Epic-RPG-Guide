@@ -349,6 +349,26 @@ async def get_traderate_data(ctx, area):
         
     return traderate_data
 
+# Get merchant XP
+async def get_merchant_levels(ctx, levelrange):
+    
+    start_level = levelrange[0]
+    end_level = levelrange[1]
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute('SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?', (start_level, end_level,))
+        record = cur.fetchall()
+        
+        if record:
+            merchant_levels = record
+        else:
+            await log_error(ctx, 'No merchant data data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return merchant_levels
+
 # Get random tip
 async def get_tip(ctx):
     
@@ -666,7 +686,7 @@ async def guide_long(ctx):
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'\
                 f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
     
-    crafting =  f'{emojis.bp} `{prefix}craft [amount] [item]` : Recipes mats calculator\n'\
+    crafting =  f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'\
                 f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     
@@ -681,7 +701,8 @@ async def guide_long(ctx):
     
     misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
                 f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
-                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
+                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'\
+                f'{emojis.bp} `{prefix}calc` : A basic calculator'
                 
     botlinks =  f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'\
                 f'{emojis.bp} `{prefix}support` : Visit the support server\n'\
@@ -1786,7 +1807,7 @@ async def supertimetravelscore(ctx):
 @bot.command(aliases=('timetravel1000',))
 async def tt1000(ctx):
     
-    await ctx.send('https://tenor.com/view/doctorwho-hi-gif-7297611')
+    await ctx.send('https://tenor.com/view/doctor-who-gif-7404461')
 
 # Command "mytt" - Information about user's TT
 @bot.command(aliases=('mytimetravel',))
@@ -1840,51 +1861,233 @@ async def prm(ctx):
         
         return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
     
-    await ctx.send(f'**{ctx.author.name}**, please type `rpg pr merchant` (or `abort` to abort)')
-    answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
-    answer = answer_user_merchant.content
-    answer = answer.lower()
-    if (answer == 'rpg pr merchant'):
-        answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-        try:
-            pr_merchant = str(answer_bot_at.embeds[0].fields[0])
-            print(pr_merchant)
-        except:
+    try:
+        await ctx.send(f'**{ctx.author.name}**, please type `rpg pr merchant` (or `abort` to abort)')
+        answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+        answer = answer_user_merchant.content
+        answer = answer.lower()
+        if (answer == 'rpg pr merchant'):
+            answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+            try:
+                pr_merchant = str(answer_bot_at.embeds[0].fields[0])
+            except:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+            start_level = pr_merchant.find('**Level**') + 11
+            end_level = pr_merchant.find('(', start_level) - 1
+            pr_level = pr_merchant[start_level:end_level]
+            start_current_xp = pr_merchant.find('**XP**') + 8
+            end_current_xp = pr_merchant.find('/', start_current_xp)
+            pr_current_xp = pr_merchant[start_current_xp:end_current_xp]
+            pr_current_xp = pr_current_xp.replace(',','')
+            start_needed_xp = pr_merchant.find('/', start_current_xp) + 1
+            end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
+            pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
+            pr_needed_xp = pr_needed_xp.replace(',','')
+        elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+            await ctx.send(f'Aborting.')
+            return
+        else:
+            await ctx.send(f'Wrong input. Aborting.')
+            return
+        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            pr_level = int(pr_level)
+            pr_current_xp = int(pr_current_xp)
+            pr_needed_xp = int(pr_needed_xp)            
+            xp = pr_needed_xp - pr_current_xp
+            logs = xp * 5  
+            
+            levelrange = []
+            
+            if pr_level == 100:
+                await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
+                return
+            elif pr_level == 99:
+                merchant_levels = []
+            elif pr_level + 7 > 100:
+                levelrange = [pr_level+2, 100,]
+                merchant_levels = await get_merchant_levels(ctx,levelrange)            
+            else:
+                levelrange = [pr_level+2, pr_level+7,]
+                merchant_levels = await get_merchant_levels(ctx,levelrange)            
+            
+            output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
+                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{xp*5:,}** wooden logs'
+
+            for merchant_level in merchant_levels:
+                merchant_level_no = merchant_level[0]
+                merchant_level_xp = merchant_level[1]
+                output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{merchant_level_xp*5:,}** wooden logs'
+            
+            await ctx.send(output)
+        else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
             return
-        start_level = pr_merchant.find('**Level**') + 11
-        end_level = pr_merchant.find('(', start_level) - 1
-        pr_level = pr_merchant[start_level:end_level]
-        start_current_xp = pr_merchant.find('**XP**') + 8
-        end_current_xp = pr_merchant.find('/', start_current_xp)
-        pr_current_xp = pr_merchant[start_current_xp:end_current_xp]
-        pr_current_xp = pr_current_xp.replace(',','')
-        start_needed_xp = pr_merchant.find('/', start_current_xp) + 1
-        end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
-        pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
-        pr_needed_xp = pr_needed_xp.replace(',','')
-    elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
-        await ctx.send(f'Aborting.')
-        return
-    else:
-        await ctx.send(f'Wrong input. Aborting.')
-        return
-    if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
-        pr_level = int(pr_level)
-        pr_current_xp = int(pr_current_xp)
-        pr_needed_xp = int(pr_needed_xp)
+    except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                
+# Command "prmtotal" - Calculate total logs to sell until level x
+@bot.command()
+async def prmtotal(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
         
-        if pr_level == 100:
-            await ctx.send(f'Congratulations on reaching max level merchant. I have no idea why you need this command though. :thinking:')
-            return
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if len(args) == 0:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg pr merchant` (or `abort` to abort)')
+            answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_merchant.content
+            answer = answer.lower()
+            if (answer == 'rpg pr merchant'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    pr_merchant = str(answer_bot_at.embeds[0].fields[0])
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                start_level = pr_merchant.find('**Level**') + 11
+                end_level = pr_merchant.find('(', start_level) - 1
+                pr_level = pr_merchant[start_level:end_level]
+                start_current_xp = pr_merchant.find('**XP**') + 8
+                end_current_xp = pr_merchant.find('/', start_current_xp)
+                pr_current_xp = pr_merchant[start_current_xp:end_current_xp]
+                pr_current_xp = pr_current_xp.replace(',','')
+                start_needed_xp = pr_merchant.find('/', start_current_xp) + 1
+                end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
+                pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
+                pr_needed_xp = pr_needed_xp.replace(',','')
+            elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                pr_level = int(pr_level)
+                pr_current_xp = int(pr_current_xp)
+                pr_needed_xp = int(pr_needed_xp)            
+                xp = pr_needed_xp - pr_current_xp
+                logs_total = xp * 5  
+                
+                levelrange = []
+                
+                if pr_level == 100:
+                    await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
+                    return
+                elif pr_level == 99:
+                    merchant_levels = []
+                else:
+                    levelrange = [pr_level+2, 100,]
+                    merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                
+                for merchant_level in merchant_levels:
+                    logs_total = logs_total + (merchant_level[1] * 5)
+                
+                await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level 100.')
+            else:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                    return
+    
+    elif len(args) == 1:
+        arg = args[0]    
         
-        xp = pr_needed_xp - pr_current_xp
-        logs = xp * 5        
-        await ctx.send(f'You need {xp:,} XP to reach Level {pr_level+1:,}.\nYou need to sell **{logs:,}** {emojis.log} `wooden log` to get {xp:,} merchant XP.')
-    else:
-        await ctx.send(f'Whelp, something went wrong here, sorry.')
-        return
+        if arg.replace('-','').isnumeric():
+            try:
+                level = int(arg)
+            except:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
             
+            if (level < 2) or (level > 100):
+                await ctx.send(f'You want to reach level what now? {level}?')
+                return
+            
+            try:
+                await ctx.send(f'**{ctx.author.name}**, please type `rpg pr merchant` (or `abort` to abort)')
+                answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+                answer = answer_user_merchant.content
+                answer = answer.lower()
+                if (answer == 'rpg pr merchant'):
+                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    try:
+                        pr_merchant = str(answer_bot_at.embeds[0].fields[0])
+                    except:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                    start_level = pr_merchant.find('**Level**') + 11
+                    end_level = pr_merchant.find('(', start_level) - 1
+                    pr_level = pr_merchant[start_level:end_level]
+                    start_current_xp = pr_merchant.find('**XP**') + 8
+                    end_current_xp = pr_merchant.find('/', start_current_xp)
+                    pr_current_xp = pr_merchant[start_current_xp:end_current_xp]
+                    pr_current_xp = pr_current_xp.replace(',','')
+                    start_needed_xp = pr_merchant.find('/', start_current_xp) + 1
+                    end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
+                    pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
+                    pr_needed_xp = pr_needed_xp.replace(',','')
+                elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+                    await ctx.send(f'Aborting.')
+                    return
+                else:
+                    await ctx.send(f'Wrong input. Aborting.')
+                    return
+                
+                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    logs_total = xp * 5
+                    
+                    if pr_level >= level:
+                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                        return
+                    
+                    levelrange = []
+                    
+                    if pr_level == 100:
+                        await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
+                        return
+                    elif (level - pr_level) == 1:
+                        merchant_levels = []
+                    else:
+                        levelrange = [pr_level+2, level,]
+                        merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                    
+                    for merchant_level in merchant_levels:
+                        logs_total = logs_total + (merchant_level[1] * 5)
+                    
+                    await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level {level}.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            except asyncio.TimeoutError as error:
+                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                        return  
+        else:
+            await ctx.send(f'Sir, that is not a valid number.')
+            return
+    
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}prmtotal [level]`.\nIf you omit the level, I will calculate the logs you need to reach level 100.')
+        return       
+                
 # Command "prc" - Info about crafting
 @bot.command()
 async def prc(ctx):
@@ -1972,7 +2175,63 @@ async def badges(ctx):
     embed = await misc.badges(ctx.prefix)
     
     await ctx.send(file=embed[0], embed=embed[1])
-    
+
+# Command "calc" - Simple calculator
+@bot.command(aliases=('calculate','calculator',))
+
+async def calc(ctx, *args):
+
+    def formatNumber(num):
+        if num % 1 == 0:
+            return int(num)
+        else:
+            return num
+
+    if len(args) != 3:
+        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [number] [operator] [number]`\nSupported operators are `+`, `-`, `/` and `*`.')
+        return
+    else:
+        value1 = args[0]
+        operator = args[1]
+        value2 = args[2]
+        
+        errormessage = ''
+        
+        try:
+            value1 = float(value1)
+        except:
+            errormessage = f'{errormessage}\n`{value1}` is not a valid number.'
+        
+        if not (operator == '-') and not (operator == '+') and not (operator == '/') and not (operator == '*'):
+            errormessage = f'{errormessage}\n`{operator}` is not a supported operator. Supported operators are `+`, `-`, `/` and `*`.'
+            
+        try:
+            value2 = float(value2)
+        except:
+            errormessage = f'{errormessage}\n`{value2}` is not a valid number.'
+        
+        if not errormessage == '':
+            errormessage = errormessage.strip()
+            await ctx.send(errormessage)
+            return
+        
+        if operator == '-':
+            result = value1 - value2
+            result = formatNumber(result)
+            await ctx.send(result)
+        elif operator == '+':
+            result = value1 + value2
+            result = formatNumber(result)
+            await ctx.send(result)
+        elif operator == '/':
+            result = value1 / value2
+            result = formatNumber(result)
+            await ctx.send(result)
+        elif operator == '*':
+            result = value1 * value2
+            result = formatNumber(result)
+            await ctx.send(result)
+
 
 # --- Links --- 
 

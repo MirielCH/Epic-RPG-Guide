@@ -379,7 +379,7 @@ async def event_miniboss(prefix):
                     f'{emojis.bp} The chance increases by 5 % for every participant'
 
     whichone =      f'{emojis.bp} Only do this event if you don\'t need to do a dungeon\n'\
-                    f'{emojis.bp} `not so mini boss` has higher rewards than `miniboss`'
+                    f'{emojis.bp} `not so mini boss` rewards dragon scales instead of coins'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -542,7 +542,7 @@ async def event_notsominiboss(prefix):
                     f'{emojis.bp} This event has a chance to fail'
                     
     whichone =      f'{emojis.bp} Only do this event if you don\'t need to do a dungeon\n'\
-                    f'{emojis.bp} `not so mini boss` has higher rewards than `miniboss`'
+                    f'{emojis.bp} `miniboss` rewards coins instead of dragon scales'
 
     embed = discord.Embed(
         color = global_data.color,
