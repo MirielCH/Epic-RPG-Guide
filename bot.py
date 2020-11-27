@@ -591,6 +591,7 @@ async def on_command_error(ctx, error):
    
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
+@commands.has_permissions(manage_guild=True)
 @commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx, *new_prefix):
     
