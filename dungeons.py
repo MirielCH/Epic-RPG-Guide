@@ -397,6 +397,7 @@ async def dungeon(dungeon_data, prefix):
     time_limit = format_timespan(dungeon_data[19])
     player_sword_emoji = getattr(emojis, dungeon_data[20])
     player_armor_emoji = getattr(emojis, dungeon_data[21])
+    img_dungeon = ''
     image_url = ''
     
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
@@ -476,7 +477,8 @@ async def dungeon(dungeon_data, prefix):
                     f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_13)'
         strategy_name = 'STRATEGY'
         rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
-        image_url = 'http://www.zoneseven.ch/epic_rpg_guide/dungeon13.png'
+        img_dungeon = discord.File(global_data.dungeon13, filename='dungeon13.png')
+        image_url = 'attachment://dungeon13.png'
     elif dungeon_no == 14:
         embed_description = f'This is a strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -523,7 +525,7 @@ async def dungeon(dungeon_data, prefix):
         embed.set_image(url=image_url)
         embed.add_field(name='WALKTHROUGH', value=f'** **', inline=False)
     
-    return embed
+    return (img_dungeon, embed)
     
 # Recommended stats for all dungeons
 async def dungeon_rec_stats(rec_stats_data, prefix):

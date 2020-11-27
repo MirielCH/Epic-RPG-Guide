@@ -773,7 +773,7 @@ async def areaguide(ctx):
     
 # Dungeons menu
 @bot.command(aliases=('dungeons',))
-@commands.bot_has_permissions(send_messages=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def dungeonguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
@@ -797,7 +797,7 @@ async def dungeonguide(ctx):
     await ctx.send(embed=embed)
 
 # Trading menu
-@commands.bot_has_permissions(send_messages=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 @bot.command(aliases=('trading',))
 async def tradingguide(ctx):
     
@@ -828,7 +828,7 @@ for x in range(1,16):
     dungeon_aliases.append(f'dung{x}')
 
 @bot.command(name='d',aliases=(dungeon_aliases))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True, attach_files=True)
 async def dungeon(ctx, *args):
     
     invoked = ctx.message.content
@@ -869,7 +869,10 @@ async def dungeon(ctx, *args):
                 if 1 <= arg <= 15:
                     dungeon_data = await get_dungeon_data(ctx, arg)
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
-                    await ctx.send(embed=dungeon_embed)
+                    if dungeon_embed[0] == '':
+                        await ctx.send(embed=dungeon_embed[1])
+                    else:
+                        await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
                 else:
                     await ctx.send(f'There is no dungeon {arg}, lol.') 
             else:
@@ -888,7 +891,10 @@ async def dungeon(ctx, *args):
             if 1 <= dungeon_no <= 15:
                 dungeon_data = await get_dungeon_data(ctx, dungeon_no)
                 dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
-                await ctx.send(embed=dungeon_embed)
+                if dungeon_embed[0] == '':
+                    await ctx.send(embed=dungeon_embed[1])
+                else:
+                    await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
             else:
                 await ctx.send(f'There is no dungeon {dungeon_no}, lol.') 
         else:
