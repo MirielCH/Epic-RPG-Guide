@@ -21,13 +21,11 @@ async def duels(prefix):
         description = f'Winning a duel depends on the chosen weapon and some luck.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name=f'TIP', value=f'{emojis.bp} Unless you are __very__ rich, don\'t choose coins.', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Redeemable codes
 async def codes(prefix, codes):
@@ -45,12 +43,10 @@ async def codes(prefix, codes):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     embed.add_field(name=f'CODES', value=field_value, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Coolness
 async def coolness(prefix):
@@ -80,15 +76,13 @@ async def coolness(prefix):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'USAGE', value=usage, inline=False)
     embed.add_field(name=f'REQUIREMENTS', value=req, inline=False)
     embed.add_field(name=f'HOW TO GET COOLNESS', value=howtoget, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Badges
 async def badges(prefix):
@@ -116,11 +110,9 @@ async def badges(prefix):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'AVAILABLE BADGES', value=badges, inline=False)
     embed.add_field(name=f'HOW TO USE', value=howtouse, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed

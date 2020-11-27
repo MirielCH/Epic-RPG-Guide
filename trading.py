@@ -70,8 +70,6 @@ async def trades(user_settings, prefix):
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr1-{prefix}tr15 to see the trades of a specific area only.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     for x in range(1,16):
         if x not in (1,2,4,6,12,13,14,15):
@@ -86,7 +84,7 @@ async def trades(user_settings, prefix):
                 embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             
     
-    return (thumbnail, embed)
+    return embed
 
 # Trades before leaving area X
 async def trades_area_specific(user_settings, area_no, prefix):
@@ -105,10 +103,8 @@ async def trades_area_specific(user_settings, area_no, prefix):
         description = description
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr to see the trades of ALL areas.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
-    return (thumbnail, embed)
+    return embed
 
 # Trade rates of all areas
 async def traderates(traderate_data, prefix):
@@ -119,8 +115,6 @@ async def traderates(traderate_data, prefix):
         description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.blank}'
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr to see the trades you should do in each area.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     area_limit = 0
     for area_x in traderate_data:
@@ -137,4 +131,4 @@ async def traderates(traderate_data, prefix):
             else:
                 embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.blank}', inline=True)
             
-    return (thumbnail, embed)
+    return embed

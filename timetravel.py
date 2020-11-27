@@ -26,13 +26,11 @@ async def timetravel(prefix):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n{emojis.bp} `{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Time travel X
 async def timetravel_specific(tt_data, prefix, mytt=False):
@@ -144,8 +142,6 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'UNLOCKS & BONUSES', value=unlocks, inline=False)
     if not (mytt == True) and not (tt_no == 0):
@@ -163,7 +159,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
             embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Super time travel
 async def supertimetravel(prefix):
@@ -194,14 +190,12 @@ async def supertimetravel(prefix):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name=f'STARTER BONUSES', value=starter_bonuses, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Super time travel score calculation
 async def supertimetravelscore(prefix):
@@ -237,12 +231,10 @@ async def supertimetravelscore(prefix):
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'GEAR', value=gear, inline=False)
     embed.add_field(name=f'LOOTBOXES', value=lootboxes, inline=False)
     embed.add_field(name=f'MATERIALS', value=materials, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed

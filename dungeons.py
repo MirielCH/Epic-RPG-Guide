@@ -507,8 +507,6 @@ async def dungeon(dungeon_data, prefix):
         description = embed_description
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='BOSS', value=f'{emojis.bp} {boss_emoji} {boss_name}', inline=False)
     embed.add_field(name='PLAYERS', value=players, inline=False)
     embed.add_field(name='TIME LIMIT', value=f'{emojis.bp} {time_limit}', inline=False)
@@ -525,7 +523,7 @@ async def dungeon(dungeon_data, prefix):
         embed.set_image(url=image_url)
         embed.add_field(name='WALKTHROUGH', value=f'** **', inline=False)
     
-    return (thumbnail, embed)
+    return embed
     
 # Recommended stats for all dungeons
 async def dungeon_rec_stats(rec_stats_data, prefix):
@@ -536,8 +534,6 @@ async def dungeon_rec_stats(rec_stats_data, prefix):
         description = f'\u200b'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     for dung_x in rec_stats_data:
         dungeon_no = dung_x[6]
@@ -547,7 +543,7 @@ async def dungeon_rec_stats(rec_stats_data, prefix):
         
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}dg` : Recommended gear (summary)', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Recommended gear for all dungeons
 async def dungeon_rec_gear(rec_gear_data, prefix, page):
@@ -565,8 +561,6 @@ async def dungeon_rec_gear(rec_gear_data, prefix, page):
         description = description_value
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     for dung_x in rec_gear_data:
         dungeon_no = dung_x[6]
@@ -575,7 +569,7 @@ async def dungeon_rec_gear(rec_gear_data, prefix, page):
     
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
             
-    return (thumbnail, embed)
+    return embed
     
 # Stats check (all dungeons)
 async def dungeon_check_stats(dungeon_check_data, user_stats, ctx):
@@ -596,8 +590,6 @@ async def dungeon_check_stats(dungeon_check_data, user_stats, ctx):
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
     )    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     for dung_x in dungeon_check_data:
         dungeon_no = dung_x[4]
@@ -610,7 +602,7 @@ async def dungeon_check_stats(dungeon_check_data, user_stats, ctx):
     embed.add_field(name='NOTE', value=notes, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{ctx.prefix}d1`-`{ctx.prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{ctx.prefix}dg` : Recommended gear (summary)', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Stats check (dungeon specific)
 async def dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx):
@@ -633,8 +625,6 @@ async def dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, c
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
     )    
     embed.set_footer(text=f'Tip: Use {ctx.prefix}dc to see a check of ALL dungeons.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     field_check_stats = await design_field_check_stats(dungeon_check_data, user_stats, ctx.prefix, False)
     
@@ -643,4 +633,4 @@ async def dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, c
     #embed.add_field(name=f'LEGEND', value=legend, inline=False)
     #embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{ctx.prefix}dcheck` : Dungeon stats check for ALL dungeons\n{emojis.bp} `{ctx.prefix}d1`-`{ctx.prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{ctx.prefix}dg` : Recommended gear (summary)', inline=False)
             
-    return (thumbnail, embed)
+    return embed

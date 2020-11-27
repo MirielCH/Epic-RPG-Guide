@@ -617,7 +617,7 @@ async def prefix(ctx):
 
 # Command "settings" - Returns current user progress settings
 @bot.command(aliases=('me',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def settings(ctx):
     
     current_settings = await get_settings(bot, ctx)
@@ -636,13 +636,11 @@ async def settings(ctx):
                         f'These settings are used by some guides to tailor the information to your current progress.'
         )    
         
-        thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-        embed.set_thumbnail(url='attachment://thumbnail.png')
         embed.set_footer(text=f'Tip: Use {ctx.prefix}setprogress to change your settings.')
         embed.set_thumbnail(url='attachment://thumbnail.png')
         embed.add_field(name=f'YOUR CURRENT SETTINGS', value=settings, inline=False)
         
-        await ctx.send(file=thumbnail, embed=embed)
+        await ctx.send(embed=embed)
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp','setpr','setp',))
@@ -790,7 +788,7 @@ for x in range(1,16):
     dungeon_aliases.append(f'dung{x}')
 
 @bot.command(name='d',aliases=(dungeon_aliases))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeon(ctx, *args):
     
     invoked = ctx.message.content
@@ -831,7 +829,7 @@ async def dungeon(ctx, *args):
                 if 1 <= arg <= 15:
                     dungeon_data = await get_dungeon_data(ctx, arg)
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
-                    await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+                    await ctx.send(embed=dungeon_embed)
                 else:
                     await ctx.send(f'There is no dungeon {arg}, lol.') 
             else:
@@ -850,7 +848,7 @@ async def dungeon(ctx, *args):
             if 1 <= dungeon_no <= 15:
                 dungeon_data = await get_dungeon_data(ctx, dungeon_no)
                 dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
-                await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
+                await ctx.send(embed=dungeon_embed)
             else:
                 await ctx.send(f'There is no dungeon {dungeon_no}, lol.') 
         else:
@@ -862,18 +860,18 @@ async def dungeon(ctx, *args):
 
 # Command "dungeonstats" - Returns recommended stats for all dungeons
 @bot.command(aliases=('dstats','ds',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeonstats(ctx):
     
     rec_stats_data = await get_rec_stats_data(ctx)
     
     embed = await dungeons.dungeon_rec_stats(rec_stats_data, ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "dungeongear" - Returns recommended gear for all dungeons
 @bot.command(aliases=('dgear','dg','dg1','dg2',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeongear(ctx, *args):
     
     invoked = ctx.message.content
@@ -890,7 +888,7 @@ async def dungeongear(ctx, *args):
                     if page in (1,2):
                         rec_gear_data = await get_rec_gear_data(ctx, page)
                         embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
-                        await ctx.send(file=embed[0], embed=embed[1])
+                        await ctx.send(embed=embed)
                     else:
                         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
                         return
@@ -903,19 +901,19 @@ async def dungeongear(ctx, *args):
             page = int(page)
             rec_gear_data = await get_rec_gear_data(ctx, page)
             embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         else:
             if page == '':
                 rec_gear_data = await get_rec_gear_data(ctx, 1)
                 embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
                 return
 
 # Command "dungeoncheck" - Checks user stats against recommended stats
 @bot.command(aliases=('dcheck','dungcheck','dc','check',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeoncheck(ctx, *args):
     
     def check(m):
@@ -993,7 +991,7 @@ async def dungeoncheck(ctx, *args):
                     else:
                         dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
                         embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
-                    await ctx.send(file=embed[0], embed=embed[1])
+                    await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'The command syntax is:\n• `{ctx.prefix}{ctx.invoked_with} auto` if you do **not** have a profile background\nor\n•`{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` if you have a profile background.')
                     return
@@ -1018,7 +1016,7 @@ async def dungeoncheck(ctx, *args):
                         dungeon_check_data = await get_dungeon_check_data(ctx)
                         user_stats = [user_at, user_def, user_life]
                         embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
-                        await ctx.send(file=embed[0], embed=embed[1])
+                        await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'These stats look suspicious. Try actual numbers.')
         else:
@@ -1037,7 +1035,7 @@ for x in range(2,16):
     dungeon_check_aliases.append(f'dc{x}')
 
 @bot.command(aliases=dungeon_check_aliases)
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeoncheck1(ctx, *args):
     
     def check(m):
@@ -1066,7 +1064,7 @@ async def dungeoncheck1(ctx, *args):
             user_stats = (0,0,0)
             dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
             embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         else:
             if len(args) == 0:
                 explanation =   f'This command shows you if your stats are high enough for dungeon **{dungeon_no}**.\n'\
@@ -1119,7 +1117,7 @@ async def dungeoncheck1(ctx, *args):
                         dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
                         user_stats = [user_at, user_def, user_life]
                         embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
-                        await ctx.send(file=embed[0], embed=embed[1])
+                        await ctx.send(embed=embed)
                     except asyncio.TimeoutError as error:
                         await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.\nIf you have a profile background: Use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` instead.')
                 else:
@@ -1144,7 +1142,7 @@ async def dungeoncheck1(ctx, *args):
                             dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
                             user_stats = [user_at, user_def, user_life]
                             embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
-                            await ctx.send(file=embed[0], embed=embed[1])
+                            await ctx.send(embed=embed)
                     else:
                         await ctx.send(f'These stats look suspicious. Try actual numbers.')
             else:
@@ -1162,7 +1160,7 @@ for x in range(1,16):
     area_aliases.append(f'area{x}') 
 
 @bot.command(name='a',aliases=(area_aliases))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def area(ctx, *args):
     
     invoked = ctx.message.content
@@ -1194,7 +1192,7 @@ async def area(ctx, *args):
                             else:
                                 mats_data = ''
                             area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                            await ctx.send(file=area_embed[0], embed=area_embed[1])   
+                            await ctx.send(embed=area_embed)   
                         else:
                             await ctx.send(f'There is no area {area_no}, lol.')           
             except:
@@ -1220,7 +1218,7 @@ async def area(ctx, *args):
                         else:
                             mats_data = ''
                         area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
-                        await ctx.send(file=area_embed[0], embed=area_embed[1])
+                        await ctx.send(embed=area_embed)
                     else:
                         await ctx.send(f'There is no area {area_no}, lol.')
                 else:
@@ -1244,7 +1242,7 @@ async def area(ctx, *args):
                                 else:
                                     mats_data = ''
                                 area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                                await ctx.send(file=area_embed[0], embed=area_embed[1])
+                                await ctx.send(embed=area_embed)
                             else:
                                 await ctx.send(f'There is no area {area_no}, lol.')
                     else:
@@ -1278,7 +1276,7 @@ async def area(ctx, *args):
             else:
                 await ctx.send(f'Uhm, what.')           
                 return
-        await ctx.send(file=area_embed[0], embed=area_embed[1])
+        await ctx.send(embed=area_embed)
 
 # Command "trades" - Returns recommended trades of one area or all areas
 trades_aliases = ['tr','trade',]
@@ -1288,7 +1286,7 @@ for x in range(1,16):
     trades_aliases.append(f'trade{x}') 
 
 @bot.command(aliases=trades_aliases)
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def trades(ctx, *args):
     
     user_settings = await get_settings(bot, ctx)
@@ -1308,7 +1306,7 @@ async def trades(ctx, *args):
                 area_no = int(area_no)
                 if 1 <= area_no <= 15:
                     embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
-                    await ctx.send(file=embed[0], embed=embed[1])
+                    await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'There is no area {area_no}, lol.')
                     return
@@ -1324,48 +1322,48 @@ async def trades(ctx, *args):
             area_no = int(area_no)
             if 1 <= area_no <= 15:
                 embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
             else:
                 await ctx.send(f'There is no area {area_no}, lol.')
                 return       
         else:
             if area_no == '':             
                 embed = await trading.trades(user_settings, ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
             else:
                 await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
 
 # Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr','rates','rate','traderate',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def traderates(ctx):
     
     traderate_data = await get_traderate_data(ctx, 'all')
     
     embed = await trading.traderates(traderate_data, ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 
 # --- Crafting ---
 
 # Command "enchants"
 @bot.command(aliases=('enchant','e','enchanting',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def enchants(ctx):
     
     embed = await crafting.enchants(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "drops" - Returns all monster drops and where to get them
 @bot.command(aliases=('drop','mobdrop','mobdrops','monsterdrop','monsterdrops',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def drops(ctx):
 
     embed = await crafting.drops(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "craft" - Calculates mats you need for amount of items
 @bot.command(aliases=('materials','matsfor','mats','cook',))
@@ -1476,7 +1474,7 @@ async def craft(ctx, *args):
 
 # Command "horses"
 @bot.command(name='horses', aliases=('horse',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def horses_overview(ctx, *args):
 
     invoked = ctx.message.content
@@ -1500,41 +1498,41 @@ async def horses_overview(ctx, *args):
             return
     else:
         embed = await horses.horses(ctx.prefix)
-        await ctx.send(file=embed[0], embed=embed[1])
+        await ctx.send(embed=embed)
     
 # Command "horsetier" - Returns horse tier bonuses
 @bot.command(aliases=('htier','horsestier','horsetiers','horsestiers',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def horsetier(ctx):
 
     embed = await horses.horsetiers(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "horsetype" - Returns horse type bonuses
 @bot.command(aliases=('htype','horsestype','horsetypes','horsestypes',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def horsetype(ctx):
 
     embed = await horses.horsetypes(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "horsebreed" - Returns horse breed details
 @bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding','breedhorse','breedhorses','breedinghorse','breedingshorses',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def horsebreed(ctx):
 
     embed = await horses.horsebreeding(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 
 # --- Pets ---
 
 # Command "pets" - Returns pets overview
 @bot.command(name='pets', aliases=('pet',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def pets_overview(ctx, *args):
 
     invoked = ctx.message.content
@@ -1561,43 +1559,43 @@ async def pets_overview(ctx, *args):
             return
     else:
         embed = await pets.pets(ctx.prefix)
-        await ctx.send(file=embed[0], embed=embed[1])
+        await ctx.send(embed=embed)
 
 # Command "petcatch" - How to catch pets
 @bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding','catchpet','findpet','catchingpet','findingpet','catchpets','findpets','catchingpets','findingpets',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def petcatch(ctx):
 
     embed = await pets.petscatch(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "petfusion" - Pets fusion guide
 @bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing','fusepet','fusepets','fusingpet','fusingpets',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def petfusion(ctx):
 
     embed = await pets.petsfusion(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "petskills" - Pet skills
 @bot.command(aliases=('petsskills','petskill','skill','skills','petsskill',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def petskills(ctx):
 
     embed = await pets.petsskills(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "petsadventures" - Pet adventures
 @bot.command(aliases=('petsadv','petsadventures','petadv','petadventure','petadventures',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def petsadventure(ctx):
 
     embed = await pets.petsadventures(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 
 # --- Events ---
@@ -1606,7 +1604,7 @@ async def petsadventure(ctx):
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
                                     'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent'))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def events_overview(ctx, *args):
 
     invoked = ctx.invoked_with
@@ -1619,106 +1617,106 @@ async def events_overview(ctx, *args):
         event_name = event_name.lower().replace(' ','').strip()
         if event_name.find('enchant') > -1:
                 embed = await events.event_enchant(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
                 embed = await events.event_epicguard(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif event_name.find('god') > -1:
                 embed = await events.event_god(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
                 embed = await events.event_heal(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
                 embed = await events.event_legendary(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 embed = await events.event_lootbox(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif event_name == 'arena':
                 embed = await events.event_arena(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
                 embed = await events.event_coinrain(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
                 embed = await events.event_epictree(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
                 embed = await events.event_megalodon(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif event_name == 'miniboss':
                 embed = await events.event_miniboss(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('specialtrade') > -1) or (event_name.find('trade') > -1):
                 embed = await events.event_specialtrade(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('bigarena') > -1):
                 embed = await events.event_bigarena(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('horserace') > -1) or (event_name.find('race') > -1):
                 embed = await events.event_horserace(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('lottery') > -1) or (event_name.find('ticket') > -1):
                 embed = await events.event_lottery(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         elif (event_name.find('notsomini') > -1):
                 embed = await events.event_notsominiboss(ctx.prefix)
-                await ctx.send(file=embed[0], embed=embed[1])
+                await ctx.send(embed=embed)
         else:
             await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
     else:
         if invoked.find('enchant') > -1:
             embed = await events.event_enchant(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('guard') > -1) or (invoked.find('jail') > -1):
             embed = await events.event_epicguard(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('heal') > -1):
             embed = await events.event_heal(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif invoked in ('arena','arenaevent'):
             embed = await events.event_arena(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('rain') > -1) or (invoked.find('trumpet') > -1) or (invoked.find('catch') > -1):
             embed = await events.event_coinrain(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('tree') > -1) or (invoked.find('seed') > -1) or (invoked.find('chop') > -1):
             embed = await events.event_epictree(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif invoked.find('god') > -1:
             embed = await events.event_god(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked in ('boss','bossevent')) or (invoked.find('legendary') > -1):
             embed = await events.event_legendary(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('megalodon') > -1) or (invoked.find('fish') > -1):
             embed = await events.event_megalodon(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif invoked in ('miniboss','minibossevent'):
             embed = await events.event_miniboss(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('trade') > -1):
             embed = await events.event_specialtrade(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('bigarena') > -1) or (invoked.find('arenabig') > -1):
             embed = await events.event_bigarena(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('race') > -1) or (invoked.find('racing') > -1):
             embed = await events.event_horserace(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('lottery') > -1) or (invoked.find('ticket') > -1):
             embed = await events.event_lottery(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('notsomini') > -1):
             embed = await events.event_notsominiboss(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
             embed = await events.event_lootbox(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
         else:
             embed = await events.events_overview(ctx.prefix)
-            await ctx.send(file=embed[0], embed=embed[1])
+            await ctx.send(embed=embed)
 
 
 # --- Time Travel ---
@@ -1730,7 +1728,7 @@ for x in range(1,1000):
     tt_aliases.append(f'timetravel{x}') 
 
 @bot.command(name='tt',aliases=(tt_aliases))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def timetravel_specific(ctx, *args):
     
     invoked = ctx.message.content
@@ -1754,7 +1752,7 @@ async def timetravel_specific(ctx, *args):
                     return
                     
                 tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+                await ctx.send(embed=tt_embed)
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
     else:
@@ -1762,7 +1760,7 @@ async def timetravel_specific(ctx, *args):
         
         if tt_no == '':
             tt_embed = await timetravel.timetravel(ctx.prefix)
-            await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+            await ctx.send(embed=tt_embed)
         else:
             if tt_no.isnumeric():
                 tt_no = int(tt_no)
@@ -1772,7 +1770,7 @@ async def timetravel_specific(ctx, *args):
                     else:
                         tt_data = (tt_no, 0, 0, '', '', '')
                     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+                    await ctx.send(embed=tt_embed)
                 else:
                     await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
                     return
@@ -1782,21 +1780,21 @@ async def timetravel_specific(ctx, *args):
 
 # Command "supertimetravel" - Information about super time travel
 @bot.command(aliases=('stt','supertt',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def supertimetravel(ctx):
     
     tt_embed = await timetravel.supertimetravel(ctx.prefix)
     
-    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+    await ctx.send(embed=tt_embed)
     
 # Command "sttscore" - Returns super time travel score calculations
 @bot.command(aliases=('sttscore','superttscore','stts',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def supertimetravelscore(ctx):
 
     embed = await timetravel.supertimetravelscore(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "tt1000" - Because they will try
 @bot.command(aliases=('timetravel1000',))
@@ -1807,7 +1805,7 @@ async def tt1000(ctx):
 
 # Command "mytt" - Information about user's TT
 @bot.command(aliases=('mytimetravel',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def mytt(ctx):
     
     user_settings = await get_settings(bot, ctx)
@@ -1818,28 +1816,28 @@ async def mytt(ctx):
     else:
         tt_data = (my_tt,0,0,'','','')
     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
-    await ctx.send(file=tt_embed[0], embed=tt_embed[1])
+    await ctx.send(embed=tt_embed)
     
 
 # --- Professions ---
 
 # Command "professions" - Overview about professions
 @bot.command(aliases=('pr','professions','prof','profs',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def profession(ctx):
     
     embed = await professions.professions_overview(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "prlevel" - How to level up professions
 @bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionsleveling','professionleveling','prlevels','prleveling','proflevel','proflevels','profslevel','profslevels','prlvl',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def professionlevel(ctx):
     
     embed = await professions.professions_leveling(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
     
 # Command "prm" - Calculate logs to sell
 @bot.command()
@@ -2119,19 +2117,19 @@ async def prl(ctx):
 
 # Command "ascension" - Ascension guide
 @bot.command(aliases=('asc','ascended','ascend',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def ascension(ctx):
     
     embed = await professions.ascension(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 
 # --- Miscellaneous ---
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def tip(ctx):
     
     tip = await get_tip(ctx)
@@ -2141,48 +2139,46 @@ async def tip(ctx):
         title = f'TIP',
         description = tip[0]
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
     
 # Command "codes" - Redeemable codes
 @bot.command(aliases=('code',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def codes(ctx):
     
     codes = await get_codes(ctx)
     
     embed = await misc.codes(ctx.prefix, codes)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "duels" - Returns all duelling weapons
 @bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def duels(ctx):
 
     embed = await misc.duels(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "coolness" - Coolness guide
 @bot.command(aliases=('cool',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def coolness(ctx):
 
     embed = await misc.coolness(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "badges" - Badge guide
 @bot.command(aliases=('badge',))
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def badges(ctx):
 
     embed = await misc.badges(ctx.prefix)
     
-    await ctx.send(file=embed[0], embed=embed[1])
+    await ctx.send(embed=embed)
 
 # Command "calc" - Simple calculator
 @bot.command(aliases=('calculate','calculator',))
@@ -2247,7 +2243,7 @@ async def calc(ctx, *args):
 
 # Command "invite"
 @bot.command(aliases=('inv',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def invite(ctx):
        
     embed = discord.Embed(
@@ -2256,15 +2252,13 @@ async def invite(ctx):
     description =   f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
                     f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'                  
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
 
 # Command "support"
 @bot.command(aliases=('supportserver','server',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def support(ctx):
        
     embed = discord.Embed(
@@ -2273,15 +2267,13 @@ async def support(ctx):
     description =   f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'
                     
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
     
 # Command "links"
 @bot.command(aliases=('link','wiki',))
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def links(ctx):
     
     epicrpgguide =  f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'\
@@ -2299,14 +2291,12 @@ async def links(ctx):
     description =   f'There\'s a whole world out there.\n'\
 
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     embed.add_field(name=f'EPIC RPG GUIDE', value=epicrpgguide, inline=False)
     embed.add_field(name=f'EPIC RPG', value=epicrpg, inline=False)
     embed.add_field(name=f'EPIC RPG COMMUNITIES', value=others, inline=False)
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
 
 
 # --- Silly Stuff ---
@@ -2320,7 +2310,7 @@ async def panda(ctx):
     
 # Command "Brandon" - because Panda
 @bot.command()
-@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def brandon(ctx):
         
     embed = discord.Embed(
@@ -2328,16 +2318,14 @@ async def brandon(ctx):
         title = f'WHAT TO DO WITH BRANDON',
         description = 'Don\'t even _think_ about dismantling him. You monster.'
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
 
 
 # --- Testing ---
 @bot.command()
 @commands.is_owner()
-@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
     seconds = 86400
@@ -2369,11 +2357,9 @@ async def test(ctx):
         title = f'COMMAND COOLDOWNS',
         description = f'This page shows all the **default** cooldowns. If you want to see all donator cooldowns, use `{ctx.prefix}cd [command]`'
     )    
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     embed.add_field(name='COOLDOWN', value=f'{emojis.bp} `dungeon | miniboss | not so mini boss`\n{emojis.blank}:one: {days}d / :two: {hours1}h {minutes1}m {seconds1}s / :three: {hours2}h {minutes2}m {seconds2}s / :four: {hours3}h {minutes3}m {seconds3}s', inline=False)
     
-    await ctx.send(file=thumbnail, embed=embed)
+    await ctx.send(embed=embed)
 
 
 # --- Owner Commands ---

@@ -274,8 +274,6 @@ async def drops(prefix):
                         f'You can go back to previous areas with `rpg area`.\n{emojis.blank}'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Areas: 1~2\n{emojis.bp} Source: {emojis.mobwolf}\n{emojis.bp} Value: 500\n{emojis.blank}', inline=True)
     embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Areas: 3~4\n{emojis.bp} Source: {emojis.mobzombie}\n{emojis.bp} Value: 2\'000\n{emojis.blank}', inline=True)
@@ -285,7 +283,7 @@ async def drops(prefix):
     embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Areas: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
     embed.add_field(name=f'DROP CHANCE', value=chance, inline=False)    
             
-    return (thumbnail, embed)
+    return embed
 
 # Enchants
 async def enchants(prefix):
@@ -317,10 +315,8 @@ async def enchants(prefix):
                       f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     embed.add_field(name=f'POSSIBLE ENCHANTS', value=buffs, inline=False)
     embed.add_field(name=f'COMMAND TIERS', value=commands, inline=False)
             
-    return (thumbnail, embed)
+    return embed

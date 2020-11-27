@@ -263,8 +263,6 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             
     )    
     embed.set_footer(text=footer)
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     if not area_locked == '':
             embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
     embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
@@ -284,7 +282,4 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         embed.add_field(name=f'TRADE RATES A{area_no+1}', value=traderates_next, inline=True)
     embed.add_field(name=f'NOTE', value=f'This is the guide for **TT {user_tt}**, **{user_asc}**.\nIf this is wrong, run `{prefix}setprogress`.', inline=False)
     
-    
-    
-    
-    return (thumbnail, embed)
+    return embed

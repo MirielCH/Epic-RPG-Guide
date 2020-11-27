@@ -32,8 +32,6 @@ async def professions_overview(prefix):
                         f'If you get all professions to level 100, you can ascend (see `{prefix}asc`).'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     embed.add_field(name=f'WORKER {emojis.prworker}', value=worker, inline=False)
     embed.add_field(name=f'CRAFTER {emojis.prcrafter}', value=crafter, inline=False)
@@ -42,7 +40,7 @@ async def professions_overview(prefix):
     embed.add_field(name=f'ENCHANTER {emojis.prenchanter}', value=enchanter, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}prlevel` : How and when to level up your professions\n{emojis.bp} `{prefix}asc` : Details about ascension', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Professions leveling guide
 async def professions_leveling(prefix):
@@ -86,8 +84,6 @@ async def professions_leveling(prefix):
                         f'For detailed XP calculations check out the [Wiki](https://epic-rpg.fandom.com/wiki/Professions).'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     embed.add_field(name=f'CRAFTER {emojis.prcrafter}', value=crafter, inline=False)
     embed.add_field(name=f'MERCHANT {emojis.prmerchant}', value=merchant, inline=False)
@@ -97,7 +93,7 @@ async def professions_leveling(prefix):
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}pr` : Professions overview\n{emojis.bp} `{prefix}asc` : Details about ascension', inline=False)
     embed.add_field(name=f'CALCULATORS', value=f'{emojis.bp} `{prefix}prm` : Logs you need to sell for your next merchant levels\n{emojis.bp} `{prefix}prmtotal [level]` : Total logs you need to reach `[level]`', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Ascension
 async def ascension(prefix):
@@ -117,12 +113,10 @@ async def ascension(prefix):
                         f'Thus ascension greatly helps in all your future runs.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
     
     embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name=f'BENEFITS', value=benefits, inline=False)
     embed.add_field(name=f'NOTES', value=notes, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}pr` : Professions overview\n{emojis.bp} `{prefix}prlevel` : How and when to level up your professions', inline=False)
             
-    return (thumbnail, embed)
+    return embed

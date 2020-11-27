@@ -33,14 +33,12 @@ async def events_overview(prefix):
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'PERSONAL', value=sp_events, inline=True)
     embed.add_field(name=f'MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name=f'GLOBAL', value=global_events, inline=True)
             
-    return (thumbnail, embed)
+    return embed
 
 
 # --- Personal Events ---
@@ -65,15 +63,13 @@ async def event_enchant(prefix):
         description =   f'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'SAFEST ANSWER', value=safe_answer, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Epic Guard event
 async def event_epicguard(prefix):
@@ -98,15 +94,13 @@ async def event_epicguard(prefix):
         description =   f'This is a random captcha event to prevent autotyping.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name=f'HOW TO GET OUT OF JAIL', value=jail, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Heal event
 async def event_heal(prefix):
@@ -127,15 +121,13 @@ async def event_heal(prefix):
         description =   f'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'SAFEST ANSWER', value=safe_answer, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Lootbox event
 async def event_lootbox(prefix):
@@ -157,15 +149,13 @@ async def event_lootbox(prefix):
         description =   f'This is a rare random personal event in which a lootboxes refuses to open.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'RECOMMENDED ANSWER', value=rec_answer, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 
 # --- Multiplayer Events ---
@@ -197,8 +187,6 @@ async def event_arena(prefix):
         description =   f'This is a multiplayer event in which up to 10 players fight each other.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO START', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
@@ -206,7 +194,7 @@ async def event_arena(prefix):
     embed.add_field(name=f'NOTE', value=note, inline=False)
     embed.add_field(name=f'ARENA OR BIG ARENA?', value=whichone, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Coin rain event
 async def event_coinrain(prefix):
@@ -228,15 +216,13 @@ async def event_coinrain(prefix):
         description =   f'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Epic tree event
 async def event_epictree(prefix):
@@ -258,15 +244,13 @@ async def event_epictree(prefix):
         description =   f'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # God event
 async def event_god(prefix):
@@ -288,15 +272,13 @@ async def event_god(prefix):
         description =   f'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Legendary boss event
 async def event_legendary(prefix):
@@ -318,15 +300,13 @@ async def event_legendary(prefix):
         description =   f'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 players can defeat it.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Megalodon event
 async def event_megalodon(prefix):
@@ -348,15 +328,13 @@ async def event_megalodon(prefix):
         description =   f'This is a multiplayer event in which a megalodon spawns in the river and up to 20 players can get some fish.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Miniboss event
 async def event_miniboss(prefix):
@@ -387,8 +365,6 @@ async def event_miniboss(prefix):
         description =   f'This is a multiplayer event in which you fight a miniboss.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO START', value=trigger, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
@@ -396,7 +372,7 @@ async def event_miniboss(prefix):
     embed.add_field(name=f'NOTE', value=note, inline=False)
     embed.add_field(name=f'DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Special trade event
 async def event_specialtrade(prefix):
@@ -417,15 +393,13 @@ async def event_specialtrade(prefix):
         description =   f'This is a random multiplayer event in which the epic NPC appears and offers one player a (very good) trade.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 
 # --- Global events ---
@@ -451,8 +425,6 @@ async def event_bigarena(prefix):
         description =   f'This is a global event which takes place three times a week.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
@@ -460,7 +432,7 @@ async def event_bigarena(prefix):
     embed.add_field(name=f'NOTE', value=note, inline=False)
     embed.add_field(name=f'ARENA OR BIG ARENA?', value=whichone, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Horse race event
 async def event_horserace(prefix):
@@ -486,8 +458,6 @@ async def event_horserace(prefix):
         description =   f'This is a global event which takes place every 2 hours.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
@@ -495,7 +465,7 @@ async def event_horserace(prefix):
     embed.add_field(name=f'NOTE', value=note, inline=False)
     embed.add_field(name=f'RACE OR BREED?', value=whichone, inline=False)
     
-    return (thumbnail, embed)
+    return embed
     
 # Lottery event
 async def event_lottery(prefix):
@@ -517,15 +487,13 @@ async def event_lottery(prefix):
         description =   f'This is a global event which takes place every 12 hours.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
     
-    return (thumbnail, embed)
+    return embed
 
 # Not so mini boss event
 async def event_notsominiboss(prefix):
@@ -550,8 +518,6 @@ async def event_notsominiboss(prefix):
         description =   f'This is a global event which takes place three times a week.'
     )    
     embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
     embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
@@ -559,4 +525,4 @@ async def event_notsominiboss(prefix):
     embed.add_field(name=f'NOTE', value=note, inline=False)
     embed.add_field(name=f'DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
             
-    return (thumbnail, embed)
+    return embed

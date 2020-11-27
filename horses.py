@@ -9,7 +9,7 @@ async def horses(prefix):
 
     tier =  f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}htier`)\n'\
             f'{emojis.bp} Every tier unlocks new bonuses\n'\
-            f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}hbreed`)'\
+            f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}hbreed`)\n'\
             f'{emojis.bp} Small chance of increasing in horse races (see `{prefix}event race`)'
             
     level = f'{emojis.bp} Levels range from 1 to (tier * 10)\n'\
@@ -28,15 +28,13 @@ async def horses(prefix):
         description =   f'Horses have tiers, levels and types which all give certain important bonuses.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TIER', value=tier, inline=False)
     embed.add_field(name=f'LEVEL', value=level, inline=False)
     embed.add_field(name=f'TYPE', value=type, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}htype` : Details about horse types\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Horse tiers
 async def horsetiers(prefix):
@@ -79,8 +77,6 @@ async def horsetiers(prefix):
                         f'Note: Every tier only lists the changes to the previous tier. You don\'t lose any unlocks when tiering up.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'TIER I {emojis.horset1}', value=tier1, inline=False)
     embed.add_field(name=f'TIER II {emojis.horset2}', value=tier2, inline=False)
@@ -93,7 +89,7 @@ async def horsetiers(prefix):
     embed.add_field(name=f'TIER IX {emojis.horset9}', value=tier9, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htype` : Details about horse types\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Horse types
 async def horsetypes(prefix):
@@ -129,8 +125,6 @@ async def horsetypes(prefix):
                         f'The best type for you depends on your current TT and your horse tier and level.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'DEFENDER', value=defender, inline=False)
     embed.add_field(name=f'STRONG', value=strong, inline=False)
@@ -140,7 +134,7 @@ async def horsetypes(prefix):
     embed.add_field(name=f'WHICH TYPE TO CHOOSE', value=besttype, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Horse breeding
 async def horsebreeding(prefix):
@@ -169,8 +163,6 @@ async def horsebreeding(prefix):
         description =   f'You need to breed to increase your horse tier and/or get a different type.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO BREED', value=howto, inline=False)
     embed.add_field(name=f'WHERE TO BREED', value=whereto, inline=False)
@@ -179,4 +171,4 @@ async def horsebreeding(prefix):
     embed.add_field(name=f'IMPACT ON TYPE', value=type, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}htype` : Details about horse types', inline=False)
             
-    return (thumbnail, embed)
+    return embed

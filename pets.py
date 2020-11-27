@@ -40,8 +40,6 @@ async def pets(prefix):
                         f'You can have up to (5 + TT) pets (= 7 pets at {emojis.timetravel} TT 2).'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name=f'WHAT TO DO WITH PETS', value=whattodo, inline=False)
@@ -50,7 +48,7 @@ async def pets(prefix):
     embed.add_field(name=f'TYPE', value=type, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Catching pets
 async def petscatch(prefix):
@@ -81,14 +79,12 @@ async def petscatch(prefix):
         description =   f'With the exception of event and giveaway pets you can only find and catch pets in {emojis.timetravel} TT 2+'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name=f'HOW TO CATCH PETS', value=catch, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Pet fusion
 async def petsfusion(prefix):
@@ -129,8 +125,6 @@ async def petsfusion(prefix):
         description =   f'You can fuse pets to tier them up and/or find or transfer skills.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO FUSE', value=general, inline=False)
     embed.add_field(name=f'TIERING UP', value=tiers, inline=False)
@@ -140,7 +134,7 @@ async def petsfusion(prefix):
     embed.add_field(name=f'SKILLS THAT AFFECT FUSION', value=skillsimpact, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Pet skills
 async def petsskills(prefix):
@@ -189,8 +183,6 @@ async def petsskills(prefix):
                         f'Note: Purple and yellow skills are rarer than blue ones.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'NORMIE {emojis.skillnormie}', value=normie, inline=False)
     embed.add_field(name=f'FAST {emojis.skillfast}', value=fast, inline=False)
@@ -204,7 +196,7 @@ async def petsskills(prefix):
     embed.add_field(name=f'SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
 
 # Pet adventures
 async def petsadventures(prefix):
@@ -242,8 +234,6 @@ async def petsadventures(prefix):
         description =   f'You can send pets on adventures to find items or coins or to rank up their skills.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    thumbnail = discord.File(global_data.thumbnail, filename='thumbnail.png')
-    embed.set_thumbnail(url='attachment://thumbnail.png')
 
     embed.add_field(name=f'HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name=f'ADVENTURE TYPES', value=types, inline=False)
@@ -251,4 +241,4 @@ async def petsadventures(prefix):
     embed.add_field(name=f'SKILLS THAT AFFECT ADVENTURES', value=skillsimpact, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
-    return (thumbnail, embed)
+    return embed
