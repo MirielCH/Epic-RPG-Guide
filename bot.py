@@ -562,11 +562,21 @@ async def on_command_error(ctx, error):
     elif isinstance(error, (commands.MissingPermissions)):
         missing_perms = ''
         for missing_perm in error.missing_perms:
+            missing_perm = missing_perm.replace('_',' ').title()
             if not missing_perms == '':
                 missing_perms = f'{missing_perms}, `{missing_perm}`'
             else:
                 missing_perms = f'`{missing_perm}`'
         await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission(s) {missing_perms} to use this command.')
+    elif isinstance(error, (commands.BotMissingPermissions)):
+        missing_perms = ''
+        for missing_perm in error.missing_perms:
+            missing_perm = missing_perm.replace('_',' ').title()
+            if not missing_perms == '':
+                missing_perms = f'{missing_perms}, `{missing_perm}`'
+            else:
+                missing_perms = f'`{missing_perm}`'
+        await ctx.send(f'Sorry **{ctx.author.name}**, I\'m missing the permission(s) {missing_perms} to be able to run this command.')
     elif isinstance(error, (commands.NotOwner)):
         return
     elif isinstance(error, commands.MissingRequiredArgument):
@@ -581,7 +591,7 @@ async def on_command_error(ctx, error):
    
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
-@commands.has_permissions(manage_guild=True)
+@commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx, *new_prefix):
     
     if new_prefix:
@@ -595,6 +605,7 @@ async def setprefix(ctx, *new_prefix):
 
 # Command "prefix" - Returns current prefix
 @bot.command()
+@commands.bot_has_permissions(send_messages=True)
 async def prefix(ctx):
     
     current_prefix = await get_prefix(bot, ctx)
@@ -605,6 +616,7 @@ async def prefix(ctx):
 
 # Command "settings" - Returns current user progress settings
 @bot.command(aliases=('me',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def settings(ctx):
     
     current_settings = await get_settings(bot, ctx)
@@ -633,6 +645,7 @@ async def settings(ctx):
     
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp','setpr','setp',))
+@commands.bot_has_permissions(send_messages=True)
 async def setprogress(ctx):
     
     def check(m):
@@ -677,6 +690,7 @@ async def setprogress(ctx):
 
 # Main menu
 @bot.command(name='guide',aliases=('help','g','h',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def guide_long(ctx):
     
     prefix = await get_prefix(bot, ctx)
@@ -734,6 +748,7 @@ async def guide_long(ctx):
 
 # Areas menu
 @bot.command()
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def areaguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
@@ -762,6 +777,7 @@ async def areaguide(ctx):
     
 # Dungeons menu
 @bot.command()
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def dungeonguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
@@ -787,6 +803,7 @@ async def dungeonguide(ctx):
     await ctx.send(file=thumbnail, embed=embed)
 
 # Trading menu
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 @bot.command(aliases=('trading',))
 async def tradingguide(ctx):
     
@@ -819,6 +836,7 @@ for x in range(1,16):
     dungeon_aliases.append(f'dung{x}')
 
 @bot.command(name='d',aliases=(dungeon_aliases))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def dungeon(ctx, *args):
     
     invoked = ctx.message.content
@@ -890,6 +908,7 @@ async def dungeon(ctx, *args):
 
 # Command "dungeonstats" - Returns recommended stats for all dungeons
 @bot.command(aliases=('dstats','ds',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def dungeonstats(ctx):
     
     rec_stats_data = await get_rec_stats_data(ctx)
@@ -900,6 +919,7 @@ async def dungeonstats(ctx):
     
 # Command "dungeongear" - Returns recommended gear for all dungeons
 @bot.command(aliases=('dgear','dg','dg1','dg2',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def dungeongear(ctx, *args):
     
     invoked = ctx.message.content
@@ -941,6 +961,7 @@ async def dungeongear(ctx, *args):
 
 # Command "dungeoncheck" - Checks user stats against recommended stats
 @bot.command(aliases=('dcheck','dungcheck','dc','check',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def dungeoncheck(ctx, *args):
     
     def check(m):
@@ -1062,6 +1083,7 @@ for x in range(2,16):
     dungeon_check_aliases.append(f'dc{x}')
 
 @bot.command(aliases=dungeon_check_aliases)
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def dungeoncheck1(ctx, *args):
     
     def check(m):
@@ -1186,6 +1208,7 @@ for x in range(1,16):
     area_aliases.append(f'area{x}') 
 
 @bot.command(name='a',aliases=(area_aliases))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def area(ctx, *args):
     
     invoked = ctx.message.content
@@ -1311,6 +1334,7 @@ for x in range(1,16):
     trades_aliases.append(f'trade{x}') 
 
 @bot.command(aliases=trades_aliases)
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def trades(ctx, *args):
     
     user_settings = await get_settings(bot, ctx)
@@ -1359,6 +1383,7 @@ async def trades(ctx, *args):
 
 # Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr','rates','rate','traderate',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def traderates(ctx):
     
     traderate_data = await get_traderate_data(ctx, 'all')
@@ -1372,6 +1397,7 @@ async def traderates(ctx):
 
 # Command "enchants"
 @bot.command(aliases=('enchant','e','enchanting',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def enchants(ctx):
     
     embed = await crafting.enchants(ctx.prefix)
@@ -1380,6 +1406,7 @@ async def enchants(ctx):
     
 # Command "drops" - Returns all monster drops and where to get them
 @bot.command(aliases=('drop','mobdrop','mobdrops','monsterdrop','monsterdrops',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def drops(ctx):
 
     embed = await crafting.drops(ctx.prefix)
@@ -1388,6 +1415,7 @@ async def drops(ctx):
 
 # Command "craft" - Calculates mats you need for amount of items
 @bot.command(aliases=('materials','matsfor','mats','cook',))
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def craft(ctx, *args):
 
     invoked = ctx.message.content
@@ -1494,6 +1522,7 @@ async def craft(ctx, *args):
 
 # Command "horses"
 @bot.command(name='horses', aliases=('horse',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def horses_overview(ctx, *args):
 
     invoked = ctx.message.content
@@ -1521,6 +1550,7 @@ async def horses_overview(ctx, *args):
     
 # Command "horsetier" - Returns horse tier bonuses
 @bot.command(aliases=('htier','horsestier','horsetiers','horsestiers',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def horsetier(ctx):
 
     embed = await horses.horsetiers(ctx.prefix)
@@ -1529,6 +1559,7 @@ async def horsetier(ctx):
     
 # Command "horsetype" - Returns horse type bonuses
 @bot.command(aliases=('htype','horsestype','horsetypes','horsestypes',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def horsetype(ctx):
 
     embed = await horses.horsetypes(ctx.prefix)
@@ -1537,6 +1568,7 @@ async def horsetype(ctx):
     
 # Command "horsebreed" - Returns horse breed details
 @bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding','breedhorse','breedhorses','breedinghorse','breedingshorses',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def horsebreed(ctx):
 
     embed = await horses.horsebreeding(ctx.prefix)
@@ -1548,6 +1580,7 @@ async def horsebreed(ctx):
 
 # Command "pets" - Returns pets overview
 @bot.command(name='pets', aliases=('pet',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def pets_overview(ctx, *args):
 
     invoked = ctx.message.content
@@ -1578,6 +1611,7 @@ async def pets_overview(ctx, *args):
 
 # Command "petcatch" - How to catch pets
 @bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding','catchpet','findpet','catchingpet','findingpet','catchpets','findpets','catchingpets','findingpets',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def petcatch(ctx):
 
     embed = await pets.petscatch(ctx.prefix)
@@ -1586,6 +1620,7 @@ async def petcatch(ctx):
     
 # Command "petfusion" - Pets fusion guide
 @bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing','fusepet','fusepets','fusingpet','fusingpets',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def petfusion(ctx):
 
     embed = await pets.petsfusion(ctx.prefix)
@@ -1594,6 +1629,7 @@ async def petfusion(ctx):
     
 # Command "petskills" - Pet skills
 @bot.command(aliases=('petsskills','petskill','skill','skills','petsskill',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def petskills(ctx):
 
     embed = await pets.petsskills(ctx.prefix)
@@ -1602,6 +1638,7 @@ async def petskills(ctx):
 
 # Command "petsadventures" - Pet adventures
 @bot.command(aliases=('petsadv','petsadventures','petadv','petadventure','petadventures',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def petsadventure(ctx):
 
     embed = await pets.petsadventures(ctx.prefix)
@@ -1615,6 +1652,7 @@ async def petsadventure(ctx):
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
                                     'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent'))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def events_overview(ctx, *args):
 
     invoked = ctx.invoked_with
@@ -1738,6 +1776,7 @@ for x in range(1,1000):
     tt_aliases.append(f'timetravel{x}') 
 
 @bot.command(name='tt',aliases=(tt_aliases))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def timetravel_specific(ctx, *args):
     
     invoked = ctx.message.content
@@ -1789,6 +1828,7 @@ async def timetravel_specific(ctx, *args):
 
 # Command "supertimetravel" - Information about super time travel
 @bot.command(aliases=('stt','supertt',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def supertimetravel(ctx):
     
     tt_embed = await timetravel.supertimetravel(ctx.prefix)
@@ -1797,6 +1837,7 @@ async def supertimetravel(ctx):
     
 # Command "sttscore" - Returns super time travel score calculations
 @bot.command(aliases=('sttscore','superttscore','stts',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def supertimetravelscore(ctx):
 
     embed = await timetravel.supertimetravelscore(ctx.prefix)
@@ -1805,12 +1846,14 @@ async def supertimetravelscore(ctx):
 
 # Command "tt1000" - Because they will try
 @bot.command(aliases=('timetravel1000',))
+@commands.bot_has_permissions(send_messages=True)
 async def tt1000(ctx):
     
     await ctx.send('https://tenor.com/view/doctor-who-gif-7404461')
 
 # Command "mytt" - Information about user's TT
 @bot.command(aliases=('mytimetravel',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def mytt(ctx):
     
     user_settings = await get_settings(bot, ctx)
@@ -1828,6 +1871,7 @@ async def mytt(ctx):
 
 # Command "professions" - Overview about professions
 @bot.command(aliases=('pr','professions','prof','profs',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def profession(ctx):
     
     embed = await professions.professions_overview(ctx.prefix)
@@ -1836,6 +1880,7 @@ async def profession(ctx):
     
 # Command "prlevel" - How to level up professions
 @bot.command(aliases=('prlevel','professionslevel','professionslevels','professionlevels','professionsleveling','professionleveling','prlevels','prleveling','proflevel','proflevels','profslevel','profslevels','prlvl',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def professionlevel(ctx):
     
     embed = await professions.professions_leveling(ctx.prefix)
@@ -1844,6 +1889,7 @@ async def professionlevel(ctx):
     
 # Command "prm" - Calculate logs to sell
 @bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def prm(ctx):
     
     def check(m):
@@ -1928,6 +1974,7 @@ async def prm(ctx):
                 
 # Command "prmtotal" - Calculate total logs to sell until level x
 @bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def prmtotal(ctx, *args):
     
     def check(m):
@@ -2090,30 +2137,35 @@ async def prmtotal(ctx, *args):
                 
 # Command "prc" - Info about crafting
 @bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def prc(ctx):
     
     await ctx.send(f'To level up crafter, repeatedly craft {emojis.logepic} EPIC logs in batches of 500.\nSee `{ctx.prefix}prlevel` for more information.')
     
 # Command "pre" - Info about enchanting
 @bot.command()
+@commands.bot_has_permissions(send_messages=True)
 async def pre(ctx):
     
     await ctx.send(f'To level up enchanter, repeatedly use `transmute`.\nSee `{ctx.prefix}prlevel` for more information.')
     
 # Command "prw" - Info about worker
 @bot.command()
+@commands.bot_has_permissions(send_messages=True)
 async def prw(ctx):
     
     await ctx.send(f'To level up worker, use work commands!\nSee `{ctx.prefix}prlevel` for more information.')
     
 # Command "prl" - Info about lootboxer
 @bot.command()
+@commands.bot_has_permissions(send_messages=True)
 async def prl(ctx):
     
     await ctx.send(f'To level up lootboxer, open lootboxes!\nSee `{ctx.prefix}prlevel` for more information.')
 
 # Command "ascension" - Ascension guide
 @bot.command(aliases=('asc','ascended','ascend',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def ascension(ctx):
     
     embed = await professions.ascension(ctx.prefix)
@@ -2125,6 +2177,7 @@ async def ascension(ctx):
 
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def tip(ctx):
     
     tip = await get_tip(ctx)
@@ -2141,6 +2194,7 @@ async def tip(ctx):
     
 # Command "codes" - Redeemable codes
 @bot.command(aliases=('code',))
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def codes(ctx):
     
     codes = await get_codes(ctx)
@@ -2151,7 +2205,7 @@ async def codes(ctx):
 
 # Command "duels" - Returns all duelling weapons
 @bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
-
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def duels(ctx):
 
     embed = await misc.duels(ctx.prefix)
@@ -2160,7 +2214,7 @@ async def duels(ctx):
 
 # Command "coolness" - Coolness guide
 @bot.command(aliases=('cool',))
-
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def coolness(ctx):
 
     embed = await misc.coolness(ctx.prefix)
@@ -2169,7 +2223,7 @@ async def coolness(ctx):
 
 # Command "badges" - Badge guide
 @bot.command(aliases=('badge',))
-
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def badges(ctx):
 
     embed = await misc.badges(ctx.prefix)
@@ -2178,7 +2232,7 @@ async def badges(ctx):
 
 # Command "calc" - Simple calculator
 @bot.command(aliases=('calculate','calculator',))
-
+@commands.bot_has_permissions(send_messages=True)
 async def calc(ctx, *args):
 
     def formatNumber(num):
@@ -2214,29 +2268,32 @@ async def calc(ctx, *args):
             errormessage = errormessage.strip()
             await ctx.send(errormessage)
             return
-        
-        if operator == '-':
-            result = value1 - value2
-            result = formatNumber(result)
-            await ctx.send(result)
-        elif operator == '+':
-            result = value1 + value2
-            result = formatNumber(result)
-            await ctx.send(result)
-        elif operator == '/':
-            result = value1 / value2
-            result = formatNumber(result)
-            await ctx.send(result)
-        elif operator == '*':
-            result = value1 * value2
-            result = formatNumber(result)
-            await ctx.send(result)
+        try:
+            if operator == '-':
+                result = value1 - value2
+                result = formatNumber(result)
+                await ctx.send(f'{result:,}')
+            elif operator == '+':
+                result = value1 + value2
+                result = formatNumber(result)
+                await ctx.send(f'{result:,}')
+            elif operator == '/':
+                result = value1 / value2
+                result = formatNumber(result)
+                await ctx.send(f'{result:,}')
+            elif operator == '*':
+                result = value1 * value2
+                result = formatNumber(result)
+                await ctx.send(f'{result:,}')
+        except:
+            await ctx.send(f'Are you trying to break me? :thinking:')
 
 
 # --- Links --- 
 
 # Command "invite"
 @bot.command(aliases=('inv',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def invite(ctx):
        
     embed = discord.Embed(
@@ -2253,6 +2310,7 @@ async def invite(ctx):
 
 # Command "support"
 @bot.command(aliases=('supportserver','server',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def support(ctx):
        
     embed = discord.Embed(
@@ -2269,6 +2327,7 @@ async def support(ctx):
     
 # Command "links"
 @bot.command(aliases=('link','wiki',))
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def links(ctx):
     
     epicrpgguide =  f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'\
@@ -2300,12 +2359,14 @@ async def links(ctx):
 
 # Command "Panda" - because Panda
 @bot.command()
+@commands.bot_has_permissions(send_messages=True)
 async def panda(ctx):
         
     await ctx.send('All hail Panda! :panda_face:')
     
 # Command "Brandon" - because Panda
 @bot.command()
+@commands.bot_has_permissions(attach_files=True, send_messages=True, embed_links=True)
 async def brandon(ctx):
         
     embed = discord.Embed(
@@ -2322,6 +2383,7 @@ async def brandon(ctx):
 # --- Testing ---
 @bot.command()
 @commands.is_owner()
+@commands.bot_has_permissions(attach_files=True, external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
     seconds = 86400
@@ -2365,6 +2427,7 @@ async def test(ctx):
 # Shutdown command (only I can use it obviously)
 @bot.command()
 @commands.is_owner()
+@commands.bot_has_permissions(send_messages=True)
 async def shutdown(ctx):
 
     def check(m):
@@ -2381,6 +2444,7 @@ async def shutdown(ctx):
 # Statistics command (only I can use this)
 @bot.command(aliases=('devstat',))
 @commands.is_owner()
+@commands.bot_has_permissions(send_messages=True)
 async def devstats(ctx):
 
     guilds = len(list(bot.guilds))
