@@ -455,9 +455,23 @@ async def dungeon(dungeon_data, prefix):
         embed_description = f'This is a randomized puzzle-based dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
                        f'{emojis.bp} {player_sword_emoji} {player_sword}\n{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
-        strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_11'
+        strategy =  f'{emojis.bp} You can move left, right, up, down or pass\n'\
+                    f'{emojis.bp} Your goal is to reach and hit the boss until it dies\n'\
+                    f'{emojis.bp} Each point of AT you have does 1 damage to the boss\n'\
+                    f'{emojis.bp} You can only attack if you stand right next to the boss\n'\
+                    f'{emojis.bp} After you hit the boss, your position will reset\n'\
+                    f'{emojis.bp} If you end up on a fireball, you take 100 damage\n'\
+                    f'{emojis.bp} If you pass a turn, you take 10 damage\n'\
+                    f'{emojis.bp} The board scrolls down one line with every move you make\n'\
+                    f'{emojis.bp} You do **not** move down with the board\n'\
+                    f'{emojis.bp} **The board moves first** when you make a move\n'\
+                    f'{emojis.bp} Check the image below to see the movement behaviour\n'\
+                    f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_11)'
         strategy_name = 'TIPS'
         rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        img_dungeon = discord.File(global_data.dungeon11, filename='dungeon11.png')
+        image_url = 'attachment://dungeon11.png'
+        image_name = 'MOVEMENT BEHAVIOUR'
     elif dungeon_no == 12:
         embed_description = f'This is a randomized puzzle-based dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -479,6 +493,7 @@ async def dungeon(dungeon_data, prefix):
         rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
         img_dungeon = discord.File(global_data.dungeon13, filename='dungeon13.png')
         image_url = 'attachment://dungeon13.png'
+        image_name = 'WALKTHROUGH'
     elif dungeon_no == 14:
         embed_description = f'This is a strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -523,7 +538,7 @@ async def dungeon(dungeon_data, prefix):
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}dc{dungeon_no}` : Check if you\'re ready for this dungeon\n{emojis.bp} `{prefix}dg` : Recommended gear (all dungeons)\n{emojis.bp} `{prefix}ds` : Recommended stats (all dungeons)', inline=False)
     if not image_url == '':
         embed.set_image(url=image_url)
-        embed.add_field(name='WALKTHROUGH', value=f'** **', inline=False)
+        embed.add_field(name=image_name, value=f'** **', inline=False)
     
     return (img_dungeon, embed)
     

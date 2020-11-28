@@ -11,6 +11,7 @@ default_dbfile = os.path.join(bot_dir, 'database/erg_db_default.db')
 
 # Pictures
 thumbnail = os.path.join(bot_dir, 'images/erg.png')
+dungeon11 = os.path.join(bot_dir, 'images/dungeon11.png')
 dungeon13 = os.path.join(bot_dir, 'images/dungeon13.png')
 
 # Prefix

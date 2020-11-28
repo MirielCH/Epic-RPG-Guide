@@ -78,16 +78,16 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
                   
 
-    prep_tt1_to_2 =     f'{emojis.bp} If your horse is T6+: get 30m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 50m coins\n'\
+    prep_tt1_to_2 =     f'{emojis.bp} If your horse is T6+: Get 30m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 50m coins\n'\
                         f'{emojis.bp} If you need money: Use `drill` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
                         f'{emojis.bp} Level up professions (see `{prefix}prlevel`)\n'\
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
     
-    prep_tt3_to_4 =     f'{emojis.bp} If your horse is T6+: get 50m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 150m coins\n'\
+    prep_tt3_to_4 =     f'{emojis.bp} If your horse is T6+: Get 50m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 150m coins\n'\
                         f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
                         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
@@ -96,8 +96,8 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
     
-    prep_tt5_to_9 =     f'{emojis.bp} If your horse is T6+: get 150m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 350m coins\n'\
+    prep_tt5_to_9 =     f'{emojis.bp} If your horse is T6+: Get 150m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 350m coins\n'\
                         f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
                         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
@@ -106,8 +106,8 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
     
-    prep_tt10_to_24 =   f'{emojis.bp} If your horse is T6+: get 350m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 850m coins\n'\
+    prep_tt10_to_24 =   f'{emojis.bp} If your horse is T6+: Get 350m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 850m coins\n'\
                         f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\
                         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'\
@@ -116,8 +116,8 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
                         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'\
                         f'{emojis.bp} Don\'t forget to sell your armor and sword!'
 
-    prep_tt25 =         f'{emojis.bp} If your horse is T6+: get 350m coins\n'\
-                        f'{emojis.bp} If your horse is <T6: get 850m coins\n'\
+    prep_tt25 =         f'{emojis.bp} If your horse is T6+: Get 350m coins\n'\
+                        f'{emojis.bp} If your horse is <T6: Get 850m coins\n'\
                         f'{emojis.bp} Note: You **need** a T6+ horse to do Dungeon 15\n'\
                         f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'\
                         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'\

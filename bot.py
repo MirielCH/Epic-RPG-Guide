@@ -1928,7 +1928,7 @@ async def prm(ctx):
             end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
             pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
             pr_needed_xp = pr_needed_xp.replace(',','')
-        elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+        elif (answer == 'abort') or (answer == 'cancel'):
             await ctx.send(f'Aborting.')
             return
         else:
@@ -2014,7 +2014,7 @@ async def prmtotal(ctx, *args):
                 end_needed_xp = pr_merchant.find(f'\'', start_needed_xp)
                 pr_needed_xp = pr_merchant[start_needed_xp:end_needed_xp]
                 pr_needed_xp = pr_needed_xp.replace(',','')
-            elif (answer_user_merchant.content == 'abort') or (answer_user_merchant.content == 'cancel'):
+            elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send(f'Aborting.')
                 return
             else:
