@@ -1426,6 +1426,7 @@ async def craft(ctx, *args):
             if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
                 itemname = f'{itemname} {arg}'
                 itemname = itemname.strip()
+                itemname = itemname.lower()
             else:
                 try:
                     if (arg.find('.') != -1) or (arg.find(',') != -1):
