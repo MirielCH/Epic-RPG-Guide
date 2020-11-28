@@ -18,6 +18,7 @@ import timetravel
 import events
 import logging
 import logging.handlers
+import xmas
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -690,9 +691,11 @@ async def setprogress(ctx):
 # Main menu
 @bot.command(name='guide',aliases=('help','g','h',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def helpt(ctx):
+async def helpguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
+    
+    xmas =      f'{emojis.bp} `{prefix}xmas` : Christmas event guide'
     
     progress =  f'{emojis.bp} `{prefix}areas` : Area guides overview\n'\
                 f'{emojis.bp} `{prefix}dungeons` : Dungeon guides overview\n'\
@@ -731,6 +734,7 @@ async def helpt(ctx):
         description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
+    embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -1710,6 +1714,9 @@ async def events_overview(ctx, *args):
         elif (event_name.find('notsomini') > -1):
                 embed = await events.event_notsominiboss(ctx.prefix)
                 await ctx.send(embed=embed)
+        elif (event_name.find('xmas') > -1) or (event_name.find('christmas') > -1):
+                await xmasguide(ctx)
+                return
         else:
             await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
     else:
@@ -2345,6 +2352,73 @@ async def links(ctx):
     
     await ctx.send(embed=embed)
 
+
+# --- Christmas 2020 ---
+# Command "xmas"
+@bot.command(aliases=('xmas','christmas','christmasevent','xmasevent',))
+@commands.is_owner()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+async def xmasguide(ctx, *args):
+
+    items = ['candycane','xmashat','xmasstar','xmasstarparts','gingerbread','ornament','ornamentpart','present','pineneedle','sleepypotion','snow','snowbox','all']
+    
+    item_name_replacements = {
+        'candycanes': 'candycane',
+        'candy': 'candycane',
+        'cane': 'candycane',
+        'christmashat': 'xmashat',
+        'hat': 'xmashat',
+        'christmasstar': 'xmasstar',
+        'star': 'xmasstar',
+        'christmasstarpart': 'xmasstarparts',
+        'christmasstarparts': 'xmasstarparts',
+        'starpart': 'xmasstarparts',
+        'starparts': 'xmasstarparts',
+        'gingerbreads': 'gingerbread',
+        'ornaments': 'ornament',
+        'ornamentparts': 'ornamentpart',
+        'presents': 'present',
+        'commonpresent': 'present',
+        'commonpresents': 'present',
+        'normalpresent': 'present',
+        'normalpresents': 'present',
+        'pineneedles': 'pineneedle',
+        'pine': 'pineneedle',
+        'needle': 'pineneedle',
+        'needles': 'pineneedle',
+        'sleepypotions': 'sleepypotion',
+        'potion': 'sleepypotion',
+        'potions': 'sleepypotion',
+        'sleepy': 'sleepypotion',
+        'snowboxes': 'snowbox',
+        'box': 'snowbox',
+        'boxes': 'snowbox',
+    }
+
+    if args:
+        arg_full = ''
+        for arg in args:
+            arg = arg.lower()
+            arg_full = f'{arg_full}{arg}'
+        
+        if (arg_full == 'items') or (arg_full == 'item'):
+            embed = await xmas.xmas_item_overview(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
+        
+        if arg_full in item_name_replacements:
+            arg_full = item_name_replacements[arg_full]
+        
+        if arg_full in items:
+            embed = await xmas.xmas_item(ctx.prefix, arg_full)
+            await ctx.send(embed=embed)    
+            return
+        else:
+            embed = await xmas.xmas_overview(ctx.prefix)
+            await ctx.send(embed=embed)
+    else:
+        embed = await xmas.xmas_overview(ctx.prefix)
+        await ctx.send(embed=embed)
 
 # --- Silly Stuff ---
 

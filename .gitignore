@@ -133,3 +133,6 @@ dmypy.json
 
 # Database
 erg_db.db
+
+# Visual Studio Code
+.vscode/
