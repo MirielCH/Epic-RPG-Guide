@@ -24,6 +24,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime
 from discord.ext.commands import CommandNotFound
+from math import ceil
 
 # Check if log file exists, if not, create empty one
 logfile = global_data.logfile
@@ -351,24 +352,34 @@ async def get_traderate_data(ctx, area):
     return traderate_data
 
 # Get merchant XP
-async def get_merchant_levels(ctx, levelrange):
+async def get_profession_levels(ctx, profession, levelrange):
     
     start_level = levelrange[0]
     end_level = levelrange[1]
     
+    if profession == 'worker':
+        query = 'SELECT level, worker_xp FROM professions WHERE level BETWEEN ? and ?'
+    elif profession == 'merchant':
+        query = 'SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?'
+    elif profession == 'lootboxer':
+        query = 'SELECT level, lootboxer_xp FROM professions WHERE level BETWEEN ? and ?'
+    else:
+        await log_error(ctx, 'Unknown profession, could not generate profession query.')
+        return
+    
     try:
         cur=erg_db.cursor()
-        cur.execute('SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?', (start_level, end_level,))
+        cur.execute(query, (start_level, end_level,))
         record = cur.fetchall()
         
         if record:
-            merchant_levels = record
+            profession_levels = record
         else:
-            await log_error(ctx, 'No merchant data data found in database.')
+            await log_error(ctx, 'No profession data data found in database.')
     except sqlite3.Error as error:
         await log_error(ctx, error)
         
-    return merchant_levels
+    return profession_levels
 
 # Get random tip
 async def get_tip(ctx):
@@ -654,7 +665,9 @@ async def setprogress(ctx):
     try:
         await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]` (type `abort` to abort).')
         answer_tt = await bot.wait_for('message', check=check, timeout = 30)
-        if (answer_tt.content == 'abort') or (answer_tt.content == 'cancel'):
+        answer = answer_tt.content
+        answer = answer.lower()
+        if (answer == 'abort') or (answer == 'cancel'):
             await ctx.send(f'Aborting.')
             return
         new_tt = answer_tt.content
@@ -663,15 +676,17 @@ async def setprogress(ctx):
             if 0 <= new_tt <= 999:
                 await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
                 answer_ascended = await bot.wait_for('message', check=check, timeout=30)
-                if (answer_ascended.content == 'abort') or (answer_ascended.content == 'cancel'):
+                answer = answer_ascended.content
+                answer = answer.lower()
+                if (answer == 'abort') or (answer == 'cancel'):
                             await ctx.send(f'Aborting.')
                             return
-                if answer_ascended.content.lower() in ['yes','y']:
+                if answer in ['yes','y']:
                     new_ascended = 'ascended'         
                     await set_progress(bot, ctx, new_tt, new_ascended)  
                     current_settings = await get_settings(bot, ctx)
                     await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
-                elif answer_ascended.content.lower() in ['no','n']:
+                elif answer in ['no','n']:
                     new_ascended = 'not ascended'
                     await set_progress(bot, ctx, new_tt, new_ascended)        
                     current_settings = await get_settings(bot, ctx)
@@ -1021,7 +1036,7 @@ async def dungeoncheck(ctx, *args):
                         end_life = profile.find('\',', start_life)
                         user_life = profile[start_life:end_life]
                         user_life = user_life.replace(',','')
-                    elif (answer_user_profile.content == 'abort') or (answer_user_profile.content == 'cancel'):
+                    elif (answer == 'abort') or (answer == 'cancel'):
                         await ctx.send(f'Aborting.')
                         return
                     else:
@@ -1151,7 +1166,7 @@ async def dungeoncheck1(ctx, *args):
                             start_life = profile.find('/', start_current_life) + 1
                             end_life = profile.find('\',', start_life)
                             user_life = profile[start_life:end_life]
-                        elif (answer_user_at.content == 'abort') or (answer_user_at.content == 'cancel'):
+                        elif (answer == 'abort') or (answer == 'cancel'):
                             await ctx.send(f'Aborting.')
                             return
                         else:
@@ -1434,7 +1449,7 @@ async def craft(ctx, *args):
             else:
                 try:
                     if (arg.find('.') != -1) or (arg.find(',') != -1):
-                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with numbers only. :eyes:')
+                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
                         return
                     elif (arg.find('-') != -1) or (int(arg) == 0):
                         await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
@@ -1958,10 +1973,10 @@ async def prm(ctx):
                 merchant_levels = []
             elif pr_level + 7 > 100:
                 levelrange = [pr_level+2, 100,]
-                merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)
             else:
                 levelrange = [pr_level+2, pr_level+7,]
-                merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)
             
             output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
                      f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{xp*5:,}** wooden logs'
@@ -2153,21 +2168,535 @@ async def prc(ctx):
 @commands.bot_has_permissions(send_messages=True)
 async def pre(ctx):
     
-    await ctx.send(f'To level up enchanter, repeatedly use `transmute`.\nSee `{ctx.prefix}prlevel` for more information.')
+    await ctx.send(f'To level up enchanter, please see `{ctx.prefix}prlevel`.\nThere is no way for me to calculate this, sorry.')
     
-# Command "prw" - Info about worker
+# Command "prw" - Calculate pickaxes to craft
 @bot.command()
-@commands.bot_has_permissions(send_messages=True)
+@commands.bot_has_permissions(send_messages=True, external_emojis=True)
 async def prw(ctx):
     
-    await ctx.send(f'To level up worker, use work commands!\nSee `{ctx.prefix}prlevel` for more information.')
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
     
-# Command "prl" - Info about lootboxer
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    try:
+        await ctx.send(f'**{ctx.author.name}**, please type `rpg pr worker` (or `abort` to abort)')
+        answer_user_worker = await bot.wait_for('message', check=check, timeout = 30)
+        answer = answer_user_worker.content
+        answer = answer.lower()
+        if (answer == 'rpg pr worker'):
+            answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+            try:
+                pr_worker = str(answer_bot_at.embeds[0].fields[0])
+            except:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+            start_level = pr_worker.find('**Level**') + 11
+            end_level = pr_worker.find('(', start_level) - 1
+            pr_level = pr_worker[start_level:end_level]
+            start_current_xp = pr_worker.find('**XP**') + 8
+            end_current_xp = pr_worker.find('/', start_current_xp)
+            pr_current_xp = pr_worker[start_current_xp:end_current_xp]
+            pr_current_xp = pr_current_xp.replace(',','')
+            start_needed_xp = pr_worker.find('/', start_current_xp) + 1
+            end_needed_xp = pr_worker.find(f'\'', start_needed_xp)
+            pr_needed_xp = pr_worker[start_needed_xp:end_needed_xp]
+            pr_needed_xp = pr_needed_xp.replace(',','')
+        elif (answer == 'abort') or (answer == 'cancel'):
+            await ctx.send(f'Aborting.')
+            return
+        else:
+            await ctx.send(f'Wrong input. Aborting.')
+            return
+        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            pr_level = int(pr_level)
+            pr_current_xp = int(pr_current_xp)
+            pr_needed_xp = int(pr_needed_xp)            
+            xp = pr_needed_xp - pr_current_xp
+            pickaxes = ceil(xp / 100)
+            xp_rest = xp % 100
+            
+            levelrange = []
+            
+            if pr_level == 100:
+                await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
+                return
+            elif pr_level == 99:
+                worker_levels = []
+            elif pr_level + 7 > 100:
+                levelrange = [pr_level+2, 100,]
+                worker_levels = await get_profession_levels(ctx,'worker',levelrange)
+            else:
+                levelrange = [pr_level+2, pr_level+7,]
+                worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+            
+            output = f'You need to cook the following amounts of {emojis.foodbananapickaxe} banana pickaxes:\n'\
+                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{pickaxes:,}** pickaxes.'
+
+            for worker_level in worker_levels:
+                worker_level_no = worker_level[0]
+                worker_level_xp = worker_level[1]
+                actual_xp = worker_level_xp - xp_rest
+                pickaxes = ceil(actual_xp / 100)
+                xp_rest = actual_xp % 100
+                output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{pickaxes:,}** pickaxes.'
+            
+            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] pickaxe` to see what materials you need to craft banana pickaxes.')
+        else:
+            await ctx.send(f'Whelp, something went wrong here, sorry.')
+            return
+    except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+
+# Command "prwtotal" - Calculate total pickaxes to craft until level x
+@bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def prwtotal(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if len(args) == 0:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg pr worker` (or `abort` to abort)')
+            answer_user_worker = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_worker.content
+            answer = answer.lower()
+            if (answer == 'rpg pr worker'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    pr_worker = str(answer_bot_at.embeds[0].fields[0])
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                start_level = pr_worker.find('**Level**') + 11
+                end_level = pr_worker.find('(', start_level) - 1
+                pr_level = pr_worker[start_level:end_level]
+                start_current_xp = pr_worker.find('**XP**') + 8
+                end_current_xp = pr_worker.find('/', start_current_xp)
+                pr_current_xp = pr_worker[start_current_xp:end_current_xp]
+                pr_current_xp = pr_current_xp.replace(',','')
+                start_needed_xp = pr_worker.find('/', start_current_xp) + 1
+                end_needed_xp = pr_worker.find(f'\'', start_needed_xp)
+                pr_needed_xp = pr_worker[start_needed_xp:end_needed_xp]
+                pr_needed_xp = pr_needed_xp.replace(',','')
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                pr_level = int(pr_level)
+                pr_current_xp = int(pr_current_xp)
+                pr_needed_xp = int(pr_needed_xp)            
+                xp = pr_needed_xp - pr_current_xp
+                pickaxes = ceil(xp / 100)
+                xp_rest = xp % 100
+                pickaxes_total = pickaxes
+                
+                levelrange = []
+                
+                if pr_level == 100:
+                    await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
+                    return
+                elif pr_level == 99:
+                    worker_levels = []
+                else:
+                    levelrange = [pr_level+2, 100,]
+                    worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+                
+                for worker_level in worker_levels:
+                    worker_level_xp = worker_level[1]
+                    actual_xp = worker_level_xp - xp_rest
+                    pickaxes = ceil(actual_xp / 100)
+                    pickaxes_total = pickaxes_total + pickaxes
+                    xp_rest = actual_xp % 100
+                
+                await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level 100.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
+            else:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                    return
+    
+    elif len(args) == 1:
+        arg = args[0]    
+        
+        if arg.replace('-','').isnumeric():
+            try:
+                level = int(arg)
+            except:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
+            
+            if (level < 2) or (level > 100):
+                await ctx.send(f'You want to reach level what now? {level}?')
+                return
+            
+            try:
+                await ctx.send(f'**{ctx.author.name}**, please type `rpg pr worker` (or `abort` to abort)')
+                answer_user_worker = await bot.wait_for('message', check=check, timeout = 30)
+                answer = answer_user_worker.content
+                answer = answer.lower()
+                if (answer == 'rpg pr worker'):
+                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    try:
+                        pr_worker = str(answer_bot_at.embeds[0].fields[0])
+                    except:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                    start_level = pr_worker.find('**Level**') + 11
+                    end_level = pr_worker.find('(', start_level) - 1
+                    pr_level = pr_worker[start_level:end_level]
+                    start_current_xp = pr_worker.find('**XP**') + 8
+                    end_current_xp = pr_worker.find('/', start_current_xp)
+                    pr_current_xp = pr_worker[start_current_xp:end_current_xp]
+                    pr_current_xp = pr_current_xp.replace(',','')
+                    start_needed_xp = pr_worker.find('/', start_current_xp) + 1
+                    end_needed_xp = pr_worker.find(f'\'', start_needed_xp)
+                    pr_needed_xp = pr_worker[start_needed_xp:end_needed_xp]
+                    pr_needed_xp = pr_needed_xp.replace(',','')
+                elif (answer_user_worker.content == 'abort') or (answer_user_worker.content == 'cancel'):
+                    await ctx.send(f'Aborting.')
+                    return
+                else:
+                    await ctx.send(f'Wrong input. Aborting.')
+                    return
+                
+                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    pickaxes = ceil(xp / 100)
+                    xp_rest = xp % 100
+                    pickaxes_total = pickaxes
+                    
+                    if pr_level >= level:
+                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                        return
+                    
+                    levelrange = []
+                    
+                    if pr_level == 100:
+                        await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
+                        return
+                    elif (level - pr_level) == 1:
+                        worker_levels = []
+                    else:
+                        levelrange = [pr_level+2, level,]
+                        worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+                    
+                    for worker_level in worker_levels:
+                        worker_level_xp = worker_level[1]
+                        actual_xp = worker_level_xp - xp_rest
+                        pickaxes = ceil(actual_xp / 100)
+                        pickaxes_total = pickaxes_total + pickaxes
+                        xp_rest = actual_xp % 100
+                    
+                    await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level {level}.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            except asyncio.TimeoutError as error:
+                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                        return  
+        else:
+            await ctx.send(f'Sir, that is not a valid number.')
+            return
+    
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}prwtotal [level]`.\nIf you omit the level, I will calculate the banana pickaxes you need to reach level 100.')
+        return     
+
+# Command "prl" - Calculate lootboxes to craft
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def prl(ctx):
     
-    await ctx.send(f'To level up lootboxer, open lootboxes!\nSee `{ctx.prefix}prlevel` for more information.')
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    try:
+        await ctx.send(f'**{ctx.author.name}**, please type `rpg pr lootboxer` (or `abort` to abort)')
+        answer_user_lootboxer = await bot.wait_for('message', check=check, timeout = 30)
+        answer = answer_user_lootboxer.content
+        answer = answer.lower()
+        if (answer == 'rpg pr lootboxer'):
+            answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+            try:
+                pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
+            except:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+            start_level = pr_lootboxer.find('**Level**') + 11
+            end_level = pr_lootboxer.find('(', start_level) - 1
+            pr_level = pr_lootboxer[start_level:end_level]
+            start_current_xp = pr_lootboxer.find('**XP**') + 8
+            end_current_xp = pr_lootboxer.find('/', start_current_xp)
+            pr_current_xp = pr_lootboxer[start_current_xp:end_current_xp]
+            pr_current_xp = pr_current_xp.replace(',','')
+            start_needed_xp = pr_lootboxer.find('/', start_current_xp) + 1
+            end_needed_xp = pr_lootboxer.find(f'\'', start_needed_xp)
+            pr_needed_xp = pr_lootboxer[start_needed_xp:end_needed_xp]
+            pr_needed_xp = pr_needed_xp.replace(',','')
+        elif (answer == 'abort') or (answer == 'cancel'):
+            await ctx.send(f'Aborting.')
+            return
+        else:
+            await ctx.send(f'Wrong input. Aborting.')
+            return
+        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            pr_level = int(pr_level)
+            pr_current_xp = int(pr_current_xp)
+            pr_needed_xp = int(pr_needed_xp)            
+            xp = pr_needed_xp - pr_current_xp
+            lootboxes = ceil(xp / 100)
+            xp_rest = xp % 100
+            
+            levelrange = []
+            
+            if pr_level == 100:
+                await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
+                return
+            elif pr_level == 99:
+                worker_levels = []
+            elif pr_level + 7 > 100:
+                levelrange = [pr_level+2, 100,]
+                worker_levels = await get_profession_levels(ctx,'lootboxer',levelrange)
+            else:
+                levelrange = [pr_level+2, pr_level+7,]
+                worker_levels = await get_profession_levels(ctx,'lootboxer',levelrange)            
+            
+            output = f'You need to cook the following amounts of {emojis.foodfilledlootbox} filled lootboxes:\n'\
+                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{lootboxes:,}** lootboxes.'
+
+            for worker_level in worker_levels:
+                worker_level_no = worker_level[0]
+                worker_level_xp = worker_level[1]
+                actual_xp = worker_level_xp - xp_rest
+                lootboxes = ceil(actual_xp / 100)
+                xp_rest = actual_xp % 100
+                output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{lootboxes:,}** lootboxes.'
+            
+            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] lootboxes` to see what materials you need to craft filled lootboxes.')
+        else:
+            await ctx.send(f'Whelp, something went wrong here, sorry.')
+            return
+    except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+
+# Command "prltotal" - Calculate total lootboxes to craft until level x
+@bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def prltotal(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if len(args) == 0:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg pr lootboxer` (or `abort` to abort)')
+            answer_user_lootboxer = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_lootboxer.content
+            answer = answer.lower()
+            if (answer == 'rpg pr lootboxer'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                start_level = pr_lootboxer.find('**Level**') + 11
+                end_level = pr_lootboxer.find('(', start_level) - 1
+                pr_level = pr_lootboxer[start_level:end_level]
+                start_current_xp = pr_lootboxer.find('**XP**') + 8
+                end_current_xp = pr_lootboxer.find('/', start_current_xp)
+                pr_current_xp = pr_lootboxer[start_current_xp:end_current_xp]
+                pr_current_xp = pr_current_xp.replace(',','')
+                start_needed_xp = pr_lootboxer.find('/', start_current_xp) + 1
+                end_needed_xp = pr_lootboxer.find(f'\'', start_needed_xp)
+                pr_needed_xp = pr_lootboxer[start_needed_xp:end_needed_xp]
+                pr_needed_xp = pr_needed_xp.replace(',','')
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                pr_level = int(pr_level)
+                pr_current_xp = int(pr_current_xp)
+                pr_needed_xp = int(pr_needed_xp)            
+                xp = pr_needed_xp - pr_current_xp
+                lootboxes = ceil(xp / 100)
+                xp_rest = xp % 100
+                lootboxes_total = lootboxes
+                
+                levelrange = []
+                
+                if pr_level == 100:
+                    await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
+                    return
+                elif pr_level == 99:
+                    lootboxer_levels = []
+                else:
+                    levelrange = [pr_level+2, 100,]
+                    lootboxer_levels = await get_profession_levels(ctx,'lootboxer',levelrange)
+                
+                for lootboxer_level in lootboxer_levels:
+                    lootboxer_level_xp = lootboxer_level[1]
+                    actual_xp = lootboxer_level_xp - xp_rest
+                    lootboxes = ceil(actual_xp / 100)
+                    lootboxes_total = lootboxes_total + lootboxes
+                    xp_rest = actual_xp % 100
+                
+                await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level 100.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
+            else:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                    return
+    
+    elif len(args) == 1:
+        arg = args[0]    
+        
+        if arg.replace('-','').isnumeric():
+            try:
+                level = int(arg)
+            except:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
+            
+            if (level < 2) or (level > 100):
+                await ctx.send(f'You want to reach level what now? {level}?')
+                return
+            
+            try:
+                await ctx.send(f'**{ctx.author.name}**, please type `rpg pr lootboxer` (or `abort` to abort)')
+                answer_user_lootboxer = await bot.wait_for('message', check=check, timeout = 30)
+                answer = answer_user_lootboxer.content
+                answer = answer.lower()
+                if (answer == 'rpg pr lootboxer'):
+                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    try:
+                        pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
+                    except:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                    start_level = pr_lootboxer.find('**Level**') + 11
+                    end_level = pr_lootboxer.find('(', start_level) - 1
+                    pr_level = pr_lootboxer[start_level:end_level]
+                    start_current_xp = pr_lootboxer.find('**XP**') + 8
+                    end_current_xp = pr_lootboxer.find('/', start_current_xp)
+                    pr_current_xp = pr_lootboxer[start_current_xp:end_current_xp]
+                    pr_current_xp = pr_current_xp.replace(',','')
+                    start_needed_xp = pr_lootboxer.find('/', start_current_xp) + 1
+                    end_needed_xp = pr_lootboxer.find(f'\'', start_needed_xp)
+                    pr_needed_xp = pr_lootboxer[start_needed_xp:end_needed_xp]
+                    pr_needed_xp = pr_needed_xp.replace(',','')
+                elif (answer_user_lootboxer.content == 'abort') or (answer_user_lootboxer.content == 'cancel'):
+                    await ctx.send(f'Aborting.')
+                    return
+                else:
+                    await ctx.send(f'Wrong input. Aborting.')
+                    return
+                
+                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    lootboxes = ceil(xp / 100)
+                    xp_rest = xp % 100
+                    lootboxes_total = lootboxes
+                    
+                    if pr_level >= level:
+                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                        return
+                    
+                    levelrange = []
+                    
+                    if pr_level == 100:
+                        await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
+                        return
+                    elif (level - pr_level) == 1:
+                        lootboxer_levels = []
+                    else:
+                        levelrange = [pr_level+2, level,]
+                        lootboxer_levels = await get_profession_levels(ctx,'lootboxer',levelrange)            
+                    
+                    for lootboxer_level in lootboxer_levels:
+                        lootboxer_level_xp = lootboxer_level[1]
+                        actual_xp = lootboxer_level_xp - xp_rest
+                        lootboxes = ceil(actual_xp / 100)
+                        lootboxes_total = lootboxes_total + lootboxes
+                        xp_rest = actual_xp % 100
+                    
+                    await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level {level}.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            except asyncio.TimeoutError as error:
+                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                        return  
+        else:
+            await ctx.send(f'Sir, that is not a valid number.')
+            return
+    
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}prltotal [level]`.\nIf you omit the level, I will calculate the filled lootboxes you need to reach level 100.')
+        return     
 
 # Command "ascension" - Ascension guide
 @bot.command(aliases=('asc','ascended','ascend',))

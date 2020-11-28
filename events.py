@@ -7,24 +7,26 @@ import emojis
 # Events overview
 async def events_overview(prefix):
 
-    sp_events =     f'{emojis.bp} `enchant`\n'\
-                    f'{emojis.bp} `epic guard`\n'\
-                    f'{emojis.bp} `heal`\n'\
-                    f'{emojis.bp} `lootbox`'
+    special_events =    f'{emojis.bp} `xmas`'
     
-    mp_events =     f'{emojis.bp} `arena`\n'\
-                    f'{emojis.bp} `coin rain`\n'\
-                    f'{emojis.bp} `epic tree`\n'\
-                    f'{emojis.bp} `god`\n'\
-                    f'{emojis.bp} `legendary boss`\n'\
-                    f'{emojis.bp} `megalodon`\n'\
-                    f'{emojis.bp} `miniboss`\n'\
-                    f'{emojis.bp} `special trade`'
+    sp_events =         f'{emojis.bp} `enchant`\n'\
+                        f'{emojis.bp} `epic guard`\n'\
+                        f'{emojis.bp} `heal`\n'\
+                        f'{emojis.bp} `lootbox`'
+    
+    mp_events =         f'{emojis.bp} `arena`\n'\
+                        f'{emojis.bp} `coin rain`\n'\
+                        f'{emojis.bp} `epic tree`\n'\
+                        f'{emojis.bp} `god`\n'\
+                        f'{emojis.bp} `legendary boss`\n'\
+                        f'{emojis.bp} `megalodon`\n'\
+                        f'{emojis.bp} `miniboss`\n'\
+                        f'{emojis.bp} `special trade`'
                     
-    global_events = f'{emojis.bp} `big arena`\n'\
-                    f'{emojis.bp} `horse race`\n'\
-                    f'{emojis.bp} `lottery`\n'\
-                    f'{emojis.bp} `not so mini boss`'
+    global_events =     f'{emojis.bp} `big arena`\n'\
+                        f'{emojis.bp} `horse race`\n'\
+                        f'{emojis.bp} `lottery`\n'\
+                        f'{emojis.bp} `not so mini boss`'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -33,10 +35,10 @@ async def events_overview(prefix):
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-
-    embed.add_field(name=f'PERSONAL', value=sp_events, inline=True)
-    embed.add_field(name=f'MULTIPLAYER', value=mp_events, inline=True)
-    embed.add_field(name=f'GLOBAL', value=global_events, inline=True)
+    embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
+    embed.add_field(name='PERSONAL', value=sp_events, inline=True)
+    embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
+    embed.add_field(name='GLOBAL', value=global_events, inline=True)
             
     return embed
 
