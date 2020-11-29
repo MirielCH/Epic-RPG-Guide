@@ -718,6 +718,7 @@ async def helpguide(ctx):
                 f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
     
     crafting =  f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'\
+                f'{emojis.bp} `{prefix}dismantle` : Dismantling calculator\n'\
                 f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     
@@ -1534,6 +1535,91 @@ async def craft(ctx, *args):
             await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
     else:
         await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+        
+# Command "dismantle" - Calculates mats you get by dismantling items
+@bot.command(aliases=('dm',))
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def dismantle(ctx, *args):
+
+    invoked = ctx.message.content
+    invoked = invoked.lower()
+    
+    if args:
+        itemname = ''
+        amount = 1
+        for arg in args:
+            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
+                itemname = f'{itemname} {arg}'
+                itemname = itemname.strip()
+                itemname = itemname.lower()
+            else:
+                try:
+                    if (arg.find('.') != -1) or (arg.find(',') != -1):
+                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
+                        return
+                    elif (arg.find('-') != -1) or (int(arg) == 0):
+                        await ctx.send(f'You wanna do _what_? Dismantle **{arg}** items?? Have some :bread: instead.')
+                        return
+                    elif int(arg) >= 100000000000:
+                        await ctx.send(f'Are you trying to break me or something? :thinking:')
+                        return
+                    else:
+                        amount = int(arg)
+                except:
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
+                    return
+                
+        if not itemname == '' and amount >= 1:
+            try:
+                if itemname == 'brandon':
+                    await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
+                    return
+                
+                itemname_replaced = itemname.replace('logs','log')
+                
+                shortcuts = {   
+                    'brandon': 'epic fish',
+                    'bananas': 'banana',
+                    'ultralog': 'ultra log',
+                    'hyperlog': 'hyper log',
+                    'megalog': 'mega log',
+                    'epiclog': 'epic log',
+                    'goldenfish': 'golden fish',
+                    'epicfish': 'epic fish',
+                    'gf': 'golden fish',
+                    'golden': 'golden fish',
+                    'ef': 'epic fish',
+                    'el': 'epic log',
+                    'sl': 'super log',
+                    'super': 'super log',
+                    'ml': 'mega log',
+                    'mega': 'mega log',
+                    'hl': 'hyper log',
+                    'hyper': 'hyper log',
+                    'ul': 'ultra log',
+                    'ultra': 'ultra log',
+                }
+                
+                if itemname_replaced in shortcuts:
+                    itemname_replaced = shortcuts[itemname_replaced]                
+                
+                items_data = await get_item_data(ctx, itemname_replaced)
+                if items_data == '':
+                    await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
+                    return
+            except:
+                await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
+                return
+            
+            items_values = items_data[1]
+            itemtype = items_values[1]
+            
+            mats = await crafting.dismantle(items_data, amount, ctx.prefix)
+            await ctx.send(mats)
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
 
 # --- Horses ---
@@ -3002,6 +3088,11 @@ async def test(ctx):
     minutes3 = (seconds3 % 3600) // 60
     seconds3 = seconds3 % 60
     
+    message = f'{days}d / {hours1}h {minutes1}m {seconds1}s / {hours2}h {minutes2}m {seconds2}s / {hours3}h {minutes3}m {seconds3}s'
+    
+    await ctx.send(message)
+    
+    """
     embed = discord.Embed(
         color = global_data.color,
         title = f'COMMAND COOLDOWNS',
@@ -3010,7 +3101,7 @@ async def test(ctx):
     embed.add_field(name='COOLDOWN', value=f'{emojis.bp} `dungeon | miniboss | not so mini boss`\n{emojis.blank}:one: {days}d / :two: {hours1}h {minutes1}m {seconds1}s / :three: {hours2}h {minutes2}m {seconds2}s / :four: {hours3}h {minutes3}m {seconds3}s', inline=False)
     
     await ctx.send(embed=embed)
-
+    """
 
 # --- Owner Commands ---
 

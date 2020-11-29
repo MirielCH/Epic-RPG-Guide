@@ -7,7 +7,7 @@ from operator import itemgetter
 
 
 # Aufschlüsseln von Subamounts
-async def get_submats(items_data, amount, ingredient):
+async def get_submats(items_data, amount, ingredient, dismantle=False):
         
     item1 = ''
     item2 = ''
@@ -65,7 +65,14 @@ async def get_submats(items_data, amount, ingredient):
                     item_filtered = list(dict.fromkeys(item))
                     item_filtered = list(filter(lambda num: num != 0, item_filtered))
                     item_amount = item_filtered[4]
-                    subitem_amount = item_amount*last_item_amount
+                    if dismantle == True:
+                        subitem_amount = item_amount*last_item_amount*0.8
+                        try:
+                            subitem_amount = int(subitem_amount)
+                        except:
+                            pass
+                    else:
+                        subitem_amount = item_amount*last_item_amount
                     last_item_amount = subitem_amount
                     breakdown = f'{breakdown} ➜ {subitem_amount:,} {subitem_emoji}'
     
@@ -246,6 +253,96 @@ async def mats(items_data, amount, prefix):
     
     if not (total_logs == 0) or not (total_fish == 0) or not (total_apple == 0):
         mats = f'{mats}\n\n**Base materials total**{mats_total_logs}{mats_total_fish}{mats_total_apple}'
+
+    return mats
+
+# Dismantle items
+async def dismantle(items_data, amount, prefix):
+    
+    items_headers = items_data[0]
+    
+    item_crafted = items_data[1]
+    item_crafted_name = item_crafted[2]
+    item_crafted_emoji = getattr(emojis, item_crafted[3])
+    
+    ingredients = []
+
+    for item_index, value in enumerate(item_crafted[6:]):
+        header_index = item_index+6
+        if not value == 0:               
+            if items_headers[header_index] == 'log':
+                ingredients.append([value, emojis.log, 'wooden log'])
+            elif items_headers[header_index] == 'epiclog':
+                ingredients.append([value, emojis.logepic, 'EPIC log'])
+            elif items_headers[header_index] == 'superlog':
+                ingredients.append([value, emojis.logsuper, 'SUPER log'])
+            elif items_headers[header_index] == 'megalog':
+                ingredients.append([value, emojis.logmega, 'MEGA log'])
+            elif items_headers[header_index] == 'hyperlog':
+                ingredients.append([value, emojis.loghyper, 'HYPER log'])
+            elif items_headers[header_index] == 'fish':
+                ingredients.append([value, emojis.fish, 'normie fish'])
+            elif items_headers[header_index] == 'goldenfish':
+                ingredients.append([value, emojis.fishgolden, 'golden fish'])
+            elif items_headers[header_index] == 'apple':
+                ingredients.append([value, emojis.apple, 'apple'])
+        
+    breakdown_logs = ''
+    breakdown_fish = ''
+    breakdown_banana = ''
+    
+    breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
+    breakdown_list_fish = ['EPIC fish', 'golden fish',]
+    
+    ingredient_submats_logs = ['',0]
+    ingredient_submats_fish = ['',0]
+    ingredient_submats_banana = ['',0]
+    ingredient_submats = ''
+    mats = ''
+    total_logs = 0
+    total_fish = 0
+    total_apple = 0
+    mats_total_logs = ''
+    mats_total_fish = ''
+    mats_total_apple = ''
+    
+    if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
+        ingredient = ingredients[0]
+        ingredient_amount = ingredient[0]*amount*0.8
+        try:
+            ingredient_amount = int(ingredient_amount)
+        except:
+            pass
+        ingredient_emoji = ingredient[1]
+        ingredient_name = ingredient[2]
+        
+        if ingredient_name in breakdown_list_logs:
+            ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            total_logs = total_logs+ingredient_submats_logs[1]
+        elif ingredient_name in breakdown_list_fish:
+            ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            total_fish = total_fish+ingredient_submats_fish[1]
+        elif ingredient_name == 'banana':
+            ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            total_apple = total_apple+ingredient_submats_banana[1]
+        
+        ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
+        
+        if amount == 1:
+            mats = f'By dismantling {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
+        else:
+            mats = f'By dismantling {amount:,} {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
+        
+    if not total_logs == 0:    
+        mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
+    if not total_fish == 0:    
+        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'    
+    if not total_apple == 0:    
+        mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
+    
+    if not ingredient_submats == '':
+        ingredient_submats = ingredient_submats.strip()
+        mats = f'{mats}\n\n**Full breakdown**\n{ingredient_submats}'
 
     return mats
 
