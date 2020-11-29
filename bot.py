@@ -712,13 +712,13 @@ async def helpguide(ctx):
     
     xmas =      f'{emojis.bp} `{prefix}xmas` : Christmas event guide'
     
-    progress =  f'{emojis.bp} `{prefix}areas` : Area guides overview\n'\
-                f'{emojis.bp} `{prefix}dungeons` : Dungeon guides overview\n'\
+    progress =  f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'\
+                f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'\
                 f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'\
                 f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
     
     crafting =  f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'\
-                f'{emojis.bp} `{prefix}dismantle` : Dismantling calculator\n'\
+                f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'\
                 f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
                 f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     
@@ -738,7 +738,7 @@ async def helpguide(ctx):
                 
     botlinks =  f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'\
                 f'{emojis.bp} `{prefix}support` : Visit the support server\n'\
-                f'{emojis.bp} `{prefix}links` : Other links you might be interested in'
+                f'{emojis.bp} `{prefix}links` : EPIC RPG wiki & support'
                 
     settings =  f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'\
                 f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'\
@@ -750,7 +750,7 @@ async def helpguide(ctx):
         description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
-    embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
+    #embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -2949,7 +2949,7 @@ async def links(ctx):
                     f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)'  
     
     epicrpg =       f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
-                    f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
+                    f'{emojis.bp} [Official Support Server](https://discord.gg/w5dej5m)'
     
     others =        f'{emojis.bp} [MY EPIC RPG ROOM](https://discord.gg/myepicrpgroom)\n'\
                     f'{emojis.bp} [My Epic RPG Reminder](https://discord.gg/kc3GcK44pJ)\n'\
@@ -2961,9 +2961,9 @@ async def links(ctx):
 
     )    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    embed.add_field(name=f'EPIC RPG GUIDE', value=epicrpgguide, inline=False)
     embed.add_field(name=f'EPIC RPG', value=epicrpg, inline=False)
-    embed.add_field(name=f'EPIC RPG COMMUNITIES', value=others, inline=False)
+    embed.add_field(name=f'EPIC RPG GUIDE', value=epicrpgguide, inline=False)
+    #embed.add_field(name=f'EPIC RPG COMMUNITIES', value=others, inline=False)
     
     await ctx.send(embed=embed)
 

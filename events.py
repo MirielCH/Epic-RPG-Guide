@@ -7,7 +7,8 @@ import emojis
 # Events overview
 async def events_overview(prefix):
 
-    special_events =    f'{emojis.bp} `xmas`'
+    special_events =    f'{emojis.bp} `xmas`\n'\
+                        f'{emojis.bp} `snowball fight`\n'\
     
     sp_events =         f'{emojis.bp} `enchant`\n'\
                         f'{emojis.bp} `epic guard`\n'\
@@ -35,7 +36,7 @@ async def events_overview(prefix):
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
+    #embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
