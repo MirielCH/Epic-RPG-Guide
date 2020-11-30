@@ -20,9 +20,10 @@ import logging
 import logging.handlers
 import xmas
 import dbl
+import requests
 
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import commands, tasks
 from datetime import datetime
 from discord.ext.commands import CommandNotFound
 from math import ceil
@@ -34,7 +35,7 @@ if not os.path.isfile(logfile):
 
 # Initialize logger
 logger = logging.getLogger('discord')
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 handler = logging.handlers.TimedRotatingFileHandler(filename=logfile,when='D',interval=1, encoding='utf-8', utc=True)
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
@@ -57,22 +58,48 @@ if not os.path.isfile(dbfile):
 # Open connection to the local database    
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
-# TopGG
+@tasks.loop(minutes=30.0)
+async def update_stats(bot):
+    try:
+        if not DBL_TOKEN == 'none':
+            guilds = len(list(bot.guilds))
+            guild_count = {'server_count':guilds}
+            header = {'Authorization':DBL_TOKEN}
+            r = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)    
+            logger.info(f'Posted server count ({guilds}), status code: {r.status_code}')
+    except:
+        logger.exception(f'Failed to post server count ({guilds}), status code: {r.status_code}')
+
+"""
+# TopGG - Doesn't work with Python 3.9 for now
 class TopGG(commands.Cog):
-    """Handles interactions with the top.gg API"""
+    ""Handles interactions with the top.gg API""
 
     def __init__(self, bot):
         self.bot = bot
-        self.token = DBL_TOKEN
         if not DBL_TOKEN == 'none':
-            self.dblpy = dbl.DBLClient(self.bot, self.token, autopost=True) # Autopost posts guild count every 30 minutes
-
-# Initialize bot
-bot = discord.Client()
-
-def setup(bot):
-    bot.add_cog(TopGG(bot))
+            self.token = DBL_TOKEN
+            self.dblpy = dbl.DBLClient(self.bot, self.token,)
+        else:
+            self.token = 'test'
+            self.dblpy = dbl.DBLClient(self.bot, self.token,)
+            self.update_stats.start()
             
+    @tasks.loop(minutes=30.0)
+    async def update_stats(self):
+        ""This function runs every 30 minutes to automatically update your server count""
+        try:
+            guilds = len(list(bot.guilds))
+            await self.dblpy.post_guild_count(guilds) # Broken rn
+            logger.info('Posted server count ({})'.format(self.dblpy.guild_count()))
+        except Exception as e:
+            logger.exception('Failed to post server count\n{}: {}'.format(type(e).__name__, e))
+    
+    @commands.Cog.listener()
+    async def on_guild_post(self):
+        print("Server count posted successfully")
+"""
+         
 # --- Database: Get Data ---
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
@@ -570,6 +597,8 @@ async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
+    #bot.add_cog(TopGG(bot))
+    await update_stats.start(bot)
     
 # Send message to system channel when joining a server
 @bot.event
