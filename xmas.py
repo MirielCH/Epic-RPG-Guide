@@ -8,17 +8,19 @@ import global_data
 async def xmas_overview(prefix):
 
     whattodo =      f'{emojis.bp} Decorate a {emojis.xmastree} christmas tree to get a {emojis.petsnowball} pet (see `rpg xmas tree`)\n'\
-                    f'{emojis.bp} Find, craft and use items (see `{prefix}xmas items`)\n'\
+                    f'{emojis.bp} Find, craft and use items and presents (see `{prefix}xmas items`)\n'\
+                    f'{emojis.bp} Visit the christmas area (area 0) (see `{prefix}xmas area`)\n'\
                     f'{emojis.bp} Complete christmas quests (see `rpg xmas quests`)\n'\
-                    f'{emojis.bp} Slay a rare {emojis.xmasslime} slime while hunting. This mob is only needed for one quest.\n'\
                     f'{emojis.bp} Buy various rewards in the shop (`rpg xmas shop`)\n'\
                     f'{emojis.bp} Open a door in your advent calendar every day (`rpg xmas calendar`)\n'\
+                    f'{emojis.bp} Defeat a unique world boss in the [official server](https://discord.gg/epicrpg) (date unknown)\n'\
                     f'{emojis.bp} Gamble all your presents away with `rpg xmas slots`'
 
     schedule =      f'{emojis.bp} Event starts on December 1, 2020\n'\
                     f'{emojis.bp} Event ends on December 25, 2020'
                 
     guides =        f'{emojis.bp} `{prefix}xmas items` : List of all christmas items\n'\
+                    f'{emojis.bp} `{prefix}xmas area` : Christmas area (0) guide\n'\
                     f'{emojis.bp} `rpg xmas tree` : Christmas tree guide\n'\
                     f'{emojis.bp} `rpg xmas presents` : Presents contents and rarity'
 
@@ -58,7 +60,7 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} Rare loot from presents (see `rpg xmas presents`)\n'\
                                 f'{emojis.bp} You can get 1 each by completing the quests (see `rpg xmas quests`)'),
         'gingerbread':          (f'GINGERBREAD {emojis.gingerbread}',
-                                f'{emojis.bp} Function unknown\n'\
+                                f'{emojis.bp} Teleports you to the christmas area when used (see `{prefix}xmas area`)\n'\
                                 f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)'),
         'ornament':             (f'ORNAMENT {emojis.ornament}',
                                 f'{emojis.bp} Used to decorate the tree (see `{prefix}xmas tree`)\n'\
@@ -86,11 +88,13 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} Used in various recipes (see `rpg xmas recipes`)\n'\
                                 f'{emojis.bp} Drops from `rpg arena`\n'\
                                 f'{emojis.bp} Contained in {emojis.snowbox} snow boxes bought from the shop (`rpg xmas shop`)\n'\
+                                f'{emojis.bp} Common loot from presents (see `rpg xmas presents`)\n'\
                                 f'{emojis.bp} You get some snow when using a {emojis.candycane} candy cane\n'\
                                 f'{emojis.bp} You can get 2 in the advent calendar (`rpg xmas calendar`)'),
         'snowbox':              (f'SNOW BOX {emojis.snowbox}',
                                  f'{emojis.bp} Can be opened to get 2-20 {emojis.snow} snow\n'\
                                 f'{emojis.bp} Can be bought in the shop for 15 {emojis.present} (`rpg xmas shop`)\n'\
+                                f'{emojis.bp} Rare loot from presents (see `rpg xmas presents`)\n'\
                                 f'{emojis.bp} You can get 2 by completing a quest (see `rpg xmas quests`)')       
     }
 
@@ -145,5 +149,37 @@ async def xmas_item_overview(prefix):
     )    
     embed.set_footer(text=f'Use {prefix}xmas to see all available christmas guides')
     embed.add_field(name='ITEM NAMES', value=items_value, inline=False)
+            
+    return embed
+
+# Christmas area
+async def xmas_area(prefix):
+    
+    requirements =      f'{emojis.bp} Can only be reached by eating a {emojis.gingerbread} gingerbread\n'\
+                        f'{emojis.bp} {emojis.gingerbread} Gingerbread is a mythic drop from presents (see `rpg xmas presents`)\n'\
+                        f'{emojis.bp} Can be left anytime but accessing it again requires another {emojis.gingerbread} gingerbread'
+                        
+    differences =       f'{emojis.bp} You get 2 guaranteed christmas items every time you use `hunt` or `adventure`\n'\
+                        f'{emojis.bp} You get normal mob drops in `hunt` according to your **max** area\n'\
+                        f'{emojis.bp} You do not get XP and coins from `hunt` and `adventure`\n'\
+                        f'{emojis.bp} You do not get any items from `fish` commands\n'\
+                        f'{emojis.bp} You get double the worker XP from `chop` commands'
+                        
+    xmas_drops =        f'{emojis.bp} `hunt`: {emojis.present} presents, ???\n'\
+                        f'{emojis.bp} `adventure`: {emojis.present} presents, {emojis.pineneedle} pine needle, ???\n'\
+    
+    
+    
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'CHRISTMAS AREA (AREA 0)',
+        description =   f'This is a special christmas themed area that will only be accessible during the christmas event.'
+                      
+    )    
+    embed.set_footer(text=f'Use {prefix}xmas to see all available christmas guides')
+    embed.add_field(name='HOW TO ACCESS', value=requirements, inline=False)
+    embed.add_field(name='DIFFERENCES TO NORMAL AREAS', value=differences, inline=False)
+    #embed.add_field(name='CHRISTMAS DROPS', value=xmas_drops, inline=False)
             
     return embed

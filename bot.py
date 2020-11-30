@@ -19,6 +19,7 @@ import events
 import logging
 import logging.handlers
 import xmas
+import dbl
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -41,6 +42,7 @@ logger.addHandler(handler)
 # Read the bot token from the .env file
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+DBL_TOKEN = os.getenv('DBL_TOKEN')
 
 # Set name of database files
 dbfile = global_data.dbfile
@@ -55,9 +57,21 @@ if not os.path.isfile(dbfile):
 # Open connection to the local database    
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
+# TopGG
+class TopGG(commands.Cog):
+    """Handles interactions with the top.gg API"""
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.token = DBL_TOKEN
+        if not DBL_TOKEN == 'none':
+            self.dblpy = dbl.DBLClient(self.bot, self.token, autopost=True) # Autopost posts guild count every 30 minutes
+
 # Initialize bot
 bot = discord.Client()
 
+def setup(bot):
+    bot.add_cog(TopGG(bot))
             
 # --- Database: Get Data ---
 
@@ -330,17 +344,27 @@ async def get_tt_unlocks(ctx, user_tt):
     return tt_unlock_data
 
 # Get trade rate data
-async def get_traderate_data(ctx, area):
+async def get_traderate_data(ctx, areas):
+    
+    
+        
+    
     
     try:
         cur=erg_db.cursor()
         
-        if area == 'all':
+        if (type(areas) == str) and (areas == 'all'):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
             record = cur.fetchall()
-        else:
-            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (area,))
+        elif type(areas) == int:
+            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (areas,))
             record = cur.fetchone()
+        elif type(areas) in (list,tuple):
+            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area BETWEEN ? and ?', (areas[0],areas[1],))
+            record = cur.fetchall()
+        else:
+            await log_error(ctx, 'Parameter \'areas\' has an invalid format, could not get traderate data.')
+            return
         
         if record:
             traderate_data = record
@@ -1344,12 +1368,14 @@ async def area(ctx, *args):
                 return
         await ctx.send(embed=area_embed)
 
+
+# --- Trading ---
+
 # Command "trades" - Returns recommended trades of one area or all areas
-trades_aliases = ['tr','trade',]
+trades_aliases = ['tr',]
 for x in range(1,16):
     trades_aliases.append(f'tr{x}')    
-    trades_aliases.append(f'trades{x}')
-    trades_aliases.append(f'trade{x}') 
+    trades_aliases.append(f'trades{x}') 
 
 @bot.command(aliases=trades_aliases)
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
@@ -1409,6 +1435,79 @@ async def traderates(ctx):
     embed = await trading.traderates(traderate_data, ctx.prefix)
     
     await ctx.send(embed=embed)
+    
+# Command "tradecalc" - Calculates the trades up to A10
+@bot.command(aliases=('trc',))
+@commands.is_owner()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def tradecalc(ctx, *args):
+    
+    if len(args) >= 3:
+        area = args[0]
+        area = area.lower().replace('a','')
+        if area.isnumeric():
+            area = int(area)
+            if not 1 <= area <= 9:
+                await ctx.send(f'From area 10 onwards there are no useful trades anymore.\nI therefore only calculate materials from areas 1 to 9')
+                return
+        mat = ''
+        for arg in args[1:]:
+            argument = arg
+            argument = argument.replace('k','000').replace('m','000000')
+            if argument.isnumeric():
+                amount = argument
+            else:
+                mat = f'{mat}{argument}'
+                original_argument = f'{mat} {argument}'
+                
+        if not amount.isnumeric():
+            await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
+            return
+        try:
+            amount = int(amount)
+        except:
+            await ctx.send(f'Are you trying to break me or something? :thinking:')
+            return
+        if amount > 100000000000:
+            await ctx.send(f'Are you trying to break me or something? :thinking:')
+            return
+
+        mat = mat.lower()        
+        aliases = {
+            'f': 'fish',
+            'fishes': 'fish',
+            'normie fish': 'fish',
+            'l': 'log',
+            'logs': 'log',
+            'wooden log': 'log',
+            'wooden logs': 'log',
+            'a': 'apple',
+            'apples': 'apple',
+            'r': 'ruby',
+            'rubies': 'ruby',
+            'rubys': 'ruby'
+        }
+        if mat in aliases:
+            mat = aliases[mat]   
+        if not mat in ('fish','log','ruby','apple'):
+            await ctx.send(f'`{mat}` is not a valid material. The supported materials are (wooden) logs, (normie) fish, apples and rubies.')
+            return
+        
+        if mat == 'fish':
+            mat_output = f'{emojis.fish} fish'
+        elif mat == 'log':
+            mat_output = f'{emojis.log} wooden logs'
+        elif mat == 'apple':
+            mat_output = f'{emojis.apple} apples'
+        elif mat == 'ruby':
+            mat_output = f'{emojis.ruby} rubies'
+        
+        traderate_data = await get_traderate_data(ctx, (area, 10))
+        output = await trading.matscalc(traderate_data, (area,mat,amount), prefix)
+        await ctx.send(f'With {amount:,} {mat_output} in area {area} do the following:\n{output}')
+    
+    else:
+        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}trade [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}trade [area] [material] [amount]`.\n\nExample: `{ctx.prefix}trade a3 200000 fish`')
 
 
 # --- Crafting ---
@@ -1432,7 +1531,7 @@ async def drops(ctx):
     await ctx.send(embed=embed)
 
 # Command "craft" - Calculates mats you need for amount of items
-@bot.command(aliases=('materials','matsfor','mats','cook',))
+@bot.command(aliases=('cook',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def craft(ctx, *args):
 
@@ -2145,7 +2244,7 @@ async def prmtotal(ctx, *args):
                     merchant_levels = []
                 else:
                     levelrange = [pr_level+2, 100,]
-                    merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                    merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)            
                 
                 for merchant_level in merchant_levels:
                     logs_total = logs_total + (merchant_level[1] * 5)
@@ -2222,7 +2321,7 @@ async def prmtotal(ctx, *args):
                         merchant_levels = []
                     else:
                         levelrange = [pr_level+2, level,]
-                        merchant_levels = await get_merchant_levels(ctx,levelrange)            
+                        merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)            
                     
                     for merchant_level in merchant_levels:
                         logs_total = logs_total + (merchant_level[1] * 5)
@@ -2946,10 +3045,11 @@ async def support(ctx):
 async def links(ctx):
     
     epicrpgguide =  f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'\
-                    f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)'  
+                    f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)\n'\
+                    f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'  
     
     epicrpg =       f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
-                    f'{emojis.bp} [Official Support Server](https://discord.gg/w5dej5m)'
+                    f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
     
     others =        f'{emojis.bp} [MY EPIC RPG ROOM](https://discord.gg/myepicrpgroom)\n'\
                     f'{emojis.bp} [My Epic RPG Reminder](https://discord.gg/kc3GcK44pJ)\n'\
@@ -2967,6 +3067,27 @@ async def links(ctx):
     
     await ctx.send(embed=embed)
 
+# Command "vote"
+@bot.command()
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
+async def vote(ctx):
+       
+    embed = discord.Embed(
+    color = global_data.color,
+    title = f'FEEL LIKE VOTING?',
+    description =   f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'\
+                    f'You can vote for me [here](https://top.gg/bot/770199669141536768/vote).'                  
+    )    
+    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+    
+    await ctx.send(embed=embed)
+
+# Command "donate"
+@bot.command()
+@commands.bot_has_permissions(send_messages=True)
+async def donate(ctx):
+    
+    await ctx.send(f'Aw that\'s nice of you but this is a free bot, you know.\nThanks though :heart:')
 
 # --- Christmas 2020 ---
 # Command "xmas"
@@ -3016,8 +3137,12 @@ async def xmasguide(ctx, *args):
             arg = arg.lower()
             arg_full = f'{arg_full}{arg}'
         
-        if (arg_full == 'items') or (arg_full == 'item'):
+        if arg_full.find('item') > -1:
             embed = await xmas.xmas_item_overview(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
+        elif arg_full.find('area') > -1:
+            embed = await xmas.xmas_area(ctx.prefix)
             await ctx.send(embed=embed)
             return
         
