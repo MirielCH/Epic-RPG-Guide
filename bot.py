@@ -803,7 +803,7 @@ async def helpguide(ctx):
         description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
-    #embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
+    embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -1731,6 +1731,10 @@ async def dismantle(ctx, *args):
                 if itemname_replaced in shortcuts:
                     itemname_replaced = shortcuts[itemname_replaced]                
                 
+                if not itemname_replaced in ('epic log', 'super log', 'mega log', 'hyper log', 'ultra log', 'golden fish', 'epic fish', 'banana'):
+                    await ctx.send(f'Uhm, I don\'t know how to dismantle `{itemname}`, sorry.')
+                    return
+                
                 items_data = await get_item_data(ctx, itemname_replaced)
                 if items_data == '':
                     await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
@@ -1883,7 +1887,7 @@ async def petsadventure(ctx):
 # Command "events" - Main event command
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
-                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent'))
+                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent','snowball','snowballfight'))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def events_overview(ctx, *args):
 
@@ -1946,6 +1950,9 @@ async def events_overview(ctx, *args):
         elif (event_name.find('xmas') > -1) or (event_name.find('christmas') > -1):
                 await xmasguide(ctx)
                 return
+        elif (event_name.find('snowball') > -1):
+                embed = await events.event_snowball(ctx.prefix)
+                await ctx.send(embed=embed)
         else:
             await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
     else:
@@ -1996,6 +2003,9 @@ async def events_overview(ctx, *args):
             await ctx.send(embed=embed)
         elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
             embed = await events.event_lootbox(ctx.prefix)
+            await ctx.send(embed=embed)
+        elif (invoked.find('snowball') > -1):
+            embed = await events.event_snowball(ctx.prefix)
             await ctx.send(embed=embed)
         else:
             embed = await events.events_overview(ctx.prefix)
@@ -3121,7 +3131,6 @@ async def donate(ctx):
 # --- Christmas 2020 ---
 # Command "xmas"
 @bot.command(aliases=('xmas','christmas','christmasevent','xmasevent',))
-@commands.is_owner()
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def xmasguide(ctx, *args):
 
@@ -3256,6 +3265,7 @@ async def test(ctx):
     
     await ctx.send(embed=embed)
     """
+
 
 # --- Owner Commands ---
 

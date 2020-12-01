@@ -7,8 +7,7 @@ import emojis
 # Events overview
 async def events_overview(prefix):
 
-    special_events =    f'{emojis.bp} `xmas`\n'\
-                        f'{emojis.bp} `snowball fight`\n'\
+    special_events =    f'{emojis.bp} `snowball fight`'
     
     sp_events =         f'{emojis.bp} `enchant`\n'\
                         f'{emojis.bp} `epic guard`\n'\
@@ -36,7 +35,7 @@ async def events_overview(prefix):
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    #embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
+    embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -157,6 +156,33 @@ async def event_lootbox(prefix):
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'RECOMMENDED ANSWER', value=rec_answer, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
+            
+    return embed
+
+# Snowball fight event
+async def event_snowball(prefix):
+
+    trigger =       f'{emojis.bp} Any command (chance unknown)\n'\
+                    f'{emojis.bp} By using a {emojis.xmashat} christmas hat\n'\
+    
+    answers =       f'{emojis.bp} `fight`: You have a high chance to get decent loot\n'\
+                    f'{emojis.bp} `summon`: You can get higher quality loot but the overall chances are lower\n'\
+                    f'{emojis.bp} `sleep`: Ends the event'
+    
+    best_answer =   f'{emojis.bp} `summon`' 
+        
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'SNOWBALL FIGHT EVENT',
+        description =   f'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
+    )    
+    embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
+
+    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
+    embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name=f'BEST ANSWER', value=best_answer, inline=False)
+    #embed.add_field(name=f'NOTE', value=note, inline=False)
             
     return embed
 

@@ -7,20 +7,25 @@ import global_data
 # Christmas overview
 async def xmas_overview(prefix):
 
-    whattodo =      f'{emojis.bp} Decorate a {emojis.xmastree} christmas tree to get a {emojis.petsnowball} pet (see `rpg xmas tree`)\n'\
-                    f'{emojis.bp} Find, craft and use items and presents (see `{prefix}xmas items`)\n'\
-                    f'{emojis.bp} Visit the christmas area (area 0) (see `{prefix}xmas area`)\n'\
-                    f'{emojis.bp} Complete christmas quests (see `rpg xmas quests`)\n'\
-                    f'{emojis.bp} Buy various rewards in the shop (`rpg xmas shop`)\n'\
-                    f'{emojis.bp} Open a door in your advent calendar every day (`rpg xmas calendar`)\n'\
-                    f'{emojis.bp} Defeat a unique world boss in the [official server](https://discord.gg/epicrpg) (date unknown)\n'\
+    whattodo =      f'{emojis.bp} Decorate a {emojis.xmastree} christmas **tree** to get a {emojis.petsnowball} pet (see `rpg xmas tree`)\n'\
+                    f'{emojis.bp} Find, craft and use **items and presents** (see `{prefix}xmas items`)\n'\
+                    f'{emojis.bp} Visit the **christmas area** (area 0) (see `{prefix}xmas area`)\n'\
+                    f'{emojis.bp} Complete christmas **quests** (see `rpg xmas quests`)\n'\
+                    f'{emojis.bp} Buy various rewards in the **shop** (`rpg xmas shop`)\n'\
+                    f'{emojis.bp} Open a door in your **advent calendar** every day (`rpg xmas calendar`)\n'\
+                    f'{emojis.bp} Defeat the EPIC NPC in a new random **snowball fight event** (see `{prefix}snowball`)\n'\
+                    f'{emojis.bp} Defeat a unique **world boss** in the [official server](https://discord.gg/epicrpg) (Dec 25)\n'\
                     f'{emojis.bp} Gamble all your presents away with `rpg xmas slots`'
 
+    bonuses =       f'{emojis.bp} 2x XP when eating {emojis.arenacookie} arena cookies\n'\
+                    f'{emojis.bp} Arena cooldown is lowered to 12h'
+
     schedule =      f'{emojis.bp} Event starts on December 1, 2020\n'\
-                    f'{emojis.bp} Event ends on December 25, 2020'
+                    f'{emojis.bp} Event ends on January 4, 2021, 20:00 UTC'
                 
     guides =        f'{emojis.bp} `{prefix}xmas items` : List of all christmas items\n'\
-                    f'{emojis.bp} `{prefix}xmas area` : Christmas area (0) guide\n'\
+                    f'{emojis.bp} `{prefix}xmas area` : Christmas area (area 0)\n'\
+                    f'{emojis.bp} `{prefix}snowball` : Snowball fight event\n'\
                     f'{emojis.bp} `rpg xmas tree` : Christmas tree guide\n'\
                     f'{emojis.bp} `rpg xmas presents` : Presents contents and rarity'
 
@@ -32,7 +37,8 @@ async def xmas_overview(prefix):
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
 
-    embed.add_field(name=f'WHAT TO DO IN THIS EVENT', value=whattodo, inline=False)
+    embed.add_field(name=f'ACTIVITIES', value=whattodo, inline=False)
+    embed.add_field(name=f'BONUSES', value=bonuses, inline=False)
     embed.add_field(name=f'GUIDES', value=guides, inline=False)
     embed.add_field(name=f'EVENT SCHEDULE', value=schedule, inline=False)
             
@@ -49,7 +55,7 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)\n'\
                                 f'{emojis.bp} You can get 2 in the advent calendar (`rpg xmas calendar`)'),
         'xmashat':              (f'CHRISTMAS HAT {emojis.xmashat}',
-                                f'{emojis.bp} Spawns a christmas event when used\n'\
+                                f'{emojis.bp} Spawns a snowball fight event when used (see `{prefix}snowball`)\n'\
                                 f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)'),
         'xmasstar':             (f'CHRISTMAS STAR {emojis.xmasstar}',
                                 f'{emojis.bp} Used to decorate the tree (see `{prefix}xmas tree`)\n'\
@@ -61,6 +67,7 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} You can get 1 each by completing the quests (see `rpg xmas quests`)'),
         'gingerbread':          (f'GINGERBREAD {emojis.gingerbread}',
                                 f'{emojis.bp} Teleports you to the christmas area when used (see `{prefix}xmas area`)\n'\
+                                f'{emojis.bp} Used to buy the profile background in the shop (`rpg xmas shop`)\n'\
                                 f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)'),
         'ornament':             (f'ORNAMENT {emojis.ornament}',
                                 f'{emojis.bp} Used to decorate the tree (see `{prefix}xmas tree`)\n'\
@@ -75,6 +82,7 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} Used to buy items in the shop (`rpg xmas shop`)\n'\
                                 f'{emojis.bp} Can be crafted into better presents (see `rpg xmas recipes`)\n'\
                                 f'{emojis.bp} Can be opened to get some loot (see `rpg xmas presents`)\n'\
+                                f'{emojis.bp} Only open normal presents for the quest, always craft better ones after that\n'\
                                 f'{emojis.bp} Drops from `rpg hunt`, `adventure`, `training`, `fish`, `duel`, `quest`, `epic quest`, `horse breeding`, `horse race`, `arena`, `miniboss`, `dungeon` (including all higher command tiers)'),
         'pineneedle':           (f'PINE NEEDLE {emojis.pineneedle}',
                                 f'{emojis.bp} Used to decorate the tree (see `{prefix}xmas tree`)\n'\
@@ -83,10 +91,11 @@ async def xmas_get_item(prefix,item):
                                 f'{emojis.bp} You can get 2 in the advent calendar (`rpg xmas calendar`)'),
         'sleepypotion':         (f'SLEEPY POTION {emojis.sleepypotion}',
                                 f'{emojis.bp} Reduces all cooldowns by 24h when used\n'\
-                                f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)'),
+                                f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)\n'\
+                                f'{emojis.bp} You can get 2 in the advent calendar (`rpg xmas calendar`)'),
         'snow':                 (f'SNOW {emojis.snow}',
                                 f'{emojis.bp} Used in various recipes (see `rpg xmas recipes`)\n'\
-                                f'{emojis.bp} Drops from `rpg arena`\n'\
+                                f'{emojis.bp} Drops from `rpg arena`, `hunt`, `adventure`, `training`, `fish`, `duel`, `quest`, `epic quest`, `horse breeding`, `horse race`, `arena`, `miniboss`, `dungeon` (including all higher command tiers)\n'\
                                 f'{emojis.bp} Contained in {emojis.snowbox} snow boxes bought from the shop (`rpg xmas shop`)\n'\
                                 f'{emojis.bp} Common loot from presents (see `rpg xmas presents`)\n'\
                                 f'{emojis.bp} You get some snow when using a {emojis.candycane} candy cane\n'\
@@ -159,8 +168,9 @@ async def xmas_area(prefix):
                         f'{emojis.bp} {emojis.gingerbread} Gingerbread is a mythic drop from presents (see `rpg xmas presents`)\n'\
                         f'{emojis.bp} Can be left anytime but accessing it again requires another {emojis.gingerbread} gingerbread'
                         
-    differences =       f'{emojis.bp} You get 2 guaranteed christmas items every time you use `hunt` or `adventure`\n'\
+    differences =       f'{emojis.bp} You get 2 christmas items ({emojis.snow} or {emojis.present}) when using `hunt` or `adventure`\n'\
                         f'{emojis.bp} You get normal mob drops in `hunt` according to your **max** area\n'\
+                        f'{emojis.bp} You take damage according do your **max** area\n'\
                         f'{emojis.bp} You do not get XP and coins from `hunt` and `adventure`\n'\
                         f'{emojis.bp} You do not get any items from `fish` commands\n'\
                         f'{emojis.bp} You get double the worker XP from `chop` commands'
