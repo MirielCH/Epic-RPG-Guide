@@ -169,7 +169,9 @@ async def event_snowball(prefix):
                     f'{emojis.bp} `summon`: You can get higher quality loot but the overall chances are lower\n'\
                     f'{emojis.bp} `sleep`: Ends the event'
     
-    best_answer =   f'{emojis.bp} `summon`' 
+    best_answer =   f'{emojis.bp} `summon`'
+    
+    note =          f'{emojis.bp} This event gives higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat'
         
 
     embed = discord.Embed(
@@ -182,7 +184,7 @@ async def event_snowball(prefix):
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'BEST ANSWER', value=best_answer, inline=False)
-    #embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name=f'NOTE', value=note, inline=False)
             
     return embed
 
