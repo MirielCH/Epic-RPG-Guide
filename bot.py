@@ -3130,7 +3130,7 @@ async def donate(ctx):
 
 # --- Christmas 2020 ---
 # Command "xmas"
-@bot.command(aliases=('xmas','christmas','christmasevent','xmasevent',))
+@bot.command(aliases=('xmas','christmas','christmasevent','xmasevent','a0','area0'))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def xmasguide(ctx, *args):
 
@@ -3195,8 +3195,15 @@ async def xmasguide(ctx, *args):
             embed = await xmas.xmas_overview(ctx.prefix)
             await ctx.send(embed=embed)
     else:
-        embed = await xmas.xmas_overview(ctx.prefix)
-        await ctx.send(embed=embed)
+        invoked = ctx.invoked_with
+        invoked = invoked.lower().replace(ctx.prefix,'')
+        if invoked in ('a0','area0'):
+            embed = await xmas.xmas_area(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
+        else:
+            embed = await xmas.xmas_overview(ctx.prefix)
+            await ctx.send(embed=embed)
 
 # --- Silly Stuff ---
 

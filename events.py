@@ -165,13 +165,14 @@ async def event_snowball(prefix):
     trigger =       f'{emojis.bp} Any command (chance unknown)\n'\
                     f'{emojis.bp} By using a {emojis.xmashat} christmas hat\n'\
     
-    answers =       f'{emojis.bp} `fight`: You have a high chance to get decent loot\n'\
-                    f'{emojis.bp} `summon`: You can get higher quality loot but the overall chances are lower\n'\
-                    f'{emojis.bp} `sleep`: Ends the event'
+    answers =       f'{emojis.bp} `fight`: You get christmas loot\n'\
+                    f'{emojis.bp} `summon`: You get christmas loot\n'\
+                    f'{emojis.bp} `sleep`: You still get loot but not that much'
     
-    best_answer =   f'{emojis.bp} `summon`'
+    best_answer =   f'{emojis.bp} `summon` or `fight`'
     
-    note =          f'{emojis.bp} This event gives higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat'
+    note =          f'{emojis.bp} This event gives higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat\n'\
+                    f'{emojis.bp} There is too much conflicting information about `summon` or `fight` being better'
         
 
     embed = discord.Embed(
