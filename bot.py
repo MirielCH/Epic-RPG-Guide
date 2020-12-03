@@ -2449,7 +2449,7 @@ async def prw(ctx):
             pr_needed_xp = int(pr_needed_xp)            
             xp = pr_needed_xp - pr_current_xp
             pickaxes = ceil(xp / 100)
-            xp_rest = xp % 100
+            xp_rest = 100 - (xp % 100)
             
             levelrange = []
             
@@ -2473,7 +2473,7 @@ async def prw(ctx):
                 worker_level_xp = worker_level[1]
                 actual_xp = worker_level_xp - xp_rest
                 pickaxes = ceil(actual_xp / 100)
-                xp_rest = actual_xp % 100
+                xp_rest = 100 - (actual_xp % 100)
                 output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{pickaxes:,}** pickaxes.'
             
             await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] pickaxe` to see what materials you need to craft banana pickaxes.')
@@ -2539,7 +2539,7 @@ async def prwtotal(ctx, *args):
                 pr_needed_xp = int(pr_needed_xp)            
                 xp = pr_needed_xp - pr_current_xp
                 pickaxes = ceil(xp / 100)
-                xp_rest = xp % 100
+                xp_rest = 100 - (xp % 100)
                 pickaxes_total = pickaxes
                 
                 levelrange = []
@@ -2558,7 +2558,7 @@ async def prwtotal(ctx, *args):
                     actual_xp = worker_level_xp - xp_rest
                     pickaxes = ceil(actual_xp / 100)
                     pickaxes_total = pickaxes_total + pickaxes
-                    xp_rest = actual_xp % 100
+                    xp_rest = 100 - (actual_xp % 100)
                 
                 await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level 100.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
             else:
@@ -2618,7 +2618,7 @@ async def prwtotal(ctx, *args):
                     pr_needed_xp = int(pr_needed_xp)            
                     xp = pr_needed_xp - pr_current_xp
                     pickaxes = ceil(xp / 100)
-                    xp_rest = xp % 100
+                    xp_rest = 100 - (xp % 100)
                     pickaxes_total = pickaxes
                     
                     if pr_level >= level:
@@ -2641,7 +2641,7 @@ async def prwtotal(ctx, *args):
                         actual_xp = worker_level_xp - xp_rest
                         pickaxes = ceil(actual_xp / 100)
                         pickaxes_total = pickaxes_total + pickaxes
-                        xp_rest = actual_xp % 100
+                        xp_rest = 100 - (actual_xp % 100)
                     
                     await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level {level}.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
                 else:
@@ -2713,7 +2713,7 @@ async def prl(ctx):
             pr_needed_xp = int(pr_needed_xp)            
             xp = pr_needed_xp - pr_current_xp
             lootboxes = ceil(xp / 100)
-            xp_rest = xp % 100
+            xp_rest = 100 - (xp % 100)
             
             levelrange = []
             
@@ -2737,7 +2737,7 @@ async def prl(ctx):
                 worker_level_xp = worker_level[1]
                 actual_xp = worker_level_xp - xp_rest
                 lootboxes = ceil(actual_xp / 100)
-                xp_rest = actual_xp % 100
+                xp_rest = 100 - (actual_xp % 100)
                 output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{lootboxes:,}** lootboxes.'
             
             await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] lootboxes` to see what materials you need to craft filled lootboxes.')
@@ -2803,7 +2803,7 @@ async def prltotal(ctx, *args):
                 pr_needed_xp = int(pr_needed_xp)            
                 xp = pr_needed_xp - pr_current_xp
                 lootboxes = ceil(xp / 100)
-                xp_rest = xp % 100
+                xp_rest = 100 - (xp % 100)
                 lootboxes_total = lootboxes
                 
                 levelrange = []
@@ -2822,7 +2822,7 @@ async def prltotal(ctx, *args):
                     actual_xp = lootboxer_level_xp - xp_rest
                     lootboxes = ceil(actual_xp / 100)
                     lootboxes_total = lootboxes_total + lootboxes
-                    xp_rest = actual_xp % 100
+                    xp_rest = 100 - (actual_xp % 100)
                 
                 await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level 100.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
             else:
@@ -2882,7 +2882,7 @@ async def prltotal(ctx, *args):
                     pr_needed_xp = int(pr_needed_xp)            
                     xp = pr_needed_xp - pr_current_xp
                     lootboxes = ceil(xp / 100)
-                    xp_rest = xp % 100
+                    xp_rest = 100 - (xp % 100)
                     lootboxes_total = lootboxes
                     
                     if pr_level >= level:
@@ -2905,7 +2905,7 @@ async def prltotal(ctx, *args):
                         actual_xp = lootboxer_level_xp - xp_rest
                         lootboxes = ceil(actual_xp / 100)
                         lootboxes_total = lootboxes_total + lootboxes
-                        xp_rest = actual_xp % 100
+                        xp_rest = 100 - (actual_xp % 100)
                     
                     await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level {level}.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
                 else:
@@ -2998,52 +2998,26 @@ async def calc(ctx, *args):
         else:
             return num
 
-    if len(args) != 3:
-        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [number] [operator] [number]`\nSupported operators are `+`, `-`, `/` and `*`.')
-        return
+    if args:
+        calculation = ''
+        allowedchars = set('1234567890-+/*%()')
+        
+        for arg in args:
+            calculation = f'{calculation}{arg}'
+        
+        if set(calculation).issubset(allowedchars):
+            try:
+                result = eval(calculation)
+                result = formatNumber(result)
+                await ctx.send(f'{result:,}')
+                return
+            except:
+                await ctx.send(f'Well, that didn\'t calculate to anything useful.\nWhat were you trying to do there? :thinking:')
+                return
+        else:
+            await ctx.send(f'Invalid characters.\nThe command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/` and `*`.')
     else:
-        value1 = args[0]
-        operator = args[1]
-        value2 = args[2]
-        
-        errormessage = ''
-        
-        try:
-            value1 = float(value1)
-        except:
-            errormessage = f'{errormessage}\n`{value1}` is not a valid number.'
-        
-        if not (operator == '-') and not (operator == '+') and not (operator == '/') and not (operator == '*'):
-            errormessage = f'{errormessage}\n`{operator}` is not a supported operator. Supported operators are `+`, `-`, `/` and `*`.'
-            
-        try:
-            value2 = float(value2)
-        except:
-            errormessage = f'{errormessage}\n`{value2}` is not a valid number.'
-        
-        if not errormessage == '':
-            errormessage = errormessage.strip()
-            await ctx.send(errormessage)
-            return
-        try:
-            if operator == '-':
-                result = value1 - value2
-                result = formatNumber(result)
-                await ctx.send(f'{result:,}')
-            elif operator == '+':
-                result = value1 + value2
-                result = formatNumber(result)
-                await ctx.send(f'{result:,}')
-            elif operator == '/':
-                result = value1 / value2
-                result = formatNumber(result)
-                await ctx.send(f'{result:,}')
-            elif operator == '*':
-                result = value1 * value2
-                result = formatNumber(result)
-                await ctx.send(f'{result:,}')
-        except:
-            await ctx.send(f'Are you trying to break me? :thinking:')
+        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/` and `*`.')
 
 
 # --- Links --- 
