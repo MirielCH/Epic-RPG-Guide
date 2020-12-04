@@ -950,7 +950,7 @@ async def dungeon(ctx, *args):
                     await ctx.send(f'There is no dungeon {arg}, lol.') 
             else:
                 if arg == 'gear':
-                    await dungeongear(ctx, 1)
+                    await dungeongear(ctx, '1')
                     return
                 elif arg == 'stats':
                     await dungeonstats(ctx)
@@ -1474,12 +1474,13 @@ async def tradecalc(ctx, *args):
     if len(args) >= 3:
         area = args[0]
         area = area.lower().replace('a','')
+        amount = None
+        mat = ''
         if area.isnumeric():
             area = int(area)
             if not 1 <= area <= 9:
                 await ctx.send(f'From area 10 onwards there are no useful trades anymore.\nI therefore only calculate materials from areas 1 to 9')
                 return
-        mat = ''
         for arg in args[1:]:
             argument = arg
             argument = argument.replace('k','000').replace('m','000000')
@@ -1488,17 +1489,21 @@ async def tradecalc(ctx, *args):
             else:
                 mat = f'{mat}{argument}'
                 original_argument = f'{mat} {argument}'
-                
-        if not amount.isnumeric():
+        
+        if amount:   
+            if not amount.isnumeric():
+                await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
+                return
+            try:
+                amount = int(amount)
+            except:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
+            if amount > 100000000000:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
+        else:
             await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
-            return
-        try:
-            amount = int(amount)
-        except:
-            await ctx.send(f'Are you trying to break me or something? :thinking:')
-            return
-        if amount > 100000000000:
-            await ctx.send(f'Are you trying to break me or something? :thinking:')
             return
 
         mat = mat.lower()        
@@ -1531,9 +1536,9 @@ async def tradecalc(ctx, *args):
         elif mat == 'ruby':
             mat_output = f'{emojis.ruby} rubies'
         
-        traderate_data = await get_traderate_data(ctx, (area, 10))
+        traderate_data = await get_traderate_data(ctx, (1, 10))
         output = await trading.matscalc(traderate_data, (area,mat,amount), prefix)
-        await ctx.send(f'With {amount:,} {mat_output} in area {area} do the following:\n{output}')
+        await ctx.send(f'{amount:,} {mat_output} in area {area} equals to:\n{output}')
     
     else:
         await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}trade [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}trade [area] [material] [amount]`.\n\nExample: `{ctx.prefix}trade a3 200000 fish`')
@@ -3000,24 +3005,73 @@ async def calc(ctx, *args):
 
     if args:
         calculation = ''
-        allowedchars = set('1234567890-+/*%()')
+        allowedchars = set('1234567890.-+/*%()')
         
         for arg in args:
             calculation = f'{calculation}{arg}'
         
         if set(calculation).issubset(allowedchars):
-            try:
-                result = eval(calculation)
-                result = formatNumber(result)
-                await ctx.send(f'{result:,}')
+            if calculation.find('**') > -1:
+                await ctx.send(f'Invalid characters. Please only use numbers and supported operators.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
                 return
-            except:
-                await ctx.send(f'Well, that didn\'t calculate to anything useful.\nWhat were you trying to do there? :thinking:')
-                return
+            else:
+                pass
         else:
-            await ctx.send(f'Invalid characters.\nThe command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/` and `*`.')
+            await ctx.send(f'Invalid characters. Please only use numbers and supported operators.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
+            return
+            
+        # Parse open the calculation, convert all numbers to float and store it as a list
+        # This is necessary because Python has the annoying habit of allowing infinite integers which can completely lockup a system. Floats have overflow protection.
+        pos = 1
+        calculation_parsed = []
+        number = ''
+        last_char_was_operator = True # Sollte eigentlich "last_char_was_operator_or_beginning_of_calculation" heissen, aber eh, too long, don't care
+        calculation_sliced = calculation
+        try:
+            while not pos == len(calculation)+1:
+                slice = calculation_sliced[0:1]
+                allowednumbers = set('1234567890.')
+                if set(slice).issubset(allowednumbers):
+                    number = f'{number}{slice}'
+                    last_char_was_operator = False
+                elif (slice == '-') or (slice == '+') or (slice == '/') or (slice == '*') or (slice == '%'):
+                    if ((slice == '+') or (slice == '-')) and last_char_was_operator == True:
+                        number = f'{number}{slice}'
+                        last_char_was_operator = False
+                    else:
+                        calculation_parsed.append(float(number))
+                        calculation_parsed.append(slice)
+                        number = ''
+                        last_char_was_operator = True
+
+                calculation_sliced = calculation_sliced[1:]
+                pos = pos+1
+            else:
+                calculation_parsed.append(float(number))
+        except:
+            await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
+            return
+        
+        # Reassemble and execute calculation
+        calculation_reassembled = ''
+        for slice in calculation_parsed:
+            calculation_reassembled = f'{calculation_reassembled}{slice}'
+        
+        try:
+            result = eval(calculation_reassembled)
+            result = formatNumber(result)
+            result = f'{result:,}'
+            if not len(result) > 2000:
+                await ctx.send(result)
+                return
+            else:
+                await ctx.send('Well. Whatever you calculated, the result is too long to display. GG.')
+                return
+        except:
+            await ctx.send(f'Well, _that_ didn\'t calculate to anything useful.\nWhat were you trying to do there? :thinking:')
+            return
     else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/` and `*`.')
+        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
 
 
 # --- Links --- 

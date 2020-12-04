@@ -137,12 +137,17 @@ async def traderates(traderate_data, prefix):
 async def matscalc(traderate_data, areamats, prefix):
 
     current_area = areamats[0]
+    original_area = current_area
     current_mat = areamats[1]
+    original_mat = current_mat
     current_amount = areamats[2]
+    original_amount = current_amount
     trade_breakdown = ''
+    last_area_trade = ''
+    last_area_amount = current_amount
     
     
-    for index, area in enumerate(traderate_data):
+    for index, area in enumerate(traderate_data[original_area-1:]):
         current_trade = ''
         current_area = area[0]
         current_fish_rate = area[1]
@@ -159,8 +164,8 @@ async def matscalc(traderate_data, areamats, prefix):
             current_amount = current_amount * current_ruby_rate
             current_mat = 'log'
   
-        if not index == (len(traderate_data)-1):
-            next_area = traderate_data[index+1]
+        if not index == (len(traderate_data)-original_area):
+            next_area = traderate_data[current_area]
             next_fish_rate = next_area[1]
             next_apple_rate = next_area[2]
             next_ruby_rate = next_area[3]
@@ -177,31 +182,104 @@ async def matscalc(traderate_data, areamats, prefix):
             else:
                 ruby_rate_change = 0
             if ((current_mat == 'ruby') and (current_ruby_rate  == 0)) or ((current_mat == 'apple') and (current_apple_rate  == 0)):
-                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: No trade available.'
+                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: No trade available'
             elif (fish_rate_change in (0,1)) and (apple_rate_change in (0,1)) and (ruby_rate_change in (0,1)):
-                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: No trade necessary.'
+                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {last_area_amount:,} {last_area_trade}'
             else:
                 all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
                 best_change = max(all_changes)
                 best_change_index = all_changes.index(best_change)
                 
-                if best_change_index == 0:
-                    current_amount = int(current_amount / current_fish_rate)
-                    current_mat = 'fish'
-                    current_trade = f'{emojis.fish} fish'
-                elif best_change_index == 1:
-                    current_amount = int(current_amount / current_apple_rate)
-                    current_mat = 'apple'
-                    current_trade = f'{emojis.apple} apples'
-                elif best_change_index == 2:
-                    current_amount = int(current_amount / current_ruby_rate)
-                    current_mat = 'ruby'
-                    current_trade = f'{emojis.ruby} rubies'
+                if (best_change <= 1) and ((apple_rate_change < 1) or (fish_rate_change < 1) or (ruby_rate_change < 1)):
+                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {emojis.log} logs'
+                else:
+                    if best_change_index == 0:
+                        current_amount = int(current_amount / current_fish_rate)
+                        current_mat = 'fish'
+                        current_trade = f'{emojis.fish} fish'
+                    elif best_change_index == 1:
+                        current_amount = int(current_amount / current_apple_rate)
+                        current_mat = 'apple'
+                        current_trade = f'{emojis.apple} apples'
+                    elif best_change_index == 2:
+                        current_amount = int(current_amount / current_ruby_rate)
+                        current_mat = 'ruby'
+                        current_trade = f'{emojis.ruby} rubies'
             
-                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {current_trade}.'
+                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {current_trade}'
+                    last_area_trade = current_trade
+                    last_area_amount = current_amount
         else:
-            trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {emojis.log} logs.'   
+            trade_breakdown =   f'{trade_breakdown}\n{emojis.bp} Area {current_area}+: {current_amount:,} {emojis.log} logs'
+        
+    for index, area in reversed(enumerate(traderate_data[0:original_area])):
+        current_trade = ''
+        current_area = area[0]
+        current_fish_rate = area[1]
+        current_apple_rate = area[2]
+        current_ruby_rate = area[3]
+        
+        if current_mat == 'fish':
+            current_amount = current_amount * current_fish_rate
+            current_mat = 'log'
+        elif (current_mat == 'apple') and not (current_apple_rate == 0):
+            current_amount = current_amount * current_apple_rate
+            current_mat = 'log'
+        elif (current_mat == 'ruby') and not (current_ruby_rate == 0):
+            current_amount = current_amount * current_ruby_rate
+            current_mat = 'log'
+  
+        if not index == 0:
+            last_area = traderate_data[index-1]
+            last_fish_rate = last_area[1]
+            last_apple_rate = last_area[2]
+            last_ruby_rate = last_area[3]
+            if not last_fish_rate == 0:
+                fish_rate_change = current_fish_rate / last_fish_rate
+            else:
+                fish_rate_change = 0
+            if not last_apple_rate == 0:
+                apple_rate_change = current_apple_rate / last_apple_rate
+            else:
+                apple_rate_change = 0
+            if not last_ruby_rate == 0:
+                ruby_rate_change = current_ruby_rate / last_ruby_rate
+            else:
+                ruby_rate_change = 0
+            if ((current_mat == 'ruby') and (current_ruby_rate  == 0)) or ((current_mat == 'apple') and (current_apple_rate  == 0)):
+                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: No trade available.'
+            elif (fish_rate_change in (0,1)) and (apple_rate_change in (0,1)) and (ruby_rate_change in (0,1)):
+                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: No trade necessary.'
+            else:
+                all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
+                best_change = max(all_changes)
+                best_change_index = all_changes.index(best_change)
+                
+                if (best_change <= 1) and ((apple_rate_change < 1) or (fish_rate_change < 1) or (ruby_rate_change < 1)):
+                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {emojis.log} logs'
+                else:
+                    if best_change_index == 0:
+                        current_amount = int(current_amount / current_fish_rate)
+                        current_mat = 'fish'
+                        current_trade = f'{emojis.fish} fish'
+                    elif best_change_index == 1:
+                        current_amount = int(current_amount / current_apple_rate)
+                        current_mat = 'apple'
+                        current_trade = f'{emojis.apple} apples'
+                    elif best_change_index == 2:
+                        current_amount = int(current_amount / current_ruby_rate)
+                        current_mat = 'ruby'
+                        current_trade = f'{emojis.ruby} rubies'
             
+                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {current_trade}'
+                    last_area_trade = current_trade
+                    last_area_amount = current_amount
+            
+                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {current_trade}.'
+        else:
+            trade_breakdown_past =   f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {emojis.log} logs.\n'\
+                                f'{emojis.bp} Area 11+: No useful trades anymore.'
+                                
     trade_breakdown = trade_breakdown.strip()        
 
     return trade_breakdown
