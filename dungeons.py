@@ -295,6 +295,9 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
                 if user_life_check_result == 'warn':
                     check_results = f'{emojis.bp} Your **LIFE** is below recommendation (**{player_life}**)\n'\
                                     f'{emojis.bp} You can still attempt the dungeon though, maybe you get lucky!'
+                elif user_life_check_result == 'fail':
+                    check_results = f'{emojis.bp} You are not yet ready for this dungeon\n'\
+                                    f'{emojis.bp} You should increase your **LIFE** to **{player_life}** or more'
                 else:
                     check_results = f'{emojis.bp} Your stats are high enough for this dungeon\n'\
                                     f'{emojis.bp} Note that this dungeon is luck based, so you can still die'

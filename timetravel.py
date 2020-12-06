@@ -46,9 +46,9 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     bonus_duel_xp = (99+tt_no)*tt_no/4
     bonus_drop_chance = (49+tt_no)*tt_no/2
     
-    bonus_xp = f'{bonus_xp:,}'.replace(',','\'').replace('.0','')
-    bonus_duel_xp = f'{bonus_duel_xp:,}'.replace(',','\'').replace('.0','')
-    bonus_drop_chance = f'{bonus_drop_chance:,}'.replace(',','\'').replace('.0','')
+    bonus_xp = f'{bonus_xp:,}'
+    bonus_duel_xp = f'{bonus_duel_xp:,}'
+    bonus_drop_chance = f'{bonus_drop_chance:,}'
 
     if mytt == True:
         embed_description = f'This is your current TT according to your settings.\n If this is wrong, run `{prefix}setprogress`.'

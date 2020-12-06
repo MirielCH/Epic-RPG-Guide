@@ -582,6 +582,10 @@ async def first_time_user(bot, ctx):
 # --- Command Initialization ---
 
 bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
+cog_extensions = ['cogs.guilds']
+if __name__ == '__main__':
+    for extension in cog_extensions:
+        bot.load_extension(extension)
 
 
 # Custom exception for first time users so they stop spamming my database
@@ -782,6 +786,8 @@ async def helpguide(ctx):
                 
     professions_value = f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
+    guild_overview =    f'{emojis.bp} `{prefix}guild` : Guild guide'
+    
     event_overview =    f'{emojis.bp} `{prefix}events` : Event guides overview'
     
     misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
@@ -809,6 +815,7 @@ async def helpguide(ctx):
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
+    embed.add_field(name='GUILD', value=guild_overview, inline=False)
     embed.add_field(name='EVENTS', value=event_overview, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
@@ -1565,7 +1572,7 @@ async def drops(ctx):
     await ctx.send(embed=embed)
 
 # Command "craft" - Calculates mats you need for amount of items
-@bot.command(aliases=('cook',))
+@bot.command(aliases=('cook','forge',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def craft(ctx, *args):
 
@@ -1605,9 +1612,11 @@ async def craft(ctx, *args):
                 
                 shortcuts = {   
                     'ed sw': 'edgy sword',
+                    'omega sw': 'omega sword',
                     'ed sword': 'edgy sword',
                     'ed armor': 'edgy armor',
                     'ue sw': 'ultra-edgy sword',
+                    'ultra-omega sw': 'ultra-omega sword',
                     'ue armor': 'ultra-edgy armor',
                     'brandon': 'epic fish',
                     'salad': 'fruit salad',
@@ -3073,6 +3082,25 @@ async def calc(ctx, *args):
     else:
         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
 
+# Statistics command
+@bot.command(aliases=('statistic','statistics,','devstat','ping','about','info'))
+@commands.bot_has_permissions(send_messages=True, embed_links=True)
+async def devstats(ctx):
+
+    guilds = len(list(bot.guilds))
+    user_number = await get_user_number(ctx)
+    latency = bot.latency
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'BOT STATISTICS',
+        description =   f'{emojis.bp} {guilds:,} servers\n'\
+                        f'{emojis.bp} {user_number[0]:,} users\n'\
+                        f'{emojis.bp} {round(latency*1000):,} ms latency'
+    )
+    
+    await ctx.send(embed=embed)
+    
 
 # --- Links --- 
 
@@ -3156,6 +3184,7 @@ async def donate(ctx):
     
     await ctx.send(f'Aw that\'s nice of you but this is a free bot, you know.\nThanks though :heart:')
 
+
 # --- Christmas 2020 ---
 # Command "xmas"
 @bot.command(aliases=('xmas','christmas','christmasevent','xmasevent','a0','area0'))
@@ -3232,6 +3261,7 @@ async def xmasguide(ctx, *args):
         else:
             embed = await xmas.xmas_overview(ctx.prefix)
             await ctx.send(embed=embed)
+
 
 # --- Silly Stuff ---
 
@@ -3320,16 +3350,5 @@ async def shutdown(ctx):
         await ctx.bot.logout()
     else:
         await ctx.send(f'Phew, was afraid there for a second.')
-
-# Statistics command (only I can use this)
-@bot.command(aliases=('devstat',))
-@commands.is_owner()
-@commands.bot_has_permissions(send_messages=True)
-async def devstats(ctx):
-
-    guilds = len(list(bot.guilds))
-    user_number = await get_user_number(ctx)
-    
-    await ctx.send(f'I\'m currently in **{guilds} servers**, and **{user_number[0]} users** have their settings stored.')
 
 bot.run(TOKEN)
