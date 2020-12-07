@@ -187,7 +187,7 @@ async def xmas_area(prefix):
                         
     differences =       f'{emojis.bp} You get 2 christmas items ({emojis.snow} or {emojis.present}) when using `hunt` or `adventure`\n'\
                         f'{emojis.bp} You get normal mob drops in `hunt` according to your **max** area\n'\
-                        f'{emojis.bp} You take damage according do your **max** area\n'\
+                        f'{emojis.bp} You do not take any damage in this area\n'\
                         f'{emojis.bp} You do not get XP and coins from `hunt` and `adventure`\n'\
                         f'{emojis.bp} You do not get any items from `fish` commands\n'\
                         f'{emojis.bp} You get double the worker XP from `chop` commands'
