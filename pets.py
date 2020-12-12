@@ -210,7 +210,7 @@ async def petsadventures(prefix):
                     f'{emojis.bp} The type does **not** guarantee the outcome \n'\
                     f'{emojis.bp} Your pet will never come back emptyhanded'
 
-    rewards =       f'{emojis.bp} **Items**: {emojis.log}{emojis.logepic}{emojis.logsuper}{emojis.logmega}{emojis.loghyper}{emojis.logultra} {emojis.fish}{emojis.fishgolden}{emojis.fishepic}\n'\
+    rewards =       f'{emojis.bp} **Items**: {emojis.log}{emojis.logepic}{emojis.logsuper}{emojis.logmega}{emojis.loghyper}{emojis.logultra} {emojis.fish}{emojis.fishgolden}{emojis.fishepic}{emojis.lifepotion}\n'\
                     f'{emojis.bp} **Coins**: ~ 700k+\n'\
                     f'{emojis.bp} **Skill rank**: +1 rank of 1 random skill\n'\
                     f'{emojis.bp} **Pet**: Random T1-3 pet (only if pet has {emojis.skillascended} ascended skill)\n'\

@@ -653,7 +653,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, FirstTimeUser):
         return
     else:
-        await log_error(ctx, error)
+        await log_error(ctx, error) # To the database you go
 
 
 # --- Server Settings ---
