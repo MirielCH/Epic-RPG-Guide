@@ -6,6 +6,8 @@ import global_data
 import dungeons
 import trading
 
+from math import ceil
+
 # Create area embed
 async def area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
     
@@ -48,17 +50,6 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     if not mats_data == '':
         mats_fish = mats_data[1] 
         mats_apple = mats_data[2]
-        if not mats_fish == 0:
-            try:
-                mats_fish = f'{mats_fish:,}'
-            except:
-                mats_fish = int(mats_fish)
-            
-        if not mats_apple == 0:
-            try:
-                mats_apple = f'{mats_apple:,}'
-            except:
-                mats_apple = int(mats_apple)
 
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await dungeons.design_field_rec_stats(field_rec_stats_data)
@@ -240,10 +231,13 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                     f'{emojis.bp} 30+ {emojis.zombieeye} zombie eyes\n'\
                     f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns (after crafting)'
         if user_tt < 5:
-            materials = f'{materials}\n{emojis.bp} {mats_apple} {emojis.apple} apples'
+            materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
     
     if (area_no == 3) and (user_tt > 4):
-        materials = f'{emojis.bp} {mats_fish} {emojis.fish} normie fish'
+        if user_asc == 'ascended':
+            materials = f'{emojis.bp} {ceil(mats_fish/225):,} {emojis.ruby} rubies'
+        else:
+            materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
         
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
