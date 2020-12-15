@@ -7,9 +7,9 @@ import global_data
 # Horses overview
 async def horses(prefix):
 
-    tier =  f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}htier`)\n'\
+    tier =  f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}horse tier`)\n'\
             f'{emojis.bp} Every tier unlocks new bonuses\n'\
-            f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}hbreed`)\n'\
+            f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}horse breed`)\n'\
             f'{emojis.bp} Small chance of increasing in horse races (see `{prefix}event race`)'
             
     level = f'{emojis.bp} Levels range from 1 to (tier * 10)\n'\
@@ -17,7 +17,7 @@ async def horses(prefix):
             f'{emojis.bp} Increased by using `horse training` which costs coins\n'\
             f'{emojis.bp} Training cost is reduced by leveling up lootboxer (see `{prefix}pr`)'
             
-    type =  f'{emojis.bp} There are 5 different types (see `{prefix}htype`)\n'\
+    type =  f'{emojis.bp} There are 5 different types (see `{prefix}horse type`)\n'\
             f'{emojis.bp} 4 of the types increase a player stat, 1 unlocks the epic quest\n'\
             f'{emojis.bp} The exact bonus the type gives is dependent on the level\n'\
             f'{emojis.bp} Randomly changes when breeding unless you have a {emojis.horsetoken} horse token in your inventory'
@@ -32,7 +32,7 @@ async def horses(prefix):
     embed.add_field(name=f'TIER', value=tier, inline=False)
     embed.add_field(name=f'LEVEL', value=level, inline=False)
     embed.add_field(name=f'TYPE', value=type, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}htype` : Details about horse types\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse type` : Details about horse types\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
             
     return embed
 
@@ -87,7 +87,7 @@ async def horsetiers(prefix):
     embed.add_field(name=f'TIER VII {emojis.horset7}', value=tier7, inline=False)
     embed.add_field(name=f'TIER VIII {emojis.horset8}', value=tier8, inline=False)
     embed.add_field(name=f'TIER IX {emojis.horset9}', value=tier9, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htype` : Details about horse types\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse type` : Details about horse types\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
             
     return embed
 
@@ -132,7 +132,7 @@ async def horsetypes(prefix):
     embed.add_field(name=f'GOLDEN', value=golden, inline=False)
     embed.add_field(name=f'SPECIAL', value=special, inline=False)
     embed.add_field(name=f'WHICH TYPE TO CHOOSE', value=besttype, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}hbreed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
             
     return embed
 
@@ -140,13 +140,12 @@ async def horsetypes(prefix):
 async def horsebreeding(prefix):
 
     howto =     f'{emojis.bp} Use `horse breeding [@player]`\n'\
-                f'{emojis.bp} **Always** breed with a horse of the same tier\n'\
+                f'{emojis.bp} You can only breed with a horse of the **same** tier\n'\
                 f'{emojis.bp} Ideally breed with a horse of the same level'
     
     whereto =   f'{emojis.bp} You can find players in the [official EPIC RPG server](https://discord.gg/w5dej5m)'
 
-    tier =      f'{emojis.bp} If you breed with same or higher tier, you may get +1 tier\n'\
-                f'{emojis.bp} **If you breed with lower tier, you may tier down!**\n'\
+    tier =      f'{emojis.bp} You have a chance to get +1 tier\n'\
                 f'{emojis.bp} The chance to tier up gets lower the higher your tier is\n'\
                 f'{emojis.bp} If one horse tiers up, the other one isn\'t guaranteed to do so too'
                 
@@ -169,6 +168,6 @@ async def horsebreeding(prefix):
     embed.add_field(name=f'IMPACT ON TIER', value=tier, inline=False)
     embed.add_field(name=f'IMPACT ON LEVEL', value=level, inline=False)
     embed.add_field(name=f'IMPACT ON TYPE', value=type, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}htier` : Details about horse tiers\n{emojis.bp} `{prefix}htype` : Details about horse types', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse type` : Details about horse types', inline=False)
             
     return embed

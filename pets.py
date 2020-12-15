@@ -10,17 +10,17 @@ async def pets(prefix):
     requirements =  f'{emojis.bp} {emojis.timetravel} TT 2+\n'\
                     f'{emojis.bp} Exception: Event and giveaway pets are not TT locked'
             
-    whattodo =      f'{emojis.bp} Send them on adventures (see `{prefix}petadv`)'
+    whattodo =      f'{emojis.bp} Send them on adventures (see `{prefix}pet adv`)'
                      
     tier =          f'{emojis.bp} Tiers range from I to IX (1 to 9)\n'\
                     f'{emojis.bp} Increases the number of items you get in adventures\n'\
                     f'{emojis.bp} Increases the chance to increase a skill rank in adventures\n'\
                     f'{emojis.bp} Increases the chance to keep a skill when fusing\n'\
-                    f'{emojis.bp} Increased by fusing pets (see `{prefix}petfusion`)'
+                    f'{emojis.bp} Increased by fusing pets (see `{prefix}pet fusion`)'
 
-    skills =        f'{emojis.bp} There are 8 different skills (see `{prefix}petskills`)\n'\
+    skills =        f'{emojis.bp} There are 8 different skills (see `{prefix}pet skills`)\n'\
                     f'{emojis.bp} Skills have a rank that ranges from F to SS+\n'\
-                    f'{emojis.bp} Mainly found by fusing pets (see `{prefix}petfusion`)\n'\
+                    f'{emojis.bp} Mainly found by fusing pets (see `{prefix}pet fusion`)\n'\
                     f'{emojis.bp} Small chance of getting a skill when catching pets'
                     
     type =          f'{emojis.bp} The basic types are {emojis.petcat} cat, {emojis.petdog} dog and {emojis.petdragon} dragon\n'\
@@ -28,10 +28,10 @@ async def pets(prefix):
                     f'{emojis.bp} The type you get when catching pets is random\n'\
                     f'{emojis.bp} All types are purely cosmetic'
                     
-    guides =        f'{emojis.bp} `{prefix}petcatch` : How to find and catch pets\n'\
-                    f'{emojis.bp} `{prefix}petfusion` : Details about pet fusion\n'\
-                    f'{emojis.bp} `{prefix}petskills` : Details about pet skills\n'\
-                    f'{emojis.bp} `{prefix}petadv` : Details about pet adventures'
+    guides =        f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
+                    f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
+                    f'{emojis.bp} `{prefix}pet skills` : Details about pet skills\n'\
+                    f'{emojis.bp} `{prefix}pet adv` : Details about pet adventures'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -57,7 +57,7 @@ async def petscatch(prefix):
                     f'{emojis.bp} By ranking at least 3rd in {emojis.horset9} T9 horse races\n'\
                     f'{emojis.bp} In some seasonal events (these are not TT locked)\n'\
                     f'{emojis.bp} In some dev giveaways (these are not TT locked)\n'\
-                    f'{emojis.bp} By sending {emojis.skillascended} ascended pets on adventures (see `{prefix}petadv`)'
+                    f'{emojis.bp} By sending {emojis.skillascended} ascended pets on adventures (see `{prefix}pet adv`)'
 
     catch =         f'{emojis.bp} Pets you encounter have a {emojis.pethappiness} happiness and {emojis.pethunger} hunger stat\n'\
                     f'{emojis.bp} You can enter a line of commands to influence these stats\n'\
@@ -66,12 +66,12 @@ async def petscatch(prefix):
                     f'{emojis.bp} If happiness is 85+ higher than hunger, catch chance is 100%\n'\
                     f'{emojis.bp} Example: `feed feed pat pat pat`\n'\
                     f'{emojis.bp} You can only use up to 6 commands\n'\
-                    f'{emojis.bp} Less commands = lower catch chance but higher chance for the pet to have a skill if caught (see `{prefix}petskills`)'
+                    f'{emojis.bp} Less commands = lower catch chance but higher chance for the pet to have a skill if caught (see `{prefix}pet skills`)'
 
-    guides =        f'{emojis.bp} `{prefix}pets` : Pets overview\n'\
-                    f'{emojis.bp} `{prefix}petfusion` : Details about pet fusion\n'\
-                    f'{emojis.bp} `{prefix}petskills` : Details about pet skills\n'\
-                    f'{emojis.bp} `{prefix}petadv` : Details about pet adventures'
+    guides =        f'{emojis.bp} `{prefix}pet` : Pets overview\n'\
+                    f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
+                    f'{emojis.bp} `{prefix}pet skills` : Details about pet skills\n'\
+                    f'{emojis.bp} `{prefix}pet adv` : Details about pet adventures'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -101,7 +101,7 @@ async def petsfusion(prefix):
     skills =        f'{emojis.bp} You have a random chance of getting a new skill when fusing\n'\
                     f'{emojis.bp} The more skills you already have, the lower the chance\n'\
                     f'{emojis.bp} If your sole goal is getting skills, fuse with T1 pets\n'\
-                    f'{emojis.bp} You can keep skills you already have, but the chance depends on the skill rank (see `{prefix}petskills`)\n'\
+                    f'{emojis.bp} You can keep skills you already have, but the chance depends on the skill rank (see `{prefix}pet skills`)\n'\
                     f'{emojis.bp} To maximize the chance to keep skills, rank them to SS+ first\n'\
                     f'{emojis.bp} The max chance to keep a skill is 90%'
 
@@ -114,10 +114,10 @@ async def petsfusion(prefix):
                     
     skillsimpact =  f'{emojis.bp} {emojis.skillhappy} **Happy**: Increases the chance to tier up'
 
-    guides =        f'{emojis.bp} `{prefix}pets` : Pets overview\n'\
-                    f'{emojis.bp} `{prefix}petcatch` : How to find and catch pets\n'\
-                    f'{emojis.bp} `{prefix}petskills` : Details about pet skills\n'\
-                    f'{emojis.bp} `{prefix}petadv` : Details about pet adventures'
+    guides =        f'{emojis.bp} `{prefix}pet` : Pets overview\n'\
+                    f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
+                    f'{emojis.bp} `{prefix}pet skills` : Details about pet skills\n'\
+                    f'{emojis.bp} `{prefix}pet adv` : Details about pet adventures'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -167,14 +167,14 @@ async def petsskills(prefix):
     
     skillranks =    f'{emojis.bp} Every skill has 9 possible ranks\n'\
                     f'{emojis.bp} The ranks are F, E, D, C, B, A, S, SS and SS+\n'\
-                    f'{emojis.bp} To rank up skills, do adventures (see `{prefix}petadv`)\n'\
+                    f'{emojis.bp} To rank up skills, do adventures (see `{prefix}pet adv`)\n'\
                     f'{emojis.bp} Higher ranks increase the skill bonus\n'\
                     f'{emojis.bp} Higher ranks increase the chance to keep a skill when fusing'
     
-    guides =        f'{emojis.bp} `{prefix}pets` : Pets overview\n'\
-                    f'{emojis.bp} `{prefix}petcatch` : How to find and catch pets\n'\
-                    f'{emojis.bp} `{prefix}petfusion` : Details about pet fusion\n'\
-                    f'{emojis.bp} `{prefix}petadv` : Details about pet adventures'
+    guides =        f'{emojis.bp} `{prefix}pet` : Pets overview\n'\
+                    f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
+                    f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
+                    f'{emojis.bp} `{prefix}pet adv` : Details about pet adventures'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -223,10 +223,10 @@ async def petsadventures(prefix):
                     f'{emojis.bp} {emojis.skillepic} **EPIC**: If you send this pet **first**, you can send another\n'\
                     f'{emojis.bp} {emojis.skillascended} **Ascended**: Has a chance to find a pet'
     
-    guides =        f'{emojis.bp} `{prefix}pets` : Pets overview\n'\
-                    f'{emojis.bp} `{prefix}petcatch` : How to find and catch pets\n'\
-                    f'{emojis.bp} `{prefix}petfusion` : Details about pet fusion\n'\
-                    f'{emojis.bp} `{prefix}petskills` : Details about pet skills'
+    guides =        f'{emojis.bp} `{prefix}pet` : Pets overview\n'\
+                    f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
+                    f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
+                    f'{emojis.bp} `{prefix}pet skills` : Details about pet skills'
 
     embed = discord.Embed(
         color = global_data.color,

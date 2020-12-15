@@ -66,7 +66,7 @@ async def coolness(prefix):
     note =      f'{emojis.bp} You don\'t lose coolness when you time travel\n'\
                 f'{emojis.bp} You can get coolness in every area once it\'s unlocked\n'\
                 f'{emojis.bp} If you have 100+, you get less (except from `ultraining`)\n'\
-                f'{emojis.bp} You can only see your coolness by doing `ultraining`\n'\
+                f'{emojis.bp} You can check your coolness by using `ultraining p`\n'\
 
     embed = discord.Embed(
         color = global_data.color,

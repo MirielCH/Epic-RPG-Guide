@@ -76,7 +76,8 @@ async def xmas_get_item(prefix,item):
         'gingerbread':          (f'GINGERBREAD {emojis.gingerbread}',
                                 f'{emojis.bp} Teleports you to the christmas area when used (see `{prefix}xmas area`)\n'\
                                 f'{emojis.bp} Used to buy the profile background in the shop (`rpg xmas shop`)\n'\
-                                f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)'),
+                                f'{emojis.bp} Mythic loot from presents (see `rpg xmas presents`)\n'\
+                                f'{emojis.bp} You can get 1 in the advent calendar (`rpg xmas calendar`)'),
         'ornament':             (f'ORNAMENT {emojis.ornament}',
                                 f'{emojis.bp} Used to decorate the tree (see `{prefix}xmas tree`)\n'\
                                 f'{emojis.bp} Can be crafted (see `rpg xmas recipes`)\n'\
