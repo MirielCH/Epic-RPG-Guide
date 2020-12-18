@@ -573,7 +573,7 @@ async def first_time_user(bot, ctx):
         
         await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
                     f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
-                    f'• If you don\'t know what this means, you probably haven\'t time traveled yet. Check out `{prefix}tt` for some details.\n'\
+                    f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'\
                     f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'\
                     'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
     except:

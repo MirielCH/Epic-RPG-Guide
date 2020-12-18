@@ -11,12 +11,12 @@ async def design_field_trades(area_no):
         field_value = f'{emojis.bp} None'
     elif int(area_no) == 3:
         field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
-                      f'{emojis.bp} Dismantle **all** logs\n'\
+                      f'{emojis.bp} Dismantle {emojis.logultra} ULTRA logs and below\n'\
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
     elif int(area_no) == 5:
-        field_value = f'{emojis.bp} Dismantle **all** logs\n'\
-                      f'{emojis.bp} Dismantle **all** fish\n'\
+        field_value = f'{emojis.bp} Dismantle {emojis.logultra} ULTRA logs and below\n'\
+                      f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
@@ -27,7 +27,7 @@ async def design_field_trades(area_no):
     elif int(area_no) == 8:
         field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'\
                       f'{emojis.bp} If crafter 90+: Dismantle {emojis.loghyper} HYPER logs and below\n'\
-                      f'{emojis.bp} Dismantle **all** fish\n'\
+                      f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
