@@ -112,12 +112,12 @@ def setup(bot):
 # --- Redundancies ---
 # Raid & Upgrade
 raid_upgrade = (
-                    f'{emojis.bp} Every member can start a raid **or** upgrade every 2 hours\n'
-                    f'{emojis.bp} This cooldown is shared among all members\n'
-                    f'{emojis.bp} Upgrading increases your {emojis.guildstealth} stealth\n'
-                    f'{emojis.bp} Raiding increases your {emojis.guildenergy} energy by raiding a random guild\n'
-                    f'{emojis.bp} The lower the {emojis.guildstealth} stealth, the higher the chance to get raided\n'
-                    f'{emojis.bp} Guilds lose energy when they get raided, so get that stealth up!'
+    f'{emojis.bp} Every member can start a raid **or** upgrade every 2 hours\n'
+    f'{emojis.bp} This cooldown is shared among all members\n'
+    f'{emojis.bp} Upgrading increases your {emojis.guildstealth} stealth\n'
+    f'{emojis.bp} Raiding increases your {emojis.guildenergy} energy by raiding a random guild\n'
+    f'{emojis.bp} The lower the {emojis.guildstealth} stealth, the higher the chance to get raided\n'
+    f'{emojis.bp} Guilds lose energy when they get raided, so get that stealth up!'
 )
                     
 # Additional guides
@@ -134,29 +134,30 @@ async def guild_overview(prefix):
         
     requirements =  f'{emojis.bp} You need to reach area 4 once to create or join a guild'
     
-    benefits = (    f'{emojis.bp} A bonus on XP & coins when winning duels\n'
-                    f'{emojis.bp} Access to the guild shop\n'\
-                    f'{emojis.bp} Allows you to get weekly rewards based on guild stats'
+    benefits = (    
+        f'{emojis.bp} A bonus on XP & coins when winning duels\n'
+        f'{emojis.bp} Access to the guild shop\n'\
+        f'{emojis.bp} Allows you to get weekly rewards based on guild stats'
     )
                     
     how_to_join = (
-                    f'{emojis.bp} Use `rpg guild create` to create your own guild\n'
-                    f'{emojis.bp} Ask a guild owner to invite you in their guild'
+        f'{emojis.bp} Use `rpg guild create` to create your own guild\n'
+        f'{emojis.bp} Ask a guild owner to invite you in their guild'
     )
                     
     guides = (
-                    f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
     )
     
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD',
-        description =   f'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
+        description = f'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -171,35 +172,35 @@ async def guild_overview(prefix):
 async def guild_cmd(prefix):
     
     owner = (
-                f'{emojis.bp} `rpg guild buy` : Buy something from the guild shop\n'
-                f'{emojis.bp} `rpg guild change owner` : Transfer guild ownership\n'
-                f'{emojis.bp} `rpg guild create` : Create a guild\n'
-                f'{emojis.bp} `rpg guild delete` : Delete a guild\n'
-                f'{emojis.bp} `rpg guild invite` : Invite a player to your guild\n'
-                f'{emojis.bp} `rpg guild kick` : Kick a player from your guild'
+        f'{emojis.bp} `rpg guild buy` : Buy something from the guild shop\n'
+        f'{emojis.bp} `rpg guild change owner` : Transfer guild ownership\n'
+        f'{emojis.bp} `rpg guild create` : Create a guild\n'
+        f'{emojis.bp} `rpg guild delete` : Delete a guild\n'
+        f'{emojis.bp} `rpg guild invite` : Invite a player to your guild\n'
+        f'{emojis.bp} `rpg guild kick` : Kick a player from your guild'
     )
         
     member = (
-                f'{emojis.bp} `rpg guild leave` : Leave the guild\n'
-                f'{emojis.bp} `rpg guild list` : List all members of the guild\n'
-                f'{emojis.bp} `rpg guild raid` : Start a guild raid\n'
-                f'{emojis.bp} `rpg guild ranking` : Opens the global guild leaderboard\n'
-                f'{emojis.bp} `rpg guild shop` : Opens the guild shop\n'
-                f'{emojis.bp} `rpg guild upgrade` : Upgrade guild {emojis.guildstealth} stealth'
+        f'{emojis.bp} `rpg guild leave` : Leave the guild\n'
+        f'{emojis.bp} `rpg guild list` : List all members of the guild\n'
+        f'{emojis.bp} `rpg guild raid` : Start a guild raid\n'
+        f'{emojis.bp} `rpg guild ranking` : Opens the global guild leaderboard\n'
+        f'{emojis.bp} `rpg guild shop` : Opens the guild shop\n'
+        f'{emojis.bp} `rpg guild upgrade` : Upgrade guild {emojis.guildstealth} stealth'
     )
                     
     guides = (
-                f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
-                f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
-                f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
-                f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
     )
                     
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD HIERARCHY & COMMANDS',
-        description =   f'Every guild has 1 owner and up to 9 members.\nA lot of the guild commands can only be used by the owner.'
+        description =  f'Every guild has 1 owner and up to 9 members.\nA lot of the guild commands can only be used by the owner.'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -213,30 +214,30 @@ async def guild_cmd(prefix):
 async def guild_progress(prefix):
     
     level_bonus = (
-                    f'{emojis.bp} The guild level increases the duel bonus\n'
-                    f'{emojis.bp} The duel bonus increases XP and coins you get when winning a duel\n'
-                    f'{emojis.bp} Each guild level increases the bonus by 2%\n'
-                    f'{emojis.bp} To level up the guild the members need to collect guild XP'
+        f'{emojis.bp} The guild level increases the duel bonus\n'
+        f'{emojis.bp} The duel bonus increases XP and coins you get when winning a duel\n'
+        f'{emojis.bp} Each guild level increases the bonus by 2%\n'
+        f'{emojis.bp} To level up the guild the members need to collect guild XP'
     )
     
     guild_xp = (    
-                    f'{emojis.bp} Participate in the weekly contest (see `{prefix}guild weekly`)\n'
-                    f'{emojis.bp} Win duels against players **not** in your guild\n'
-                    f'{emojis.bp} Note: Guild XP from duels is not guaranteed\n'
-                    f'{emojis.bp} Note: Duel against players close to your level to have a higher chance'                
+        f'{emojis.bp} Participate in the weekly contest (see `{prefix}guild weekly`)\n'
+        f'{emojis.bp} Win duels against players **not** in your guild\n'
+        f'{emojis.bp} Note: Guild XP from duels is not guaranteed\n'
+        f'{emojis.bp} Note: Duel against players close to your level to have a higher chance'                
     )
                     
     guides = (      
-                    f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
     )
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD LEVELS AND BONUSES',
-        description =   f'You can level up your guild to get an increasing duel bonus.'
+        description =  f'You can level up your guild to get an increasing duel bonus.'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -250,25 +251,25 @@ async def guild_progress(prefix):
 async def guild_shop(prefix):
     
     rewards = (
-                    f'{emojis.bp} {emojis.guildbuff} **Guild buff**: Increases {emojis.guildenergy} guild energy by 250  (2 {emojis.guildcoin})\n'
-                    f'{emojis.bp} {emojis.cookierain} **Cookie rain**: Gives all players in the guild 200 {emojis.arenacookie} arena cookies (3 {emojis.guildcoin})\n'
-                    f'{emojis.bp} {emojis.omegahorsetoken} **Omega horse token**: Gives all players in the guild an {emojis.omegahorsetoken} omega horse token which resets the horse breed/race cooldown (15 {emojis.guildcoin})'
+        f'{emojis.bp} {emojis.guildbuff} **Guild buff**: Increases {emojis.guildenergy} guild energy by 250  (2 {emojis.guildcoin})\n'
+        f'{emojis.bp} {emojis.cookierain} **Cookie rain**: Gives all players in the guild 200 {emojis.arenacookie} arena cookies (3 {emojis.guildcoin})\n'
+        f'{emojis.bp} {emojis.omegahorsetoken} **Omega horse token**: Gives all players in the guild an {emojis.omegahorsetoken} omega horse token which resets the horse breed/race cooldown (15 {emojis.guildcoin})'
     )
                     
-    best_reward =   f'{emojis.bp} {emojis.cookierain} Cookie rain is really the only useful reward'
+    best_reward = f'{emojis.bp} {emojis.cookierain} Cookie rain is really the only useful reward'
                     
     guides = (
-                    f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
     )
                     
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD SHOP',
-        description =   f'All items in the guild shop cost {emojis.guildcoin} guild coins which you get by getting high enough {emojis.guildenergy} energy in the weekly guild event.\nNote that only the guild owner can buy rewards from the guild shop.'
+        description = f'All items in the guild shop cost {emojis.guildcoin} guild coins which you get by getting high enough {emojis.guildenergy} energy in the weekly guild event.\nNote that only the guild owner can buy rewards from the guild shop.'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -282,31 +283,31 @@ async def guild_shop(prefix):
 async def guild_stats(prefix):
     
     stealth = (
-                    f'{emojis.bp} Decreases the likelihood of getting raided\n'
-                    f'{emojis.bp} Can be increased by using `rpg guild upgrade`\n'
-                    f'{emojis.bp} Maximum amount is 100\n'
-                    f'{emojis.bp} Each upgrade gives you 0~4 stealth'
+        f'{emojis.bp} Decreases the likelihood of getting raided\n'
+        f'{emojis.bp} Can be increased by using `rpg guild upgrade`\n'
+        f'{emojis.bp} Maximum amount is 100\n'
+        f'{emojis.bp} Each upgrade gives you 0~4 stealth'
     )
                     
     energy = (      
-                    f'{emojis.bp} Energy determines your weekly rank and reward\n'
-                    f'{emojis.bp} You need 4,000 energy to get the max reward\n'
-                    f'{emojis.bp} Can be increased by using `rpg guild raid`\n'
-                    f'{emojis.bp} Ranking over 4,000 energy doesn\'t provide any additional rewards but is advised nonetheless so you stay over 4,000 in case you get raided'
+        f'{emojis.bp} Energy determines your weekly rank and reward\n'
+        f'{emojis.bp} You need 4,000 energy to get the max reward\n'
+        f'{emojis.bp} Can be increased by using `rpg guild raid`\n'
+        f'{emojis.bp} Ranking over 4,000 energy doesn\'t provide any additional rewards but is advised nonetheless so you stay over 4,000 in case you get raided'
     )
                     
     guides = (      
-                    f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_weekly.format(prefix=prefix)}'
     )
                     
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD STATS',
-        description =   f'The guild stats are used to get the weekly rewards.'
+        description = f'The guild stats are used to get the weekly rewards.'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -321,35 +322,35 @@ async def guild_stats(prefix):
 async def guild_weekly(prefix):
     
     rewards = (
-                    f'{emojis.bp} 4,000 {emojis.guildenergy}: 200 guild XP, 10 {emojis.guildcoin} guild coins\n'
-                    f'{emojis.bp} 2,000 {emojis.guildenergy}: 150 guild XP, 5 {emojis.guildcoin} guild coins\n'
-                    f'{emojis.bp} 1,000 {emojis.guildenergy}: 100 guild XP, 2 {emojis.guildcoin} guild coins\n'
-                    f'{emojis.bp} 500 {emojis.guildenergy}: 75 guild XP\n'
-                    f'{emojis.bp} 250 {emojis.guildenergy}: 50 guild XP\n'
-                    f'{emojis.bp} 50 {emojis.guildenergy}: 25 guild XP\n'
-                    f'{emojis.bp} 10 {emojis.guildenergy}: 5 guild XP'
+        f'{emojis.bp} 4,000 {emojis.guildenergy}: 200 guild XP, 10 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 2,000 {emojis.guildenergy}: 150 guild XP, 5 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 1,000 {emojis.guildenergy}: 100 guild XP, 2 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 500 {emojis.guildenergy}: 75 guild XP\n'
+        f'{emojis.bp} 250 {emojis.guildenergy}: 50 guild XP\n'
+        f'{emojis.bp} 50 {emojis.guildenergy}: 25 guild XP\n'
+        f'{emojis.bp} 10 {emojis.guildenergy}: 5 guild XP'
     )
     
     strategy = (
-                    f'{emojis.bp} First increase your {emojis.guildstealth} stealth to 90 or more\n'
-                    f'{emojis.bp} Once your stealth is up, start raiding for the rest of the week\n'
-                    f'{emojis.bp} Note that it\'s still possible to get raided with high stealth'
+        f'{emojis.bp} First increase your {emojis.guildstealth} stealth to 90 or more\n'
+        f'{emojis.bp} Once your stealth is up, start raiding for the rest of the week\n'
+        f'{emojis.bp} Note that it\'s still possible to get raided with high stealth'
     )
                     
-    schedule =      f'{emojis.bp} Stats reset every Saturday 22:00 UTC'
+    schedule = f'{emojis.bp} Stats reset every Saturday 22:00 UTC'
                     
     guides = (
-                    f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
-                    f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
     )
                     
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'WEEKLY GUILD REWARDS',
-        description =   f'Once a week, you get rewards based on your {emojis.guildenergy} energy. After that, your stats reset and you start over.\nTo increase your stats, raid or upgrade the guild.\nTo learn more about the stats, use `{prefix}guild stats`'
+        description = f'Once a week, you get rewards based on your {emojis.guildenergy} energy. After that, your stats reset and you start over.\nTo increase your stats, raid or upgrade the guild.\nTo learn more about the stats, use `{prefix}guild stats`'
                     
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))

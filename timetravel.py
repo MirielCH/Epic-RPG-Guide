@@ -7,26 +7,41 @@ import emojis
 # Time travel
 async def timetravel(prefix):
 
-    keptitems = f'{emojis.bp} Coins (this includes your bank account)\n'\
-                f'{emojis.bp} Epic Coins\n'\
-                f'{emojis.bp} Items bought from the epic shop\n'\
-                f'{emojis.bp} Arena cookies \n'\
-                f'{emojis.bp} Event items (if an event is active)\n'\
-                f'{emojis.bp} Lottery tickets\n'\
-                f'{emojis.bp} Your horse\n'\
-                f'{emojis.bp} Your pets\n'\
-                f'{emojis.bp} Your marriage partner\n'\
-                f'{emojis.bp} Your guild\n'\
-                f'{emojis.bp} Profession levels\n'
+    where = (
+        f'{emojis.bp} {emojis.timetravel} TT 0: Beat dungeon 10, reach area 11\n'
+        f'{emojis.bp} {emojis.timetravel} TT 1-2: Beat dungeon 11, reach area 12\n'
+        f'{emojis.bp} {emojis.timetravel} TT 3-4: Beat dungeon 12, reach area 13\n'
+        f'{emojis.bp} {emojis.timetravel} TT 5-9: Beat dungeon 13, reach area 14\n'
+        f'{emojis.bp} {emojis.timetravel} TT 10-24: Beat dungeon 14, reach area 15\n'
+        f'{emojis.bp} {emojis.timetravel} TT 25+: Beat dungeon 15 (see `{prefix}stt` for details)\n'
+    )
+    
+    keptitems = (
+        f'{emojis.bp} Coins (this includes your bank account)\n'
+        f'{emojis.bp} Epic Coins\n'
+        f'{emojis.bp} Items bought from the epic shop\n'
+        f'{emojis.bp} Arena cookies \n'
+        f'{emojis.bp} Event items (if an event is active)\n'
+        f'{emojis.bp} Lottery tickets\n'
+        f'{emojis.bp} Your horse\n'
+        f'{emojis.bp} Your pets\n'
+        f'{emojis.bp} Your marriage partner\n'
+        f'{emojis.bp} Your guild\n'
+        f'{emojis.bp} Profession levels\n'
+    )
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'TIME TRAVEL',
-        description = f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'\
+        title = f'TIME TRAVEL (TT)',
+        description = (
+            f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\nTo time travel, use `rpg time travel` while meeting the requirements.\n'
+            f'Warning: **You will lose everything except the items mentioned below**. So make sure you have done all you want to do. You can check what you should do before time traveling by looking up the TT you are going to travel to (e.g. `{prefix}tt1` if you are about to travel to TT 1).'
+        )
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
 
+    embed.add_field(name=f'REQUIREMENTS FOR TIME TRAVEL', value=where, inline=False)
     embed.add_field(name=f'WHAT YOU KEEP', value=keptitems, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n{emojis.bp} `{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
             

@@ -1619,6 +1619,7 @@ async def craft(ctx, *args):
                     'ed sword': 'edgy sword',
                     'ed armor': 'edgy armor',
                     'ue sw': 'ultra-edgy sword',
+                    'ue sword': 'ultra-edgy sword',
                     'ultra-omega sw': 'ultra-omega sword',
                     'ue armor': 'ultra-edgy armor',
                     'brandon': 'epic fish',
@@ -1794,7 +1795,8 @@ async def horses_overview(ctx, *args):
                     x = await horsebreed(ctx)
                     return
             else:
-                return
+                embed = await horses.horses(ctx.prefix)
+                await ctx.send(embed=embed)
         else:
             return
     else:
