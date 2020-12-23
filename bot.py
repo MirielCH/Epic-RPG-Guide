@@ -3088,7 +3088,7 @@ async def calc(ctx, *args):
         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
 
 # Statistics command
-@bot.command(aliases=('statistic','statistics,','devstat','ping','about','info'))
+@bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def devstats(ctx):
 

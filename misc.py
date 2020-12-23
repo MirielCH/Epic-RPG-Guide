@@ -30,10 +30,15 @@ async def duels(prefix):
 # Redeemable codes
 async def codes(prefix, codes):
 
-    field_value = ''
+    temporary_value = ''
+    permanent_value = ''
 
     for code in codes:  
-        field_value = f'{field_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
+        temporary_code = code[2]
+        if temporary_code == 'True':
+            temporary_value = f'{temporary_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
+        else:
+            permanent_value = f'{permanent_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
 
     embed = discord.Embed(
         color = global_data.color,
@@ -44,7 +49,9 @@ async def codes(prefix, codes):
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
     
-    embed.add_field(name=f'CODES', value=field_value, inline=False)
+    if not temporary_value == '':
+        embed.add_field(name=f'TEMPORARY EVENT CODES', value=temporary_value, inline=False)
+    embed.add_field(name=f'PERMANENT CODES', value=permanent_value, inline=False)
             
     return embed
 
