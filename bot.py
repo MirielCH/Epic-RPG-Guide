@@ -433,17 +433,21 @@ async def get_profession_levels(ctx, profession, levelrange):
     return profession_levels
 
 # Get random tip
-async def get_tip(ctx):
+async def get_tip(ctx, id=0):
     
     try:
         cur=erg_db.cursor()
-        cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
-        record = cur.fetchone()
+        if id > 0:
+            cur.execute('SELECT tip FROM tips WHERE id=?',(id,))
+            record = cur.fetchone()
+        elif id == 0:
+            cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
+            record = cur.fetchone()
         
         if record:
             tip = record
         else:
-            await log_error(ctx, 'No tips data found in database.')
+            tip = ('There is no tip with that ID.',)
     except sqlite3.Error as error:
         await log_error(ctx, error)
         
@@ -1635,6 +1639,7 @@ async def craft(ctx, *args):
                     'ultralog': 'ultra log',
                     'hyperlog': 'hyper log',
                     'megalog': 'mega log',
+                    'superlog': 'super log',
                     'epiclog': 'epic log',
                     'goldenfish': 'golden fish',
                     'epicfish': 'epic fish',
@@ -2956,9 +2961,20 @@ async def ascension(ctx):
 # Command "tip" - Returns a random tip
 @bot.command(aliases=('tips',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def tip(ctx):
+async def tip(ctx, *args):
     
-    tip = await get_tip(ctx)
+    if args:
+        if len(args)==1:
+            id = args[0]
+            if id.isnumeric():
+                id = int(id)
+                tip = await get_tip(ctx, id)
+            else:
+                tip = await get_tip(ctx)
+        else:
+            tip = await get_tip(ctx)
+    else:
+        tip = await get_tip(ctx)
     
     embed = discord.Embed(
         color = global_data.color,
