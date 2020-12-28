@@ -165,14 +165,15 @@ async def event_snowball(prefix):
     trigger =       f'{emojis.bp} Any command (chance unknown)\n'\
                     f'{emojis.bp} By using a {emojis.xmashat} christmas hat\n'\
     
-    answers =       f'{emojis.bp} `fight`: You get christmas loot\n'\
-                    f'{emojis.bp} `summon`: You get christmas loot\n'\
-                    f'{emojis.bp} `sleep`: You still get loot but not that much'
+    answers =       f'{emojis.bp} `fight`: Low chance to get more loot than `summon`, high chance to get less.\n'\
+                    f'{emojis.bp} `summon`: 50/50 chance to get more or less loot\n'\
+                    f'{emojis.bp} `sleep`: Very low chance to get more loot than `summon` and `fight`, very high chance to get less'
     
-    best_answer =   f'{emojis.bp} `summon` or `fight`'
+    best_answer =   f'{emojis.bp} If you don\'t feel like gambling, `summon` is the safest answer\n'\
+                    f'{emojis.bp} If you _do_ feel like gambling, `sleep` has the highest potential rewards\n'\
     
-    note =          f'{emojis.bp} This event gives higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat\n'\
-                    f'{emojis.bp} There is too much conflicting information about `summon` or `fight` being better'
+    note =          f'{emojis.bp} This event gives much higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat\n'\
+                    f'{emojis.bp} You always get some loot, even if you lose'
         
 
     embed = discord.Embed(
