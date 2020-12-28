@@ -8,6 +8,7 @@ import global_data
 async def xmas_overview(prefix):
 
     whattodo =      f'{emojis.bp} Decorate a {emojis.xmastree} christmas **tree** to get a {emojis.petsnowball} pet (see `rpg xmas tree`)\n'\
+                    f'{emojis.bp} **Recycle** your leftover materials (see `rpg xmas recycle`)\n'\
                     f'{emojis.bp} Find, craft and use **items and presents** (see `{prefix}xmas items`)\n'\
                     f'{emojis.bp} Defeat the {emojis.xmasslime} **christmas slime** in `rpg hunt` (drops 100 {emojis.present} presents)\n'\
                     f'{emojis.bp} Visit the **christmas area** (area 0) (see `{prefix}xmas area`)\n'\
@@ -15,7 +16,6 @@ async def xmas_overview(prefix):
                     f'{emojis.bp} Buy various rewards in the **shop** (`rpg xmas shop`)\n'\
                     f'{emojis.bp} Open a door in your **advent calendar** every day (`rpg xmas calendar`)\n'\
                     f'{emojis.bp} Defeat the EPIC NPC in a new random **snowball fight event** (see `{prefix}snowball`)\n'\
-                    f'{emojis.bp} Defeat a unique **world boss** in the [official server](https://discord.gg/epicrpg) (Dec 25)\n'\
                     f'{emojis.bp} Gamble all your presents away with `rpg xmas slots`'
 
     bonuses =       f'{emojis.bp} 2x XP when eating {emojis.arenacookie} arena cookies\n'\
@@ -29,7 +29,8 @@ async def xmas_overview(prefix):
                     f'{emojis.bp} {emojis.presentgodly} GODLY present: Open it'
 
     schedule =      f'{emojis.bp} Event starts on December 1, 2020\n'\
-                    f'{emojis.bp} Event ends on January 4, 2021, 20:00 UTC'
+                    f'{emojis.bp} You stop getting items on January 4, 2021, 20:00 UTC\n'\
+                    f'{emojis.bp} All leftover items will be deleted on January 11, 2021'\
                 
     guides =        f'{emojis.bp} `{prefix}xmas items` : List of all christmas items\n'\
                     f'{emojis.bp} `{prefix}xmas area` : Christmas area (area 0)\n'\
