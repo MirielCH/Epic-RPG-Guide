@@ -21,6 +21,8 @@ import logging.handlers
 import xmas
 import dbl
 import requests
+from emoji import demojize
+from emoji import emojize
 
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -1055,7 +1057,9 @@ async def dungeoncheck(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1) or (str(m.embeds[0].author).find(f'{ctx.author.name}\'s stats') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s profile') > 1) or (embed_author.find(f'{ctx_author}\'s stats') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -1177,7 +1181,9 @@ async def dungeoncheck1(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s profile') > 1) or (str(m.embeds[0].author).find(f'{ctx.author.name}\'s stats') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s profile') > 1) or (embed_author.find(f'{ctx_author}\'s stats') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2167,7 +2173,9 @@ async def prm(ctx):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2252,7 +2260,9 @@ async def prmtotal(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2429,7 +2439,9 @@ async def prw(ctx):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2518,7 +2530,9 @@ async def prwtotal(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2693,7 +2707,9 @@ async def prl(ctx):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -2782,7 +2798,9 @@ async def prltotal(ctx, *args):
     def epic_rpg_check(m):
         correct_embed = False
         try:
-            if (str(m.embeds[0].author).find(f'{ctx.author.name}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
                 correct_embed = True
             else:
                 correct_embed = False
@@ -3309,10 +3327,31 @@ async def brandon(ctx):
 
 # --- Testing ---
 @bot.command()
-@commands.is_owner()
+#@commands.is_owner()
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    await ctx.send(f'**{ctx.author.name}**, give me something to demojize:')
+    answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+    answer = answer_user_merchant.content
+    answer = answer.lower()
+    
+    if answer in ('abort','cancel'):
+        await ctx.send('Aborting.')
+        return
+    elif answer == 'username':
+        result = demojize(ctx.author.name)
+        await ctx.send(f'Demojized: {result}\nOriginal: {ctx.author.name}')
+    else:
+        result = demojize(answer)
+        result2 = emojize(answer)
+        await ctx.send(f'Demojized: {result}\nEmojized: {result2}\nOriginal: {answer}')
+    
+    
+    """    
     seconds = 86400
     days = seconds // 86400
     hours = (seconds % 86400) // 3600
@@ -3341,7 +3380,6 @@ async def test(ctx):
     
     await ctx.send(message)
     
-    """
     embed = discord.Embed(
         color = global_data.color,
         title = f'COMMAND COOLDOWNS',
