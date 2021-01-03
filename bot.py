@@ -455,6 +455,23 @@ async def get_tip(ctx, id=0):
         
     return tip
 
+# Get horse data
+async def get_horse_data(ctx, tier):
+    
+    try:
+        cur=erg_db.cursor()
+        cur.execute('SELECT * FROM horses WHERE tier=?',(tier,))
+        record = cur.fetchone()
+        
+        if record:
+            horse_data = record
+        else:
+            await log_error(ctx, 'No horse data found in database.')
+    except sqlite3.Error as error:
+        await log_error(ctx, error)
+        
+    return horse_data
+
 # Get redeemable codes
 async def get_codes(ctx):
     
@@ -1558,7 +1575,7 @@ async def tradecalc(ctx, *args):
         
         traderate_data = await get_traderate_data(ctx, (1, 10))
         output = await trading.matscalc(traderate_data, (area,mat,amount), prefix)
-        await ctx.send(f'{amount:,} {mat_output} in area {area} equals to:\n{output}')
+        await ctx.send(f'**EXPERIMENTAL FEATURE. THERE BE BUGS.**\n\n{amount:,} {mat_output} in area {area} equals to:\n{output}')
     
     else:
         await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}trade [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}trade [area] [material] [amount]`.\n\nExample: `{ctx.prefix}trade a3 200000 fish`')
@@ -1583,6 +1600,164 @@ async def drops(ctx):
     embed = await crafting.drops(ctx.prefix)
     
     await ctx.send(embed=embed)
+
+# Command "dropchance" - Calculate current dropchance
+@bot.command(aliases=('dropcalc',))
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def dropchance(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if args:
+        if len(args) == 2:
+            tt_no = args[0]
+            tt_no = tt_no.lower().replace('tt','')
+            horse_tier = args[1]
+            horse_tier = horse_tier.lower().replace('t','')
+            
+            if tt_no.isnumeric():
+                tt_no = int(tt_no)
+                if horse_tier.isnumeric():
+                    horse_tier = int(horse_tier)
+                    if not 1 <= horse_tier <= 9:
+                        await ctx.send(f'`{horse_tier}` is not a valid horse tier.\nPlease enter a tier between 1 and 9.')
+                        return
+                else:
+                    await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse tier to me :thinking:')
+                    return
+                if not 1 <= tt_no <= 999:
+                        await ctx.send(f'`{tt_no}` is not a valid TT.\nPlease enter a TT between 1 and 999.')
+                        return
+            else:
+                await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
+                return
+            
+            tt_chance = (49+tt_no)*tt_no/2/100
+            
+            if 1 <= horse_tier <= 6:
+                horse_chance = 1
+            elif horse_tier == 7:
+                horse_chance = 1.2
+            elif horse_tier == 8:
+                horse_chance = 1.5
+            elif horse_tier == 9:
+                horse_chance = 2  
+            
+            drop_chance = 4*(1+tt_chance)*horse_chance
+            drop_chance = round(drop_chance,1)
+                    
+            if drop_chance >= 100:
+                drop_chance = 100
+                    
+            hunt_drop_chance = drop_chance/2
+            hunt_drop_chance = round(hunt_drop_chance,2)
+                    
+            horse_emoji = getattr(emojis, f'horset{horse_tier}')
+                
+            await ctx.send(
+                f'Mob drop chances for {emojis.timetravel} **TT {tt_no}** with a {horse_emoji} **T{horse_tier}** horse:\n'
+                f'{emojis.bp}The mob drop chance is **__{drop_chance:g} %__**.\n'
+                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.'
+            )
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
+    else:
+        try:
+            user_settings = await get_settings(bot, ctx)
+            tt_no = int(user_settings[0])
+            tt_chance = (49+tt_no)*tt_no/2/100
+            
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
+            answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_merchant.content
+            answer = answer.lower()
+            if (answer == 'rpg horse'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    horse_stats = str(answer_bot_at.embeds[0].fields[0])
+                    horse_chance = 0
+                    horse_tier = 0
+                    horse_emoji = ''
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                if horse_stats.find('Tier - III') > 1:
+                    horse_chance = 1
+                    horse_tier = 3
+                elif horse_stats.find('Tier - II') > 1:
+                    horse_chance = 1
+                    horse_tier = 2
+                elif horse_stats.find('Tier - VIII') > 1:
+                    horse_chance = 1.5
+                    horse_tier = 8
+                elif horse_stats.find('Tier - VII') > 1:
+                    horse_chance = 1.2
+                    horse_tier = 7
+                elif horse_stats.find('Tier - VI') > 1:
+                    horse_chance = 1
+                    horse_tier = 6
+                elif horse_stats.find('Tier - V') > 1:
+                    horse_chance = 1
+                    horse_tier = 5
+                elif horse_stats.find('Tier - IV') > 1:
+                    horse_chance = 1
+                    horse_tier = 4
+                elif horse_stats.find('Tier - IX') > 1:
+                    horse_chance = 2
+                    horse_tier = 9
+                elif horse_stats.find('Tier - I') > 1:
+                    horse_chance = 1    
+                    horse_tier = 1
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            
+            if not (horse_chance == 0) and not (horse_tier == 0):
+                drop_chance = 4*(1+tt_chance)*horse_chance
+                drop_chance = round(drop_chance,1)
+                
+                if drop_chance >= 100:
+                    drop_chance = 100
+                
+                hunt_drop_chance = drop_chance/2
+                hunt_drop_chance = round(hunt_drop_chance,2)
+                
+                horse_emoji = getattr(emojis, f'horset{horse_tier}')
+                
+            else:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+            
+            await ctx.send(
+                f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
+                f'{emojis.bp}Your mob drop chance is **__{drop_chance:g} %__**.\n'
+                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n\n'
+                f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
+                f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
+            )
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
 # Command "craft" - Calculates mats you need for amount of items
 @bot.command(aliases=('cook','forge',))
@@ -1794,7 +1969,15 @@ async def horses_overview(ctx, *args):
     invoked = invoked.lower()
     if args:
         if len(args)>1:
-            return
+            if (args[0] == 'calc'):
+                if len(args) == 3:
+                    x = await horsecalc(ctx, args[1], args[2])
+                    return
+                else:
+                    await ctx.send(f'The command syntax is `{ctx.prefix}horse calc [tier] [level]`\nYou can also omit all parameters to use your horse tier and level for the calculation.\n\nExamples: `{ctx.prefix}horse calc 6 25` or `{ctx.prefix}horse calc t7 l30` or `{ctx.prefix}horse calc`')
+                    return
+            else:
+                return
         elif len(args)==1:
             if (args[0] == 'tier') or (args[0] == 'tiers'):
                     x = await horsetier(ctx)
@@ -1804,6 +1987,9 @@ async def horses_overview(ctx, *args):
                     return
             elif (args[0] == 'breed') or (args[0] == 'breeding'):
                     x = await horsebreed(ctx)
+                    return
+            elif (args[0] == 'calc'):
+                    x = await horsecalc(ctx)
                     return
             else:
                 embed = await horses.horses(ctx.prefix)
@@ -1840,7 +2026,156 @@ async def horsebreed(ctx):
     embed = await horses.horsebreeding(ctx.prefix)
     
     await ctx.send(embed=embed)
+
+# Command "horsecalc" - Calculates the horse stats bonuses
+@bot.command(aliases=('hcalc',))
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def horsecalc(ctx, *args):
     
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if args:
+        if len(args) == 2:
+            horse_tier = args[0]
+            horse_tier = horse_tier.lower().replace('t','')
+            horse_level = args[1]
+            horse_level = horse_level.lower().replace('l','')
+            
+            if horse_tier.isnumeric():
+                horse_tier = int(horse_tier)
+                if horse_level.isnumeric():
+                    horse_level = int(horse_level)
+                    if not 1 <= horse_level <= (10*horse_tier):
+                        await ctx.send(f'`{horse_level}` is not a valid horse level for a T{horse_tier} horse.\nPlease enter a level between 1 and {10*horse_tier}.')
+                        return
+                else:
+                    await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse level to me :thinking:')
+                    return
+                if not 1 <= horse_tier <= 9:
+                        await ctx.send(f'`{horse_tier}` is not a valid horse tier.')
+                        return
+            else:
+                await ctx.send(f'`{args[0]}` doesn\'t look like a valid horse tier to me :thinking:')
+                return
+            
+            horse_emoji = getattr(emojis, f'horset{horse_tier}')
+            
+            horse_data = await get_horse_data(ctx, horse_tier)
+            
+            def_bonus = float(horse_data[1])
+            strong_bonus = float(horse_data[2])
+            tank_bonus = float(horse_data[3])
+            special_bonus = float(horse_data[4])
+            golden_bonus = float(horse_data[5])
+            
+            await ctx.send(
+                f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
+                f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
+                f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
+                f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
+                f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
+                f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n'
+            ) 
+        else:
+            await ctx.send(f'The command syntax is `{ctx.prefix}horsecalc [tier] [level]`\nYou can also omit all parameters to use your horse tier and level for the calculation.\n\nExamples: `{ctx.prefix}horsecalc 6 25` or `{ctx.prefix}horsecalc t7 l30` or `{ctx.prefix}horsecalc 6 25`')
+    else:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
+            answer_user_horse = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_horse.content
+            answer = answer.lower()
+            if (answer == 'rpg horse'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    horse_stats = str(answer_bot_at.embeds[0].fields[0])
+                    
+                    start_level = horse_stats.find('Horse Level -') + 14
+                    end_level = start_level + 2
+                    horse_level = horse_stats[start_level:end_level]
+                    horse_level = horse_level.strip()
+                    horse_level = int(horse_level)
+                    
+                    horse_chance = 0
+                    horse_tier = 0
+                    horse_emoji = ''
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                
+                if horse_stats.find('Tier - III') > 1:
+                    horse_chance = 1
+                    horse_tier = 3
+                elif horse_stats.find('Tier - II') > 1:
+                    horse_chance = 1
+                    horse_tier = 2
+                elif horse_stats.find('Tier - VIII') > 1:
+                    horse_chance = 1.5
+                    horse_tier = 8
+                elif horse_stats.find('Tier - VII') > 1:
+                    horse_chance = 1.2
+                    horse_tier = 7
+                elif horse_stats.find('Tier - VI') > 1:
+                    horse_chance = 1
+                    horse_tier = 6
+                elif horse_stats.find('Tier - V') > 1:
+                    horse_chance = 1
+                    horse_tier = 5
+                elif horse_stats.find('Tier - IV') > 1:
+                    horse_chance = 1
+                    horse_tier = 4
+                elif horse_stats.find('Tier - IX') > 1:
+                    horse_chance = 2
+                    horse_tier = 9
+                elif horse_stats.find('Tier - I') > 1:
+                    horse_chance = 1    
+                    horse_tier = 1
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            
+            horse_emoji = getattr(emojis, f'horset{horse_tier}')
+            
+            horse_data = await get_horse_data(ctx, horse_tier)
+            
+            def_bonus = float(horse_data[1])
+            strong_bonus = float(horse_data[2])
+            tank_bonus = float(horse_data[3])
+            special_bonus = float(horse_data[4])
+            golden_bonus = float(horse_data[5])
+            
+            await ctx.send(
+                f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
+                f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
+                f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
+                f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
+                f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
+                f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n\n'
+                f'Tip: You can use `{ctx.prefix}horsecalc [tier] [level]` to check the stats bonuses for any horse tier and level.'
+            ) 
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+
 
 # --- Pets ---
 

@@ -61,9 +61,9 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     bonus_duel_xp = (99+tt_no)*tt_no/4
     bonus_drop_chance = (49+tt_no)*tt_no/2
     
-    bonus_xp = f'{bonus_xp:,}'
-    bonus_duel_xp = f'{bonus_duel_xp:,}'
-    bonus_drop_chance = f'{bonus_drop_chance:,}'
+    bonus_xp = f'{bonus_xp:,g}'
+    bonus_duel_xp = f'{bonus_duel_xp:,g}'
+    bonus_drop_chance = f'{bonus_drop_chance:,g}'
 
     if mytt == True:
         embed_description = f'This is your current TT according to your settings.\n If this is wrong, run `{prefix}setprogress`.'
@@ -172,7 +172,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
             embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt25, inline=False)
         else:
             embed.add_field(name=f'WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}tt` : Time travel overview\n{emojis.bp} `{prefix}stt` : Details about super time travel\n{emojis.bp} `{prefix}dropchance` : Mob drop chance calculator', inline=False)
             
     return embed
 

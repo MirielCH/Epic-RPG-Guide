@@ -211,7 +211,7 @@ async def matscalc(traderate_data, areamats, prefix):
                     last_area_amount = current_amount
         else:
             trade_breakdown =   f'{trade_breakdown}\n{emojis.bp} Area {current_area}+: {current_amount:,} {emojis.log} logs'
-        
+    """    
     for index, area in reversed(enumerate(traderate_data[0:original_area])):
         current_trade = ''
         current_area = area[0]
@@ -279,7 +279,7 @@ async def matscalc(traderate_data, areamats, prefix):
         else:
             trade_breakdown_past =   f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {emojis.log} logs.\n'\
                                 f'{emojis.bp} Area 11+: No useful trades anymore.'
-                                
+    """                            
     trade_breakdown = trade_breakdown.strip()        
 
     return trade_breakdown

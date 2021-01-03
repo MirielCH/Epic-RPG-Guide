@@ -22,6 +22,13 @@ async def horses(prefix):
             f'{emojis.bp} The exact bonus the type gives is dependent on the level\n'\
             f'{emojis.bp} Randomly changes when breeding unless you have a {emojis.horsetoken} horse token in your inventory'
 
+    guides = (
+        f'{emojis.bp} `{prefix}horse breed` : Details about horse breeding\n'
+        f'{emojis.bp} `{prefix}horse calc` : Horse stats bonus calculator\n'
+        f'{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n'
+        f'{emojis.bp} `{prefix}horse type` : Details about horse types'
+    )
+
     embed = discord.Embed(
         color = global_data.color,
         title = f'HORSES',
@@ -32,7 +39,7 @@ async def horses(prefix):
     embed.add_field(name=f'TIER', value=tier, inline=False)
     embed.add_field(name=f'LEVEL', value=level, inline=False)
     embed.add_field(name=f'TYPE', value=type, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse type` : Details about horse types\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed
 
@@ -69,6 +76,13 @@ async def horsetiers(prefix):
             f'{emojis.bp} 100% buff to monster drops drop chance\n'\
             f'{emojis.bp} 400% buff to lootbox drop chance\n'\
             f'{emojis.bp} 100% more coins when using `daily` and `weekly`'
+            
+    guides = (
+        f'{emojis.bp} `{prefix}horse` : Horse overview\n'
+        f'{emojis.bp} `{prefix}horse breed` : Details about horse breeding\n'
+        f'{emojis.bp} `{prefix}horse calc` : Horse stats bonus calculator\n'
+        f'{emojis.bp} `{prefix}horse type` : Details about horse types'
+    )
 
     embed = discord.Embed(
         color = global_data.color,
@@ -87,7 +101,7 @@ async def horsetiers(prefix):
     embed.add_field(name=f'TIER VII {emojis.horset7}', value=tier7, inline=False)
     embed.add_field(name=f'TIER VIII {emojis.horset8}', value=tier8, inline=False)
     embed.add_field(name=f'TIER IX {emojis.horset9}', value=tier9, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse type` : Details about horse types\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed
 
@@ -117,6 +131,13 @@ async def horsetypes(prefix):
     besttype =  f'{emojis.bp} If you are in {emojis.timetravel} TT 0-2: SPECIAL\n'\
                 f'{emojis.bp} If you are in {emojis.timetravel} TT 3-19: DEFENDER (horse should be T6 L30+)\n'\
                 f'{emojis.bp} If you are in {emojis.timetravel} TT 20+: TANK (horse should be T8 L80+)'
+                
+    guides = (
+        f'{emojis.bp} `{prefix}horse` : Horse overview\n'
+        f'{emojis.bp} `{prefix}horse breed` : Details about horse breeding\n'
+        f'{emojis.bp} `{prefix}horse calc` : Horse stats bonus calculator\n'
+        f'{emojis.bp} `{prefix}horse tier` : Details about horse tiers'
+    )
 
     embed = discord.Embed(
         color = global_data.color,
@@ -132,7 +153,7 @@ async def horsetypes(prefix):
     embed.add_field(name=f'GOLDEN', value=golden, inline=False)
     embed.add_field(name=f'SPECIAL', value=special, inline=False)
     embed.add_field(name=f'WHICH TYPE TO CHOOSE', value=besttype, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse breed` : Details about horse breeding', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed
 
@@ -156,6 +177,13 @@ async def horsebreeding(prefix):
                 f'{emojis.bp} You can keep your type by buying a {emojis.horsetoken} horse token\n'\
                 f'{emojis.bp} Note: Each breeding consumes 1 {emojis.horsetoken} horse token'
 
+    guides = (
+        f'{emojis.bp} `{prefix}horse` : Horse overview\n'
+        f'{emojis.bp} `{prefix}horse calc` : Horse stats bonus calculator\n'
+        f'{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n'
+        f'{emojis.bp} `{prefix}horse type` : Details about horse types'
+    )
+
     embed = discord.Embed(
         color = global_data.color,
         title = f'HORSE BREEDING',
@@ -168,6 +196,6 @@ async def horsebreeding(prefix):
     embed.add_field(name=f'IMPACT ON TIER', value=tier, inline=False)
     embed.add_field(name=f'IMPACT ON LEVEL', value=level, inline=False)
     embed.add_field(name=f'IMPACT ON TYPE', value=type, inline=False)
-    embed.add_field(name=f'ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}horse` : Horse overview\n{emojis.bp} `{prefix}horse tier` : Details about horse tiers\n{emojis.bp} `{prefix}horse type` : Details about horse types', inline=False)
+    embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed

@@ -362,7 +362,8 @@ async def drops(prefix):
                 f'{emojis.bp} Every {emojis.timetravel} time travel increases the drop chance by ~25%\n'\
                 f'{emojis.bp} A {emojis.horset7} T7 horse increases the drop chance by 20%\n'\
                 f'{emojis.bp} A {emojis.horset8} T8 horse increases the drop chance by 50%\n'\
-                f'{emojis.bp} A {emojis.horset9} T9 horse increases the drop chance by 100%\n{emojis.blank}'
+                f'{emojis.bp} A {emojis.horset9} T9 horse increases the drop chance by 100%\n'\
+                f'{emojis.bp} To calculate your current drop chance, use `{prefix}dropchance`\n{emojis.blank}'
 
     embed = discord.Embed(
         color = global_data.color,
