@@ -1504,7 +1504,7 @@ async def traderates(ctx):
     
 # Command "tradecalc" - Calculates the trades up to A10
 @bot.command(aliases=('trc',))
-@commands.is_owner()
+#@commands.is_owner()
 @commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def tradecalc(ctx, *args):
     
@@ -1578,7 +1578,7 @@ async def tradecalc(ctx, *args):
         await ctx.send(f'**EXPERIMENTAL FEATURE. THERE BE BUGS.**\n\n{amount:,} {mat_output} in area {area} equals to:\n{output}')
     
     else:
-        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}trade [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}trade [area] [material] [amount]`.\n\nExample: `{ctx.prefix}trade a3 200000 fish`')
+        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 200000 fish`')
 
 
 # --- Crafting ---
@@ -1593,7 +1593,7 @@ async def enchants(ctx):
     await ctx.send(embed=embed)
     
 # Command "drops" - Returns all monster drops and where to get them
-@bot.command(aliases=('drop','mobdrop','mobdrops','monsterdrop','monsterdrops',))
+@bot.command(aliases=('drop','mobdrop','mobdrops','mobsdrop','mobsdrops','monsterdrop','monsterdrops',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def drops(ctx):
 
@@ -1601,8 +1601,8 @@ async def drops(ctx):
     
     await ctx.send(embed=embed)
 
-# Command "dropchance" - Calculate current dropchance
-@bot.command(aliases=('dropcalc',))
+# Command "dropchance" - Calculate current drop chance
+@bot.command(aliases=('dropcalc','droprate',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True)
 async def dropchance(ctx, *args):
     
@@ -1640,8 +1640,8 @@ async def dropchance(ctx, *args):
                 else:
                     await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse tier to me :thinking:')
                     return
-                if not 1 <= tt_no <= 999:
-                        await ctx.send(f'`{tt_no}` is not a valid TT.\nPlease enter a TT between 1 and 999.')
+                if not 0 <= tt_no <= 999:
+                        await ctx.send(f'`{tt_no}` is not a valid TT.\nPlease enter a TT between 0 and 999.')
                         return
             else:
                 await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
