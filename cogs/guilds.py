@@ -38,7 +38,8 @@ class guildCog(commands.Cog):
         'guildbuy',
         'guildlevel',
         'guildlvl',
-        'guildprogress'
+        'guildprogress',
+        'magicchair'
     )
     
     # Command "guild"
@@ -252,8 +253,9 @@ async def guild_shop(prefix):
     
     rewards = (
         f'{emojis.bp} {emojis.guildbuff} **Guild buff**: Increases {emojis.guildenergy} guild energy by 250  (2 {emojis.guildcoin})\n'
-        f'{emojis.bp} {emojis.cookierain} **Cookie rain**: Gives all players in the guild 200 {emojis.arenacookie} arena cookies (3 {emojis.guildcoin})\n'
-        f'{emojis.bp} {emojis.omegahorsetoken} **Omega horse token**: Gives all players in the guild an {emojis.omegahorsetoken} omega horse token which resets the horse breed/race cooldown (15 {emojis.guildcoin})'
+        f'{emojis.bp} {emojis.cookierain} **Cookie rain**: All members get 200 {emojis.arenacookie} arena cookies (3 {emojis.guildcoin})\n'
+        f'{emojis.bp} {emojis.magicchair} **Magic chair**: All members get +20% lootbox drop chance for 45m (50 {emojis.guildcoin})\n'
+        f'{emojis.bp} {emojis.omegahorsetoken} **Omega horse token**: All members get an {emojis.omegahorsetoken} omega horse token which resets the horse breed/race cooldown (15 {emojis.guildcoin})\n'
     )
                     
     best_reward = f'{emojis.bp} {emojis.cookierain} Cookie rain is really the only useful reward'

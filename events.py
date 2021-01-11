@@ -80,7 +80,8 @@ async def event_epicguard(prefix):
     
     answers =       f'{emojis.bp} The name of the random item the guard shows you\n'\
                     f'{emojis.bp} Tip: You can use `fish` instead of `normie fish`\n'\
-                    f'{emojis.bp} Tip: You can use `potion` instead of `life potion`'
+                    f'{emojis.bp} Tip: You can use `potion` instead of `life potion`\n'\
+                    f'{emojis.bp} Tip: You can use `wolf` instead of `wolf skin`\n'\
     
     jail =          f'{emojis.bp} If you answer wrong, you will be put in jail\n'\
                     f'{emojis.bp} Use `rpg jail` and then `protest`\n'\

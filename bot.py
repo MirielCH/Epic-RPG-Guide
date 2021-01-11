@@ -332,6 +332,8 @@ async def get_item_data(ctx, itemname):
             itemnames = (itemname,'banana','','','','','','')
         elif itemname == 'coin sandwich':
             itemnames = (itemname,'epic fish','golden fish','banana','','','','')
+        elif itemname == 'fruit ice cream':
+            itemnames = (itemname,'super log','epic log','banana','','','','')
         else:
             itemnames = (itemname,'','','','','','','')
             
@@ -375,10 +377,6 @@ async def get_tt_unlocks(ctx, user_tt):
 # Get trade rate data
 async def get_traderate_data(ctx, areas):
     
-    
-        
-    
-    
     try:
         cur=erg_db.cursor()
         
@@ -416,6 +414,8 @@ async def get_profession_levels(ctx, profession, levelrange):
         query = 'SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?'
     elif profession == 'lootboxer':
         query = 'SELECT level, lootboxer_xp FROM professions WHERE level BETWEEN ? and ?'
+    elif profession == 'enchanter':
+        query = 'SELECT level, enchanter_xp FROM professions WHERE level BETWEEN ? and ?'
     else:
         await log_error(ctx, 'Unknown profession, could not generate profession query.')
         return
@@ -607,7 +607,7 @@ async def first_time_user(bot, ctx):
 
 # --- Command Initialization ---
 
-bot = commands.Bot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
+bot = commands.AutoShardedBot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
 cog_extensions = ['cogs.guilds']
 if __name__ == '__main__':
     for extension in cog_extensions:
@@ -1840,7 +1840,13 @@ async def craft(ctx, *args):
                     'ha': 'heavy apple',
                     'fl': 'filled lootbox',
                     'cs': 'coin sandwich',
-                    'lb': 'filled lootbox'                   
+                    'lb': 'filled lootbox',
+                    'ic': 'fruit ice cream',
+                    'fic': 'fruit ice cream',
+                    'ice cream': 'fruit ice cream',
+                    'fruit ice': 'fruit ice cream',
+                    'ice': 'fruit ice cream',
+                    'cream': 'fruit ice cream'
                 }
                 
                 if itemname_replaced in shortcuts:
@@ -2756,13 +2762,274 @@ async def prc(ctx):
     
     await ctx.send(f'To level up crafter, repeatedly craft {emojis.logepic} EPIC logs in batches of 500.\nSee `{ctx.prefix}prlevel` for more information.')
     
-# Command "pre" - Info about enchanting
+# Command "pre" - Calculate ice cream to craft
 @bot.command()
-@commands.bot_has_permissions(send_messages=True)
+@commands.bot_has_permissions(send_messages=True, external_emojis=True)
 async def pre(ctx):
     
-    await ctx.send(f'To level up enchanter, please see `{ctx.prefix}prlevel`.\nThere is no way for me to calculate this, sorry.')
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
     
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    try:
+        await ctx.send(f'**{ctx.author.name}**, please type `rpg pr enchanter` (or `abort` to abort)')
+        answer_user_enchanter = await bot.wait_for('message', check=check, timeout = 30)
+        answer = answer_user_enchanter.content
+        answer = answer.lower()
+        if (answer == 'rpg pr enchanter'):
+            answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+            try:
+                pr_worker = str(answer_bot_at.embeds[0].fields[0])
+            except:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+            start_level = pr_worker.find('**Level**') + 11
+            end_level = pr_worker.find('(', start_level) - 1
+            pr_level = pr_worker[start_level:end_level]
+            start_current_xp = pr_worker.find('**XP**') + 8
+            end_current_xp = pr_worker.find('/', start_current_xp)
+            pr_current_xp = pr_worker[start_current_xp:end_current_xp]
+            pr_current_xp = pr_current_xp.replace(',','')
+            start_needed_xp = pr_worker.find('/', start_current_xp) + 1
+            end_needed_xp = pr_worker.find(f'\'', start_needed_xp)
+            pr_needed_xp = pr_worker[start_needed_xp:end_needed_xp]
+            pr_needed_xp = pr_needed_xp.replace(',','')
+        elif (answer == 'abort') or (answer == 'cancel'):
+            await ctx.send(f'Aborting.')
+            return
+        else:
+            await ctx.send(f'Wrong input. Aborting.')
+            return
+        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            pr_level = int(pr_level)
+            pr_current_xp = int(pr_current_xp)
+            pr_needed_xp = int(pr_needed_xp)            
+            xp = pr_needed_xp - pr_current_xp
+            ice_cream = ceil(xp / 100)
+            xp_rest = 100 - (xp % 100)
+            
+            levelrange = []
+            
+            if pr_level == 100:
+                await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
+                return
+            elif pr_level == 99:
+                enchanter_levels = []
+            elif pr_level + 7 > 100:
+                levelrange = [pr_level+2, 100,]
+                enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)
+            else:
+                levelrange = [pr_level+2, pr_level+7,]
+                enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+            
+            output = f'You need to cook the following amounts of {emojis.foodfruiticecream} fruit ice cream:\n'\
+                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** fruit ice cream.'
+
+            for enchanter_level in enchanter_levels:
+                enchanter_level_no = enchanter_level[0]
+                enchanter_level_xp = enchanter_level[1]
+                actual_xp = enchanter_level_xp - xp_rest
+                ice_cream = ceil(actual_xp / 100)
+                xp_rest = 100 - (actual_xp % 100)
+                output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** pickaxes.'
+            
+            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] ice cream` to see what materials you need to craft fruit ice cream.')
+        else:
+            await ctx.send(f'Whelp, something went wrong here, sorry.')
+            return
+    except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+
+# Command "pretotal" - Calculate total ice cream to craft until level x
+@bot.command()
+@commands.bot_has_permissions(external_emojis=True, send_messages=True)
+async def pretotal(ctx, *args):
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    def epic_rpg_check(m):
+        correct_embed = False
+        try:
+            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+            if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
+                correct_embed = True
+            else:
+                correct_embed = False
+        except:
+            correct_embed = False
+        
+        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+    
+    if len(args) == 0:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg pr enchanter` (or `abort` to abort)')
+            answer_user_enchanter = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_enchanter.content
+            answer = answer.lower()
+            if (answer == 'rpg pr enchanter'):
+                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    pr_enchanter = str(answer_bot_at.embeds[0].fields[0])
+                except:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+                start_level = pr_enchanter.find('**Level**') + 11
+                end_level = pr_enchanter.find('(', start_level) - 1
+                pr_level = pr_enchanter[start_level:end_level]
+                start_current_xp = pr_enchanter.find('**XP**') + 8
+                end_current_xp = pr_enchanter.find('/', start_current_xp)
+                pr_current_xp = pr_enchanter[start_current_xp:end_current_xp]
+                pr_current_xp = pr_current_xp.replace(',','')
+                start_needed_xp = pr_enchanter.find('/', start_current_xp) + 1
+                end_needed_xp = pr_enchanter.find(f'\'', start_needed_xp)
+                pr_needed_xp = pr_enchanter[start_needed_xp:end_needed_xp]
+                pr_needed_xp = pr_needed_xp.replace(',','')
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send(f'Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
+            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                pr_level = int(pr_level)
+                pr_current_xp = int(pr_current_xp)
+                pr_needed_xp = int(pr_needed_xp)            
+                xp = pr_needed_xp - pr_current_xp
+                ice_cream = ceil(xp / 100)
+                xp_rest = 100 - (xp % 100)
+                ice_cream_total = ice_cream
+                
+                levelrange = []
+                
+                if pr_level == 100:
+                    await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
+                    return
+                elif pr_level == 99:
+                    enchanter_levels = []
+                else:
+                    levelrange = [pr_level+2, 100,]
+                    enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+                
+                for enchanter_level in enchanter_levels:
+                    enchanter_level_xp = enchanter_level[1]
+                    actual_xp = enchanter_level_xp - xp_rest
+                    ice_cream = ceil(actual_xp / 100)
+                    ice_cream_total = ice_cream_total + ice_cream
+                    xp_rest = 100 - (actual_xp % 100)
+                
+                await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level 100.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
+            else:
+                await ctx.send(f'Whelp, something went wrong here, sorry.')
+                return
+        except asyncio.TimeoutError as error:
+                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                    return
+    
+    elif len(args) == 1:
+        arg = args[0]    
+        
+        if arg.replace('-','').isnumeric():
+            try:
+                level = int(arg)
+            except:
+                await ctx.send(f'Are you trying to break me or something? :thinking:')
+                return
+            
+            if (level < 2) or (level > 100):
+                await ctx.send(f'You want to reach level what now? {level}?')
+                return
+            
+            try:
+                await ctx.send(f'**{ctx.author.name}**, please type `rpg pr enchanter` (or `abort` to abort)')
+                answer_user_enchanter = await bot.wait_for('message', check=check, timeout = 30)
+                answer = answer_user_enchanter.content
+                answer = answer.lower()
+                if (answer == 'rpg pr enchanter'):
+                    answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    try:
+                        pr_enchanter = str(answer_bot_at.embeds[0].fields[0])
+                    except:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                    start_level = pr_enchanter.find('**Level**') + 11
+                    end_level = pr_enchanter.find('(', start_level) - 1
+                    pr_level = pr_enchanter[start_level:end_level]
+                    start_current_xp = pr_enchanter.find('**XP**') + 8
+                    end_current_xp = pr_enchanter.find('/', start_current_xp)
+                    pr_current_xp = pr_enchanter[start_current_xp:end_current_xp]
+                    pr_current_xp = pr_current_xp.replace(',','')
+                    start_needed_xp = pr_enchanter.find('/', start_current_xp) + 1
+                    end_needed_xp = pr_enchanter.find(f'\'', start_needed_xp)
+                    pr_needed_xp = pr_enchanter[start_needed_xp:end_needed_xp]
+                    pr_needed_xp = pr_needed_xp.replace(',','')
+                elif (answer_user_enchanter.content == 'abort') or (answer_user_enchanter.content == 'cancel'):
+                    await ctx.send(f'Aborting.')
+                    return
+                else:
+                    await ctx.send(f'Wrong input. Aborting.')
+                    return
+                
+                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    ice_cream = ceil(xp / 100)
+                    xp_rest = 100 - (xp % 100)
+                    ice_cream_total = ice_cream
+                    
+                    if pr_level >= level:
+                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                        return
+                    
+                    levelrange = []
+                    
+                    if pr_level == 100:
+                        await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
+                        return
+                    elif (level - pr_level) == 1:
+                        enchanter_levels = []
+                    else:
+                        levelrange = [pr_level+2, level,]
+                        enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+                    
+                    for enchanter_level in enchanter_levels:
+                        enchanter_level_xp = enchanter_level[1]
+                        actual_xp = enchanter_level_xp - xp_rest
+                        ice_cream = ceil(actual_xp / 100)
+                        ice_cream_total = ice_cream_total + ice_cream
+                        xp_rest = 100 - (actual_xp % 100)
+                    
+                    await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level {level}.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            except asyncio.TimeoutError as error:
+                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                        return  
+        else:
+            await ctx.send(f'Sir, that is not a valid number.')
+            return
+    
+    else:
+        await ctx.send(f'The command syntax is `{ctx.prefix}prwtotal [level]`.\nIf you omit the level, I will calculate the banana pickaxes you need to reach level 100.')
+        return     
+
 # Command "prw" - Calculate pickaxes to craft
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, external_emojis=True)
@@ -3464,13 +3731,15 @@ async def devstats(ctx):
     guilds = len(list(bot.guilds))
     user_number = await get_user_number(ctx)
     latency = bot.latency
+        
     
     embed = discord.Embed(
         color = global_data.color,
         title = f'BOT STATISTICS',
         description =   f'{emojis.bp} {guilds:,} servers\n'\
+                        f'{emojis.bp} {len(bot.shards):,} shards\n'\
                         f'{emojis.bp} {user_number[0]:,} users\n'\
-                        f'{emojis.bp} {round(latency*1000):,} ms latency'
+                        f'{emojis.bp} {round(latency*1000):,} ms average latency'
     )
     
     await ctx.send(embed=embed)
@@ -3662,7 +3931,7 @@ async def brandon(ctx):
 
 # --- Testing ---
 @bot.command()
-#@commands.is_owner()
+@commands.is_owner()
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
@@ -3685,46 +3954,6 @@ async def test(ctx):
         result2 = emojize(answer)
         await ctx.send(f'Demojized: {result}\nEmojized: {result2}\nOriginal: {answer}')
     
-    
-    """    
-    seconds = 86400
-    days = seconds // 86400
-    hours = (seconds % 86400) // 3600
-    minutes = (seconds % 3600) // 60
-    seconds = seconds % 60
-    
-    seconds1 = 77760
-    days1 = seconds1 // 86400
-    hours1 = (seconds1 % 86400) // 3600
-    minutes1 = (seconds1 % 3600) // 60
-    seconds1 = seconds1 % 60
-    
-    seconds2 = 69120
-    days2 = seconds2 // 86400
-    hours2 = (seconds2 % 86400) // 3600
-    minutes2 = (seconds2 % 3600) // 60
-    seconds2 = seconds2 % 60
-    
-    seconds3 = 56160
-    days3 = seconds3 // 86400
-    hours3 = (seconds3 % 86400) // 3600
-    minutes3 = (seconds3 % 3600) // 60
-    seconds3 = seconds3 % 60
-    
-    message = f'{days}d / {hours1}h {minutes1}m {seconds1}s / {hours2}h {minutes2}m {seconds2}s / {hours3}h {minutes3}m {seconds3}s'
-    
-    await ctx.send(message)
-    
-    embed = discord.Embed(
-        color = global_data.color,
-        title = f'COMMAND COOLDOWNS',
-        description = f'This page shows all the **default** cooldowns. If you want to see all donator cooldowns, use `{ctx.prefix}cd [command]`'
-    )    
-    embed.add_field(name='COOLDOWN', value=f'{emojis.bp} `dungeon | miniboss | not so mini boss`\n{emojis.blank}:one: {days}d / :two: {hours1}h {minutes1}m {seconds1}s / :three: {hours2}h {minutes2}m {seconds2}s / :four: {hours3}h {minutes3}m {seconds3}s', inline=False)
-    
-    await ctx.send(embed=embed)
-    """
-
 
 # --- Owner Commands ---
 
