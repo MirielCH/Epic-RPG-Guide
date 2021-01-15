@@ -137,10 +137,14 @@ async def mats(items_data, amount, prefix):
                 ingredients.append([value, emojis.lifepotion, 'life potion'])
             elif items_headers[header_index] == 'cookies':
                 ingredients.append([value, emojis.arenacookie, 'arena cookie'])
+            elif items_headers[header_index] == 'dragonessence':
+                ingredients.append([value, emojis.dragonessence, 'dragon essence'])
             elif items_headers[header_index] == 'lbrare':
                 ingredients.append([value, emojis.lbrare, 'rare lootbox'])
             elif items_headers[header_index] == 'lbomega':
                 ingredients.append([value, emojis.lbomega, 'OMEGA lootbox'])
+            elif items_headers[header_index] == 'lbgodly':
+                ingredients.append([value, emojis.lbgodly, 'GODLY lootbox'])
             elif items_headers[header_index] == 'armoredgy':
                 ingredients.append([value, emojis.armoredgy, 'EDGY Armor'])
             elif items_headers[header_index] == 'swordedgy':
@@ -154,7 +158,7 @@ async def mats(items_data, amount, prefix):
             elif items_headers[header_index] == 'swordomega':
                 ingredients.append([value, emojis.swordomega, 'OMEGA Sword'])
             elif items_headers[header_index] == 'armorultraomega':
-                ingredients.append([value, emojis.armoromega, 'ULTRA-OMEGA Armor'])
+                ingredients.append([value, emojis.armorultraomega, 'ULTRA-OMEGA Armor'])
             elif items_headers[header_index] == 'swordultraomega':
                 ingredients.append([value, emojis.swordultraomega, 'ULTRA-OMEGA Sword'])
         

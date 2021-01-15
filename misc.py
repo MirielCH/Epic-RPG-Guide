@@ -100,6 +100,7 @@ async def badges(prefix):
                 f'{emojis.bp} {emojis.badge500} : Unlocked with 500 coolness\n'\
                 f'{emojis.bp} {emojis.badge1000} : Unlocked with 1000 coolness\n'\
                 f'{emojis.bp} {emojis.badgea15} : Unlocked by reaching area 15 ({emojis.timetravel}TT 10)\n'\
+                f'{emojis.bp} {emojis.badgetop} : Unlocked by beating D15-2 and reaching the TOP\n'\
                 f'{emojis.bp} {emojis.badgeomega} : Currently unknown and unavailable'
                 
     howtouse =  f'{emojis.bp} Use `rpg badge list` to get the ID of the badges you want\n'\

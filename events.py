@@ -6,8 +6,6 @@ import emojis
 
 # Events overview
 async def events_overview(prefix):
-
-    special_events =    f'{emojis.bp} `snowball fight`'
     
     sp_events =         f'{emojis.bp} `enchant`\n'\
                         f'{emojis.bp} `epic guard`\n'\
@@ -19,6 +17,7 @@ async def events_overview(prefix):
                         f'{emojis.bp} `epic tree`\n'\
                         f'{emojis.bp} `god`\n'\
                         f'{emojis.bp} `legendary boss`\n'\
+                        f'{emojis.bp} `lootbox summoning`\n'\
                         f'{emojis.bp} `megalodon`\n'\
                         f'{emojis.bp} `miniboss`\n'\
                         f'{emojis.bp} `special trade`'
@@ -26,7 +25,8 @@ async def events_overview(prefix):
     global_events =     f'{emojis.bp} `big arena`\n'\
                         f'{emojis.bp} `horse race`\n'\
                         f'{emojis.bp} `lottery`\n'\
-                        f'{emojis.bp} `not so mini boss`'
+                        f'{emojis.bp} `not so mini boss`\n'\
+                        f'{emojis.bp} `pet tournament`\n'\
 
     embed = discord.Embed(
         color = global_data.color,
@@ -35,7 +35,6 @@ async def events_overview(prefix):
                         f'Use `{prefix}event [name]` to see details about an event.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'CHRISTMAS {emojis.xmastree}', value=special_events, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -342,6 +341,35 @@ async def event_legendary(prefix):
             
     return embed
 
+# Lootbox summoning event
+async def event_lootboxsummoning(prefix):
+
+    trigger =       f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'\
+    
+    answers =       f'{emojis.bp} `summon`'
+    
+    rewards =       f'{emojis.bp} A lootbox for every player that entered\n'\
+                    f'{emojis.bp} The lootbox tier depends on the amount of players that entered\n'\
+                    f'{emojis.bp} The lootbox tier ranges from {emojis.lbcommon} common to {emojis.lbedgy} EDGY'
+                    
+    note =          f'{emojis.bp} This event is very rare\n'\
+                    f'{emojis.bp} Anyone can join\n'\
+                    f'{emojis.bp} This is a 20 player event'
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'LOOTBOX SUMMONING EVENT',
+        description =   f'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 players can help to do so.'
+    )    
+    embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
+
+    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
+    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name=f'NOTE', value=note, inline=False)
+            
+    return embed
+
 # Megalodon event
 async def event_megalodon(prefix):
 
@@ -500,7 +528,39 @@ async def event_horserace(prefix):
     embed.add_field(name=f'RACE OR BREED?', value=whichone, inline=False)
     
     return embed
+
+# Pet tournament event
+async def event_pettournamnent(prefix):
+
+    schedule =      f'{emojis.bp} Every 12 hours at 08:00 / 20:00 UTC\n'\
     
+    answers =       f'{emojis.bp} `pets tournament [ID]`'
+    
+    rewards =       f'{emojis.bp} + 1 pet tier\n'\
+                    f'{emojis.bp} You **only** get the reward if you win the tournament'
+                    
+    note =          f'{emojis.bp} The outcome is announced in the [official server](https://discord.gg/epicrpg)\n'\
+                    f'{emojis.bp} You can only join once per cycle\n'\
+                    f'{emojis.bp} You can only enter **1** pet per cycle\n'\
+                    f'{emojis.bp} You can apply with any pet, even pets on adventures\n'\
+                    f'{emojis.bp} Your chance to win is influenced by your pet\'s score (see `{prefix}pet`)\n'\
+                    f'{emojis.bp} The tournament will not happen if there are less than 100 pets'
+
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'PET TOURNAMENT EVENT',
+        description =   f'This is a global event which takes place every 12 hours.'
+    )    
+    embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
+
+    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name=f'NOTE', value=note, inline=False)
+    
+    return embed    
+
 # Lottery event
 async def event_lottery(prefix):
 

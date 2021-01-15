@@ -22,8 +22,7 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
     elif int(area_no) == 7:
         field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
-                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
-                      f'{emojis.bp} Ignore logs and fish'
+                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
     elif int(area_no) == 8:
         field_value = f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'\
                       f'{emojis.bp} If crafter 90+: Dismantle {emojis.loghyper} HYPER logs and below\n'\
@@ -40,11 +39,9 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
     elif int(area_no) == 10:
         field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
-                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'\
-                      f'{emojis.bp} Ignore logs and fish'
+                      f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
     elif int(area_no) == 11:
-        field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
-                      f'{emojis.bp} Ignore logs, fish and fruits'
+        field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs'
     else:
         field_value = f'{emojis.bp} N/A'
 
@@ -67,7 +64,7 @@ async def trades(user_settings, prefix):
     embed = discord.Embed(
         color = 8983807,
         title = f'AREA TRADES',
-        description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nThe trades for area 11 depend on your user settings.'
+        description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nEverything that isn\'t mentioned can be ignored.'
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr1-{prefix}tr15 to see the trades of a specific area only.')
     

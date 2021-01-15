@@ -79,12 +79,14 @@ async def professions_leveling(prefix):
                     f'{emojis.bp} Costs around 3 billion coins without {emojis.horset8} T8+ horse\n'\
                     f'{emojis.bp} Costs around 2 billion coins with {emojis.horset8} T8+ horse'
                 
-    calculators =   f'{emojis.bp} `{prefix}prm` : Logs you need to sell for your next merchant levels\n'\
+    calculators =   f'{emojis.bp} `{prefix}pre` : Ice cream you need to cook for your next enchanter levels\n'\
                     f'{emojis.bp} `{prefix}prl` : Lootboxes you need to cook for your next lootboxer levels\n'\
+                    f'{emojis.bp} `{prefix}prm` : Logs you need to sell for your next merchant levels\n'\
                     f'{emojis.bp} `{prefix}prw` : Pickaxes you need to cook for your next worker levels\n'\
+                    f'{emojis.bp} `{prefix}pretotal [level]` : Total ice cream you need to reach `[level]`\n'\
+                    f'{emojis.bp} `{prefix}prltotal [level]` : Total lootboxes you need to reach `[level]`\n'\
                     f'{emojis.bp} `{prefix}prmtotal [level]` : Total logs you need to reach `[level]`\n'\
-                        f'{emojis.bp} `{prefix}prltotal [level]` : Total lootboxes you need to reach `[level]`\n'\
-                    f'{emojis.bp} `{prefix}prwtotal [level]` : Total pickaxes you need to reach `[level]`\n'\
+                    f'{emojis.bp} `{prefix}prwtotal [level]` : Total pickaxes you need to reach `[level]`'
     
     embed = discord.Embed(
         color = global_data.color,

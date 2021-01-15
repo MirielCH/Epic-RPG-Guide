@@ -12,7 +12,7 @@ async def pets(prefix):
             
     whattodo =      f'{emojis.bp} Send them on adventures (see `{prefix}pet adv`)'
                      
-    tier =          f'{emojis.bp} Tiers range from I to IX (1 to 9)\n'\
+    tier =          f'{emojis.bp} Tiers range from I to X (1 to 10)\n'\
                     f'{emojis.bp} Increases the number of items you get in adventures\n'\
                     f'{emojis.bp} Increases the chance to increase a skill rank in adventures\n'\
                     f'{emojis.bp} Increases the chance to keep a skill when fusing\n'\
@@ -27,6 +27,11 @@ async def pets(prefix):
                     f'{emojis.bp} Event pets can have unique types\n'\
                     f'{emojis.bp} The type you get when catching pets is random\n'\
                     f'{emojis.bp} All types are purely cosmetic'
+                    
+    score =         f'{emojis.bp} The pet score increases your chance to win pet tournaments\n'\
+                    f'{emojis.bp} See `{prefix}event pet tournament` for details about tournaments\n'\
+                    f'{emojis.bp} The pet score is influenced by tier, skills and skill ranks\n'\
+                    f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Pets#Pet_Score)'
                     
     guides =        f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
                     f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
@@ -107,7 +112,7 @@ async def petsfusion(prefix):
 
     type =          f'{emojis.bp} Fusing changes your pet type randomly\n'\
                     f'{emojis.bp} Exception: Fusing an event pet will give you the event pet back\n'\
-                    f'{emojis.bp} Note: If you fuse 2+ event pets, you will **lose all but one**'
+                    f'{emojis.bp} Note: You can only fuse 2+ event pets if they all are the **same** type'
 
     whatfirst =     f'{emojis.bp} Try to tier up to T4+ before you start fusing for skills\n'\
                     f'{emojis.bp} The best skill to keep first is {emojis.skillhappy} happy'
@@ -163,7 +168,11 @@ async def petsskills(prefix):
                     f'{emojis.bp} **You will lose all other skills when ascending**\n'\
                     f'{emojis.bp} You can **not** lose this skill when fusing\n'\
                     f'{emojis.bp} You can **not** rank up this skill with adventures\n'\
-                    f'{emojis.bp} To rank up the skill, get all other skills to SS+ and ascend again\n'\
+                    f'{emojis.bp} To rank up the skill, get all other skills to SS+ and ascend again'
+                    
+    fighter =       f'{emojis.bp} Pet can be used to acquire {emojis.dragonessence} dragon essence in D1-D9\n'\
+                    f'{emojis.bp} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'\
+                    f'{emojis.bp} You can **not** lose this skill when fusing'
     
     skillranks =    f'{emojis.bp} Every skill has 9 possible ranks\n'\
                     f'{emojis.bp} The ranks are F, E, D, C, B, A, S, SS and SS+\n'\
@@ -193,6 +202,7 @@ async def petsskills(prefix):
     embed.add_field(name=f'TIME TRAVELER {emojis.skilltraveler}', value=timetraveler, inline=False)
     embed.add_field(name=f'EPIC {emojis.skillepic}', value=epic, inline=False)
     embed.add_field(name=f'ASCENDED {emojis.skillascended}', value=ascended, inline=False)
+    embed.add_field(name=f'FIGHTER {emojis.skillfighter}', value=fighter, inline=False)
     embed.add_field(name=f'SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name=f'ADDITIONAL GUIDES', value=guides, inline=False)
             
@@ -202,9 +212,10 @@ async def petsskills(prefix):
 async def petsadventures(prefix):
           
     usage =         f'{emojis.bp} Command: `pets adv [petID] [type]`\n'\
-                    f'{emojis.bp} You can only send one pet unless it has the {emojis.skillepic} EPIC skill'
+                    f'{emojis.bp} Use `pets adv [petID] cancel` to cancel an adventure\n'\
+                    f'{emojis.bp} You can only send **1** pet unless it has the {emojis.skillepic} EPIC skill'
 
-    types =         f'{emojis.bp} **Dig**: Pet is more likely to find items\n'\
+    types =         f'{emojis.bp} **Find**: Pet is more likely to find items\n'\
                     f'{emojis.bp} **Drill**: Pet is more likely to find coins\n'\
                     f'{emojis.bp} **Learn**: Pet is more likely to rank up a skill\n'\
                     f'{emojis.bp} The type does **not** guarantee the outcome \n'\
@@ -226,6 +237,7 @@ async def petsadventures(prefix):
     guides =        f'{emojis.bp} `{prefix}pet` : Pets overview\n'\
                     f'{emojis.bp} `{prefix}pet catch` : How to find and catch pets\n'\
                     f'{emojis.bp} `{prefix}pet fusion` : Details about pet fusion\n'\
+                    f'{emojis.bp} `{prefix}pet score` : Details about pet score\n'\
                     f'{emojis.bp} `{prefix}pet skills` : Details about pet skills'
 
     embed = discord.Embed(

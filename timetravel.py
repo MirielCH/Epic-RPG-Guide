@@ -21,8 +21,8 @@ async def timetravel(prefix):
         f'{emojis.bp} Epic Coins\n'
         f'{emojis.bp} Items bought from the epic shop\n'
         f'{emojis.bp} Arena cookies \n'
+        f'{emojis.bp} Dragon essences\n'
         f'{emojis.bp} Event items (if an event is active)\n'
-        f'{emojis.bp} Lottery tickets\n'
         f'{emojis.bp} Your horse\n'
         f'{emojis.bp} Your pets\n'
         f'{emojis.bp} Your marriage partner\n'
@@ -90,7 +90,8 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     unlocks = f"{unlocks}{emojis.bp} **{bonus_xp} %** increased **XP** from everything except duels\n"\
               f'{emojis.bp} **{bonus_duel_xp} %** increased **XP** from **duels**\n'\
               f'{emojis.bp} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'\
-              f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands'
+              f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands\n'\
+              f'{emojis.bp} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)'
                   
 
     prep_tt1_to_2 =     f'{emojis.bp} If your horse is T6+: Get 30m coins\n'\

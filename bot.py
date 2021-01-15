@@ -65,42 +65,15 @@ async def update_stats(bot):
     try:
         if not DBL_TOKEN == 'none':
             guilds = len(list(bot.guilds))
-            guild_count = {'server_count':guilds}
+            shards = len(bot.shards)
+            guild_count = {'server_count':guilds,'shards':shards}
             header = {'Authorization':DBL_TOKEN}
             r = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)    
-            logger.info(f'Posted server count ({guilds}), status code: {r.status_code}')
+            logger.info(f'Posted server count ({guilds}) and shard count ({shards}), status code: {r.status_code}')
     except:
         logger.exception(f'Failed to post server count ({guilds}), status code: {r.status_code}')
 
-"""
-# TopGG - Doesn't work with Python 3.9 for now
-class TopGG(commands.Cog):
-    ""Handles interactions with the top.gg API""
 
-    def __init__(self, bot):
-        self.bot = bot
-        if not DBL_TOKEN == 'none':
-            self.token = DBL_TOKEN
-            self.dblpy = dbl.DBLClient(self.bot, self.token,)
-        else:
-            self.token = 'test'
-            self.dblpy = dbl.DBLClient(self.bot, self.token,)
-            self.update_stats.start()
-            
-    @tasks.loop(minutes=30.0)
-    async def update_stats(self):
-        ""This function runs every 30 minutes to automatically update your server count""
-        try:
-            guilds = len(list(bot.guilds))
-            await self.dblpy.post_guild_count(guilds) # Broken rn
-            logger.info('Posted server count ({})'.format(self.dblpy.guild_count()))
-        except Exception as e:
-            logger.exception('Failed to post server count\n{}: {}'.format(type(e).__name__, e))
-    
-    @commands.Cog.listener()
-    async def on_guild_post(self):
-        print("Server count posted successfully")
-"""
          
 # --- Database: Get Data ---
 
@@ -402,7 +375,7 @@ async def get_traderate_data(ctx, areas):
         
     return traderate_data
 
-# Get merchant XP
+# Get profession XP
 async def get_profession_levels(ctx, profession, levelrange):
     
     start_level = levelrange[0]
@@ -682,6 +655,7 @@ async def on_command_error(ctx, error):
         await log_error(ctx, error) # To the database you go
 
 
+
 # --- Server Settings ---
    
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
@@ -706,6 +680,7 @@ async def prefix(ctx):
     
     current_prefix = await get_prefix(bot, ctx)
     await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
+
 
 
 # --- User Settings ---
@@ -784,6 +759,7 @@ async def setprogress(ctx):
         await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
 
 
+
 # --- Main menus ---
 
 # Main menu
@@ -792,8 +768,6 @@ async def setprogress(ctx):
 async def helpguide(ctx):
     
     prefix = await get_prefix(bot, ctx)
-    
-    xmas =      f'{emojis.bp} `{prefix}xmas` : Christmas event guide'
     
     progress =  f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'\
                 f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'\
@@ -835,7 +809,6 @@ async def helpguide(ctx):
         description =   f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
-    embed.add_field(name=f'CHRISTMAS EVENT {emojis.xmastree}', value=xmas, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -922,6 +895,7 @@ async def tradingguide(ctx):
     embed.add_field(name='TRADING', value=trading, inline=False)
     
     await ctx.send(embed=embed)
+
 
 
 # --- Dungeons ---
@@ -1307,6 +1281,7 @@ async def dungeoncheck1(ctx, *args):
         raise            
 
 
+
 # --- Areas ---
 
 # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
@@ -1433,6 +1408,7 @@ async def area(ctx, *args):
                 await ctx.send(f'Uhm, what.')           
                 return
         await ctx.send(embed=area_embed)
+
 
 
 # --- Trading ---
@@ -1579,6 +1555,7 @@ async def tradecalc(ctx, *args):
     
     else:
         await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 200000 fish`')
+
 
 
 # --- Crafting ---
@@ -1807,6 +1784,8 @@ async def craft(ctx, *args):
                     'ue sword': 'ultra-edgy sword',
                     'ultra-omega sw': 'ultra-omega sword',
                     'ue armor': 'ultra-edgy armor',
+                    'godly sw': 'godly sword',
+                    'unicorn sw': 'unicorn sword',
                     'brandon': 'epic fish',
                     'salad': 'fruit salad',
                     'creature': 'mutant creature',
@@ -1962,6 +1941,7 @@ async def dismantle(ctx, *args):
             await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
     else:
         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+
 
 
 # --- Horses ---
@@ -2183,6 +2163,7 @@ async def horsecalc(ctx, *args):
                     await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
 
+
 # --- Pets ---
 
 # Command "pets" - Returns pets overview
@@ -2253,12 +2234,14 @@ async def petsadventure(ctx):
     await ctx.send(embed=embed)
 
 
+
 # --- Events ---
 
 # Command "events" - Main event command
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
-                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent','snowball','snowballfight'))
+                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent','tournament','pettournament','petstournament','pet-tournament','pets-tournament','lootboxsummouning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon',\
+                                    'lootbox-summon','lootboxsummon','summon',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def events_overview(ctx, *args):
 
@@ -2286,6 +2269,10 @@ async def events_overview(ctx, *args):
                 embed = await events.event_legendary(ctx.prefix)
                 await ctx.send(embed=embed)
         elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
+            if (event_name.find('summon') > -1):
+                embed = await events.event_lootboxsummoning(ctx.prefix)
+                await ctx.send(embed=embed)
+            else:
                 embed = await events.event_lootbox(ctx.prefix)
                 await ctx.send(embed=embed)
         elif event_name == 'arena':
@@ -2318,11 +2305,11 @@ async def events_overview(ctx, *args):
         elif (event_name.find('notsomini') > -1):
                 embed = await events.event_notsominiboss(ctx.prefix)
                 await ctx.send(embed=embed)
-        elif (event_name.find('xmas') > -1) or (event_name.find('christmas') > -1):
-                await xmasguide(ctx)
-                return
-        elif (event_name.find('snowball') > -1):
-                embed = await events.event_snowball(ctx.prefix)
+        elif (event_name.find('pet') > -1) or (event_name.find('tournament') > -1):
+                embed = await events.event_pettournamnent(ctx.prefix)
+                await ctx.send(embed=embed)
+        elif event_name.find('summon') > -1:
+                embed = await events.event_lootboxsummoning(ctx.prefix)
                 await ctx.send(embed=embed)
         else:
             await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
@@ -2373,10 +2360,17 @@ async def events_overview(ctx, *args):
             embed = await events.event_notsominiboss(ctx.prefix)
             await ctx.send(embed=embed)
         elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
-            embed = await events.event_lootbox(ctx.prefix)
+            if (invoked.find('summon') > -1):
+                embed = await events.event_lootboxsummoning(ctx.prefix)
+                await ctx.send(embed=embed)
+            else:
+                embed = await events.event_lootbox(ctx.prefix)
+                await ctx.send(embed=embed)
+        elif (invoked.find('pet') > -1) or (invoked.find('tournament') > -1):
+            embed = await events.event_pettournamnent(ctx.prefix)
             await ctx.send(embed=embed)
-        elif (invoked.find('snowball') > -1):
-            embed = await events.event_snowball(ctx.prefix)
+        elif (invoked.find('summon') > -1):
+            embed = await events.event_lootboxsummoning(ctx.prefix)
             await ctx.send(embed=embed)
         else:
             embed = await events.events_overview(ctx.prefix)
@@ -2482,6 +2476,7 @@ async def mytt(ctx):
     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
     await ctx.send(embed=tt_embed)
     
+
 
 # --- Professions ---
 
@@ -2836,7 +2831,7 @@ async def pre(ctx):
                 enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
             
             output = f'You need to cook the following amounts of {emojis.foodfruiticecream} fruit ice cream:\n'\
-                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** fruit ice cream.'
+                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** ice cream.'
 
             for enchanter_level in enchanter_levels:
                 enchanter_level_no = enchanter_level[0]
@@ -2844,7 +2839,7 @@ async def pre(ctx):
                 actual_xp = enchanter_level_xp - xp_rest
                 ice_cream = ceil(actual_xp / 100)
                 xp_rest = 100 - (actual_xp % 100)
-                output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** pickaxes.'
+                output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** ice cream.'
             
             await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] ice cream` to see what materials you need to craft fruit ice cream.')
         else:
@@ -3576,6 +3571,7 @@ async def ascension(ctx):
     await ctx.send(embed=embed)
 
 
+
 # --- Miscellaneous ---
 
 # Command "tip" - Returns a random tip
@@ -3731,18 +3727,34 @@ async def devstats(ctx):
     guilds = len(list(bot.guilds))
     user_number = await get_user_number(ctx)
     latency = bot.latency
+    shard_latency = ''
+    for x in range(0,len(bot.shards)):
+        if bot.shards[x].is_closed() == True:
+            shard_active = '**Inactive**'
+        else:
+            shard_active = 'Active'
+        shard_latency = f'{shard_latency}\n{emojis.bp} Shard {x}: {shard_active}, {round(bot.shards[x].latency*1000)} ms latency'
         
+    shard_latency = shard_latency.strip()
+    
+    general = (
+        f'{emojis.bp} {guilds:,} servers\n'
+        f'{emojis.bp} {len(bot.shards):,} shards\n'
+        f'{emojis.bp} {user_number[0]:,} users\n'
+        f'{emojis.bp} {round(latency*1000):,} ms average latency\n'
+    )
+    
     
     embed = discord.Embed(
         color = global_data.color,
-        title = f'BOT STATISTICS',
-        description =   f'{emojis.bp} {guilds:,} servers\n'\
-                        f'{emojis.bp} {len(bot.shards):,} shards\n'\
-                        f'{emojis.bp} {user_number[0]:,} users\n'\
-                        f'{emojis.bp} {round(latency*1000):,} ms average latency'
+        title = f'BOT STATISTICS'
     )
+        
+    embed.add_field(name='BOT', value=general, inline=False)
+    embed.add_field(name='SHARDS', value=shard_latency, inline=False)
     
     await ctx.send(embed=embed)
+    
     
 
 # --- Links --- 
@@ -3828,9 +3840,11 @@ async def donate(ctx):
     await ctx.send(f'Aw that\'s nice of you but this is a free bot, you know.\nThanks though :heart:')
 
 
+
 # --- Christmas 2020 ---
 # Command "xmas"
 @bot.command(aliases=('xmas','christmas','christmasevent','xmasevent','a0','area0'))
+@commands.is_owner()
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def xmasguide(ctx, *args):
 
@@ -3906,6 +3920,7 @@ async def xmasguide(ctx, *args):
             await ctx.send(embed=embed)
 
 
+
 # --- Silly Stuff ---
 
 # Command "Panda" - because Panda
@@ -3927,6 +3942,7 @@ async def brandon(ctx):
     )    
     
     await ctx.send(embed=embed)
+
 
 
 # --- Testing ---
@@ -3954,6 +3970,7 @@ async def test(ctx):
         result2 = emojize(answer)
         await ctx.send(f'Demojized: {result}\nEmojized: {result2}\nOriginal: {answer}')
     
+
 
 # --- Owner Commands ---
 
