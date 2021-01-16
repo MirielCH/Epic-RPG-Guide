@@ -1636,20 +1636,25 @@ async def dropchance(ctx, *args):
                 horse_chance = 2  
             
             drop_chance = 4*(1+tt_chance)*horse_chance
+            drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
             drop_chance = round(drop_chance,1)
+            drop_chance_worldbuff = round(drop_chance_worldbuff,1)
                     
             if drop_chance >= 100:
                 drop_chance = 100
                     
             hunt_drop_chance = drop_chance/2
+            hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
             hunt_drop_chance = round(hunt_drop_chance,2)
+            hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
                     
             horse_emoji = getattr(emojis, f'horset{horse_tier}')
                 
             await ctx.send(
-                f'Mob drop chances for {emojis.timetravel} **TT {tt_no}** with a {horse_emoji} **T{horse_tier}** horse:\n'
-                f'{emojis.bp}The mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.'
+                f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
+                f'{emojis.bp}Your mob drop chance is **__{drop_chance:g} %__**.\n'
+                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
+                f'{emojis.bp}If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.'
             )
         else:
             await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
@@ -1712,13 +1717,17 @@ async def dropchance(ctx, *args):
             
             if not (horse_chance == 0) and not (horse_tier == 0):
                 drop_chance = 4*(1+tt_chance)*horse_chance
+                drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
                 drop_chance = round(drop_chance,1)
+                drop_chance_worldbuff = round(drop_chance_worldbuff,1)
                 
                 if drop_chance >= 100:
                     drop_chance = 100
                 
                 hunt_drop_chance = drop_chance/2
+                hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
                 hunt_drop_chance = round(hunt_drop_chance,2)
+                hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
                 
                 horse_emoji = getattr(emojis, f'horset{horse_tier}')
                 
@@ -1729,7 +1738,8 @@ async def dropchance(ctx, *args):
             await ctx.send(
                 f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
                 f'{emojis.bp}Your mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n\n'
+                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
+                f'{emojis.bp}If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n\n'
                 f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
                 f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
             )
@@ -2241,7 +2251,7 @@ async def petsadventure(ctx):
 @bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
                                     'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
                                     'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent','tournament','pettournament','petstournament','pet-tournament','pets-tournament','lootboxsummouning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon',\
-                                    'lootbox-summon','lootboxsummon','summon',))
+                                    'lootbox-summon','lootboxsummon','summon','ruby','rubydragon','working','work','nothing',))
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def events_overview(ctx, *args):
 
@@ -2311,6 +2321,9 @@ async def events_overview(ctx, *args):
         elif event_name.find('summon') > -1:
                 embed = await events.event_lootboxsummoning(ctx.prefix)
                 await ctx.send(embed=embed)
+        elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
+                embed = await events.event_rubydragon(ctx.prefix)
+                await ctx.send(embed=embed)
         else:
             await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
     else:
@@ -2371,6 +2384,9 @@ async def events_overview(ctx, *args):
             await ctx.send(embed=embed)
         elif (invoked.find('summon') > -1):
             embed = await events.event_lootboxsummoning(ctx.prefix)
+            await ctx.send(embed=embed)
+        elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
+            embed = await events.event_rubydragon(ctx.prefix)
             await ctx.send(embed=embed)
         else:
             embed = await events.events_overview(ctx.prefix)

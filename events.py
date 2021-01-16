@@ -10,7 +10,8 @@ async def events_overview(prefix):
     sp_events =         f'{emojis.bp} `enchant`\n'\
                         f'{emojis.bp} `epic guard`\n'\
                         f'{emojis.bp} `heal`\n'\
-                        f'{emojis.bp} `lootbox`'
+                        f'{emojis.bp} `lootbox`\n'\
+                        f'{emojis.bp} `ruby dragon`'
     
     mp_events =         f'{emojis.bp} `arena`\n'\
                         f'{emojis.bp} `coin rain`\n'\
@@ -155,6 +156,40 @@ async def event_lootbox(prefix):
     embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
     embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name=f'RECOMMENDED ANSWER', value=rec_answer, inline=False)
+    embed.add_field(name=f'NOTE', value=note, inline=False)
+            
+    return embed
+
+# Ruby dragon event
+async def event_rubydragon(prefix):
+
+    trigger =       f'{emojis.bp} Work commands (chance unknown)'
+    
+    answers =       f'{emojis.bp} `cry`: You get 1 {emojis.arenacookie} arena cookie\n'\
+                    f'{emojis.bp} `move`: You move to another area and spawn the ruby dragon (see below)\n'\
+                    f'{emojis.bp} `sleep`: You get whatever materials you were about to get'
+
+    answers_ruby =  f'{emojis.bp} `run`: The event ends, you get nothing\n'\
+                    f'{emojis.bp} `fight`: You fight the dragon and get 10 {emojis.ruby} rubies if you win\n'\
+                    f'{emojis.bp} `sleep`: The dragon leaves and you get 2 {emojis.ruby} rubies'
+
+    best_answer =   f'{emojis.bp} First `move`, then `fight`. The chance to win is very high or even 100%\n'\
+                    f'{emojis.bp} If you want the original materials instead, use `sleep` right away'
+    
+    note =          f'{emojis.bp} You actually _do_ move to another area, so you have to move back to your previous area after the event'
+        
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'THE RUBY DRAGON EVENT',
+        description =   f'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
+    )    
+    embed.set_footer(text=f'Use {prefix}events to see a list of all events.')
+
+    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
+    embed.add_field(name=f'POSSIBLE ANSWERS (START)', value=answers, inline=False)
+    embed.add_field(name=f'POSSIBLE ANSWERS (RUBY DRAGON)', value=answers_ruby, inline=False)
+    embed.add_field(name=f'BEST ANSWERS', value=best_answer, inline=False)
     embed.add_field(name=f'NOTE', value=note, inline=False)
             
     return embed
