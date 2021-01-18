@@ -165,6 +165,7 @@ async def petsskills(prefix):
     ascended =      f'{emojis.bp} Has a chance to find another pet in adventures\n'\
                     f'{emojis.bp} This skill has to be unlocked with `pets ascend`\n'\
                     f'{emojis.bp} You can only ascend pets that have **all** other skills at SS+\n'\
+                    f'{emojis.bp} Pets can only ascend in {emojis.timetravel} TT 26+\n'\
                     f'{emojis.bp} **You will lose all other skills when ascending**\n'\
                     f'{emojis.bp} You can **not** lose this skill when fusing\n'\
                     f'{emojis.bp} You can **not** rank up this skill with adventures\n'\

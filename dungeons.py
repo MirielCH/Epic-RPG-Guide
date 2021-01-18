@@ -80,8 +80,9 @@ async def design_field_rec_gear(field_rec_gear_data):
     if not player_sword_enchant == '':
         player_sword_enchant = f'[{player_sword_enchant}]'
     
-    field_value =   f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'\
-                    f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}'
+    field_value =   f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}'
+    if not player_armor == 'None':
+        field_value =   f'{field_value}\n{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}'
     
     return field_value
 
@@ -279,11 +280,12 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
         user_stats_check_results = [['AT',user_at_check_result], ['DEF', user_def_check_result], ['LIFE', user_life_check_result]]
         player_stats_check = [player_at, player_def, player_life]
         
-        if dungeon_no in (10,15):
+        if dungeon_no in (10,15,15.2):
             check_results = f'{emojis.bp} Stats are irrelevant for this dungeon'
             if dungeon_no == 10:
                 check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
-            elif dungeon_no == 15:
+            elif dungeon_no in (15,15.2):
+                dungeon_no = str(dungeon_no).replace('.','-')
                 check_results = f'{check_results}\n{emojis.bp} This dungeon has various requirements (see `{prefix}d{dungeon_no}`)'
         elif dungeon_no == 11:
             if user_at_check_result == 'fail':
@@ -442,7 +444,7 @@ async def dungeon(dungeon_data, prefix):
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse'
         strategy = f'{emojis.bp} Use `stab` or `power`'
         strategy_name = 'STRATEGY'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 10:
         embed_description = f'This is a scripted strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -453,7 +455,7 @@ async def dungeon(dungeon_data, prefix):
                   f'{emojis.bp} Defender command sequence:\n{emojis.blank} `weakness spell`\n{emojis.blank} `protect`\n{emojis.blank} `charge edgy armor` x4\n{emojis.blank} `protect` x2\n{emojis.blank} `invulnerability`\n{emojis.blank} `healing spell`\n{emojis.blank} `protect` x5\n'\
                   f'{emojis.bp} Note: The defender will die before the boss.'
         strategy_name = 'STRATEGY'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 11:
         embed_description = f'This is a randomized puzzle-based dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -471,7 +473,7 @@ async def dungeon(dungeon_data, prefix):
                     f'{emojis.bp} Check the image below to see the movement behaviour\n'\
                     f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_11)'
         strategy_name = 'TIPS'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
         img_dungeon = discord.File(global_data.dungeon11, filename='dungeon11.png')
         image_url = 'attachment://dungeon11.png'
         image_name = 'MOVEMENT BEHAVIOUR'
@@ -481,7 +483,7 @@ async def dungeon(dungeon_data, prefix):
                        f'{emojis.bp} {player_armor_emoji} {player_armor}\n{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
         strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_12'
         strategy_name = 'TIPS'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 13:
         embed_description = f'This is a trivia themed strategy dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse\n'\
@@ -493,7 +495,7 @@ async def dungeon(dungeon_data, prefix):
                     f'{emojis.bp} Refer to the image below for a walkthrough\n'\
                     f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_13)'
         strategy_name = 'STRATEGY'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
         img_dungeon = discord.File(global_data.dungeon13, filename='dungeon13.png')
         image_url = 'attachment://dungeon13.png'
         image_name = 'WALKTHROUGH'
@@ -504,9 +506,10 @@ async def dungeon(dungeon_data, prefix):
         strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_14'
         strategy_name = 'STRATEGY'
         boss_life = f'2x {boss_life}'
-        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1}'
+        rewards = f'{emojis.bp} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 15:
-        embed_description = f'This is a strategy dungeon.'
+        dungeon_no = '15-1'
+        embed_description = f'This is a strategy dungeon.\nTo see part 2 of this dungeon, use `{prefix}d15-2`'
         requirements = f'{emojis.bp} {emojis.horset6} T6+ horse\n'\
                        f'{emojis.bp} {player_sword_emoji} {player_sword}\n {emojis.bp} {player_armor_emoji} {player_armor}\n'\
                        f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'\
@@ -514,16 +517,31 @@ async def dungeon(dungeon_data, prefix):
         strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_15'
         strategy_name = 'STRATEGY'
         rewards = f'{emojis.bp} {emojis.timekey} TIME key to unlock super time travel (see `{prefix}stt`)'
+    elif dungeon_no == 15.2:
+        dungeon_no = '15-2'
+        embed_description = f'This is a strategy dungeon.\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
+        requirements = f'{emojis.bp} {emojis.horset6} T6+ horse\n'\
+                       f'{emojis.bp} {player_sword_emoji} {player_sword}\n'\
+                       f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'\
+                       f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
+        strategy = f'{emojis.bp} Currently unknown'
+        strategy_name = 'STRATEGY'
+        rewards = f'{emojis.bp} {emojis.timedragonessence} TIME dragon essence\n{emojis.bp} Unlocks area \'The TOP\''
     else:
         embed_description = ''
         rewards = 'N/A'
         requirements = f'{emojis.bp} N/A'
         strategy = f'{emojis.bp} N/A'
         strategy_name = 'STRATEGY'
-        
+    
+    if isinstance(dungeon_no, float):
+        embed_title = f'DUNGEON {dungeon_no:g}'
+    else:
+        embed_title = f'DUNGEON {dungeon_no}'
+    
     embed = discord.Embed(
         color = global_data.color,
-        title = f'DUNGEON {dungeon_no}',
+        title = embed_title,
         description = embed_description
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -557,9 +575,16 @@ async def dungeon_rec_stats(rec_stats_data, prefix):
     
     for dung_x in rec_stats_data:
         dungeon_no = dung_x[6]
+        if dungeon_no == 15:
+            dungeon_no = '15-1'
+        elif dungeon_no == 15.2:
+            dungeon_no = '15-2'
         
         field_rec_stats = await design_field_rec_stats(dung_x, True)
-        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
+        if isinstance(dungeon_no, float):
+            embed.add_field(name=f'DUNGEON {dungeon_no:g}', value=field_rec_stats, inline=True)
+        else:
+            embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
         
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}dg` : Recommended gear (summary)', inline=False)
             
@@ -584,8 +609,15 @@ async def dungeon_rec_gear(rec_gear_data, prefix, page):
     
     for dung_x in rec_gear_data:
         dungeon_no = dung_x[6]
+        if dungeon_no == 15:
+            dungeon_no = '15-1'
+        elif dungeon_no == 15.2:
+            dungeon_no = '15-2'
         field_rec_gear = await design_field_rec_gear(dung_x)
-        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
+        if isinstance(dungeon_no, float):
+            embed.add_field(name=f'DUNGEON {dungeon_no:g}', value=field_rec_gear, inline=False)
+        else:
+            embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
     
     embed.add_field(name='ADDITIONAL GUIDES', value=f'{emojis.bp} `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n{emojis.bp} `{prefix}ds` : Recommended stats (summary)', inline=False)
             
@@ -613,10 +645,9 @@ async def dungeon_check_stats(dungeon_check_data, user_stats, ctx):
     
     for dung_x in dungeon_check_data:
         dungeon_no = dung_x[4]
-        dungeon_no = int(dungeon_no)
         
         field_check_stats = await design_field_check_stats(dung_x, user_stats, ctx.prefix, True)
-        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_check_stats[0], inline=True)
+        embed.add_field(name=f'DUNGEON {dungeon_no:g}', value=field_check_stats[0], inline=True)
     
     embed.add_field(name='LEGEND', value=legend, inline=False)
     embed.add_field(name='NOTE', value=notes, inline=False)
@@ -639,9 +670,19 @@ async def dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, c
     
     dungeon_no = dungeon_check_data[4]
     
+    if dungeon_no == 15:
+        dungeon_no = '15-1'
+    elif dungeon_no == 15.2:
+        dungeon_no = '15-2'
+    
+    if isinstance(dungeon_no, float):
+        embed_title = f'DUNGEON {dungeon_no:g} STATS CHECK'
+    else:
+        embed_title = f'DUNGEON {dungeon_no} STATS CHECK'
+    
     embed = discord.Embed(
         color = global_data.color,
-        title = f'DUNGEON {dungeon_no} STATS CHECK',
+        title = embed_title,
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
     )    
     embed.set_footer(text=f'Tip: Use {ctx.prefix}dc to see a check of ALL dungeons.')

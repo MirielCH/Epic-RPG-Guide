@@ -68,6 +68,7 @@ async def coolness(prefix):
                 f'{emojis.bp} Open {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes\n'\
                 f'{emojis.bp} Get {emojis.loghyper} HYPER or {emojis.logultra} ULTRA logs from work commands\n'\
                 f'{emojis.bp} Forge ULTRA-EDGY or higher gear\n'\
+                f'{emojis.bp} Ascend a pet\n'\
                 f'{emojis.bp} Do other \'cool\' actions that are currently unknown'
                 
     note =      f'{emojis.bp} You don\'t lose coolness when you time travel\n'\

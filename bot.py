@@ -123,6 +123,11 @@ async def get_prefix(bot, ctx, guild_join=False):
 # Get dungeon data for the dungeon commands
 async def get_dungeon_data(ctx, dungeon):
     
+    if dungeon == 151:
+        dungeon = 15
+    elif dungeon == 152:
+        dungeon = 15.2
+     
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
@@ -162,7 +167,7 @@ async def get_rec_gear_data(ctx, page):
         if page == 1:
             cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
         elif page == 2:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 15')
+            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 16')
         record = cur.fetchall()
         
         if record:
@@ -180,7 +185,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
     try:
         cur=erg_db.cursor()
         if dungeon_no == 0:
-            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons')
+            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 15')
             record = cur.fetchall()
         else:
             cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
@@ -901,7 +906,7 @@ async def tradingguide(ctx):
 # --- Dungeons ---
 
 # Command for dungeons, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
-dungeon_aliases = ['dungeon','dung',]
+dungeon_aliases = ['dungeon','dung','dung15-1','d15-1','dungeon15-1','dung15-2','d15-2','dungeon15-2','dung152','d152','dungeon152','dung151','d151','dungeon151',]
 for x in range(1,16):
     dungeon_aliases.append(f'd{x}')    
     dungeon_aliases.append(f'dungeon{x}') 
@@ -943,10 +948,10 @@ async def dungeon(ctx, *args):
                 await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
         elif len(args) == 1:
             arg = args[0]
-            arg = arg.lower()
+            arg = arg.lower().replace('-','')
             if arg.isnumeric():
                 arg = int(arg)
-                if 1 <= arg <= 15:
+                if 1 <= arg <= 15 or arg in (151,152):
                     dungeon_data = await get_dungeon_data(ctx, arg)
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                     if dungeon_embed[0] == '':
@@ -965,10 +970,10 @@ async def dungeon(ctx, *args):
                 else:
                     await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
     else:
-        dungeon_no = invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','')           
+        dungeon_no = invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','').replace('-','')
         if dungeon_no.isnumeric():
             dungeon_no = int(dungeon_no)
-            if 1 <= dungeon_no <= 15:
+            if 1 <= dungeon_no <= 15 or dungeon_no in (151,152):
                 dungeon_data = await get_dungeon_data(ctx, dungeon_no)
                 dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                 if dungeon_embed[0] == '':
@@ -1154,7 +1159,7 @@ async def dungeoncheck(ctx, *args):
 
 # Command "dungeoncheckX" - Checks user stats against recommended stats of a specific dungeon
 
-dungeon_check_aliases = ['dcheck1','check1','dungcheck1','dc1',]
+dungeon_check_aliases = ['dcheck1','check1','dungcheck1','dc1','dcheck15-1','check15-1','dungcheck15-1','dc15-1','dcheck151','check151','dungcheck151','dc151','dcheck15-2','check15-2','dungcheck15-2','dc15-2','dcheck152','check152','dungcheck152','dc152',]
 for x in range(2,16):
     dungeon_check_aliases.append(f'dcheck{x}')    
     dungeon_check_aliases.append(f'check{x}')
@@ -1187,11 +1192,15 @@ async def dungeoncheck1(ctx, *args):
         invoked = ctx.invoked_with
         invoked = invoked.lower()
         
-        dungeon_no = invoked.replace(f'dungeoncheck','').replace(f'dungcheck','').replace(f'dcheck','').replace(f'check','').replace(f'dc','')
+        dungeon_no = invoked.replace(f'dungeoncheck','').replace(f'dungcheck','').replace(f'dcheck','').replace(f'check','').replace(f'dc','').replace('-','')
         dungeon_no = int(dungeon_no)
     
-        if dungeon_no in (10,15):
+        if dungeon_no in (10,15,151,152):
             user_stats = (0,0,0)
+            if dungeon_no == 151:
+                dungeon_no = 15
+            elif dungeon_no == 152:
+                dungeon_no = 15.2
             dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
             embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
             await ctx.send(embed=embed)
@@ -1414,10 +1423,11 @@ async def area(ctx, *args):
 # --- Trading ---
 
 # Command "trades" - Returns recommended trades of one area or all areas
-trades_aliases = ['tr',]
+trades_aliases = ['tr','trade',]
 for x in range(1,16):
     trades_aliases.append(f'tr{x}')    
     trades_aliases.append(f'trades{x}') 
+    trades_aliases.append(f'trade{x}')
 
 @bot.command(aliases=trades_aliases)
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
@@ -1795,6 +1805,8 @@ async def craft(ctx, *args):
                     'ultra-omega sw': 'ultra-omega sword',
                     'ue armor': 'ultra-edgy armor',
                     'godly sw': 'godly sword',
+                    'g sword': 'godly sword',
+                    'g sw': 'godly sword',
                     'unicorn sw': 'unicorn sword',
                     'brandon': 'epic fish',
                     'salad': 'fruit salad',

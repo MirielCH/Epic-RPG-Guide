@@ -112,7 +112,8 @@ async def ascension(prefix):
     requirements =  f'{emojis.bp} All 5 profession at level 100 (see `{prefix}prlevel`)'
     
     benefits =      f'{emojis.bp} Allows you to use every command ever unlocked in all areas\n'\
-                    f'{emojis.bp} Allows you to get materials normally unavailable in low areas'
+                    f'{emojis.bp} Allows you to get {emojis.ruby} rubies and {emojis.fruitbanana} bananas in area 1+\n'\
+                    f'{emojis.bp} Note: Higher tiered logs and fish are still area locked. Use `rpg h [material]` to see the area they unlock in.'
                 
     notes =         f'{emojis.bp} The syntax is `rpg ascended [command]`\n'\
                     f'{emojis.bp} Trade rates are still area locked'

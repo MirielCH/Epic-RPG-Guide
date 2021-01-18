@@ -199,6 +199,7 @@ blank = '<:blank:771777870498234378>'
 ascension = ':star2:'
 lifeboost = ':sparkles:'
 waitwhat = '<:waitwhat:781624799037489152>'
+none = ''
 
 # Monsters
 mobadultdragon = '<:erg_adultdragon:772908868102914079>'

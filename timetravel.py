@@ -183,15 +183,18 @@ async def supertimetravel(prefix):
     requirements =      f'{emojis.bp} {emojis.timetravel} TT 25+\n'\
                         f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15)'
     
-    starter_bonuses =   f'{emojis.bp} {emojis.statlife} Start with +25 LIFE (50 score)\n'\
-                        f'{emojis.bp} {emojis.statat} Start with +50 AT (400 score)\n'\
-                        f'{emojis.bp} {emojis.statdef} Start with +50 DEF (400 score)\n'\
-                        f'{emojis.bp} {emojis.wolfskin} Start with 10 of each monster drop (400 score)\n'\
-                        f'{emojis.bp} :two: Start in area 2 (750 score)\n'\
-                        f'{emojis.bp} {emojis.lbomega} Start with an OMEGA lootbox (800 score)\n'\
-                        f'{emojis.bp} :three: Start in area 3 (1500 score)\n'\
-                        f'{emojis.bp} {emojis.logultra} Start with 10 ULTRA logs (2250 score)\n'\
-                        f'{emojis.bp} {emojis.lbgodly} Start with a GODLY lootbox (6500 score)'
+    starter_bonuses =   f'{emojis.bp} Start with +25 LIFE (50 score)\n'\
+                        f'{emojis.bp} Start with a new Tier I pet (300 score)\n'\
+                        f'{emojis.bp} Start with +50 AT (400 score)\n'\
+                        f'{emojis.bp} Start with +50 DEF (400 score)\n'\
+                        f'{emojis.bp} Start with 10 of each monster drop (400 score)\n'\
+                        f'{emojis.bp} Start with an OMEGA lootbox (500 score)\n'\
+                        f'{emojis.bp} Start with 10 ULTRA logs (1,750 score)\n'\
+                        f'{emojis.bp} Start in area 2 (2,000 score)\n'\
+                        f'{emojis.bp} Start with a new Tier III pet (1,500 score)\n'\
+                        f'{emojis.bp} Start with a new Tier I pet with 1 skill (4,500 score)\n'\
+                        f'{emojis.bp} Start in area 3 (4,500 score)\n'\
+                        f'{emojis.bp} Start with a GODLY lootbox (6,500 score)'
                         
     guides =            f'{emojis.bp} `{prefix}tt` : Time travel overview\n'\
                         f'{emojis.bp} `{prefix}mytt` : Details about your current TT\n'\
