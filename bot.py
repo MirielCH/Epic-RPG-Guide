@@ -15,7 +15,6 @@ import misc
 import horses
 import pets
 import timetravel
-import events
 import logging
 import logging.handlers
 import dbl
@@ -585,7 +584,7 @@ async def first_time_user(bot, ctx):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds']
+cog_extensions = ['cogs.guilds','cogs.events']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -2257,154 +2256,6 @@ async def petsadventure(ctx):
     
     await ctx.send(embed=embed)
 
-
-
-# --- Events ---
-
-# Command "events" - Main event command
-@bot.command(name='events', aliases=('event','enchantevent','epicguard','guard','jail','heal','healevent','arena','arenaevent','coinrain','rain','cointrumpet','trumpet','catch','catchevent','epictree','tree','epicseed','seed','chop','chopevent','god','godevent','boss','legendary','legendaryboss','bossevent','legendarybossevent',\
-                                    'megalodon','fish','fishevent','megalodonevent','miniboss','minibossevent','specialtrade','tradeevent','specialtradeevent','bigarena','arenabig','bigarenaevent','lottery','ticket','lotteryticket','notsominiboss','notsominibossevent','notsomini',\
-                                    'race','racing','hrace','horserace','horseracing','lootbox','lootboxevent','lb','lbevent','tournament','pettournament','petstournament','pet-tournament','pets-tournament','lootboxsummouning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon',\
-                                    'lootbox-summon','lootboxsummon','summon','ruby','rubydragon','working','work','nothing',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def events_overview(ctx, *args):
-
-    invoked = ctx.invoked_with
-    invoked = invoked.lower()
-
-    if args:
-        event_name = ''
-        for arg in args:
-            event_name = f'{event_name}{arg}'
-        event_name = event_name.lower().replace(' ','').strip()
-        if event_name.find('enchant') > -1:
-                embed = await events.event_enchant(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
-                embed = await events.event_epicguard(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif event_name.find('god') > -1:
-                embed = await events.event_god(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
-                embed = await events.event_heal(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
-                embed = await events.event_legendary(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
-            if (event_name.find('summon') > -1):
-                embed = await events.event_lootboxsummoning(ctx.prefix)
-                await ctx.send(embed=embed)
-            else:
-                embed = await events.event_lootbox(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif event_name == 'arena':
-                embed = await events.event_arena(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
-                embed = await events.event_coinrain(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
-                embed = await events.event_epictree(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
-                embed = await events.event_megalodon(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif event_name == 'miniboss':
-                embed = await events.event_miniboss(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('specialtrade') > -1) or (event_name.find('trade') > -1):
-                embed = await events.event_specialtrade(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('bigarena') > -1):
-                embed = await events.event_bigarena(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('horserace') > -1) or (event_name.find('race') > -1):
-                embed = await events.event_horserace(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('lottery') > -1) or (event_name.find('ticket') > -1):
-                embed = await events.event_lottery(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('notsomini') > -1):
-                embed = await events.event_notsominiboss(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('pet') > -1) or (event_name.find('tournament') > -1):
-                embed = await events.event_pettournamnent(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif event_name.find('summon') > -1:
-                embed = await events.event_lootboxsummoning(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
-                embed = await events.event_rubydragon(ctx.prefix)
-                await ctx.send(embed=embed)
-        else:
-            await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
-    else:
-        if invoked.find('enchant') > -1:
-            embed = await events.event_enchant(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('guard') > -1) or (invoked.find('jail') > -1):
-            embed = await events.event_epicguard(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('heal') > -1):
-            embed = await events.event_heal(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif invoked in ('arena','arenaevent'):
-            embed = await events.event_arena(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('rain') > -1) or (invoked.find('trumpet') > -1) or (invoked.find('catch') > -1):
-            embed = await events.event_coinrain(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('tree') > -1) or (invoked.find('seed') > -1) or (invoked.find('chop') > -1):
-            embed = await events.event_epictree(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif invoked.find('god') > -1:
-            embed = await events.event_god(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked in ('boss','bossevent')) or (invoked.find('legendary') > -1):
-            embed = await events.event_legendary(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('megalodon') > -1) or (invoked.find('fish') > -1):
-            embed = await events.event_megalodon(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif invoked in ('miniboss','minibossevent'):
-            embed = await events.event_miniboss(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('trade') > -1):
-            embed = await events.event_specialtrade(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('bigarena') > -1) or (invoked.find('arenabig') > -1):
-            embed = await events.event_bigarena(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('race') > -1) or (invoked.find('racing') > -1):
-            embed = await events.event_horserace(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('lottery') > -1) or (invoked.find('ticket') > -1):
-            embed = await events.event_lottery(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('notsomini') > -1):
-            embed = await events.event_notsominiboss(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
-            if (invoked.find('summon') > -1):
-                embed = await events.event_lootboxsummoning(ctx.prefix)
-                await ctx.send(embed=embed)
-            else:
-                embed = await events.event_lootbox(ctx.prefix)
-                await ctx.send(embed=embed)
-        elif (invoked.find('pet') > -1) or (invoked.find('tournament') > -1):
-            embed = await events.event_pettournamnent(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('summon') > -1):
-            embed = await events.event_lootboxsummoning(ctx.prefix)
-            await ctx.send(embed=embed)
-        elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
-            embed = await events.event_rubydragon(ctx.prefix)
-            await ctx.send(embed=embed)
-        else:
-            embed = await events.events_overview(ctx.prefix)
-            await ctx.send(embed=embed)
 
 
 # --- Time Travel ---

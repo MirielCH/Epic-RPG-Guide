@@ -265,7 +265,6 @@ async def xmas_overview(prefix):
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
-
     embed.add_field(name=f'ACTIVITIES', value=whattodo, inline=False)
     embed.add_field(name=f'BONUSES', value=bonuses, inline=False)
     embed.add_field(name=f'WHAT TO DO WITH PRESENTS', value=present, inline=False)
@@ -362,7 +361,6 @@ async def xmas_area(prefix):
     )    
     
     embed.set_footer(text=f'{xmas_footer.format(prefix=prefix)}')
-    
     embed.add_field(name='HOW TO ACCESS', value=requirements, inline=False)
     embed.add_field(name='DIFFERENCES TO NORMAL AREAS', value=differences, inline=False)
             
