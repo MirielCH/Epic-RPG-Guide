@@ -18,7 +18,6 @@ import timetravel
 import events
 import logging
 import logging.handlers
-import xmas
 import dbl
 import requests
 from emoji import demojize
@@ -712,7 +711,6 @@ async def settings(ctx):
         )    
         
         embed.set_footer(text=f'Tip: Use {ctx.prefix}setprogress to change your settings.')
-        embed.set_thumbnail(url='attachment://thumbnail.png')
         embed.add_field(name=f'YOUR CURRENT SETTINGS', value=settings, inline=False)
         
         await ctx.send(embed=embed)
@@ -889,7 +887,8 @@ async def tradingguide(ctx):
                     
     trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
                     f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
-                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates'
+                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'\
+                    f'{emojis.bp} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
     
     embed = discord.Embed(
         color = global_data.color,
@@ -1501,9 +1500,12 @@ async def tradecalc(ctx, *args):
         mat = ''
         if area.isnumeric():
             area = int(area)
-            if not 1 <= area <= 9:
-                await ctx.send(f'From area 10 onwards there are no useful trades anymore.\nI therefore only calculate materials from areas 1 to 9')
+            if not 1 <= area <= 15:
+                await ctx.send(f'There is no area {area}.')
                 return
+        else:
+            await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`')
+            return
         for arg in args[1:]:
             argument = arg
             argument = argument.replace('k','000').replace('m','000000')
@@ -1559,12 +1561,12 @@ async def tradecalc(ctx, *args):
         elif mat == 'ruby':
             mat_output = f'{emojis.ruby} rubies'
         
-        traderate_data = await get_traderate_data(ctx, (1, 10))
-        output = await trading.matscalc(traderate_data, (area,mat,amount), prefix)
-        await ctx.send(f'**EXPERIMENTAL FEATURE. THERE BE BUGS.**\n\n{amount:,} {mat_output} in area {area} equals to:\n{output}')
+        traderate_data = await get_traderate_data(ctx, 'all')
+        embed = await trading.matscalc(traderate_data, (area,mat,amount), ctx.prefix)
+        await ctx.send(embed=embed)
     
     else:
-        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 200000 fish`')
+        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`')
 
 
 
@@ -3866,86 +3868,6 @@ async def vote(ctx):
 async def donate(ctx):
     
     await ctx.send(f'Aw that\'s nice of you but this is a free bot, you know.\nThanks though :heart:')
-
-
-
-# --- Christmas 2020 ---
-# Command "xmas"
-@bot.command(aliases=('xmas','christmas','christmasevent','xmasevent','a0','area0'))
-@commands.is_owner()
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def xmasguide(ctx, *args):
-
-    items = ['candycane','xmashat','xmasstar','xmasstarparts','gingerbread','ornament','ornamentpart','present','pineneedle','sleepypotion','snow','snowbox','all']
-    
-    item_name_replacements = {
-        'candycanes': 'candycane',
-        'candy': 'candycane',
-        'cane': 'candycane',
-        'christmashat': 'xmashat',
-        'hat': 'xmashat',
-        'christmasstar': 'xmasstar',
-        'star': 'xmasstar',
-        'christmasstarpart': 'xmasstarparts',
-        'christmasstarparts': 'xmasstarparts',
-        'starpart': 'xmasstarparts',
-        'starparts': 'xmasstarparts',
-        'gingerbreads': 'gingerbread',
-        'ornaments': 'ornament',
-        'ornamentparts': 'ornamentpart',
-        'presents': 'present',
-        'commonpresent': 'present',
-        'commonpresents': 'present',
-        'normalpresent': 'present',
-        'normalpresents': 'present',
-        'pineneedles': 'pineneedle',
-        'pine': 'pineneedle',
-        'needle': 'pineneedle',
-        'needles': 'pineneedle',
-        'sleepypotions': 'sleepypotion',
-        'potion': 'sleepypotion',
-        'potions': 'sleepypotion',
-        'sleepy': 'sleepypotion',
-        'snowboxes': 'snowbox',
-        'box': 'snowbox',
-        'boxes': 'snowbox',
-    }
-
-    if args:
-        arg_full = ''
-        for arg in args:
-            arg = arg.lower()
-            arg_full = f'{arg_full}{arg}'
-        
-        if arg_full.find('item') > -1:
-            embed = await xmas.xmas_item_overview(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
-        elif arg_full.find('area') > -1:
-            embed = await xmas.xmas_area(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
-        
-        if arg_full in item_name_replacements:
-            arg_full = item_name_replacements[arg_full]
-        
-        if arg_full in items:
-            embed = await xmas.xmas_item(ctx.prefix, arg_full)
-            await ctx.send(embed=embed)    
-            return
-        else:
-            embed = await xmas.xmas_overview(ctx.prefix)
-            await ctx.send(embed=embed)
-    else:
-        invoked = ctx.invoked_with
-        invoked = invoked.lower().replace(ctx.prefix,'')
-        if invoked in ('a0','area0'):
-            embed = await xmas.xmas_area(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
-        else:
-            embed = await xmas.xmas_overview(ctx.prefix)
-            await ctx.send(embed=embed)
 
 
 

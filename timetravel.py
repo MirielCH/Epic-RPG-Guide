@@ -189,9 +189,9 @@ async def supertimetravel(prefix):
                         f'{emojis.bp} Start with +50 DEF (400 score)\n'\
                         f'{emojis.bp} Start with 10 of each monster drop (400 score)\n'\
                         f'{emojis.bp} Start with an OMEGA lootbox (500 score)\n'\
+                        f'{emojis.bp} Start with a new Tier III pet (1,500 score)\n'\
                         f'{emojis.bp} Start with 10 ULTRA logs (1,750 score)\n'\
                         f'{emojis.bp} Start in area 2 (2,000 score)\n'\
-                        f'{emojis.bp} Start with a new Tier III pet (1,500 score)\n'\
                         f'{emojis.bp} Start with a new Tier I pet with 1 skill (4,500 score)\n'\
                         f'{emojis.bp} Start in area 3 (4,500 score)\n'\
                         f'{emojis.bp} Start with a GODLY lootbox (6,500 score)'
@@ -221,13 +221,15 @@ async def supertimetravelscore(prefix):
 
     gear =      f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 355.5 score'
     
-    lootboxes = f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 10 score\n'\
-                f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 20 score\n'\
-                f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 30 score\n'\
-                f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 40 score\n'\
-                f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 50 score\n'\
-                f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 60 score\n'\
-                f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 60 score'
+    level =     f'{emojis.bp} 1 level = 1 score'
+    
+    lootboxes = f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 1 score\n'\
+                f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 2 score\n'\
+                f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 3 score\n'\
+                f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 4 score\n'\
+                f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 5 score\n'\
+                f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 50 score\n'\
+                f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = ? score'
                         
     materials = f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'\
                 f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'\
@@ -246,11 +248,12 @@ async def supertimetravelscore(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'SUPER TIME TRAVEL SCORE CALCULATION',
-        description =   f'The score points for the starter bonuses of super time travel are calculated based on your inventory and your gear.'
+        description =   f'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.'
                       
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))
 
+    embed.add_field(name=f'LEVEL', value=level, inline=False)
     embed.add_field(name=f'GEAR', value=gear, inline=False)
     embed.add_field(name=f'LOOTBOXES', value=lootboxes, inline=False)
     embed.add_field(name=f'MATERIALS', value=materials, inline=False)

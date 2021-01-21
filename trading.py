@@ -3,6 +3,7 @@
 import discord
 import emojis
 import global_data
+from operator import itemgetter
 
 # Trade for area X
 async def design_field_trades(area_no):
@@ -130,7 +131,7 @@ async def traderates(traderate_data, prefix):
             
     return embed
 
-# Mats calculator (aX mats > a10 logs)
+# Mats calculator (aX mats > all area mats after trading)
 async def matscalc(traderate_data, areamats, prefix):
 
     current_area = areamats[0]
@@ -142,141 +143,208 @@ async def matscalc(traderate_data, areamats, prefix):
     trade_breakdown = ''
     last_area_trade = ''
     last_area_amount = current_amount
+    areas_best_changes = []
     
-    
-    for index, area in enumerate(traderate_data[original_area-1:]):
-        current_trade = ''
-        current_area = area[0]
-        current_fish_rate = area[1]
-        current_apple_rate = area[2]
-        current_ruby_rate = area[3]
-        
-        if current_mat == 'fish':
-            current_amount = current_amount * current_fish_rate
-            current_mat = 'log'
-        elif (current_mat == 'apple') and not (current_apple_rate == 0):
+    # Get the amount of logs for the current area
+    current_area_rates = traderate_data[current_area-1]
+    current_fish_rate = current_area_rates[1]
+    current_apple_rate = current_area_rates[2]
+    current_ruby_rate = current_area_rates[3]
+    if current_mat == 'fish':
+        current_amount = current_amount * current_fish_rate
+        current_mat = 'log'
+        original_mat = 'log'
+        original_emoji = emojis.fish
+    elif current_mat == 'apple':
+        original_emoji = emojis.apple
+        if not current_apple_rate == 0:
             current_amount = current_amount * current_apple_rate
             current_mat = 'log'
-        elif (current_mat == 'ruby') and not (current_ruby_rate == 0):
+            original_mat = 'log'
+        else:
+            original_mat = 'apple'
+    elif current_mat == 'ruby':
+        original_emoji = emojis.ruby
+        if not current_ruby_rate == 0:
             current_amount = current_amount * current_ruby_rate
             current_mat = 'log'
-  
-        if not index == (len(traderate_data)-original_area):
-            next_area = traderate_data[current_area]
-            next_fish_rate = next_area[1]
-            next_apple_rate = next_area[2]
-            next_ruby_rate = next_area[3]
-            if not current_fish_rate == 0:
-                fish_rate_change = next_fish_rate / current_fish_rate
-            else:
-                fish_rate_change = 0
-            if not current_apple_rate == 0:
-                apple_rate_change = next_apple_rate / current_apple_rate
-            else:
-                apple_rate_change = 0
-            if not current_ruby_rate == 0:
-                ruby_rate_change = next_ruby_rate / current_ruby_rate
-            else:
-                ruby_rate_change = 0
-            if ((current_mat == 'ruby') and (current_ruby_rate  == 0)) or ((current_mat == 'apple') and (current_apple_rate  == 0)):
-                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: No trade available'
-            elif (fish_rate_change in (0,1)) and (apple_rate_change in (0,1)) and (ruby_rate_change in (0,1)):
-                trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {last_area_amount:,} {last_area_trade}'
-            else:
-                all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
-                best_change = max(all_changes)
-                best_change_index = all_changes.index(best_change)
-                
-                if (best_change <= 1) and ((apple_rate_change < 1) or (fish_rate_change < 1) or (ruby_rate_change < 1)):
-                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {emojis.log} logs'
-                else:
-                    if best_change_index == 0:
-                        current_amount = int(current_amount / current_fish_rate)
-                        current_mat = 'fish'
-                        current_trade = f'{emojis.fish} fish'
-                    elif best_change_index == 1:
-                        current_amount = int(current_amount / current_apple_rate)
-                        current_mat = 'apple'
-                        current_trade = f'{emojis.apple} apples'
-                    elif best_change_index == 2:
-                        current_amount = int(current_amount / current_ruby_rate)
-                        current_mat = 'ruby'
-                        current_trade = f'{emojis.ruby} rubies'
-            
-                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {current_trade}'
-                    last_area_trade = current_trade
-                    last_area_amount = current_amount
+            original_mat = 'log'
         else:
-            trade_breakdown =   f'{trade_breakdown}\n{emojis.bp} Area {current_area}+: {current_amount:,} {emojis.log} logs'
-    """    
-    for index, area in reversed(enumerate(traderate_data[0:original_area])):
-        current_trade = ''
-        current_area = area[0]
-        current_fish_rate = area[1]
-        current_apple_rate = area[2]
-        current_ruby_rate = area[3]
+            original_mat = 'ruby'
+    else:
+        original_emoji = emojis.log
         
-        if current_mat == 'fish':
-            current_amount = current_amount * current_fish_rate
-            current_mat = 'log'
-        elif (current_mat == 'apple') and not (current_apple_rate == 0):
-            current_amount = current_amount * current_apple_rate
-            current_mat = 'log'
-        elif (current_mat == 'ruby') and not (current_ruby_rate == 0):
-            current_amount = current_amount * current_ruby_rate
-            current_mat = 'log'
-  
-        if not index == 0:
-            last_area = traderate_data[index-1]
-            last_fish_rate = last_area[1]
-            last_apple_rate = last_area[2]
-            last_ruby_rate = last_area[3]
-            if not last_fish_rate == 0:
-                fish_rate_change = current_fish_rate / last_fish_rate
-            else:
-                fish_rate_change = 0
-            if not last_apple_rate == 0:
-                apple_rate_change = current_apple_rate / last_apple_rate
-            else:
-                apple_rate_change = 0
-            if not last_ruby_rate == 0:
-                ruby_rate_change = current_ruby_rate / last_ruby_rate
-            else:
-                ruby_rate_change = 0
-            if ((current_mat == 'ruby') and (current_ruby_rate  == 0)) or ((current_mat == 'apple') and (current_apple_rate  == 0)):
-                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: No trade available.'
-            elif (fish_rate_change in (0,1)) and (apple_rate_change in (0,1)) and (ruby_rate_change in (0,1)):
-                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: No trade necessary.'
-            else:
-                all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
-                best_change = max(all_changes)
-                best_change_index = all_changes.index(best_change)
-                
-                if (best_change <= 1) and ((apple_rate_change < 1) or (fish_rate_change < 1) or (ruby_rate_change < 1)):
-                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {emojis.log} logs'
-                else:
-                    if best_change_index == 0:
-                        current_amount = int(current_amount / current_fish_rate)
-                        current_mat = 'fish'
-                        current_trade = f'{emojis.fish} fish'
-                    elif best_change_index == 1:
-                        current_amount = int(current_amount / current_apple_rate)
-                        current_mat = 'apple'
-                        current_trade = f'{emojis.apple} apples'
-                    elif best_change_index == 2:
-                        current_amount = int(current_amount / current_ruby_rate)
-                        current_mat = 'ruby'
-                        current_trade = f'{emojis.ruby} rubies'
-            
-                    trade_breakdown = f'{trade_breakdown}\n{emojis.bp} Area {current_area}: {current_amount:,} {current_trade}'
-                    last_area_trade = current_trade
-                    last_area_amount = current_amount
-            
-                trade_breakdown_past = f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {current_trade}.'
+    
+    # Calculate the best trade rate for all areas
+    for area in traderate_data:
+        area_no = area[0]
+        area_no_next = area_no + 1
+        if not area_no_next == len(traderate_data)+1:
+            area_next = traderate_data[area_no_next-1]
         else:
-            trade_breakdown_past =   f'{trade_breakdown_past}\n{emojis.bp} Area {current_area}: Trade to {current_amount:,} {emojis.log} logs.\n'\
-                                f'{emojis.bp} Area 11+: No useful trades anymore.'
-    """                            
-    trade_breakdown = trade_breakdown.strip()        
+            break
+        fish_rate = area[1]
+        fish_rate_next = area_next[1]
+        apple_rate = area[2]
+        apple_rate_next = area_next[2]
+        ruby_rate = area[3]
+        ruby_rate_next = area_next[3]
+        
+        if not fish_rate == 0:
+            fish_rate_change = fish_rate_next / fish_rate
+        else:
+            fish_rate_change = 0
+        if not apple_rate == 0:
+            apple_rate_change = apple_rate_next / apple_rate
+        else:
+            apple_rate_change = 0
+        if not ruby_rate == 0:
+            ruby_rate_change = ruby_rate_next / ruby_rate
+        else:
+            ruby_rate_change = 0
+        
+        if (fish_rate_change == 1) and (apple_rate_change == 1) and (ruby_rate_change == 1):
+            best_change_index = 3
+        else:
+            all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
+            best_change = max(all_changes)
+            best_change_index = all_changes.index(best_change)
+        
+        areas_best_changes.append([area_no, best_change_index, fish_rate, apple_rate, ruby_rate])
+    
+    # Get the amount of logs in each future area
+    trade_amount = current_amount
+    areas_log_amounts = []
+    for best_change in areas_best_changes[original_area-1:]:
+        trade_area = best_change[0]
+        trade_best_change = best_change[1]
+        trade_fish_rate = best_change[2]
+        trade_apple_rate = best_change[3]
+        trade_ruby_rate = best_change[4]
+        if not trade_area+1 > len(areas_best_changes):
+            next_area = areas_best_changes[trade_area]
+            trade_fish_rate_next = next_area[2]
+            trade_apple_rate_next = next_area[3]
+            trade_ruby_rate_next = next_area[4]
 
-    return trade_breakdown
+        if trade_area == original_area:
+            areas_log_amounts.append([trade_area, trade_amount, current_mat])
+
+        if not current_mat == 'log':
+            if current_mat == 'apple':
+                if not trade_apple_rate_next == 0:
+                    trade_amount = trade_amount * trade_apple_rate_next
+                    current_mat = 'log'
+            elif current_mat == 'ruby':
+                if not trade_ruby_rate_next == 0:
+                    trade_amount = trade_amount * trade_ruby_rate_next
+                    current_mat = 'log'
+        
+        if current_mat == 'log':
+            if trade_best_change == 0:
+                trade_amount = trade_amount / trade_fish_rate
+                trade_amount = trade_amount * trade_fish_rate_next
+            elif trade_best_change == 1:
+                trade_amount = trade_amount / trade_apple_rate
+                trade_amount = trade_amount * trade_apple_rate_next
+            elif trade_best_change == 2:
+                trade_amount = trade_amount / trade_ruby_rate
+                trade_amount = trade_amount * trade_ruby_rate_next
+    
+        areas_log_amounts.append([trade_area+1, trade_amount, current_mat])
+    
+    # Get the amount of logs in each past area
+    trade_amount = current_amount
+    past_areas_best_changes = list(reversed(areas_best_changes[:original_area]))
+    for index, best_change in enumerate(past_areas_best_changes):
+        trade_area = best_change[0]
+        trade_fish_rate = best_change[2]
+        trade_apple_rate = best_change[3]
+        trade_ruby_rate = best_change[4]
+        if not trade_area == 1:
+            past_area = past_areas_best_changes[index+1]
+            trade_best_change = past_area[1]
+            trade_fish_rate_past = past_area[2]
+            trade_apple_rate_past = past_area[3]
+            trade_ruby_rate_past = past_area[4]
+
+        if original_mat == 'log':
+            if trade_best_change == 0:
+                trade_amount = trade_amount / trade_fish_rate
+                trade_amount = trade_amount * trade_fish_rate_past
+            elif trade_best_change == 1:
+                trade_amount = trade_amount / trade_apple_rate
+                trade_amount = trade_amount * trade_apple_rate_past
+            elif trade_best_change == 2:
+                trade_amount = trade_amount / trade_ruby_rate
+                trade_amount = trade_amount * trade_ruby_rate_past
+        
+        if not trade_area == 1:
+            areas_log_amounts.append([trade_area-1, trade_amount, original_mat])
+    
+    areas_log_amounts = sorted(areas_log_amounts, key=itemgetter(0))
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'TRADE CALCULATOR',
+        description = f'If you have **{original_amount:,}** {original_emoji} in **area {original_area}** and follow all the trades correctly, this amounts to the following:'
+        )    
+        
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    
+    for area in areas_log_amounts[:12]:
+        area_no = area[0]
+        area_logs = int(area[1])
+        area_mat = area[2]
+        area_trade_rates = traderate_data[area_no-1]
+        area_fish_rate = area_trade_rates[1]
+        area_apple_rate = area_trade_rates[2]
+        area_ruby_rate = area_trade_rates[3]
+
+        area_mats = ''
+        if area_mat == 'log':
+            area_fish = int(area_logs / area_fish_rate)
+            try:
+                area_apple = int(area_logs / area_apple_rate)
+            except:
+                area_apple = 0
+            try:
+                area_ruby = int(area_logs / area_ruby_rate)
+            except:
+                area_ruby = 0
+                
+            if area_no == 10:
+                area_mats = f'{emojis.bp} **{area_logs:,}** {emojis.log}'
+            else:
+                area_mats = f'{emojis.bp} {area_logs:,} {emojis.log}'
+            
+            if area_no in (3, 9):
+                area_mats = f'{area_mats}\n{emojis.bp} **{area_fish:,}** {emojis.fish}'
+            else:
+                area_mats = f'{area_mats}\n{emojis.bp} {area_fish:,} {emojis.fish}'
+                
+            if area_no in (5, 8):
+                area_mats = f'{area_mats}\n{emojis.bp} **{area_apple:,}** {emojis.apple}'
+            else:
+                if not area_apple == 0:    
+                    area_mats = f'{area_mats}\n{emojis.bp} {area_apple:,} {emojis.apple}'
+                    
+            if not area_ruby == 0:
+                area_mats = f'{area_mats}\n{emojis.bp} {area_ruby:,} {emojis.ruby}'
+        else:
+            if area_no >= original_area:
+                if area_mat == 'apple':
+                    area_mats = f'{emojis.bp} {area_logs:,} {emojis.apple}'
+                elif area_mat == 'ruby':
+                    area_mats = f'{emojis.bp} {area_logs:,} {emojis.ruby}'
+            else:
+                area_mats = f'{emojis.bp} N/A'
+        
+        if area_no == 12:
+            area_name = f'AREA {area_no}+'
+        else:
+            area_name = f'AREA {area_no}'
+        
+        embed.add_field(name=area_name, value=area_mats, inline=True)                   
+
+    return embed
