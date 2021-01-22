@@ -13,7 +13,6 @@ import crafting
 import professions
 import misc
 import horses
-import pets
 import timetravel
 import logging
 import logging.handlers
@@ -584,7 +583,7 @@ async def first_time_user(bot, ctx):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events']
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -2184,77 +2183,6 @@ async def horsecalc(ctx, *args):
             ) 
         except asyncio.TimeoutError as error:
                     await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
-
-
-
-# --- Pets ---
-
-# Command "pets" - Returns pets overview
-@bot.command(name='pets', aliases=('pet',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def pets_overview(ctx, *args):
-
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    if args:
-        if len(args)>1:
-            return
-        elif len(args)==1:
-            if (args[0] == 'catch') or (args[0] == 'find') or (args[0] == 'finding') or (args[0] == 'catching'):
-                    x = await petcatch(ctx)
-                    return
-            elif (args[0] == 'fusion') or (args[0] == 'fusing'):
-                    x = await petfusion(ctx)
-                    return
-            elif (args[0] == 'skill') or (args[0] == 'skills'):
-                    x = await petskills(ctx)
-                    return
-            elif (args[0] == 'adv') or (args[0] == 'adventures') or (args[0] == 'adventure'):
-                    x = await petsadventure(ctx)
-                    return
-            else:
-                return
-        else:
-            return
-    else:
-        embed = await pets.pets(ctx.prefix)
-        await ctx.send(embed=embed)
-
-# Command "petcatch" - How to catch pets
-@bot.command(aliases=('petscatch','petscatching','petcatching','petfind','petsfind','petfinding','petsfinding','catchpet','findpet','catchingpet','findingpet','catchpets','findpets','catchingpets','findingpets',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def petcatch(ctx):
-
-    embed = await pets.petscatch(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "petfusion" - Pets fusion guide
-@bot.command(aliases=('petsfusion','fusion','petfusing','petsfusing','fusing','fusepet','fusepets','fusingpet','fusingpets',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def petfusion(ctx):
-
-    embed = await pets.petsfusion(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "petskills" - Pet skills
-@bot.command(aliases=('petsskills','petskill','skill','skills','petsskill',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def petskills(ctx):
-
-    embed = await pets.petsskills(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "petsadventures" - Pet adventures
-@bot.command(aliases=('petsadv','petsadventures','petadv','petadventure','petadventures',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def petsadventure(ctx):
-
-    embed = await pets.petsadventures(ctx.prefix)
-    
-    await ctx.send(embed=embed)
 
 
 
