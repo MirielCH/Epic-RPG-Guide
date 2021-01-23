@@ -1658,6 +1658,8 @@ async def prm(ctx):
                 return
             start_level = pr_merchant.find('**Level**') + 11
             end_level = pr_merchant.find('(', start_level) - 1
+            if end_level == -2:
+                    end_level = pr_merchant.find('\\n', start_level)
             pr_level = pr_merchant[start_level:end_level]
             start_current_xp = pr_merchant.find('**XP**') + 8
             end_current_xp = pr_merchant.find('/', start_current_xp)
@@ -1673,36 +1675,42 @@ async def prm(ctx):
         else:
             await ctx.send(f'Wrong input. Aborting.')
             return
-        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+        if pr_level.isnumeric():
             pr_level = int(pr_level)
-            pr_current_xp = int(pr_current_xp)
-            pr_needed_xp = int(pr_needed_xp)            
-            xp = pr_needed_xp - pr_current_xp
-            logs = xp * 5  
+            if not pr_level == 100:
+                if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    logs = xp * 5  
+                    
+                    levelrange = []
+                    
+                    if pr_level == 99:
+                        merchant_levels = []
+                    elif pr_level + 7 > 100:
+                        levelrange = [pr_level+2, 100,]
+                        merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
+                    else:
+                        levelrange = [pr_level+2, pr_level+7,]
+                        merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
+                    
+                    output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{xp*5:,}** wooden logs'
+
+                    for merchant_level in merchant_levels:
+                        merchant_level_no = merchant_level[0]
+                        merchant_level_xp = merchant_level[1]
+                        output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{merchant_level_xp*5:,}** wooden logs'
             
-            levelrange = []
-            
-            if pr_level == 100:
+                    await ctx.send(output)
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            else:
                 await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
                 return
-            elif pr_level == 99:
-                merchant_levels = []
-            elif pr_level + 7 > 100:
-                levelrange = [pr_level+2, 100,]
-                merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
-            else:
-                levelrange = [pr_level+2, pr_level+7,]
-                merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
-            
-            output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
-                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{xp*5:,}** wooden logs'
-
-            for merchant_level in merchant_levels:
-                merchant_level_no = merchant_level[0]
-                merchant_level_xp = merchant_level[1]
-                output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{merchant_level_xp*5:,}** wooden logs'
-            
-            await ctx.send(output)
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
             return
@@ -1746,6 +1754,8 @@ async def prmtotal(ctx, *args):
                     return
                 start_level = pr_merchant.find('**Level**') + 11
                 end_level = pr_merchant.find('(', start_level) - 1
+                if end_level == -2:
+                    end_level = pr_merchant.find('\\n', start_level)
                 pr_level = pr_merchant[start_level:end_level]
                 start_current_xp = pr_merchant.find('**XP**') + 8
                 end_current_xp = pr_merchant.find('/', start_current_xp)
@@ -1761,28 +1771,33 @@ async def prmtotal(ctx, *args):
             else:
                 await ctx.send(f'Wrong input. Aborting.')
                 return
-            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            if pr_level.isnumeric():
                 pr_level = int(pr_level)
-                pr_current_xp = int(pr_current_xp)
-                pr_needed_xp = int(pr_needed_xp)            
-                xp = pr_needed_xp - pr_current_xp
-                logs_total = xp * 5  
-                
-                levelrange = []
-                
-                if pr_level == 100:
+                if not pr_level == 100:
+                    if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                        pr_current_xp = int(pr_current_xp)
+                        pr_needed_xp = int(pr_needed_xp)            
+                        xp = pr_needed_xp - pr_current_xp
+                        logs_total = xp * 5  
+                        
+                        levelrange = []
+                        
+                        if pr_level == 99:
+                            merchant_levels = []
+                        else:
+                            levelrange = [pr_level+2, 100,]
+                            merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
+                        
+                        for merchant_level in merchant_levels:
+                            logs_total = logs_total + (merchant_level[1] * 5)
+                        
+                        await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level 100.')
+                    else:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                else:
                     await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
                     return
-                elif pr_level == 99:
-                    merchant_levels = []
-                else:
-                    levelrange = [pr_level+2, 100,]
-                    merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
-                
-                for merchant_level in merchant_levels:
-                    logs_total = logs_total + (merchant_level[1] * 5)
-                
-                await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level 100.')
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
                 return
@@ -1818,6 +1833,8 @@ async def prmtotal(ctx, *args):
                         return
                     start_level = pr_merchant.find('**Level**') + 11
                     end_level = pr_merchant.find('(', start_level) - 1
+                    if end_level == -2:
+                        end_level = pr_merchant.find('\\n', start_level)
                     pr_level = pr_merchant[start_level:end_level]
                     start_current_xp = pr_merchant.find('**XP**') + 8
                     end_current_xp = pr_merchant.find('/', start_current_xp)
@@ -1834,32 +1851,38 @@ async def prmtotal(ctx, *args):
                     await ctx.send(f'Wrong input. Aborting.')
                     return
                 
-                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                if pr_level.isnumeric():
                     pr_level = int(pr_level)
-                    pr_current_xp = int(pr_current_xp)
-                    pr_needed_xp = int(pr_needed_xp)            
-                    xp = pr_needed_xp - pr_current_xp
-                    logs_total = xp * 5
-                    
-                    if pr_level >= level:
-                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
-                        return
-                    
-                    levelrange = []
-                    
-                    if pr_level == 100:
+                    if not pr_level == 100:
+                        if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                            pr_level = int(pr_level)
+                            pr_current_xp = int(pr_current_xp)
+                            pr_needed_xp = int(pr_needed_xp)            
+                            xp = pr_needed_xp - pr_current_xp
+                            logs_total = xp * 5
+                            
+                            if pr_level >= level:
+                                await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                                return
+                            
+                            levelrange = []
+                            
+                            if (level - pr_level) == 1:
+                                merchant_levels = []
+                            else:
+                                levelrange = [pr_level+2, level,]
+                                merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
+                            
+                            for merchant_level in merchant_levels:
+                                logs_total = logs_total + (merchant_level[1] * 5)
+                            
+                            await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level {level}.')
+                        else:
+                            await ctx.send(f'Whelp, something went wrong here, sorry.')
+                            return
+                    else:
                         await ctx.send(f'Congratulations on reaching max level merchant.\nI have no idea why you used this command though. :thinking:')
                         return
-                    elif (level - pr_level) == 1:
-                        merchant_levels = []
-                    else:
-                        levelrange = [pr_level+2, level,]
-                        merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
-                    
-                    for merchant_level in merchant_levels:
-                        logs_total = logs_total + (merchant_level[1] * 5)
-                    
-                    await ctx.send(f'You need to sell ~**{logs_total:,}** {emojis.log} wooden logs to reach level {level}.')
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
@@ -1917,6 +1940,8 @@ async def pre(ctx):
                 return
             start_level = pr_worker.find('**Level**') + 11
             end_level = pr_worker.find('(', start_level) - 1
+            if end_level == -2:
+                end_level = pr_worker.find('\\n', start_level)
             pr_level = pr_worker[start_level:end_level]
             start_current_xp = pr_worker.find('**XP**') + 8
             end_current_xp = pr_worker.find('/', start_current_xp)
@@ -1932,40 +1957,45 @@ async def pre(ctx):
         else:
             await ctx.send(f'Wrong input. Aborting.')
             return
-        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+        if pr_level.isnumeric():
             pr_level = int(pr_level)
-            pr_current_xp = int(pr_current_xp)
-            pr_needed_xp = int(pr_needed_xp)            
-            xp = pr_needed_xp - pr_current_xp
-            ice_cream = ceil(xp / 100)
-            xp_rest = 100 - (xp % 100)
-            
-            levelrange = []
-            
-            if pr_level == 100:
+            if not pr_level == 100:
+                if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    ice_cream = ceil(xp / 100)
+                    xp_rest = 100 - (xp % 100)
+                    
+                    levelrange = []
+                    
+                    if pr_level == 99:
+                        enchanter_levels = []
+                    elif pr_level + 7 > 100:
+                        levelrange = [pr_level+2, 100,]
+                        enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)
+                    else:
+                        levelrange = [pr_level+2, pr_level+7,]
+                        enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
+                    
+                    output = f'You need to cook the following amounts of {emojis.foodfruiticecream} fruit ice cream:\n'\
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** ice cream.'
+
+                    for enchanter_level in enchanter_levels:
+                        enchanter_level_no = enchanter_level[0]
+                        enchanter_level_xp = enchanter_level[1]
+                        actual_xp = enchanter_level_xp - xp_rest
+                        ice_cream = ceil(actual_xp / 100)
+                        xp_rest = 100 - (actual_xp % 100)
+                        output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** ice cream.'
+                    
+                    await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] ice cream` to see what materials you need to craft fruit ice cream.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            else:
                 await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
                 return
-            elif pr_level == 99:
-                enchanter_levels = []
-            elif pr_level + 7 > 100:
-                levelrange = [pr_level+2, 100,]
-                enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)
-            else:
-                levelrange = [pr_level+2, pr_level+7,]
-                enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
-            
-            output = f'You need to cook the following amounts of {emojis.foodfruiticecream} fruit ice cream:\n'\
-                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** ice cream.'
-
-            for enchanter_level in enchanter_levels:
-                enchanter_level_no = enchanter_level[0]
-                enchanter_level_xp = enchanter_level[1]
-                actual_xp = enchanter_level_xp - xp_rest
-                ice_cream = ceil(actual_xp / 100)
-                xp_rest = 100 - (actual_xp % 100)
-                output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** ice cream.'
-            
-            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] ice cream` to see what materials you need to craft fruit ice cream.')
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
             return
@@ -2009,6 +2039,8 @@ async def pretotal(ctx, *args):
                     return
                 start_level = pr_enchanter.find('**Level**') + 11
                 end_level = pr_enchanter.find('(', start_level) - 1
+                if end_level == -2:
+                    end_level = pr_enchanter.find('\\n', start_level)
                 pr_level = pr_enchanter[start_level:end_level]
                 start_current_xp = pr_enchanter.find('**XP**') + 8
                 end_current_xp = pr_enchanter.find('/', start_current_xp)
@@ -2024,34 +2056,40 @@ async def pretotal(ctx, *args):
             else:
                 await ctx.send(f'Wrong input. Aborting.')
                 return
-            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            if pr_level.isnumeric():
                 pr_level = int(pr_level)
-                pr_current_xp = int(pr_current_xp)
-                pr_needed_xp = int(pr_needed_xp)            
-                xp = pr_needed_xp - pr_current_xp
-                ice_cream = ceil(xp / 100)
-                xp_rest = 100 - (xp % 100)
-                ice_cream_total = ice_cream
-                
-                levelrange = []
-                
-                if pr_level == 100:
+                if not pr_level == 100:
+                    if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                        pr_level = int(pr_level)
+                        pr_current_xp = int(pr_current_xp)
+                        pr_needed_xp = int(pr_needed_xp)            
+                        xp = pr_needed_xp - pr_current_xp
+                        ice_cream = ceil(xp / 100)
+                        xp_rest = 100 - (xp % 100)
+                        ice_cream_total = ice_cream
+                        
+                        levelrange = []
+                        
+                        if pr_level == 99:
+                            enchanter_levels = []
+                        else:
+                            levelrange = [pr_level+2, 100,]
+                            enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
+                        
+                        for enchanter_level in enchanter_levels:
+                            enchanter_level_xp = enchanter_level[1]
+                            actual_xp = enchanter_level_xp - xp_rest
+                            ice_cream = ceil(actual_xp / 100)
+                            ice_cream_total = ice_cream_total + ice_cream
+                            xp_rest = 100 - (actual_xp % 100)
+                        
+                        await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level 100.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
+                    else:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                else:
                     await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
                     return
-                elif pr_level == 99:
-                    enchanter_levels = []
-                else:
-                    levelrange = [pr_level+2, 100,]
-                    enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
-                
-                for enchanter_level in enchanter_levels:
-                    enchanter_level_xp = enchanter_level[1]
-                    actual_xp = enchanter_level_xp - xp_rest
-                    ice_cream = ceil(actual_xp / 100)
-                    ice_cream_total = ice_cream_total + ice_cream
-                    xp_rest = 100 - (actual_xp % 100)
-                
-                await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level 100.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
                 return
@@ -2087,6 +2125,8 @@ async def pretotal(ctx, *args):
                         return
                     start_level = pr_enchanter.find('**Level**') + 11
                     end_level = pr_enchanter.find('(', start_level) - 1
+                    if end_level == -2:
+                        end_level = pr_enchanter.find('\\n', start_level)
                     pr_level = pr_enchanter[start_level:end_level]
                     start_current_xp = pr_enchanter.find('**XP**') + 8
                     end_current_xp = pr_enchanter.find('/', start_current_xp)
@@ -2103,38 +2143,44 @@ async def pretotal(ctx, *args):
                     await ctx.send(f'Wrong input. Aborting.')
                     return
                 
-                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                if pr_level.isnumeric():
                     pr_level = int(pr_level)
-                    pr_current_xp = int(pr_current_xp)
-                    pr_needed_xp = int(pr_needed_xp)            
-                    xp = pr_needed_xp - pr_current_xp
-                    ice_cream = ceil(xp / 100)
-                    xp_rest = 100 - (xp % 100)
-                    ice_cream_total = ice_cream
-                    
-                    if pr_level >= level:
-                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
-                        return
-                    
-                    levelrange = []
-                    
-                    if pr_level == 100:
+                    if not pr_level == 100:
+                        if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                            pr_level = int(pr_level)
+                            pr_current_xp = int(pr_current_xp)
+                            pr_needed_xp = int(pr_needed_xp)            
+                            xp = pr_needed_xp - pr_current_xp
+                            ice_cream = ceil(xp / 100)
+                            xp_rest = 100 - (xp % 100)
+                            ice_cream_total = ice_cream
+                            
+                            if pr_level >= level:
+                                await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                                return
+                            
+                            levelrange = []
+                            
+                            if (level - pr_level) == 1:
+                                enchanter_levels = []
+                            else:
+                                levelrange = [pr_level+2, level,]
+                                enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
+                            
+                            for enchanter_level in enchanter_levels:
+                                enchanter_level_xp = enchanter_level[1]
+                                actual_xp = enchanter_level_xp - xp_rest
+                                ice_cream = ceil(actual_xp / 100)
+                                ice_cream_total = ice_cream_total + ice_cream
+                                xp_rest = 100 - (actual_xp % 100)
+                            
+                            await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level {level}.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
+                        else:
+                            await ctx.send(f'Whelp, something went wrong here, sorry.')
+                            return
+                    else:
                         await ctx.send(f'Congratulations on reaching max level enchanter.\nI have no idea why you used this command though. :thinking:')
                         return
-                    elif (level - pr_level) == 1:
-                        enchanter_levels = []
-                    else:
-                        levelrange = [pr_level+2, level,]
-                        enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
-                    
-                    for enchanter_level in enchanter_levels:
-                        enchanter_level_xp = enchanter_level[1]
-                        actual_xp = enchanter_level_xp - xp_rest
-                        ice_cream = ceil(actual_xp / 100)
-                        ice_cream_total = ice_cream_total + ice_cream
-                        xp_rest = 100 - (actual_xp % 100)
-                    
-                    await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level {level}.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
@@ -2185,6 +2231,8 @@ async def prw(ctx):
                 return
             start_level = pr_worker.find('**Level**') + 11
             end_level = pr_worker.find('(', start_level) - 1
+            if end_level == -2:
+                    end_level = pr_worker.find('\\n', start_level)
             pr_level = pr_worker[start_level:end_level]
             start_current_xp = pr_worker.find('**XP**') + 8
             end_current_xp = pr_worker.find('/', start_current_xp)
@@ -2200,40 +2248,46 @@ async def prw(ctx):
         else:
             await ctx.send(f'Wrong input. Aborting.')
             return
-        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+        if pr_level.isnumeric():
             pr_level = int(pr_level)
-            pr_current_xp = int(pr_current_xp)
-            pr_needed_xp = int(pr_needed_xp)            
-            xp = pr_needed_xp - pr_current_xp
-            pickaxes = ceil(xp / 100)
-            xp_rest = 100 - (xp % 100)
-            
-            levelrange = []
-            
-            if pr_level == 100:
+            if not pr_level == 100:
+                if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    pickaxes = ceil(xp / 100)
+                    xp_rest = 100 - (xp % 100)
+                    
+                    levelrange = []
+                    
+                    if pr_level == 99:
+                        worker_levels = []
+                    elif pr_level + 7 > 100:
+                        levelrange = [pr_level+2, 100,]
+                        worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)
+                    else:
+                        levelrange = [pr_level+2, pr_level+7,]
+                        worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
+                    
+                    output = f'You need to cook the following amounts of {emojis.foodbananapickaxe} banana pickaxes:\n'\
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{pickaxes:,}** pickaxes.'
+
+                    for worker_level in worker_levels:
+                        worker_level_no = worker_level[0]
+                        worker_level_xp = worker_level[1]
+                        actual_xp = worker_level_xp - xp_rest
+                        pickaxes = ceil(actual_xp / 100)
+                        xp_rest = 100 - (actual_xp % 100)
+                        output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{pickaxes:,}** pickaxes.'
+                    
+                    await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] pickaxe` to see what materials you need to craft banana pickaxes.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            else:
                 await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
                 return
-            elif pr_level == 99:
-                worker_levels = []
-            elif pr_level + 7 > 100:
-                levelrange = [pr_level+2, 100,]
-                worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)
-            else:
-                levelrange = [pr_level+2, pr_level+7,]
-                worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
-            
-            output = f'You need to cook the following amounts of {emojis.foodbananapickaxe} banana pickaxes:\n'\
-                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{pickaxes:,}** pickaxes.'
-
-            for worker_level in worker_levels:
-                worker_level_no = worker_level[0]
-                worker_level_xp = worker_level[1]
-                actual_xp = worker_level_xp - xp_rest
-                pickaxes = ceil(actual_xp / 100)
-                xp_rest = 100 - (actual_xp % 100)
-                output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{pickaxes:,}** pickaxes.'
-            
-            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] pickaxe` to see what materials you need to craft banana pickaxes.')
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
             return
@@ -2277,6 +2331,8 @@ async def prwtotal(ctx, *args):
                     return
                 start_level = pr_worker.find('**Level**') + 11
                 end_level = pr_worker.find('(', start_level) - 1
+                if end_level == -2:
+                    end_level = pr_worker.find('\\n', start_level)
                 pr_level = pr_worker[start_level:end_level]
                 start_current_xp = pr_worker.find('**XP**') + 8
                 end_current_xp = pr_worker.find('/', start_current_xp)
@@ -2292,34 +2348,40 @@ async def prwtotal(ctx, *args):
             else:
                 await ctx.send(f'Wrong input. Aborting.')
                 return
-            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            if pr_level.isnumeric():
                 pr_level = int(pr_level)
-                pr_current_xp = int(pr_current_xp)
-                pr_needed_xp = int(pr_needed_xp)            
-                xp = pr_needed_xp - pr_current_xp
-                pickaxes = ceil(xp / 100)
-                xp_rest = 100 - (xp % 100)
-                pickaxes_total = pickaxes
-                
-                levelrange = []
-                
-                if pr_level == 100:
+                if not pr_level == 100:
+                    if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                        pr_level = int(pr_level)
+                        pr_current_xp = int(pr_current_xp)
+                        pr_needed_xp = int(pr_needed_xp)            
+                        xp = pr_needed_xp - pr_current_xp
+                        pickaxes = ceil(xp / 100)
+                        xp_rest = 100 - (xp % 100)
+                        pickaxes_total = pickaxes
+                        
+                        levelrange = []
+                        
+                        if pr_level == 99:
+                            worker_levels = []
+                        else:
+                            levelrange = [pr_level+2, 100,]
+                            worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
+                        
+                        for worker_level in worker_levels:
+                            worker_level_xp = worker_level[1]
+                            actual_xp = worker_level_xp - xp_rest
+                            pickaxes = ceil(actual_xp / 100)
+                            pickaxes_total = pickaxes_total + pickaxes
+                            xp_rest = 100 - (actual_xp % 100)
+                        
+                        await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level 100.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
+                    else:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                else:
                     await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
                     return
-                elif pr_level == 99:
-                    worker_levels = []
-                else:
-                    levelrange = [pr_level+2, 100,]
-                    worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
-                
-                for worker_level in worker_levels:
-                    worker_level_xp = worker_level[1]
-                    actual_xp = worker_level_xp - xp_rest
-                    pickaxes = ceil(actual_xp / 100)
-                    pickaxes_total = pickaxes_total + pickaxes
-                    xp_rest = 100 - (actual_xp % 100)
-                
-                await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level 100.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
                 return
@@ -2355,6 +2417,8 @@ async def prwtotal(ctx, *args):
                         return
                     start_level = pr_worker.find('**Level**') + 11
                     end_level = pr_worker.find('(', start_level) - 1
+                    if end_level == -2:
+                        end_level = pr_worker.find('\\n', start_level)
                     pr_level = pr_worker[start_level:end_level]
                     start_current_xp = pr_worker.find('**XP**') + 8
                     end_current_xp = pr_worker.find('/', start_current_xp)
@@ -2371,38 +2435,44 @@ async def prwtotal(ctx, *args):
                     await ctx.send(f'Wrong input. Aborting.')
                     return
                 
-                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                if pr_level.isnumeric():
                     pr_level = int(pr_level)
-                    pr_current_xp = int(pr_current_xp)
-                    pr_needed_xp = int(pr_needed_xp)            
-                    xp = pr_needed_xp - pr_current_xp
-                    pickaxes = ceil(xp / 100)
-                    xp_rest = 100 - (xp % 100)
-                    pickaxes_total = pickaxes
-                    
-                    if pr_level >= level:
-                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
-                        return
-                    
-                    levelrange = []
-                    
-                    if pr_level == 100:
+                    if not pr_level == 100:                
+                        if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                            pr_level = int(pr_level)
+                            pr_current_xp = int(pr_current_xp)
+                            pr_needed_xp = int(pr_needed_xp)            
+                            xp = pr_needed_xp - pr_current_xp
+                            pickaxes = ceil(xp / 100)
+                            xp_rest = 100 - (xp % 100)
+                            pickaxes_total = pickaxes
+                            
+                            if pr_level >= level:
+                                await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                                return
+                            
+                            levelrange = []
+                            
+                            if (level - pr_level) == 1:
+                                worker_levels = []
+                            else:
+                                levelrange = [pr_level+2, level,]
+                                worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
+                            
+                            for worker_level in worker_levels:
+                                worker_level_xp = worker_level[1]
+                                actual_xp = worker_level_xp - xp_rest
+                                pickaxes = ceil(actual_xp / 100)
+                                pickaxes_total = pickaxes_total + pickaxes
+                                xp_rest = 100 - (actual_xp % 100)
+                            
+                            await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level {level}.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
+                        else:
+                            await ctx.send(f'Whelp, something went wrong here, sorry.')
+                            return
+                    else:
                         await ctx.send(f'Congratulations on reaching max level worker.\nI have no idea why you used this command though. :thinking:')
                         return
-                    elif (level - pr_level) == 1:
-                        worker_levels = []
-                    else:
-                        levelrange = [pr_level+2, level,]
-                        worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
-                    
-                    for worker_level in worker_levels:
-                        worker_level_xp = worker_level[1]
-                        actual_xp = worker_level_xp - xp_rest
-                        pickaxes = ceil(actual_xp / 100)
-                        pickaxes_total = pickaxes_total + pickaxes
-                        xp_rest = 100 - (actual_xp % 100)
-                    
-                    await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level {level}.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
@@ -2453,6 +2523,8 @@ async def prl(ctx):
                 return
             start_level = pr_lootboxer.find('**Level**') + 11
             end_level = pr_lootboxer.find('(', start_level) - 1
+            if end_level == -2:
+                    end_level = pr_lootboxer.find('\\n', start_level)
             pr_level = pr_lootboxer[start_level:end_level]
             start_current_xp = pr_lootboxer.find('**XP**') + 8
             end_current_xp = pr_lootboxer.find('/', start_current_xp)
@@ -2468,40 +2540,46 @@ async def prl(ctx):
         else:
             await ctx.send(f'Wrong input. Aborting.')
             return
-        if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+        if pr_level.isnumeric():
             pr_level = int(pr_level)
-            pr_current_xp = int(pr_current_xp)
-            pr_needed_xp = int(pr_needed_xp)            
-            xp = pr_needed_xp - pr_current_xp
-            lootboxes = ceil(xp / 100)
-            xp_rest = 100 - (xp % 100)
-            
-            levelrange = []
-            
-            if pr_level == 100:
+            if not pr_level == 100:
+                if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                    pr_level = int(pr_level)
+                    pr_current_xp = int(pr_current_xp)
+                    pr_needed_xp = int(pr_needed_xp)            
+                    xp = pr_needed_xp - pr_current_xp
+                    lootboxes = ceil(xp / 100)
+                    xp_rest = 100 - (xp % 100)
+                    
+                    levelrange = []
+                    
+                    if pr_level == 99:
+                        worker_levels = []
+                    elif pr_level + 7 > 100:
+                        levelrange = [pr_level+2, 100,]
+                        worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
+                    else:
+                        levelrange = [pr_level+2, pr_level+7,]
+                        worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
+                    
+                    output = f'You need to cook the following amounts of {emojis.foodfilledlootbox} filled lootboxes:\n'\
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{lootboxes:,}** lootboxes.'
+
+                    for worker_level in worker_levels:
+                        worker_level_no = worker_level[0]
+                        worker_level_xp = worker_level[1]
+                        actual_xp = worker_level_xp - xp_rest
+                        lootboxes = ceil(actual_xp / 100)
+                        xp_rest = 100 - (actual_xp % 100)
+                        output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{lootboxes:,}** lootboxes.'
+                    
+                    await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] lootboxes` to see what materials you need to craft filled lootboxes.')
+                else:
+                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    return
+            else:
                 await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
                 return
-            elif pr_level == 99:
-                worker_levels = []
-            elif pr_level + 7 > 100:
-                levelrange = [pr_level+2, 100,]
-                worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
-            else:
-                levelrange = [pr_level+2, pr_level+7,]
-                worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
-            
-            output = f'You need to cook the following amounts of {emojis.foodfilledlootbox} filled lootboxes:\n'\
-                     f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{lootboxes:,}** lootboxes.'
-
-            for worker_level in worker_levels:
-                worker_level_no = worker_level[0]
-                worker_level_xp = worker_level[1]
-                actual_xp = worker_level_xp - xp_rest
-                lootboxes = ceil(actual_xp / 100)
-                xp_rest = 100 - (actual_xp % 100)
-                output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{lootboxes:,}** lootboxes.'
-            
-            await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] lootboxes` to see what materials you need to craft filled lootboxes.')
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
             return
@@ -2545,6 +2623,8 @@ async def prltotal(ctx, *args):
                     return
                 start_level = pr_lootboxer.find('**Level**') + 11
                 end_level = pr_lootboxer.find('(', start_level) - 1
+                if end_level == -2:
+                    end_level = pr_lootboxer.find('\\n', start_level)
                 pr_level = pr_lootboxer[start_level:end_level]
                 start_current_xp = pr_lootboxer.find('**XP**') + 8
                 end_current_xp = pr_lootboxer.find('/', start_current_xp)
@@ -2560,34 +2640,40 @@ async def prltotal(ctx, *args):
             else:
                 await ctx.send(f'Wrong input. Aborting.')
                 return
-            if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+            if pr_level.isnumeric():
                 pr_level = int(pr_level)
-                pr_current_xp = int(pr_current_xp)
-                pr_needed_xp = int(pr_needed_xp)            
-                xp = pr_needed_xp - pr_current_xp
-                lootboxes = ceil(xp / 100)
-                xp_rest = 100 - (xp % 100)
-                lootboxes_total = lootboxes
-                
-                levelrange = []
-                
-                if pr_level == 100:
+                if not pr_level == 100:
+                    if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                        pr_level = int(pr_level)
+                        pr_current_xp = int(pr_current_xp)
+                        pr_needed_xp = int(pr_needed_xp)            
+                        xp = pr_needed_xp - pr_current_xp
+                        lootboxes = ceil(xp / 100)
+                        xp_rest = 100 - (xp % 100)
+                        lootboxes_total = lootboxes
+                        
+                        levelrange = []
+                        
+                        if pr_level == 99:
+                            lootboxer_levels = []
+                        else:
+                            levelrange = [pr_level+2, 100,]
+                            lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
+                        
+                        for lootboxer_level in lootboxer_levels:
+                            lootboxer_level_xp = lootboxer_level[1]
+                            actual_xp = lootboxer_level_xp - xp_rest
+                            lootboxes = ceil(actual_xp / 100)
+                            lootboxes_total = lootboxes_total + lootboxes
+                            xp_rest = 100 - (actual_xp % 100)
+                        
+                        await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level 100.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
+                    else:
+                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        return
+                else:
                     await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
                     return
-                elif pr_level == 99:
-                    lootboxer_levels = []
-                else:
-                    levelrange = [pr_level+2, 100,]
-                    lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
-                
-                for lootboxer_level in lootboxer_levels:
-                    lootboxer_level_xp = lootboxer_level[1]
-                    actual_xp = lootboxer_level_xp - xp_rest
-                    lootboxes = ceil(actual_xp / 100)
-                    lootboxes_total = lootboxes_total + lootboxes
-                    xp_rest = 100 - (actual_xp % 100)
-                
-                await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level 100.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
                 return
@@ -2623,6 +2709,8 @@ async def prltotal(ctx, *args):
                         return
                     start_level = pr_lootboxer.find('**Level**') + 11
                     end_level = pr_lootboxer.find('(', start_level) - 1
+                    if end_level == -2:
+                        end_level = pr_lootboxer.find('\\n', start_level)
                     pr_level = pr_lootboxer[start_level:end_level]
                     start_current_xp = pr_lootboxer.find('**XP**') + 8
                     end_current_xp = pr_lootboxer.find('/', start_current_xp)
@@ -2639,38 +2727,44 @@ async def prltotal(ctx, *args):
                     await ctx.send(f'Wrong input. Aborting.')
                     return
                 
-                if pr_level.isnumeric() and pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                if pr_level.isnumeric():
                     pr_level = int(pr_level)
-                    pr_current_xp = int(pr_current_xp)
-                    pr_needed_xp = int(pr_needed_xp)            
-                    xp = pr_needed_xp - pr_current_xp
-                    lootboxes = ceil(xp / 100)
-                    xp_rest = 100 - (xp % 100)
-                    lootboxes_total = lootboxes
-                    
-                    if pr_level >= level:
-                        await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
-                        return
-                    
-                    levelrange = []
-                    
-                    if pr_level == 100:
+                    if not pr_level == 100:
+                        if pr_current_xp.isnumeric() and pr_needed_xp.isnumeric():
+                            pr_level = int(pr_level)
+                            pr_current_xp = int(pr_current_xp)
+                            pr_needed_xp = int(pr_needed_xp)            
+                            xp = pr_needed_xp - pr_current_xp
+                            lootboxes = ceil(xp / 100)
+                            xp_rest = 100 - (xp % 100)
+                            lootboxes_total = lootboxes
+                            
+                            if pr_level >= level:
+                                await ctx.send(f'So, let\'s summarize.\nYou are level {pr_level} and you want to get to level {level}.\n{emojis.waitwhat}')
+                                return
+                            
+                            levelrange = []
+                            
+                            if (level - pr_level) == 1:
+                                lootboxer_levels = []
+                            else:
+                                levelrange = [pr_level+2, level,]
+                                lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
+                            
+                            for lootboxer_level in lootboxer_levels:
+                                lootboxer_level_xp = lootboxer_level[1]
+                                actual_xp = lootboxer_level_xp - xp_rest
+                                lootboxes = ceil(actual_xp / 100)
+                                lootboxes_total = lootboxes_total + lootboxes
+                                xp_rest = 100 - (actual_xp % 100)
+                            
+                            await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level {level}.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
+                        else:
+                            await ctx.send(f'Whelp, something went wrong here, sorry.')
+                            return
+                    else:
                         await ctx.send(f'Congratulations on reaching max level lootboxer.\nI have no idea why you used this command though. :thinking:')
                         return
-                    elif (level - pr_level) == 1:
-                        lootboxer_levels = []
-                    else:
-                        levelrange = [pr_level+2, level,]
-                        lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
-                    
-                    for lootboxer_level in lootboxer_levels:
-                        lootboxer_level_xp = lootboxer_level[1]
-                        actual_xp = lootboxer_level_xp - xp_rest
-                        lootboxes = ceil(actual_xp / 100)
-                        lootboxes_total = lootboxes_total + lootboxes
-                        xp_rest = 100 - (actual_xp % 100)
-                    
-                    await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level {level}.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return

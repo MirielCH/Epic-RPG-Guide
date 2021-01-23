@@ -494,10 +494,10 @@ async def log_error(ctx, error, guild_join=False):
             cur=erg_db.cursor()
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error), settings))
         except sqlite3.Error as db_error:
-            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
+            print(f'Error inserting error (ha) into database.\n{db_error}')
     else:
         try:
             cur=erg_db.cursor()
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
         except sqlite3.Error as db_error:
-            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
+            print(f'Error inserting error (ha) into database.\n{db_error}')
