@@ -12,14 +12,12 @@ import trading
 import crafting
 import professions
 import misc
-import horses
 import timetravel
 import logging
 import logging.handlers
 import dbl
 import requests
-from emoji import demojize
-from emoji import emojize
+import database
 
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -44,19 +42,6 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DBL_TOKEN = os.getenv('DBL_TOKEN')
 
-# Set name of database files
-dbfile = global_data.dbfile
-default_dbfile = global_data.default_dbfile
-
-"""
-# Check if database exists, if not, create empty one
-if not os.path.isfile(dbfile):
-    shutil.copy(default_dbfile,dbfile)
-"""
-
-# Open connection to the local database    
-erg_db = sqlite3.connect(dbfile, isolation_level=None)
-
 @tasks.loop(minutes=30.0)
 async def update_stats(bot):
     try:
@@ -68,495 +53,8 @@ async def update_stats(bot):
             r = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)    
             logger.info(f'Posted server count ({guilds}) and shard count ({shards}), status code: {r.status_code}')
     except:
-        logger.exception(f'Failed to post server count ({guilds}), status code: {r.status_code}')
+        logger.exception(f'Failed to post server count.')
 
-
-         
-# --- Database: Get Data ---
-
-# Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
-async def get_prefix_all(bot, ctx):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
-        record = cur.fetchone()
-        
-        if record:
-            prefix = record[1]
-        else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.default_prefix,))
-            prefix = global_data.default_prefix
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return commands.when_mentioned_or(prefix)(bot, ctx)
-
-# Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
-async def get_prefix(bot, ctx, guild_join=False):
-    
-    if guild_join == False:
-        guild = ctx.guild
-    else:
-        guild = ctx
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (guild.id,))
-        record = cur.fetchone()
-        
-        if record:
-            prefix = record[1]
-        else:
-            prefix = global_data.default_prefix
-    except sqlite3.Error as error:
-        if guild_join == False:
-            await log_error(ctx, error)
-        else:
-            await log_error(ctx, error, True)
-        
-    return prefix
-
-# Get dungeon data for the dungeon commands
-async def get_dungeon_data(ctx, dungeon):
-    
-    if dungeon == 151:
-        dungeon = 15
-    elif dungeon == 152:
-        dungeon = 15.2
-     
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
-        record = cur.fetchone()
-        
-        if record:
-            dungeon_data = record
-        else:
-            await log_error(ctx, 'No dungeon data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return dungeon_data
-
-# Get dungeon data for the recommended stats of all dungeons
-async def get_rec_stats_data(ctx):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d')
-        record = cur.fetchall()
-        
-        if record:
-            rec_stats_data = record
-        else:
-            await log_error(ctx, 'No recommended dungeon stats data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return rec_stats_data
-
-# Get dungeon data for the recommended gear of all dungeons
-async def get_rec_gear_data(ctx, page):
-    
-    try:
-        cur=erg_db.cursor()
-        if page == 1:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
-        elif page == 2:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 16')
-        record = cur.fetchall()
-        
-        if record:
-            rec_gear_data = record
-        else:
-            await log_error(ctx, 'No recommended dungeon gear data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return rec_gear_data
-
-# Get dungeon data for the dungeon check command
-async def get_dungeon_check_data(ctx, dungeon_no=0):
-    
-    try:
-        cur=erg_db.cursor()
-        if dungeon_no == 0:
-            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 15')
-            record = cur.fetchall()
-        else:
-            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
-            record = cur.fetchone()
-            
-        if record:
-            dungeon_check_data = record
-        else:
-            await log_error(ctx, 'No recommended dungeon check data found in database.')            
-    
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return dungeon_check_data
-
-# Get area data for the area embeds
-async def get_area_data(ctx, area):
-    
-    try:
-        cur=erg_db.cursor()
-        select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.money_tt1_t6horse, a.money_tt1_nohorse, a.money_tt3_t6horse, a.money_tt3_nohorse, a.money_tt5_t6horse, a.money_tt5_nohorse, a.money_tt10_t6horse, a.money_tt10_nohorse, '\
-                         'a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.description, a.dungeon, i1.emoji, '\
-                        'i2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
-        cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE a.area=?', (area,))
-        record = cur.fetchone()
-        
-        if record:
-            area_data = record
-        else:
-            await log_error(ctx, 'No area data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return area_data
-
-# Get mats data for the needed mats of area 3 and 5
-async def get_mats_data(ctx, user_tt):
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
-        record = cur.fetchone()
-        
-        if record:
-            mats_data = record
-        else:
-            await log_error(ctx, 'No tt_mats data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return mats_data
-
-# Get items
-async def get_item_data(ctx, itemname):
-    try:
-        cur=erg_db.cursor()
-        
-        items_data = []
-        
-        if itemname == 'ultra log':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'hyper log':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'mega log':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'super log':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'epic fish':
-            itemnames = (itemname,'golden fish','','','','','','')
-        elif itemname == 'wooden sword':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'fish sword':
-            itemnames = (itemname,'golden fish','','','','','','')
-        elif itemname == 'wolf armor':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'apple sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'eye armor':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'zombie sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'banana armor':
-            itemnames = (itemname,'super log','epic log','banana','','','','')
-        elif itemname == 'ruby sword':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'epic armor':
-            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
-        elif itemname == 'unicorn sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'ruby armor':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'hair sword':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'coin armor':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'coin sword':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'mermaid armor':
-            itemnames = (itemname,'mega log','super log','epic log','golden fish','','','')
-        elif itemname == 'electronical sword':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'electronical armor':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'edgy sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'ultra-edgy sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','epic fish','golden fish')
-        elif itemname == 'ultra-edgy armor':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'omega sword':
-            itemnames = (itemname,'mega log','super log','epic log','', '','','')
-        elif itemname == 'ultra-omega sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'baked fish':
-            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
-        elif itemname == 'fruit salad':
-            itemnames = (itemname,'banana','','','','','','')
-        elif itemname == 'apple juice':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'banana pickaxe':
-            itemnames = (itemname,'mega log','super log','epic log','banana','','','')
-        elif itemname == 'filled lootbox':
-            itemnames = (itemname,'banana','','','','','','')
-        elif itemname == 'coin sandwich':
-            itemnames = (itemname,'epic fish','golden fish','banana','','','','')
-        elif itemname == 'fruit ice cream':
-            itemnames = (itemname,'super log','epic log','banana','','','','')
-        else:
-            itemnames = (itemname,'','','','','','','')
-            
-        cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?,?,?,?) ORDER BY level DESC;', itemnames)
-        record = cur.fetchall()
-            
-        if record:
-            items_columns = []
-            colnames = cur.description
-            
-            for row in colnames:
-                items_columns.append(row[0])
-            items_data = [items_columns,]
-            
-            for row in record:
-                items_data.append(list(row))
-        else:
-            items_data = ''
-        
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return items_data
-
-# Get tt unlocks
-async def get_tt_unlocks(ctx, user_tt):
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
-        record = cur.fetchone()
-        
-        if record:
-            tt_unlock_data = record
-        else:
-            await log_error(ctx, 'No tt_unlock data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return tt_unlock_data
-
-# Get trade rate data
-async def get_traderate_data(ctx, areas):
-    
-    try:
-        cur=erg_db.cursor()
-        
-        if (type(areas) == str) and (areas == 'all'):
-            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
-            record = cur.fetchall()
-        elif type(areas) == int:
-            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (areas,))
-            record = cur.fetchone()
-        elif type(areas) in (list,tuple):
-            cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area BETWEEN ? and ?', (areas[0],areas[1],))
-            record = cur.fetchall()
-        else:
-            await log_error(ctx, 'Parameter \'areas\' has an invalid format, could not get traderate data.')
-            return
-        
-        if record:
-            traderate_data = record
-        else:
-            await log_error(ctx, 'No trade rate data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return traderate_data
-
-# Get profession XP
-async def get_profession_levels(ctx, profession, levelrange):
-    
-    start_level = levelrange[0]
-    end_level = levelrange[1]
-    
-    if profession == 'worker':
-        query = 'SELECT level, worker_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'merchant':
-        query = 'SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'lootboxer':
-        query = 'SELECT level, lootboxer_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'enchanter':
-        query = 'SELECT level, enchanter_xp FROM professions WHERE level BETWEEN ? and ?'
-    else:
-        await log_error(ctx, 'Unknown profession, could not generate profession query.')
-        return
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute(query, (start_level, end_level,))
-        record = cur.fetchall()
-        
-        if record:
-            profession_levels = record
-        else:
-            await log_error(ctx, 'No profession data data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return profession_levels
-
-# Get random tip
-async def get_tip(ctx, id=0):
-    
-    try:
-        cur=erg_db.cursor()
-        if id > 0:
-            cur.execute('SELECT tip FROM tips WHERE id=?',(id,))
-            record = cur.fetchone()
-        elif id == 0:
-            cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
-            record = cur.fetchone()
-        
-        if record:
-            tip = record
-        else:
-            tip = ('There is no tip with that ID.',)
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return tip
-
-# Get horse data
-async def get_horse_data(ctx, tier):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM horses WHERE tier=?',(tier,))
-        record = cur.fetchone()
-        
-        if record:
-            horse_data = record
-        else:
-            await log_error(ctx, 'No horse data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return horse_data
-
-# Get redeemable codes
-async def get_codes(ctx):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM codes ORDER BY code')
-        record = cur.fetchall()
-        
-        if record:
-            codes = record
-        else:
-            await log_error(ctx, 'No codes data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return codes
-
-# Get user count
-async def get_user_number(ctx):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT COUNT(*) FROM settings_user')
-        record = cur.fetchone()
-        
-        if record:
-            user_number = record
-        else:
-            await log_error(ctx, 'No user data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-        
-    return user_number
-   
-# Check database for user settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
-async def get_settings(bot, ctx):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
-        record = cur.fetchone()
-        
-        if record:
-            current_settings = (record[1], record[2])
-        else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, '0', 'not ascended',))
-            await first_time_user(bot, ctx)
-            
-    except sqlite3.Error as error:
-        await log_error(ctx, error)    
-  
-    return current_settings
-
-
-# --- Database: Write Data ---
-
-# Set new prefix
-async def set_prefix(bot, ctx, new_prefix):
-
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
-        record = cur.fetchone()
-        
-        if record:
-            cur.execute('UPDATE settings_guild SET prefix = ? where guild_id = ?', (new_prefix, ctx.guild.id,))           
-        else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-
-# Set progress settings
-async def set_progress(bot, ctx, new_tt, new_ascended):
-    
-    try:
-        cur=erg_db.cursor()
-        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
-        record = cur.fetchone()
-        
-        if record:
-            cur.execute('UPDATE settings_user SET timetravel = ?, ascended = ? where user_id = ?', (new_tt, new_ascended, ctx.author.id,))
-        else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, new_tt, new_ascended,))
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-
-
-# --- Error Logging ---
-
-# Error logging
-async def log_error(ctx, error, guild_join=False):
-    
-    if guild_join == False:
-        try:
-            settings = ''
-            try:
-                user_settings = await get_settings(bot, ctx)
-                settings = f'TT{user_settings[0]}, {user_settings[1]}'
-            except:
-                settings = 'N/A'
-            cur=erg_db.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error), settings))
-        except sqlite3.Error as db_error:
-            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
-    else:
-        try:
-            cur=erg_db.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
-        except sqlite3.Error as db_error:
-            print(print(f'Error inserting error (ha) into database.\n{db_error}'))
 
 
 # --- First Time User ---
@@ -565,12 +63,19 @@ async def log_error(ctx, error, guild_join=False):
 async def first_time_user(bot, ctx):
     
     try:
-        current_settings = await get_settings(bot, ctx)
+        current_settings = await database.get_settings(ctx)
+        
+        if current_settings == None:
+            current_tt = 0
+            current_ascension = 'not ascended'
+        else:
+            current_tt = current_settings[0]
+            current_ascension = current_settings[1]
         
         prefix = ctx.prefix
         
         await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
-                    f'**TT {current_settings[0]}**, **{current_settings[1]}**.\n\n'\
+                    f'**TT {current_tt}**, **{current_ascension}**.\n\n'\
                     f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'\
                     f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'\
                     'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
@@ -582,8 +87,8 @@ async def first_time_user(bot, ctx):
 
 # --- Command Initialization ---
 
-bot = commands.AutoShardedBot(command_prefix=get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets']
+bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -610,7 +115,7 @@ async def on_ready():
 async def on_guild_join(guild):
     
     try:
-        prefix = await get_prefix(bot, guild, True)
+        prefix = await database.get_prefix(bot, guild, True)
         
         welcome_message =   f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'\
                             f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'\
@@ -654,7 +159,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, FirstTimeUser):
         return
     else:
-        await log_error(ctx, error) # To the database you go
+        await database.log_error(ctx, error) # To the database you go
 
 
 
@@ -670,8 +175,8 @@ async def setprefix(ctx, *new_prefix):
         if len(new_prefix)>1:
             await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
         else:
-            await set_prefix(bot, ctx, new_prefix[0])
-            await ctx.send(f'Prefix changed to `{await get_prefix(bot, ctx)}`')
+            await database.set_prefix(bot, ctx, new_prefix[0])
+            await ctx.send(f'Prefix changed to `{await database.get_prefix(bot, ctx)}`')
     else:
         await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
 
@@ -680,7 +185,7 @@ async def setprefix(ctx, *new_prefix):
 @commands.bot_has_permissions(send_messages=True)
 async def prefix(ctx):
     
-    current_prefix = await get_prefix(bot, ctx)
+    current_prefix = await database.get_prefix(bot, ctx)
     await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
 
 
@@ -692,7 +197,10 @@ async def prefix(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def settings(ctx):
     
-    current_settings = await get_settings(bot, ctx)
+    current_settings = await database.get_settings(ctx)
+    if current_settings == None:
+        await first_time_user(bot, ctx)
+        return
     
     if current_settings:
         username = ctx.author.name
@@ -742,13 +250,19 @@ async def setprogress(ctx):
                             return
                 if answer in ['yes','y']:
                     new_ascended = 'ascended'         
-                    await set_progress(bot, ctx, new_tt, new_ascended)  
-                    current_settings = await get_settings(bot, ctx)
+                    await database.set_progress(bot, ctx, new_tt, new_ascended)  
+                    current_settings = await database.get_settings(ctx)
+                    if current_settings == None:
+                        await first_time_user(bot, ctx)
+                        return
                     await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 elif answer in ['no','n']:
                     new_ascended = 'not ascended'
-                    await set_progress(bot, ctx, new_tt, new_ascended)        
-                    current_settings = await get_settings(bot, ctx)
+                    await database.set_progress(bot, ctx, new_tt, new_ascended)        
+                    current_settings = await database.get_settings(ctx)
+                    if current_settings == None:
+                        await first_time_user(bot, ctx)
+                        return
                     await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 else:
                     await ctx.send(f'**{ctx.author.name}**, please answer with `yes` or `no`. Aborting.')
@@ -768,7 +282,7 @@ async def setprogress(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def helpguide(ctx):
     
-    prefix = await get_prefix(bot, ctx)
+    prefix = await database.get_prefix(bot, ctx)
     
     progress =  f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'\
                 f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'\
@@ -829,7 +343,7 @@ async def helpguide(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def areaguide(ctx):
     
-    prefix = await get_prefix(bot, ctx)
+    prefix = await database.get_prefix(bot, ctx)
     
     area_guide =    f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
                     
@@ -856,7 +370,7 @@ async def areaguide(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def dungeonguide(ctx):
     
-    prefix = await get_prefix(bot, ctx)
+    prefix = await database.get_prefix(bot, ctx)
     
     dungeon_guide = f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'\
                     f'{emojis.bp} `{prefix}dgear` / `{prefix}dg` : Recommended gear (all dungeons)\n'\
@@ -881,7 +395,7 @@ async def dungeonguide(ctx):
 @bot.command(aliases=('trading',))
 async def tradingguide(ctx):
     
-    prefix = await get_prefix(bot, ctx)
+    prefix = await database.get_prefix(bot, ctx)
                     
     trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
                     f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
@@ -949,7 +463,7 @@ async def dungeon(ctx, *args):
             if arg.isnumeric():
                 arg = int(arg)
                 if 1 <= arg <= 15 or arg in (151,152):
-                    dungeon_data = await get_dungeon_data(ctx, arg)
+                    dungeon_data = await database.get_dungeon_data(ctx, arg)
                     dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                     if dungeon_embed[0] == '':
                         await ctx.send(embed=dungeon_embed[1])
@@ -971,7 +485,7 @@ async def dungeon(ctx, *args):
         if dungeon_no.isnumeric():
             dungeon_no = int(dungeon_no)
             if 1 <= dungeon_no <= 15 or dungeon_no in (151,152):
-                dungeon_data = await get_dungeon_data(ctx, dungeon_no)
+                dungeon_data = await database.get_dungeon_data(ctx, dungeon_no)
                 dungeon_embed = await dungeons.dungeon(dungeon_data, ctx.prefix)
                 if dungeon_embed[0] == '':
                     await ctx.send(embed=dungeon_embed[1])
@@ -991,7 +505,7 @@ async def dungeon(ctx, *args):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def dungeonstats(ctx):
     
-    rec_stats_data = await get_rec_stats_data(ctx)
+    rec_stats_data = await database.get_rec_stats_data(ctx)
     
     embed = await dungeons.dungeon_rec_stats(rec_stats_data, ctx.prefix)
     
@@ -1014,7 +528,7 @@ async def dungeongear(ctx, *args):
             if page.isnumeric():
                     page = int(page)
                     if page in (1,2):
-                        rec_gear_data = await get_rec_gear_data(ctx, page)
+                        rec_gear_data = await database.get_rec_gear_data(ctx, page)
                         embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
                         await ctx.send(embed=embed)
                     else:
@@ -1027,12 +541,12 @@ async def dungeongear(ctx, *args):
         page = invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','').replace(f'{ctx.prefix}dg','')
         if page.isnumeric():
             page = int(page)
-            rec_gear_data = await get_rec_gear_data(ctx, page)
+            rec_gear_data = await database.get_rec_gear_data(ctx, page)
             embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
             await ctx.send(embed=embed)
         else:
             if page == '':
-                rec_gear_data = await get_rec_gear_data(ctx, 1)
+                rec_gear_data = await database.get_rec_gear_data(ctx, 1)
                 embed = await dungeons.dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
                 await ctx.send(embed=embed)
             else:
@@ -1116,10 +630,10 @@ async def dungeoncheck(ctx, *args):
                         return
                     user_stats = [user_at, user_def, user_life]
                     if dungeon_no == 0:
-                        dungeon_check_data = await get_dungeon_check_data(ctx)
+                        dungeon_check_data = await database.get_dungeon_check_data(ctx)
                         embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
                     else:
-                        dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                        dungeon_check_data = await database.get_dungeon_check_data(ctx, dungeon_no)
                         embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
                     await ctx.send(embed=embed)
                 else:
@@ -1143,7 +657,7 @@ async def dungeoncheck(ctx, *args):
                         await ctx.send(f'NICE STATS. Not gonna buy it though.')
                         return 
                     else:
-                        dungeon_check_data = await get_dungeon_check_data(ctx)
+                        dungeon_check_data = await database.get_dungeon_check_data(ctx)
                         user_stats = [user_at, user_def, user_life]
                         embed = await dungeons.dungeon_check_stats(dungeon_check_data, user_stats, ctx)
                         await ctx.send(embed=embed)
@@ -1198,7 +712,7 @@ async def dungeoncheck1(ctx, *args):
                 dungeon_no = 15
             elif dungeon_no == 152:
                 dungeon_no = 15.2
-            dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+            dungeon_check_data = await database.get_dungeon_check_data(ctx, dungeon_no)
             embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
             await ctx.send(embed=embed)
         else:
@@ -1250,7 +764,7 @@ async def dungeoncheck1(ctx, *args):
                         else:
                             await ctx.send(f'Whelp, something went wrong here, sorry. Aborting.')
                             return
-                        dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                        dungeon_check_data = await database.get_dungeon_check_data(ctx, dungeon_no)
                         user_stats = [user_at, user_def, user_life]
                         embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
                         await ctx.send(embed=embed)
@@ -1275,7 +789,7 @@ async def dungeoncheck1(ctx, *args):
                             await ctx.send(f'NICE STATS. Not gonna buy it though.')
                             return 
                         else:
-                            dungeon_check_data = await get_dungeon_check_data(ctx, dungeon_no)
+                            dungeon_check_data = await database.get_dungeon_check_data(ctx, dungeon_no)
                             user_stats = [user_at, user_def, user_life]
                             embed = await dungeons.dungeon_check_stats_dungeon_specific(dungeon_check_data, user_stats, ctx)
                             await ctx.send(embed=embed)
@@ -1316,16 +830,19 @@ async def area(ctx, *args):
                     if area_no.isnumeric():
                         area_no = int(area_no)
                         if 1<= area_no <= 15:
-                            area_data = await get_area_data(ctx, area_no)
-                            user_settings = await get_settings(bot, ctx)
-                            traderate_data = await get_traderate_data(ctx, area_no)
+                            area_data = await database.get_area_data(ctx, area_no)
+                            user_settings = await database.get_settings(ctx)
+                            if user_settings == None:
+                                await first_time_user(bot, ctx)
+                                return
+                            traderate_data = await database.get_traderate_data(ctx, area_no)
                             if area_no < 15:
-                                traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                                traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
                             else:
                                 traderate_data_next = ''
                             user_settings_override = (25, user_settings[1],'override',)
                             if area_no in (3,5):
-                                mats_data = await get_mats_data(ctx, user_settings_override[0])
+                                mats_data = await database.get_mats_data(ctx, user_settings_override[0])
                             else:
                                 mats_data = ''
                             area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
@@ -1340,18 +857,21 @@ async def area(ctx, *args):
                 if area_no.isnumeric():
                     area_no = int(area_no)
                     if 1 <= area_no <= 15:
-                        area_data = await get_area_data(ctx, area_no)
-                        user_settings = await get_settings(bot, ctx)
-                        traderate_data = await get_traderate_data(ctx, area_no)
+                        area_data = await database.get_area_data(ctx, area_no)
+                        user_settings = await database.get_settings(ctx)
+                        if user_settings == None:
+                            await first_time_user(bot, ctx)
+                            return
+                        traderate_data = await database.get_traderate_data(ctx, area_no)
                         if area_no < 15:
-                            traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                            traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
                         else:
                             traderate_data_next = ''
                         if area_no in (3,5):
                             if user_settings[0] <= 25:
-                                mats_data = await get_mats_data(ctx, user_settings[0])
+                                mats_data = await database.get_mats_data(ctx, user_settings[0])
                             else:
-                                mats_data = await get_mats_data(ctx, 25)
+                                mats_data = await database.get_mats_data(ctx, 25)
                         else:
                             mats_data = ''
                         area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
@@ -1366,16 +886,19 @@ async def area(ctx, *args):
                         if area_no.isnumeric():
                             area_no = int(area_no)
                             if 1 <= area_no <= 15:
-                                area_data = await get_area_data(ctx, int(area_no))
-                                user_settings = await get_settings(bot, ctx)
-                                traderate_data = await get_traderate_data(ctx, area_no)
+                                area_data = await database.get_area_data(ctx, int(area_no))
+                                user_settings = await database.get_settings(ctx)
+                                if user_settings == None:
+                                    await first_time_user(bot, ctx)
+                                    return
+                                traderate_data = await database.get_traderate_data(ctx, area_no)
                                 if area_no < 15:
-                                    traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                                    traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
                                 else:
                                     traderate_data_next = ''
                                 user_settings_override = (25, user_settings[1],'override',)
                                 if area_no in (3,5):
-                                    mats_data = await get_mats_data(ctx, user_settings_override[0])
+                                    mats_data = await database.get_mats_data(ctx, user_settings_override[0])
                                 else:
                                     mats_data = ''
                                 area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
@@ -1391,18 +914,21 @@ async def area(ctx, *args):
         if area_no.isnumeric():
             area_no = int(area_no)
             if not area_no == 0:
-                area_data = await get_area_data(ctx, area_no)
-                user_settings = await get_settings(bot, ctx)
-                traderate_data = await get_traderate_data(ctx, area_no)
+                area_data = await database.get_area_data(ctx, area_no)
+                user_settings = await database.get_settings(ctx)
+                if user_settings == None:
+                    await first_time_user(bot, ctx)
+                    return
+                traderate_data = await database.get_traderate_data(ctx, area_no)
                 if area_no < 15:
-                    traderate_data_next = await get_traderate_data(ctx, area_no+1)
+                    traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
                 else:
                     traderate_data_next = ''
                 if area_no in (3,5):
                     if user_settings[0] <= 25:
-                        mats_data = await get_mats_data(ctx, user_settings[0])
+                        mats_data = await database.get_mats_data(ctx, user_settings[0])
                     else:
-                        mats_data = await get_mats_data(ctx, 25)
+                        mats_data = await database.get_mats_data(ctx, 25)
                 else:
                     mats_data = ''
                 area_embed = await areas.area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
@@ -1430,7 +956,10 @@ for x in range(1,16):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def trades(ctx, *args):
     
-    user_settings = await get_settings(bot, ctx)
+    user_settings = await database.get_settings(ctx)
+    if user_settings == None:
+        await first_time_user(bot, ctx)
+        return
     
     invoked = ctx.message.content
     invoked = invoked.lower()
@@ -1479,7 +1008,7 @@ async def trades(ctx, *args):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def traderates(ctx):
     
-    traderate_data = await get_traderate_data(ctx, 'all')
+    traderate_data = await database.get_traderate_data(ctx, 'all')
     
     embed = await trading.traderates(traderate_data, ctx.prefix)
     
@@ -1559,7 +1088,7 @@ async def tradecalc(ctx, *args):
         elif mat == 'ruby':
             mat_output = f'{emojis.ruby} rubies'
         
-        traderate_data = await get_traderate_data(ctx, 'all')
+        traderate_data = await database.get_traderate_data(ctx, 'all')
         embed = await trading.matscalc(traderate_data, (area,mat,amount), ctx.prefix)
         await ctx.send(embed=embed)
     
@@ -1670,7 +1199,10 @@ async def dropchance(ctx, *args):
             await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
     else:
         try:
-            user_settings = await get_settings(bot, ctx)
+            user_settings = await database.get_settings(ctx)
+            if user_settings == None:
+                await first_time_user(bot, ctx)
+                return
             tt_no = int(user_settings[0])
             tt_chance = (49+tt_no)*tt_no/2/100
             
@@ -1853,7 +1385,7 @@ async def craft(ctx, *args):
                 if itemname_replaced in shortcuts:
                     itemname_replaced = shortcuts[itemname_replaced]                
                 
-                items_data = await get_item_data(ctx, itemname_replaced)
+                items_data = await database.get_item_data(ctx, itemname_replaced)
                 if items_data == '':
                     await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
                     return
@@ -1946,7 +1478,7 @@ async def dismantle(ctx, *args):
                     await ctx.send(f'Uhm, I don\'t know how to dismantle `{itemname}`, sorry.')
                     return
                 
-                items_data = await get_item_data(ctx, itemname_replaced)
+                items_data = await database.get_item_data(ctx, itemname_replaced)
                 if items_data == '':
                     await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
                     return
@@ -1963,226 +1495,6 @@ async def dismantle(ctx, *args):
             await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
     else:
         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-
-
-
-# --- Horses ---
-
-# Command "horses"
-@bot.command(name='horses', aliases=('horse',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def horses_overview(ctx, *args):
-
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    if args:
-        if len(args)>1:
-            if (args[0] == 'calc'):
-                if len(args) == 3:
-                    x = await horsecalc(ctx, args[1], args[2])
-                    return
-                else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}horse calc [tier] [level]`\nYou can also omit all parameters to use your horse tier and level for the calculation.\n\nExamples: `{ctx.prefix}horse calc 6 25` or `{ctx.prefix}horse calc t7 l30` or `{ctx.prefix}horse calc`')
-                    return
-            else:
-                return
-        elif len(args)==1:
-            if (args[0] == 'tier') or (args[0] == 'tiers'):
-                    x = await horsetier(ctx)
-                    return
-            elif (args[0] == 'type') or (args[0] == 'types'):
-                    x = await horsetype(ctx)
-                    return
-            elif (args[0] == 'breed') or (args[0] == 'breeding'):
-                    x = await horsebreed(ctx)
-                    return
-            elif (args[0] == 'calc'):
-                    x = await horsecalc(ctx)
-                    return
-            else:
-                embed = await horses.horses(ctx.prefix)
-                await ctx.send(embed=embed)
-        else:
-            return
-    else:
-        embed = await horses.horses(ctx.prefix)
-        await ctx.send(embed=embed)
-    
-# Command "horsetier" - Returns horse tier bonuses
-@bot.command(aliases=('htier','horsestier','horsetiers','horsestiers',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def horsetier(ctx):
-
-    embed = await horses.horsetiers(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "horsetype" - Returns horse type bonuses
-@bot.command(aliases=('htype','horsestype','horsetypes','horsestypes',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def horsetype(ctx):
-
-    embed = await horses.horsetypes(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "horsebreed" - Returns horse breed details
-@bot.command(aliases=('hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding','breedhorse','breedhorses','breedinghorse','breedingshorses',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def horsebreed(ctx):
-
-    embed = await horses.horsebreeding(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "horsecalc" - Calculates the horse stats bonuses
-@bot.command(aliases=('hcalc',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True)
-async def horsecalc(ctx, *args):
-    
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-    
-    def epic_rpg_check(m):
-        correct_embed = False
-        try:
-            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-            if embed_author.find(f'{ctx_author}\'s horse') > 1:
-                correct_embed = True
-            else:
-                correct_embed = False
-        except:
-            correct_embed = False
-        
-        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-    
-    if args:
-        if len(args) == 2:
-            horse_tier = args[0]
-            horse_tier = horse_tier.lower().replace('t','')
-            horse_level = args[1]
-            horse_level = horse_level.lower().replace('l','')
-            
-            if horse_tier.isnumeric():
-                horse_tier = int(horse_tier)
-                if horse_level.isnumeric():
-                    horse_level = int(horse_level)
-                    if not 1 <= horse_level <= (10*horse_tier):
-                        await ctx.send(f'`{horse_level}` is not a valid horse level for a T{horse_tier} horse.\nPlease enter a level between 1 and {10*horse_tier}.')
-                        return
-                else:
-                    await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse level to me :thinking:')
-                    return
-                if not 1 <= horse_tier <= 9:
-                        await ctx.send(f'`{horse_tier}` is not a valid horse tier.')
-                        return
-            else:
-                await ctx.send(f'`{args[0]}` doesn\'t look like a valid horse tier to me :thinking:')
-                return
-            
-            horse_emoji = getattr(emojis, f'horset{horse_tier}')
-            
-            horse_data = await get_horse_data(ctx, horse_tier)
-            
-            def_bonus = float(horse_data[1])
-            strong_bonus = float(horse_data[2])
-            tank_bonus = float(horse_data[3])
-            special_bonus = float(horse_data[4])
-            golden_bonus = float(horse_data[5])
-            
-            await ctx.send(
-                f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
-                f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
-                f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
-                f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
-                f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
-                f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n'
-            ) 
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}horsecalc [tier] [level]`\nYou can also omit all parameters to use your horse tier and level for the calculation.\n\nExamples: `{ctx.prefix}horsecalc 6 25` or `{ctx.prefix}horsecalc t7 l30` or `{ctx.prefix}horsecalc 6 25`')
-    else:
-        try:
-            await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
-            answer_user_horse = await bot.wait_for('message', check=check, timeout = 30)
-            answer = answer_user_horse.content
-            answer = answer.lower()
-            if (answer == 'rpg horse'):
-                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                try:
-                    horse_stats = str(answer_bot_at.embeds[0].fields[0])
-                    
-                    start_level = horse_stats.find('Horse Level -') + 14
-                    end_level = start_level + 2
-                    horse_level = horse_stats[start_level:end_level]
-                    horse_level = horse_level.strip()
-                    horse_level = int(horse_level)
-                    
-                    horse_chance = 0
-                    horse_tier = 0
-                    horse_emoji = ''
-                except:
-                    await ctx.send(f'Whelp, something went wrong here, sorry.')
-                    return
-                
-                if horse_stats.find('Tier - III') > 1:
-                    horse_chance = 1
-                    horse_tier = 3
-                elif horse_stats.find('Tier - II') > 1:
-                    horse_chance = 1
-                    horse_tier = 2
-                elif horse_stats.find('Tier - VIII') > 1:
-                    horse_chance = 1.5
-                    horse_tier = 8
-                elif horse_stats.find('Tier - VII') > 1:
-                    horse_chance = 1.2
-                    horse_tier = 7
-                elif horse_stats.find('Tier - VI') > 1:
-                    horse_chance = 1
-                    horse_tier = 6
-                elif horse_stats.find('Tier - V') > 1:
-                    horse_chance = 1
-                    horse_tier = 5
-                elif horse_stats.find('Tier - IV') > 1:
-                    horse_chance = 1
-                    horse_tier = 4
-                elif horse_stats.find('Tier - IX') > 1:
-                    horse_chance = 2
-                    horse_tier = 9
-                elif horse_stats.find('Tier - I') > 1:
-                    horse_chance = 1    
-                    horse_tier = 1
-                else:
-                    await ctx.send(f'Whelp, something went wrong here, sorry.')
-                    return
-            elif (answer == 'abort') or (answer == 'cancel'):
-                await ctx.send(f'Aborting.')
-                return
-            else:
-                await ctx.send(f'Wrong input. Aborting.')
-                return
-            
-            horse_emoji = getattr(emojis, f'horset{horse_tier}')
-            
-            horse_data = await get_horse_data(ctx, horse_tier)
-            
-            def_bonus = float(horse_data[1])
-            strong_bonus = float(horse_data[2])
-            tank_bonus = float(horse_data[3])
-            special_bonus = float(horse_data[4])
-            golden_bonus = float(horse_data[5])
-            
-            await ctx.send(
-                f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
-                f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
-                f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
-                f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
-                f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
-                f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n\n'
-                f'Tip: You can use `{ctx.prefix}horsecalc [tier] [level]` to check the stats bonuses for any horse tier and level.'
-            ) 
-        except asyncio.TimeoutError as error:
-                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
 
 
@@ -2211,7 +1523,7 @@ async def timetravel_specific(ctx, *args):
                 tt_no = int(tt_no)
                 if 1 <= tt_no <= 999:
                     if 1 <= tt_no <= 25:
-                        tt_data = await get_tt_unlocks(ctx, tt_no)
+                        tt_data = await database.get_tt_unlocks(ctx, tt_no)
                     else:
                         tt_data = (tt_no, 0, 0, '', '', '')
                 else:
@@ -2233,7 +1545,7 @@ async def timetravel_specific(ctx, *args):
                 tt_no = int(tt_no)
                 if 1 <= tt_no <= 999:
                     if 1 <= tt_no <= 25:
-                        tt_data = await get_tt_unlocks(ctx, int(tt_no))
+                        tt_data = await database.get_tt_unlocks(ctx, int(tt_no))
                     else:
                         tt_data = (tt_no, 0, 0, '', '', '')
                     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
@@ -2275,11 +1587,14 @@ async def tt1000(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def mytt(ctx):
     
-    user_settings = await get_settings(bot, ctx)
+    user_settings = await database.get_settings(ctx)
+    if user_settings == None:
+        await first_time_user(bot, ctx)
+        return
     my_tt = int(user_settings[0])
     
     if 1 <= my_tt <= 25:    
-        tt_data = await get_tt_unlocks(ctx, int(my_tt))
+        tt_data = await database.get_tt_unlocks(ctx, int(my_tt))
     else:
         tt_data = (my_tt,0,0,'','','')
     tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
@@ -2374,10 +1689,10 @@ async def prm(ctx):
                 merchant_levels = []
             elif pr_level + 7 > 100:
                 levelrange = [pr_level+2, 100,]
-                merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)
+                merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
             else:
                 levelrange = [pr_level+2, pr_level+7,]
-                merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)
+                merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
             
             output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
                      f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{xp*5:,}** wooden logs'
@@ -2462,7 +1777,7 @@ async def prmtotal(ctx, *args):
                     merchant_levels = []
                 else:
                     levelrange = [pr_level+2, 100,]
-                    merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)            
+                    merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
                 
                 for merchant_level in merchant_levels:
                     logs_total = logs_total + (merchant_level[1] * 5)
@@ -2539,7 +1854,7 @@ async def prmtotal(ctx, *args):
                         merchant_levels = []
                     else:
                         levelrange = [pr_level+2, level,]
-                        merchant_levels = await get_profession_levels(ctx,'merchant',levelrange)            
+                        merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)            
                     
                     for merchant_level in merchant_levels:
                         logs_total = logs_total + (merchant_level[1] * 5)
@@ -2634,10 +1949,10 @@ async def pre(ctx):
                 enchanter_levels = []
             elif pr_level + 7 > 100:
                 levelrange = [pr_level+2, 100,]
-                enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)
+                enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)
             else:
                 levelrange = [pr_level+2, pr_level+7,]
-                enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+                enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
             
             output = f'You need to cook the following amounts of {emojis.foodfruiticecream} fruit ice cream:\n'\
                      f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{ice_cream:,}** ice cream.'
@@ -2727,7 +2042,7 @@ async def pretotal(ctx, *args):
                     enchanter_levels = []
                 else:
                     levelrange = [pr_level+2, 100,]
-                    enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+                    enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
                 
                 for enchanter_level in enchanter_levels:
                     enchanter_level_xp = enchanter_level[1]
@@ -2810,7 +2125,7 @@ async def pretotal(ctx, *args):
                         enchanter_levels = []
                     else:
                         levelrange = [pr_level+2, level,]
-                        enchanter_levels = await get_profession_levels(ctx,'enchanter',levelrange)            
+                        enchanter_levels = await database.get_profession_levels(ctx,'enchanter',levelrange)            
                     
                     for enchanter_level in enchanter_levels:
                         enchanter_level_xp = enchanter_level[1]
@@ -2902,10 +2217,10 @@ async def prw(ctx):
                 worker_levels = []
             elif pr_level + 7 > 100:
                 levelrange = [pr_level+2, 100,]
-                worker_levels = await get_profession_levels(ctx,'worker',levelrange)
+                worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)
             else:
                 levelrange = [pr_level+2, pr_level+7,]
-                worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+                worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
             
             output = f'You need to cook the following amounts of {emojis.foodbananapickaxe} banana pickaxes:\n'\
                      f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{pickaxes:,}** pickaxes.'
@@ -2995,7 +2310,7 @@ async def prwtotal(ctx, *args):
                     worker_levels = []
                 else:
                     levelrange = [pr_level+2, 100,]
-                    worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+                    worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
                 
                 for worker_level in worker_levels:
                     worker_level_xp = worker_level[1]
@@ -3078,7 +2393,7 @@ async def prwtotal(ctx, *args):
                         worker_levels = []
                     else:
                         levelrange = [pr_level+2, level,]
-                        worker_levels = await get_profession_levels(ctx,'worker',levelrange)            
+                        worker_levels = await database.get_profession_levels(ctx,'worker',levelrange)            
                     
                     for worker_level in worker_levels:
                         worker_level_xp = worker_level[1]
@@ -3170,10 +2485,10 @@ async def prl(ctx):
                 worker_levels = []
             elif pr_level + 7 > 100:
                 levelrange = [pr_level+2, 100,]
-                worker_levels = await get_profession_levels(ctx,'lootboxer',levelrange)
+                worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
             else:
                 levelrange = [pr_level+2, pr_level+7,]
-                worker_levels = await get_profession_levels(ctx,'lootboxer',levelrange)            
+                worker_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
             
             output = f'You need to cook the following amounts of {emojis.foodfilledlootbox} filled lootboxes:\n'\
                      f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{lootboxes:,}** lootboxes.'
@@ -3263,7 +2578,7 @@ async def prltotal(ctx, *args):
                     lootboxer_levels = []
                 else:
                     levelrange = [pr_level+2, 100,]
-                    lootboxer_levels = await get_profession_levels(ctx,'lootboxer',levelrange)
+                    lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)
                 
                 for lootboxer_level in lootboxer_levels:
                     lootboxer_level_xp = lootboxer_level[1]
@@ -3346,7 +2661,7 @@ async def prltotal(ctx, *args):
                         lootboxer_levels = []
                     else:
                         levelrange = [pr_level+2, level,]
-                        lootboxer_levels = await get_profession_levels(ctx,'lootboxer',levelrange)            
+                        lootboxer_levels = await database.get_profession_levels(ctx,'lootboxer',levelrange)            
                     
                     for lootboxer_level in lootboxer_levels:
                         lootboxer_level_xp = lootboxer_level[1]
@@ -3393,13 +2708,13 @@ async def tip(ctx, *args):
             id = args[0]
             if id.isnumeric():
                 id = int(id)
-                tip = await get_tip(ctx, id)
+                tip = await database.get_tip(ctx, id)
             else:
-                tip = await get_tip(ctx)
+                tip = await database.get_tip(ctx)
         else:
-            tip = await get_tip(ctx)
+            tip = await database.get_tip(ctx)
     else:
-        tip = await get_tip(ctx)
+        tip = await database.get_tip(ctx)
     
     embed = discord.Embed(
         color = global_data.color,
@@ -3414,7 +2729,7 @@ async def tip(ctx, *args):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def codes(ctx):
     
-    codes = await get_codes(ctx)
+    codes = await database.get_codes(ctx)
     
     embed = await misc.codes(ctx.prefix, codes)
     
@@ -3534,7 +2849,7 @@ async def calc(ctx, *args):
 async def devstats(ctx):
 
     guilds = len(list(bot.guilds))
-    user_number = await get_user_number(ctx)
+    user_number = await database.get_user_number(ctx)
     latency = bot.latency
     shard_latency = ''
     for x in range(0,len(bot.shards)):
@@ -3680,24 +2995,7 @@ async def brandon(ctx):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-    
-    await ctx.send(f'**{ctx.author.name}**, give me something to demojize:')
-    answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
-    answer = answer_user_merchant.content
-    answer = answer.lower()
-    
-    if answer in ('abort','cancel'):
-        await ctx.send('Aborting.')
-        return
-    elif answer == 'username':
-        result = demojize(ctx.author.name)
-        await ctx.send(f'Demojized: {result}\nOriginal: {ctx.author.name}')
-    else:
-        result = demojize(answer)
-        result2 = emojize(answer)
-        await ctx.send(f'Demojized: {result}\nEmojized: {result2}\nOriginal: {answer}')
+    await ctx.send('No code implemented.')
     
 
 

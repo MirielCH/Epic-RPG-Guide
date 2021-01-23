@@ -26,6 +26,7 @@ class petsCog(commands.Cog):
     async def pets(self, ctx, *args):
         invoked = ctx.invoked_with
         invoked = invoked.lower()
+        
         if args:
             if len(args)>1:
                 return
@@ -44,9 +45,11 @@ class petsCog(commands.Cog):
                     embed = await petsadventures(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
-                    return
+                    embed = await pets_overview(ctx.prefix)
+                    await ctx.send(embed=embed)
             else:
-                return
+                embed = await pets_overview(ctx.prefix)
+                await ctx.send(embed=embed)
         else:
             if (invoked.find('catch') > -1) or (invoked.find('find') > -1):
                 embed = await petscatch(ctx.prefix)
