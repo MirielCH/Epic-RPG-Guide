@@ -1816,7 +1816,7 @@ async def prmtotal(ctx, *args):
                 return
             
             if (level < 2) or (level > 100):
-                await ctx.send(f'You want to reach level what now? {level}?')
+                await ctx.send('You want to reach level what now?')
                 return
             
             try:
@@ -2108,7 +2108,7 @@ async def pretotal(ctx, *args):
                 return
             
             if (level < 2) or (level > 100):
-                await ctx.send(f'You want to reach level what now? {level}?')
+                await ctx.send('You want to reach level what now?')
                 return
             
             try:
@@ -2400,7 +2400,7 @@ async def prwtotal(ctx, *args):
                 return
             
             if (level < 2) or (level > 100):
-                await ctx.send(f'You want to reach level what now? {level}?')
+                await ctx.send('You want to reach level what now?')
                 return
             
             try:
@@ -2692,7 +2692,7 @@ async def prltotal(ctx, *args):
                 return
             
             if (level < 2) or (level > 100):
-                await ctx.send(f'You want to reach level what now? {level}?')
+                await ctx.send('You want to reach level what now?')
                 return
             
             try:
