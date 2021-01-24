@@ -86,7 +86,7 @@ async def get_rec_stats_data(ctx):
     
     try:
         cur=erg_db.cursor()
-        cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d')
+        cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d WHERE dungeon BETWEEN 1 AND 16')
         record = cur.fetchall()
         
         if record:
