@@ -8,7 +8,7 @@ from operator import itemgetter
 # Trade for area X
 async def design_field_trades(area_no):
     
-    if int(area_no) in (1,2,4,6,12,13,14,15):
+    if int(area_no) in (1,2,4,6,12,13,14):
         field_value = f'{emojis.bp} None'
     elif int(area_no) == 3:
         field_value = f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
@@ -43,6 +43,12 @@ async def design_field_trades(area_no):
                       f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
     elif int(area_no) == 11:
         field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs'
+    elif int(area_no) == 15:
+        field_value = f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'\
+                      f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
+                      f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
+                      f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
+                      f'{emojis.bp} Trade {emojis.apple} apple to {emojis.log} logs'
     else:
         field_value = f'{emojis.bp} N/A'
 
@@ -64,15 +70,21 @@ async def trades(user_settings, prefix):
     
     embed = discord.Embed(
         color = 8983807,
-        title = f'AREA TRADES',
+        title = 'AREA TRADES',
         description = f'This page lists all trades you should do before leaving each area.\nAreas not listed here don\'t have any recommended trades.\nEverything that isn\'t mentioned can be ignored.'
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr1-{prefix}tr15 to see the trades of a specific area only.')
     
     for x in range(1,16):
-        if x not in (1,2,4,6,12,13,14,15):
-            if x==11: 
+        if x not in (1,2,4,6,12,13,14):
+            if x==11:
                 if user_settings[0]==0:
+                    embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)    
+                else:
+                    field_value = await design_field_trades(x)
+                    embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
+            elif x==15:
+                if user_settings[0]<25:
                     embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)    
                 else:
                     field_value = await design_field_trades(x)
@@ -114,20 +126,34 @@ async def traderates(traderate_data, prefix):
     )    
     embed.set_footer(text=f'Tip: Use {prefix}tr to see the trades you should do in each area.')
     
-    area_limit = 0
+    previous_area = [0,0,0,0]
+    actual_areas = []
     for area_x in traderate_data:
-        area_limit = area_limit + 1
-        if area_limit < 13:
-            area_value = f'1 {emojis.fish} ⇄ {emojis.log} {area_x[1]}'
-            if not area_x[2] == 0:
-                area_value = f'{area_value}\n1 {emojis.apple} ⇄ {emojis.log} {area_x[2]}'
-            if not area_x[3] == 0:
-                area_value = f'{area_value}\n1 {emojis.ruby} ⇄ {emojis.log} {area_x[3]}'
-            
-            if area_limit == 12:
-                embed.add_field(name=f'AREA {area_x[0]}+', value=f'{area_value}\n{emojis.blank}', inline=True)
-            else:
-                embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.blank}', inline=True)
+        if not (area_x[1] == previous_area[1]) or not (area_x[2] == previous_area[2]) or not (area_x[3] == previous_area[3]):
+            actual_areas.append(list(area_x))
+        previous_area = area_x
+    
+    counter = 0
+    for index, area_x in enumerate(actual_areas):
+        counter = counter + 1
+        if not area_x[0] == counter:
+            actual_areas[index-1][0] = f'{actual_areas[index-1][0]}-{area_x[0]-1}'
+        counter = area_x[0]
+                
+    for area_x in actual_areas:
+        area_value = f'1 {emojis.fish} ⇄ {emojis.log} {area_x[1]}'
+        if not area_x[2] == 0:
+            area_value = f'{area_value}\n1 {emojis.apple} ⇄ {emojis.log} {area_x[2]}'
+        if not area_x[3] == 0:
+            area_value = f'{area_value}\n1 {emojis.ruby} ⇄ {emojis.log} {area_x[3]}'
+        
+        if area_x[0] == 16:
+            embed.add_field(name='THE TOP', value=f'{area_value}\n{emojis.blank}', inline=True)
+        else:
+            embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.blank}', inline=True)
+    
+    if len(actual_areas) % 3 == 2:
+        embed.add_field(name=f'{emojis.blank}', value=f'{emojis.blank}', inline=True)
             
     return embed
 
