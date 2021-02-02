@@ -229,7 +229,7 @@ async def supertimetravelscore(prefix):
                 f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 4 score\n'\
                 f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 5 score\n'\
                 f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 50 score\n'\
-                f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = ? score'
+                f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 500 score'
                         
     materials = f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'\
                 f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'\

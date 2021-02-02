@@ -1191,9 +1191,10 @@ async def dropchance(ctx, *args):
                 
             await ctx.send(
                 f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
-                f'{emojis.bp}Your mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
-                f'{emojis.bp}If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.'
+                f'{emojis.bp} Your mob drop chance is **__{drop_chance:g} %__**.\n'
+                f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
+                f'{emojis.bp} If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n'
+                f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
             )
         else:
             await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
@@ -1279,9 +1280,10 @@ async def dropchance(ctx, *args):
             
             await ctx.send(
                 f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
-                f'{emojis.bp}Your mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp}The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
-                f'{emojis.bp}If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n\n'
+                f'{emojis.bp} Your mob drop chance is **__{drop_chance:g} %__**.\n'
+                f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
+                f'{emojis.bp} If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n'
+                f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased. The exact increase is unknown, it is currently believed to be around 70~75 %.\n\n'
                 f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
                 f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
             )
@@ -1387,10 +1389,10 @@ async def craft(ctx, *args):
                 
                 items_data = await database.get_item_data(ctx, itemname_replaced)
                 if items_data == '':
-                    await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+                    await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
                     return
             except:
-                await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+                await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
                 return
             
             items_values = items_data[1]

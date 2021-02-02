@@ -519,7 +519,7 @@ async def dungeon(dungeon_data, prefix):
         rewards = f'{emojis.bp} {emojis.timekey} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
         dungeon_no = '15-2'
-        embed_description = f'This is a strategy dungeon.\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
+        embed_description = f'This is an **optional** strategy dungeon.\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
         requirements = f'{emojis.bp} {emojis.horset6} T6+ horse\n'\
                        f'{emojis.bp} {player_sword_emoji} {player_sword}\n'\
                        f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'\

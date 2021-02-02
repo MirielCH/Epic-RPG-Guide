@@ -321,8 +321,8 @@ async def event_heal(prefix):
     trigger = f'{emojis.bp} `heal` (0.75 % chance)'
     
     answers = (
-        f'{emojis.bp} `cry`: Nothing happens\n'
-        f'{emojis.bp} `fight`: You either gain **or lose** a level'
+        f'{emojis.bp} `cry`: The event ends, nothing happens\n'
+        f'{emojis.bp} `search`: Leads to the option to `fight` the thief. If you do this, you will either gain **or lose** a level'
     )
     
     safe_answer = f'{emojis.bp} `cry`'
@@ -335,14 +335,14 @@ async def event_heal(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'HEAL EVENT',
-        description =   f'This is a random personal event in which you encounter a mysterious man while healing yourself.'
+        description =  'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
-    embed.add_field(name=f'SAFEST ANSWER', value=safe_answer, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='SAFEST ANSWER', value=safe_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
@@ -408,7 +408,7 @@ async def event_rubydragon(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'THE RUBY DRAGON EVENT',
-        description =   f'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
+        description = 'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
     )   
      
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
