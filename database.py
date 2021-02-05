@@ -196,7 +196,7 @@ async def get_item_data(ctx, itemname):
         elif itemname == 'wooden sword':
             itemnames = (itemname,'epic log','','','','','','')
         elif itemname == 'fish sword':
-            itemnames = (itemname,'golden fish','','','','','','')
+            itemnames = (itemname,'golden fish','epic log','','','','','')
         elif itemname == 'wolf armor':
             itemnames = (itemname,'epic log','','','','','','')
         elif itemname == 'apple sword':

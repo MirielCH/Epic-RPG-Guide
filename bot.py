@@ -47,13 +47,13 @@ async def update_stats(bot):
     try:
         if not DBL_TOKEN == 'none':
             guilds = len(list(bot.guilds))
-            shards = len(bot.shards)
-            guild_count = {'server_count':guilds,'shards':shards}
+            #shards = len(bot.shards)
+            guild_count = {'server_count':guilds}
             header = {'Authorization':DBL_TOKEN}
-            r = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)    
-            logger.info(f'Posted server count ({guilds}) and shard count ({shards}), status code: {r.status_code}')
-    except:
-        logger.exception(f'Failed to post server count.')
+            r_guild = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)
+            logger.info(f'Posted server count ({guilds}), status code: {r_guild.status_code}')
+    except Exception as e:
+        logger.exception(f'Failed to post server count: {e}')
 
 
 
@@ -1968,6 +1968,8 @@ async def pre(ctx):
                     xp = pr_needed_xp - pr_current_xp
                     ice_cream = ceil(xp / 100)
                     xp_rest = 100 - (xp % 100)
+                    if xp_rest == 100:
+                            xp_rest = 0
                     
                     levelrange = []
                     
@@ -1989,6 +1991,8 @@ async def pre(ctx):
                         actual_xp = enchanter_level_xp - xp_rest
                         ice_cream = ceil(actual_xp / 100)
                         xp_rest = 100 - (actual_xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         output = f'{output}\n{emojis.bp} Level {enchanter_level_no-1} to {enchanter_level_no}: **{ice_cream:,}** ice cream.'
                     
                     await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] ice cream` to see what materials you need to craft fruit ice cream.')
@@ -2068,6 +2072,8 @@ async def pretotal(ctx, *args):
                         xp = pr_needed_xp - pr_current_xp
                         ice_cream = ceil(xp / 100)
                         xp_rest = 100 - (xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         ice_cream_total = ice_cream
                         
                         levelrange = []
@@ -2084,6 +2090,8 @@ async def pretotal(ctx, *args):
                             ice_cream = ceil(actual_xp / 100)
                             ice_cream_total = ice_cream_total + ice_cream
                             xp_rest = 100 - (actual_xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                         
                         await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level 100.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
                     else:
@@ -2155,6 +2163,8 @@ async def pretotal(ctx, *args):
                             xp = pr_needed_xp - pr_current_xp
                             ice_cream = ceil(xp / 100)
                             xp_rest = 100 - (xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                             ice_cream_total = ice_cream
                             
                             if pr_level >= level:
@@ -2175,6 +2185,8 @@ async def pretotal(ctx, *args):
                                 ice_cream = ceil(actual_xp / 100)
                                 ice_cream_total = ice_cream_total + ice_cream
                                 xp_rest = 100 - (actual_xp % 100)
+                                if xp_rest == 100:
+                                    xp_rest = 0
                             
                             await ctx.send(f'You need to cook **{ice_cream_total:,}** {emojis.foodfruiticecream} fruit ice cream to reach level {level}.\nUse `{ctx.prefix}craft {ice_cream_total} ice cream` to see how much you need for that.')
                         else:
@@ -2260,6 +2272,8 @@ async def prw(ctx):
                     xp = pr_needed_xp - pr_current_xp
                     pickaxes = ceil(xp / 100)
                     xp_rest = 100 - (xp % 100)
+                    if xp_rest == 100:
+                        xp_rest = 0
                     
                     levelrange = []
                     
@@ -2281,6 +2295,8 @@ async def prw(ctx):
                         actual_xp = worker_level_xp - xp_rest
                         pickaxes = ceil(actual_xp / 100)
                         xp_rest = 100 - (actual_xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{pickaxes:,}** pickaxes.'
                     
                     await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] pickaxe` to see what materials you need to craft banana pickaxes.')
@@ -2360,6 +2376,8 @@ async def prwtotal(ctx, *args):
                         xp = pr_needed_xp - pr_current_xp
                         pickaxes = ceil(xp / 100)
                         xp_rest = 100 - (xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         pickaxes_total = pickaxes
                         
                         levelrange = []
@@ -2376,6 +2394,8 @@ async def prwtotal(ctx, *args):
                             pickaxes = ceil(actual_xp / 100)
                             pickaxes_total = pickaxes_total + pickaxes
                             xp_rest = 100 - (actual_xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                         
                         await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level 100.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
                     else:
@@ -2447,6 +2467,8 @@ async def prwtotal(ctx, *args):
                             xp = pr_needed_xp - pr_current_xp
                             pickaxes = ceil(xp / 100)
                             xp_rest = 100 - (xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                             pickaxes_total = pickaxes
                             
                             if pr_level >= level:
@@ -2467,6 +2489,8 @@ async def prwtotal(ctx, *args):
                                 pickaxes = ceil(actual_xp / 100)
                                 pickaxes_total = pickaxes_total + pickaxes
                                 xp_rest = 100 - (actual_xp % 100)
+                                if xp_rest == 100:
+                                    xp_rest = 0
                             
                             await ctx.send(f'You need to cook **{pickaxes_total:,}** {emojis.foodbananapickaxe} banana pickaxes to reach level {level}.\nUse `{ctx.prefix}craft {pickaxes_total} pickaxes` to see how much you need for that.')
                         else:
@@ -2552,6 +2576,8 @@ async def prl(ctx):
                     xp = pr_needed_xp - pr_current_xp
                     lootboxes = ceil(xp / 100)
                     xp_rest = 100 - (xp % 100)
+                    if xp_rest == 100:
+                        xp_rest = 0
                     
                     levelrange = []
                     
@@ -2573,6 +2599,8 @@ async def prl(ctx):
                         actual_xp = worker_level_xp - xp_rest
                         lootboxes = ceil(actual_xp / 100)
                         xp_rest = 100 - (actual_xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         output = f'{output}\n{emojis.bp} Level {worker_level_no-1} to {worker_level_no}: **{lootboxes:,}** lootboxes.'
                     
                     await ctx.send(f'{output}\n\nUse `{ctx.prefix}craft [amount] lootboxes` to see what materials you need to craft filled lootboxes.')
@@ -2652,6 +2680,8 @@ async def prltotal(ctx, *args):
                         xp = pr_needed_xp - pr_current_xp
                         lootboxes = ceil(xp / 100)
                         xp_rest = 100 - (xp % 100)
+                        if xp_rest == 100:
+                            xp_rest = 0
                         lootboxes_total = lootboxes
                         
                         levelrange = []
@@ -2668,6 +2698,8 @@ async def prltotal(ctx, *args):
                             lootboxes = ceil(actual_xp / 100)
                             lootboxes_total = lootboxes_total + lootboxes
                             xp_rest = 100 - (actual_xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                         
                         await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level 100.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
                     else:
@@ -2739,6 +2771,8 @@ async def prltotal(ctx, *args):
                             xp = pr_needed_xp - pr_current_xp
                             lootboxes = ceil(xp / 100)
                             xp_rest = 100 - (xp % 100)
+                            if xp_rest == 100:
+                                xp_rest = 0
                             lootboxes_total = lootboxes
                             
                             if pr_level >= level:
@@ -2759,6 +2793,8 @@ async def prltotal(ctx, *args):
                                 lootboxes = ceil(actual_xp / 100)
                                 lootboxes_total = lootboxes_total + lootboxes
                                 xp_rest = 100 - (actual_xp % 100)
+                                if xp_rest == 100:
+                                    xp_rest = 0
                             
                             await ctx.send(f'You need to cook **{lootboxes_total:,}** {emojis.foodfilledlootbox} filled lootboxes to reach level {level}.\nUse `{ctx.prefix}craft {lootboxes_total} lootboxes` to see how much you need for that.')
                         else:
@@ -3091,7 +3127,7 @@ async def brandon(ctx):
 @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
 async def test(ctx):
     
-    await ctx.send('No code implemented.')
+    await ctx.send(f'{817%100}')
     
 
 

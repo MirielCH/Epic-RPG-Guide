@@ -16,6 +16,9 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     player_level = field_rec_stats_data[5]
     dungeon_no = field_rec_stats_data[6]
 
+    if not dungeon_no == 15.2:
+        dungeon_no = int(dungeon_no)
+
     player_at = f'{player_at:,}'
     player_def = f'{player_def:,}'
     player_life = f'{player_life:,}'
@@ -98,6 +101,9 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
     player_carry_def = field_check_stats_data[2]
     player_life = field_check_stats_data[3]
     dungeon_no = field_check_stats_data[4]
+    
+    if not dungeon_no == 15.2:
+        dungeon_no = int(dungeon_no)
     
     check_at = 'N/A'
     check_def = 'N/A'
@@ -213,7 +219,18 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             user_def_check_result = 'fail'
         elif user_def >= player_def:
             user_def_check_result = 'pass'
-
+        if user_life < player_life:
+            if player_life - user_life <= 10:
+                user_life_check_result = 'passA'
+            elif 11 <= (player_life - user_life) <= 25:
+                user_life_check_result = 'passB'
+            elif 26 <= (player_life - user_life) <= 50:
+                user_life_check_result = 'passC'
+            else:
+                user_life_check_result = 'fail'
+        elif user_life >= player_life:
+            user_life_check_result = 'pass'
+            
     if user_at_check_result == 'pass':
         check_at = f'{emojis.checkok} **AT**: {player_at}'
     elif user_at_check_result == 'warn':
@@ -338,9 +355,13 @@ async def design_field_check_stats(field_check_stats_data, user_data, prefix, sh
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
                 
         elif dungeon_no == 14:
-            if user_def_check_result == 'fail':
-                check_results = f'{emojis.bp} You are not yet ready for this dungeon\n'\
-                                f'{emojis.bp} You should increase your **DEF** to **{player_def}**'
+            if (user_def_check_result == 'fail') or user_life_check_result == 'fail':
+                check_results = f'{emojis.bp} You are not yet ready for this dungeon'
+                
+                if user_def_check_result == 'fail':
+                    check_results = f'{check_results}\n{emojis.bp} You should increase your **DEF** to **{player_def}**'
+                if user_life_check_result == 'fail':
+                    check_results = f'{check_results}\n{emojis.bp} You should increase your **LIFE** to **{player_life}** or more'
             else:
                 check_results = f'{emojis.bp} Your stats are high enough for this dungeon'
                 if (user_life_check_result == 'passA'):
