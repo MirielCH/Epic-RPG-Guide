@@ -44,7 +44,7 @@ async def design_field_trades(area_no):
     elif int(area_no) == 11:
         field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs'
     elif int(area_no) == 15:
-        field_value = f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'\
+        field_value = f'{emojis.bp} Dismantle {emojis.fishgolden} golden fish and below\n'\
                       f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'\
                       f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'\
                       f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'\
