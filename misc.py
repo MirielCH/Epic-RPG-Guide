@@ -59,7 +59,7 @@ async def codes(prefix, codes):
 async def coolness(prefix):
 
     usage =     f'{emojis.bp} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'\
-                f'{emojis.bp} An unknown amount will be required for part 2 of D15'
+                f'{emojis.bp} An unknown amount will be required for an upcoming dungeon'
                 
     req =       f'{emojis.bp} Unlocks when you reach area 12 in {emojis.timetravel}TT 1'
                 
