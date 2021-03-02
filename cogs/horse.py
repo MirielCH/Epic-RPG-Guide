@@ -439,7 +439,8 @@ async def horsebreeding(prefix):
                 
     level = (
         f'{emojis.bp} The new horses will have an average of both horse\'s levels\n'
-        f'{emojis.bp} Example: L20 horse + L24 horse = L22 horses'
+        f'{emojis.bp} Example: L20 horse + L24 horse = L22 horses\n'
+        f'{emojis.bp} Example: L20 horse + L23 horse = L21 **or** L22 horses'
     )
                 
     type = (

@@ -413,7 +413,7 @@ async def enchants(prefix):
         color = global_data.color,
         title = f'ENCHANTS',
         description = f'Enchants buff either AT or DEF (sword enchants buff AT, armor enchants buff DEF). Enchants buff your **overall** stats.\n'\
-                      f'The chance to get better enchants can be increased by leveling up the enchanter profession and having a {emojis.horset9} T9 horse.\n'\
+                      f'The chance to get better enchants can be increased by leveling up the enchanter profession and having a {emojis.horset8} T8+ horse.\n'\
                       f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
     )    
     embed.set_footer(text=await global_data.default_footer(prefix))

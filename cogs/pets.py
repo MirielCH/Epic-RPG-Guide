@@ -342,7 +342,7 @@ async def petsadventures(prefix):
           
     usage = (
         f'{emojis.bp} Command: `pets adv [type] [petIDs]`\n'
-        f'{emojis.bp} Use `pets adv [petID] cancel` to cancel an adventure\n'
+        f'{emojis.bp} Use `pets adv cancel [petID]` to cancel an adventure\n'
         f'{emojis.bp} You can only send **1** pet unless you have the {emojis.skillepic} EPIC skill'
     )
 

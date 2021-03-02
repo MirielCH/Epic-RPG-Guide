@@ -2000,7 +2000,7 @@ async def pre(ctx):
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
             else:
-                await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                 return
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2098,7 +2098,7 @@ async def pretotal(ctx, *args):
                         await ctx.send(f'Whelp, something went wrong here, sorry.')
                         return
                 else:
-                    await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                    await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                     return
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2193,7 +2193,7 @@ async def pretotal(ctx, *args):
                             await ctx.send(f'Whelp, something went wrong here, sorry.')
                             return
                     else:
-                        await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                        await ctx.send(f'Congratulations on reaching level 100 enchanter.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                         return
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2304,7 +2304,7 @@ async def prw(ctx):
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
             else:
-                await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                 return
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2402,7 +2402,7 @@ async def prwtotal(ctx, *args):
                         await ctx.send(f'Whelp, something went wrong here, sorry.')
                         return
                 else:
-                    await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                    await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                     return
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2497,7 +2497,7 @@ async def prwtotal(ctx, *args):
                             await ctx.send(f'Whelp, something went wrong here, sorry.')
                             return
                     else:
-                        await ctx.send(f'Congratulations on reaching level 100 merchant.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                        await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                         return
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2608,7 +2608,7 @@ async def prl(ctx):
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
             else:
-                await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                 return
         else:
             await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2706,7 +2706,7 @@ async def prltotal(ctx, *args):
                         await ctx.send(f'Whelp, something went wrong here, sorry.')
                         return
                 else:
-                    await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                    await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                     return
             else:
                 await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -2801,7 +2801,7 @@ async def prltotal(ctx, *args):
                             await ctx.send(f'Whelp, something went wrong here, sorry.')
                             return
                     else:
-                        await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')await ctx.send(f'Congratulations on reaching level 100 worker.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
+                        await ctx.send(f'Congratulations on reaching level 100 lootboxer.\nUnfortunately the progression formula above 100 is unknown, therefore I can not calculate anything for higher levels.')
                         return
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
