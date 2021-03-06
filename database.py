@@ -13,6 +13,10 @@ dbfile = global_data.dbfile
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
 
+# Custom exception for first time users so they stop spamming my database
+class FirstTimeUser(commands.CommandError):
+        def __init__(self, argument):
+            self.argument = argument
 
 # --- Get Data ---
 
@@ -501,3 +505,32 @@ async def log_error(ctx, error, guild_join=False):
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
         except sqlite3.Error as db_error:
             print(f'Error inserting error (ha) into database.\n{db_error}')
+            
+            
+
+# --- First Time User ---
+
+# Welcome message to inform the user of his/her initial settings
+async def first_time_user(bot, ctx):
+    
+    try:
+        current_settings = await get_settings(ctx)
+        
+        if current_settings == None:
+            current_tt = 0
+            current_ascension = 'not ascended'
+        else:
+            current_tt = current_settings[0]
+            current_ascension = current_settings[1]
+        
+        prefix = ctx.prefix
+        
+        await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
+                    f'**TT {current_tt}**, **{current_ascension}**.\n\n'\
+                    f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'\
+                    f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'\
+                    'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
+    except:
+        raise
+    else:
+        raise FirstTimeUser("First time user, pls ignore")

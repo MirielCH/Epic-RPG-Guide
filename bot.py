@@ -9,7 +9,6 @@ import global_data
 import emojis
 import areas
 import trading
-import crafting
 import professions
 import misc
 import timetravel
@@ -56,48 +55,17 @@ async def update_stats(bot):
         logger.exception(f'Failed to post server count: {e}')
 
 
-
-# --- First Time User ---
-
-# Welcome message to inform the user of his/her initial settings
-async def first_time_user(bot, ctx):
-    
-    try:
-        current_settings = await database.get_settings(ctx)
-        
-        if current_settings == None:
-            current_tt = 0
-            current_ascension = 'not ascended'
-        else:
-            current_tt = current_settings[0]
-            current_ascension = current_settings[1]
-        
-        prefix = ctx.prefix
-        
-        await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
-                    f'**TT {current_tt}**, **{current_ascension}**.\n\n'\
-                    f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'\
-                    f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'\
-                    'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
-    except:
-        raise
-    else:
-        raise FirstTimeUser("First time user, pls ignore")
-
+          
 
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse']
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
 
 
-# Custom exception for first time users so they stop spamming my database
-class FirstTimeUser(commands.CommandError):
-        def __init__(self, argument):
-            self.argument = argument
 
 # --- Ready & Join Events ---
 
@@ -156,7 +124,7 @@ async def on_command_error(ctx, error):
         return
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f'You\'re missing some arguments.')
-    elif isinstance(error, FirstTimeUser):
+    elif isinstance(error, database.FirstTimeUser):
         return
     else:
         await database.log_error(ctx, error) # To the database you go
@@ -199,7 +167,7 @@ async def settings(ctx):
     
     current_settings = await database.get_settings(ctx)
     if current_settings == None:
-        await first_time_user(bot, ctx)
+        await database.first_time_user(bot, ctx)
         return
     
     if current_settings:
@@ -253,7 +221,7 @@ async def setprogress(ctx):
                     await database.set_progress(bot, ctx, new_tt, new_ascended)  
                     current_settings = await database.get_settings(ctx)
                     if current_settings == None:
-                        await first_time_user(bot, ctx)
+                        await database.first_time_user(bot, ctx)
                         return
                     await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 elif answer in ['no','n']:
@@ -261,7 +229,7 @@ async def setprogress(ctx):
                     await database.set_progress(bot, ctx, new_tt, new_ascended)        
                     current_settings = await database.get_settings(ctx)
                     if current_settings == None:
-                        await first_time_user(bot, ctx)
+                        await database.first_time_user(bot, ctx)
                         return
                     await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 else:
@@ -833,7 +801,7 @@ async def area(ctx, *args):
                             area_data = await database.get_area_data(ctx, area_no)
                             user_settings = await database.get_settings(ctx)
                             if user_settings == None:
-                                await first_time_user(bot, ctx)
+                                await database.first_time_user(bot, ctx)
                                 return
                             traderate_data = await database.get_traderate_data(ctx, area_no)
                             if area_no < 15:
@@ -860,7 +828,7 @@ async def area(ctx, *args):
                         area_data = await database.get_area_data(ctx, area_no)
                         user_settings = await database.get_settings(ctx)
                         if user_settings == None:
-                            await first_time_user(bot, ctx)
+                            await database.first_time_user(bot, ctx)
                             return
                         traderate_data = await database.get_traderate_data(ctx, area_no)
                         if area_no < 15:
@@ -889,7 +857,7 @@ async def area(ctx, *args):
                                 area_data = await database.get_area_data(ctx, int(area_no))
                                 user_settings = await database.get_settings(ctx)
                                 if user_settings == None:
-                                    await first_time_user(bot, ctx)
+                                    await database.first_time_user(bot, ctx)
                                     return
                                 traderate_data = await database.get_traderate_data(ctx, area_no)
                                 if area_no < 15:
@@ -917,7 +885,7 @@ async def area(ctx, *args):
                 area_data = await database.get_area_data(ctx, area_no)
                 user_settings = await database.get_settings(ctx)
                 if user_settings == None:
-                    await first_time_user(bot, ctx)
+                    await database.first_time_user(bot, ctx)
                     return
                 traderate_data = await database.get_traderate_data(ctx, area_no)
                 if area_no < 15:
@@ -958,7 +926,7 @@ async def trades(ctx, *args):
     
     user_settings = await database.get_settings(ctx)
     if user_settings == None:
-        await first_time_user(bot, ctx)
+        await database.first_time_user(bot, ctx)
         return
     
     invoked = ctx.message.content
@@ -968,7 +936,7 @@ async def trades(ctx, *args):
     
     if args:
         if len(args)>1:
-            await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
+            await ctx.send(f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
             return
         elif len(args)==1:
             area_no = args[0]
@@ -1001,7 +969,7 @@ async def trades(ctx, *args):
                 embed = await trading.trades(user_settings, ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
+                await ctx.send(f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
 
 # Command "traderates" - Returns trade rates of all areas
 @bot.command(aliases=('trr','rates','rate','traderate',))
@@ -1097,409 +1065,6 @@ async def tradecalc(ctx, *args):
 
 
 
-# --- Crafting ---
-
-# Command "enchants"
-@bot.command(aliases=('enchant','e','enchanting',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def enchants(ctx):
-    
-    embed = await crafting.enchants(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "drops" - Returns all monster drops and where to get them
-@bot.command(aliases=('drop','mobdrop','mobdrops','mobsdrop','mobsdrops','monsterdrop','monsterdrops',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def drops(ctx):
-
-    embed = await crafting.drops(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "dropchance" - Calculate current drop chance
-@bot.command(aliases=('dropcalc','droprate',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True)
-async def dropchance(ctx, *args):
-    
-    def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel
-    
-    def epic_rpg_check(m):
-        correct_embed = False
-        try:
-            ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-            embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-            if embed_author.find(f'{ctx_author}\'s horse') > 1:
-                correct_embed = True
-            else:
-                correct_embed = False
-        except:
-            correct_embed = False
-        
-        return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-    
-    if args:
-        if len(args) == 2:
-            tt_no = args[0]
-            tt_no = tt_no.lower().replace('tt','')
-            horse_tier = args[1]
-            horse_tier = horse_tier.lower().replace('t','')
-            
-            if tt_no.isnumeric():
-                tt_no = int(tt_no)
-                if horse_tier.isnumeric():
-                    horse_tier = int(horse_tier)
-                    if not 1 <= horse_tier <= 9:
-                        await ctx.send(f'`{horse_tier}` is not a valid horse tier.\nPlease enter a tier between 1 and 9.')
-                        return
-                else:
-                    await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse tier to me :thinking:')
-                    return
-                if not 0 <= tt_no <= 999:
-                        await ctx.send(f'`{tt_no}` is not a valid TT.\nPlease enter a TT between 0 and 999.')
-                        return
-            else:
-                await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
-                return
-            
-            tt_chance = (49+tt_no)*tt_no/2/100
-            
-            if 1 <= horse_tier <= 6:
-                horse_chance = 1
-            elif horse_tier == 7:
-                horse_chance = 1.2
-            elif horse_tier == 8:
-                horse_chance = 1.5
-            elif horse_tier == 9:
-                horse_chance = 2  
-            
-            drop_chance = 4*(1+tt_chance)*horse_chance
-            drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-            drop_chance = round(drop_chance,1)
-            drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-                    
-            if drop_chance >= 100:
-                drop_chance = 100
-                    
-            hunt_drop_chance = drop_chance/2
-            hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
-            hunt_drop_chance = round(hunt_drop_chance,2)
-            hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-                    
-            horse_emoji = getattr(emojis, f'horset{horse_tier}')
-                
-            await ctx.send(
-                f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
-                f'{emojis.bp} Your mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
-                f'{emojis.bp} If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n'
-                f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
-            )
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
-    else:
-        try:
-            user_settings = await database.get_settings(ctx)
-            if user_settings == None:
-                await first_time_user(bot, ctx)
-                return
-            tt_no = int(user_settings[0])
-            tt_chance = (49+tt_no)*tt_no/2/100
-            
-            await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
-            answer_user_merchant = await bot.wait_for('message', check=check, timeout = 30)
-            answer = answer_user_merchant.content
-            answer = answer.lower()
-            if (answer == 'rpg horse'):
-                answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                try:
-                    horse_stats = str(answer_bot_at.embeds[0].fields[0])
-                    horse_chance = 0
-                    horse_tier = 0
-                    horse_emoji = ''
-                except:
-                    await ctx.send(f'Whelp, something went wrong here, sorry.')
-                    return
-                if horse_stats.find('Tier - III') > 1:
-                    horse_chance = 1
-                    horse_tier = 3
-                elif horse_stats.find('Tier - II') > 1:
-                    horse_chance = 1
-                    horse_tier = 2
-                elif horse_stats.find('Tier - VIII') > 1:
-                    horse_chance = 1.5
-                    horse_tier = 8
-                elif horse_stats.find('Tier - VII') > 1:
-                    horse_chance = 1.2
-                    horse_tier = 7
-                elif horse_stats.find('Tier - VI') > 1:
-                    horse_chance = 1
-                    horse_tier = 6
-                elif horse_stats.find('Tier - V') > 1:
-                    horse_chance = 1
-                    horse_tier = 5
-                elif horse_stats.find('Tier - IV') > 1:
-                    horse_chance = 1
-                    horse_tier = 4
-                elif horse_stats.find('Tier - IX') > 1:
-                    horse_chance = 2
-                    horse_tier = 9
-                elif horse_stats.find('Tier - I') > 1:
-                    horse_chance = 1    
-                    horse_tier = 1
-                else:
-                    await ctx.send(f'Whelp, something went wrong here, sorry.')
-                    return
-            elif (answer == 'abort') or (answer == 'cancel'):
-                await ctx.send(f'Aborting.')
-                return
-            else:
-                await ctx.send(f'Wrong input. Aborting.')
-                return
-            
-            if not (horse_chance == 0) and not (horse_tier == 0):
-                drop_chance = 4*(1+tt_chance)*horse_chance
-                drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-                drop_chance = round(drop_chance,1)
-                drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-                
-                if drop_chance >= 100:
-                    drop_chance = 100
-                
-                hunt_drop_chance = drop_chance/2
-                hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
-                hunt_drop_chance = round(hunt_drop_chance,2)
-                hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-                
-                horse_emoji = getattr(emojis, f'horset{horse_tier}')
-                
-            else:
-                await ctx.send(f'Whelp, something went wrong here, sorry.')
-                return
-            
-            await ctx.send(
-                f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n'
-                f'{emojis.bp} Your mob drop chance is **__{drop_chance:g} %__**.\n'
-                f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **__{hunt_drop_chance:g} %__**.\n'
-                f'{emojis.bp} If there is an active buff in `rpg world`, your drop chance is **__{drop_chance_worldbuff:g} %__** / **__{hunt_drop_chance_worldbuff:g} %__**.\n'
-                f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased. The exact increase is unknown, it is currently believed to be around 70~75 %.\n\n'
-                f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
-                f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
-            )
-        except asyncio.TimeoutError as error:
-                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
-
-# Command "craft" - Calculates mats you need for amount of items
-@bot.command(aliases=('cook','forge',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True)
-async def craft(ctx, *args):
-
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    
-    if args:
-        itemname = ''
-        amount = 1
-        for arg in args:
-            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
-                itemname = f'{itemname} {arg}'
-                itemname = itemname.strip()
-                itemname = itemname.lower()
-            else:
-                try:
-                    if (arg.find('.') != -1) or (arg.find(',') != -1):
-                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
-                        return
-                    elif (arg.find('-') != -1) or (int(arg) == 0):
-                        await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
-                        return
-                    elif int(arg) >= 100000000000:
-                        await ctx.send(f'Are you trying to break me or something? :thinking:')
-                        return
-                    else:
-                        amount = int(arg)
-                except:
-                    await ctx.send(f'Are you trying to break me or something? :thinking:')
-                    return
-                
-        if not itemname == '' and amount >= 1:
-            try:
-                itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('uo ','ultra-omega ')
-                itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
-                itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple')       
-                
-                shortcuts = {   
-                    'ed sw': 'edgy sword',
-                    'omega sw': 'omega sword',
-                    'ed sword': 'edgy sword',
-                    'ed armor': 'edgy armor',
-                    'ue sw': 'ultra-edgy sword',
-                    'ue sword': 'ultra-edgy sword',
-                    'ultra-omega sw': 'ultra-omega sword',
-                    'ue armor': 'ultra-edgy armor',
-                    'godly sw': 'godly sword',
-                    'g sword': 'godly sword',
-                    'g sw': 'godly sword',
-                    'unicorn sw': 'unicorn sword',
-                    'brandon': 'epic fish',
-                    'salad': 'fruit salad',
-                    'creature': 'mutant creature',
-                    'cookie': 'super cookie',
-                    'supercookie': 'super cookie',
-                    'juice': 'apple juice',
-                    'pickaxe': 'banana pickaxe',
-                    'sandwich': 'coin sandwich',
-                    'lootbox': 'filled lootbox',
-                    'bananas': 'banana',
-                    'ultralog': 'ultra log',
-                    'hyperlog': 'hyper log',
-                    'megalog': 'mega log',
-                    'superlog': 'super log',
-                    'epiclog': 'epic log',
-                    'goldenfish': 'golden fish',
-                    'epicfish': 'epic fish',
-                    'gf': 'golden fish',
-                    'ef': 'epic fish',
-                    'el': 'epic log',
-                    'sl': 'super log',
-                    'ml': 'mega log',
-                    'hl': 'hyper log',
-                    'ul': 'ultra log',
-                    'bf': 'baked fish',
-                    'mc': 'mutant creature',
-                    'fs': 'fruit salad',
-                    'aj': 'apple juice',
-                    'sc': 'super cookie',
-                    'bp': 'banana pickaxe',
-                    'ha': 'heavy apple',
-                    'fl': 'filled lootbox',
-                    'cs': 'coin sandwich',
-                    'lb': 'filled lootbox',
-                    'ic': 'fruit ice cream',
-                    'fic': 'fruit ice cream',
-                    'ice cream': 'fruit ice cream',
-                    'fruit ice': 'fruit ice cream',
-                    'ice': 'fruit ice cream',
-                    'cream': 'fruit ice cream'
-                }
-                
-                if itemname_replaced in shortcuts:
-                    itemname_replaced = shortcuts[itemname_replaced]                
-                
-                items_data = await database.get_item_data(ctx, itemname_replaced)
-                if items_data == '':
-                    await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
-                    return
-            except:
-                await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
-                return
-            
-            items_values = items_data[1]
-            itemtype = items_values[1]
-            
-            if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
-                await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
-                return
-            
-            mats = await crafting.mats(items_data, amount, ctx.prefix)
-            await ctx.send(mats)
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-    else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-        
-# Command "dismantle" - Calculates mats you get by dismantling items
-@bot.command(aliases=('dm',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True)
-async def dismantle(ctx, *args):
-
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    
-    if args:
-        itemname = ''
-        amount = 1
-        for arg in args:
-            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
-                itemname = f'{itemname} {arg}'
-                itemname = itemname.strip()
-                itemname = itemname.lower()
-            else:
-                try:
-                    if (arg.find('.') != -1) or (arg.find(',') != -1):
-                        await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
-                        return
-                    elif (arg.find('-') != -1) or (int(arg) == 0):
-                        await ctx.send(f'You wanna do _what_? Dismantle **{arg}** items?? Have some :bread: instead.')
-                        return
-                    elif int(arg) >= 100000000000:
-                        await ctx.send(f'Are you trying to break me or something? :thinking:')
-                        return
-                    else:
-                        amount = int(arg)
-                except:
-                    await ctx.send(f'Are you trying to break me or something? :thinking:')
-                    return
-                
-        if not itemname == '' and amount >= 1:
-            try:
-                if itemname == 'brandon':
-                    await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
-                    return
-                
-                itemname_replaced = itemname.replace('logs','log')
-                
-                shortcuts = {   
-                    'brandon': 'epic fish',
-                    'bananas': 'banana',
-                    'ultralog': 'ultra log',
-                    'hyperlog': 'hyper log',
-                    'megalog': 'mega log',
-                    'epiclog': 'epic log',
-                    'goldenfish': 'golden fish',
-                    'epicfish': 'epic fish',
-                    'gf': 'golden fish',
-                    'golden': 'golden fish',
-                    'ef': 'epic fish',
-                    'el': 'epic log',
-                    'sl': 'super log',
-                    'super': 'super log',
-                    'ml': 'mega log',
-                    'mega': 'mega log',
-                    'hl': 'hyper log',
-                    'hyper': 'hyper log',
-                    'ul': 'ultra log',
-                    'ultra': 'ultra log',
-                }
-                
-                if itemname_replaced in shortcuts:
-                    itemname_replaced = shortcuts[itemname_replaced]                
-                
-                if not itemname_replaced in ('epic log', 'super log', 'mega log', 'hyper log', 'ultra log', 'golden fish', 'epic fish', 'banana'):
-                    await ctx.send(f'Uhm, I don\'t know how to dismantle `{itemname}`, sorry.')
-                    return
-                
-                items_data = await database.get_item_data(ctx, itemname_replaced)
-                if items_data == '':
-                    await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
-                    return
-            except:
-                await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
-                return
-            
-            items_values = items_data[1]
-            itemtype = items_values[1]
-            
-            mats = await crafting.dismantle(items_data, amount, ctx.prefix)
-            await ctx.send(mats)
-        else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-    else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
-
-
-
 # --- Time Travel ---
 
 # Command "ttX" - Specific tt information
@@ -1591,7 +1156,7 @@ async def mytt(ctx):
     
     user_settings = await database.get_settings(ctx)
     if user_settings == None:
-        await first_time_user(bot, ctx)
+        await database.first_time_user(bot, ctx)
         return
     my_tt = int(user_settings[0])
     

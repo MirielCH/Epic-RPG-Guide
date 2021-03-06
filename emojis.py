@@ -132,6 +132,21 @@ foodheavyapple = '<:erg_heavyapple:770325211584397382>'
 foodmutantcreature = '<:erg_mutantcreature:770325211299971083>'
 foodsupercookie = '<:erg_supercookie:770325211559362640>'
 
+# Gambling
+slots_100 = ':100:'
+slots_clover = ':four_leaf_clover:'
+slots_diamond = ':diamond:'
+slots_gift = ':gift:'
+slots_sparkles = ':sparkles:'
+wheel_black = ':black_large_square:'
+wheel_blue = ':blue_square:'
+wheel_brown = ':brown_square:'
+wheel_green = ':green_square:'
+wheel_orange = ':orange_square:'
+wheel_purple = ':purple_square:'
+wheel_red = ':red_square:'
+wheel_yellow = ':yellow_square:'
+
 # Guild
 cookierain = '<:erg_arenacookie:770324898068955186>'
 guildbuff = ':low_brightness:'
