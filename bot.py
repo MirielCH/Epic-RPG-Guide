@@ -12,29 +12,16 @@ import trading
 import professions
 import misc
 import timetravel
-import logging
-import logging.handlers
 import dbl
-import requests
+import aiohttp
 import database
+import logging
 
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 from datetime import datetime
 from discord.ext.commands import CommandNotFound
 from math import ceil
-
-# Check if log file exists, if not, create empty one
-logfile = global_data.logfile
-if not os.path.isfile(logfile):
-    open(logfile, 'a').close()
-
-# Initialize logger
-logger = logging.getLogger('discord')
-logger.setLevel(logging.INFO)
-handler = logging.handlers.TimedRotatingFileHandler(filename=logfile,when='D',interval=1, encoding='utf-8', utc=True)
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 
 # Read the bot token from the .env file
 load_dotenv()
@@ -46,13 +33,13 @@ async def update_stats(bot):
     try:
         if not DBL_TOKEN == 'none':
             guilds = len(list(bot.guilds))
-            #shards = len(bot.shards)
             guild_count = {'server_count':guilds}
             header = {'Authorization':DBL_TOKEN}
-            r_guild = requests.post(url = 'https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header)
-            logger.info(f'Posted server count ({guilds}), status code: {r_guild.status_code}')
+            async with aiohttp.ClientSession() as session:
+                async with session.post('https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header) as r:
+                    global_data.logger.info(f'Posted server count ({guilds}), status code: {r.status}')
     except Exception as e:
-        logger.exception(f'Failed to post server count: {e}')
+        global_data.logger.error(f'Failed to post server count: {e}')
 
 
           
@@ -75,7 +62,6 @@ async def on_ready():
     
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
-    #bot.add_cog(TopGG(bot))
     await update_stats.start(bot)
     
 # Send message to system channel when joining a server
@@ -119,7 +105,10 @@ async def on_command_error(ctx, error):
                 missing_perms = f'{missing_perms}, `{missing_perm}`'
             else:
                 missing_perms = f'`{missing_perm}`'
-        await ctx.send(f'Sorry **{ctx.author.name}**, I\'m missing the permission(s) {missing_perms} to be able to run this command.')
+        try:
+            await ctx.send(f'Sorry **{ctx.author.name}**, I\'m missing the permission(s) {missing_perms} to be able to run this command.')
+        except:
+            return
     elif isinstance(error, (commands.NotOwner)):
         return
     elif isinstance(error, commands.MissingRequiredArgument):
@@ -214,11 +203,11 @@ async def setprogress(ctx):
                 answer = answer_ascended.content
                 answer = answer.lower()
                 if (answer == 'abort') or (answer == 'cancel'):
-                            await ctx.send(f'Aborting.')
-                            return
+                    await ctx.send(f'Aborting.')
+                    return
                 if answer in ['yes','y']:
-                    new_ascended = 'ascended'         
-                    await database.set_progress(bot, ctx, new_tt, new_ascended)  
+                    new_ascended = 'ascended'
+                    await database.set_progress(bot, ctx, new_tt, new_ascended)
                     current_settings = await database.get_settings(ctx)
                     if current_settings == None:
                         await database.first_time_user(bot, ctx)
@@ -2685,18 +2674,15 @@ async def brandon(ctx):
     await ctx.send(embed=embed)
 
 
-
-# --- Testing ---
-@bot.command()
+# --- Owner Commands ---
+# Hey there
+@bot.command(aliases=('hey','yo'))
 @commands.is_owner()
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+@commands.bot_has_permissions(send_messages=True)
 async def test(ctx):
     
-    await ctx.send(f'{817%100}')
-    
+    await ctx.send('Hey hey. Oh it\'s you, Miri! Yes I\'m online, thanks for asking.')
 
-
-# --- Owner Commands ---
 
 # Shutdown command (only I can use it obviously)
 @bot.command()

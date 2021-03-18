@@ -34,6 +34,7 @@ async def get_prefix_all(bot, ctx):
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.default_prefix,))
             prefix = global_data.default_prefix
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return commands.when_mentioned_or(prefix)(bot, ctx)
@@ -56,6 +57,7 @@ async def get_prefix(bot, ctx, guild_join=False):
         else:
             prefix = global_data.default_prefix
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         if guild_join == False:
             await log_error(ctx, error)
         else:
@@ -81,6 +83,7 @@ async def get_dungeon_data(ctx, dungeon):
         else:
             await log_error(ctx, 'No dungeon data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return dungeon_data
@@ -98,6 +101,7 @@ async def get_rec_stats_data(ctx):
         else:
             await log_error(ctx, 'No recommended dungeon stats data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return rec_stats_data
@@ -140,6 +144,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
             await log_error(ctx, 'No recommended dungeon check data found in database.')            
     
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return dungeon_check_data
@@ -160,6 +165,7 @@ async def get_area_data(ctx, area):
         else:
             await log_error(ctx, 'No area data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return area_data
@@ -176,6 +182,7 @@ async def get_mats_data(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_mats data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return mats_data
@@ -275,6 +282,7 @@ async def get_item_data(ctx, itemname):
             items_data = ''
         
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return items_data
@@ -291,6 +299,7 @@ async def get_tt_unlocks(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_unlock data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return tt_unlock_data
@@ -319,6 +328,7 @@ async def get_traderate_data(ctx, areas):
         else:
             await log_error(ctx, 'No trade rate data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return traderate_data
@@ -351,6 +361,7 @@ async def get_profession_levels(ctx, profession, levelrange):
         else:
             await log_error(ctx, 'No profession data data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return profession_levels
@@ -372,6 +383,7 @@ async def get_tip(ctx, id=0):
         else:
             tip = ('There is no tip with that ID.',)
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return tip
@@ -389,6 +401,7 @@ async def get_horse_data(ctx, tier):
         else:
             await log_error(ctx, 'No horse data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return horse_data
@@ -406,6 +419,7 @@ async def get_codes(ctx):
         else:
             await log_error(ctx, 'No codes data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return codes
@@ -423,6 +437,7 @@ async def get_user_number(ctx):
         else:
             await log_error(ctx, 'No user data found in database.')
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
         
     return user_number
@@ -438,10 +453,11 @@ async def get_settings(ctx):
         if record:
             current_settings = (record[1], record[2])
         else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, '0', 'not ascended',))
+            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, 0, 'not ascended',))
             current_settings = None
             
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)    
   
     return current_settings
@@ -463,6 +479,7 @@ async def set_prefix(bot, ctx, new_prefix):
         else:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
 
 # Set progress settings
@@ -478,8 +495,8 @@ async def set_progress(bot, ctx, new_tt, new_ascended):
         else:
             cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, new_tt, new_ascended,))
     except sqlite3.Error as error:
+        global_data.logger.error(error)
         await log_error(ctx, error)
-        
         
 
 # --- Error Logging ---

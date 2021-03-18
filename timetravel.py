@@ -13,7 +13,7 @@ async def timetravel(prefix):
         f'{emojis.bp} {emojis.timetravel} TT 3-4: Beat dungeon 12, reach area 13\n'
         f'{emojis.bp} {emojis.timetravel} TT 5-9: Beat dungeon 13, reach area 14\n'
         f'{emojis.bp} {emojis.timetravel} TT 10-24: Beat dungeon 14, reach area 15\n'
-        f'{emojis.bp} {emojis.timetravel} TT 25+: Beat dungeon 15 (see `{prefix}stt` for details)\n'
+        f'{emojis.bp} {emojis.timetravel} TT 25+: Beat dungeon 15-1 (see `{prefix}stt` for details)\n'
     )
     
     keptitems = (
@@ -89,7 +89,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
         
     unlocks = f"{unlocks}{emojis.bp} **{bonus_xp} %** increased **XP** from everything except duels\n"\
               f'{emojis.bp} **{bonus_duel_xp} %** increased **XP** from **duels**\n'\
-              f'{emojis.bp} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'\
+              f'{emojis.bp} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'\
               f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands\n'\
               f'{emojis.bp} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)'
                   
@@ -181,7 +181,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
 async def supertimetravel(prefix):
 
     requirements =      f'{emojis.bp} {emojis.timetravel} TT 25+\n'\
-                        f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15)'
+                        f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15-1)'
     
     starter_bonuses =   f'{emojis.bp} Start with +25 LIFE (50 score)\n'\
                         f'{emojis.bp} Start with a new Tier I pet (300 score)\n'\
@@ -219,7 +219,7 @@ async def supertimetravel(prefix):
 # Super time travel score calculation
 async def supertimetravelscore(prefix):
 
-    gear =      f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 355.5 score'
+    gear =      f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 155.5 score'
     
     level =     f'{emojis.bp} 1 level = 1 score'
     

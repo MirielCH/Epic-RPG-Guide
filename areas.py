@@ -193,7 +193,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                 else:
                     work_cmd =  f'{emojis.bp} `ascended dynamite` if < {money_nohorse}m coins and horse is < T6\n'\
                                 f'{emojis.bp} `ascended dynamite` if < {money_t6horse}m coins and horse is T6+\n'\
-                                f'{emojis.bp} `ascended chainsaw` if you don\'t need coins'
+                                f'{emojis.bp} `chainsaw` if you don\'t need coins'
             else:
                 if money_nohorse == -1:
                     work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
@@ -235,7 +235,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     
     if (area_no == 3) and (user_tt > 4):
         if user_asc == 'ascended':
-            materials = f'{emojis.bp} {ceil(mats_fish/225):,} {emojis.ruby} rubies'
+            materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
         else:
             materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
         

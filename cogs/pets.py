@@ -17,6 +17,7 @@ class petsCog(commands.Cog):
         'petfind','petsfind','petfinding','petsfinding','findpet','findingpet','findpets','findingpets',
         'petsfusion','fusion','petfusing','petsfusing','fusing','fusepet','fusepets','fusingpet','fusingpets',
         'petsskills','petskill','skill','skills','petsskill',
+        'petsspecial','petsspecialskill','petsspecialskills','petspecial','petspecialskill','petspecialskills','petskillspecial','petskillsspecial','petsskillspecial','petsskillsspecial',
         'petsadv','petsadventures','petadv','petadventure','petadventures'
     )
     
@@ -28,25 +29,28 @@ class petsCog(commands.Cog):
         invoked = invoked.lower()
         
         if args:
-            if len(args)>1:
-                return
-            elif len(args)==1:
-                arg = args[0]
-                if (arg.find('catch') > -1) or (arg.find('find') > -1):
-                    embed = await petscatch(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif arg.find('fusi') > -1:
-                    embed = await petsfusion(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif arg.find('skill') > -1:
+            arg = args[0]
+            if (arg.find('catch') > -1) or (arg.find('find') > -1):
+                embed = await petscatch(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif arg.find('fusi') > -1:
+                embed = await petsfusion(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif arg.find('skill') > -1:
+                if len(args) == 2:
+                    arg2 = args[1]
+                    if arg2.find('special') > -1:
+                        embed = await petsskillsspecial(ctx.prefix)
+                        await ctx.send(embed=embed)
+                    else:
+                        embed = await petsskills(ctx.prefix)
+                        await ctx.send(embed=embed)
+                else:
                     embed = await petsskills(ctx.prefix)
                     await ctx.send(embed=embed)
-                elif arg.find('adv') > -1:
-                    embed = await petsadventures(ctx.prefix)
-                    await ctx.send(embed=embed)
-                else:
-                    embed = await pets_overview(ctx.prefix)
-                    await ctx.send(embed=embed)
+            elif arg.find('adv') > -1:
+                embed = await petsadventures(ctx.prefix)
+                await ctx.send(embed=embed)
             else:
                 embed = await pets_overview(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -57,6 +61,13 @@ class petsCog(commands.Cog):
             elif invoked.find('fusi') > -1:
                 embed = await petsfusion(ctx.prefix)
                 await ctx.send(embed=embed)
+            elif invoked.find('skill') > -1:
+                if invoked.find('special') > -1:
+                    embed = await petsskillsspecial(ctx.prefix)
+                    await ctx.send(embed=embed)
+                else:
+                    embed = await petsskills(ctx.prefix)
+                    await ctx.send(embed=embed)
             elif invoked.find('skill') > -1:
                 embed = await petsskills(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -79,6 +90,7 @@ guide_overview = '`{prefix}pet` : Pets overview'
 guide_catch = '`{prefix}pet catch` : How to find and catch pets'
 guide_fusion = '`{prefix}pet fusion` : Details about pet fusion'
 guide_skills = '`{prefix}pet skills` : Details about pet skills'
+guide_skills_special = '`{prefix}pet skills special` : Details about special pet skills'
 guide_adv = '`{prefix}pet adv` : Details about pet adventures'
 
                     
@@ -96,18 +108,25 @@ async def pets_overview(prefix):
 
                      
     tier = (
-        f'{emojis.bp} Tiers range from I to X (1 to 10)\n'
+        f'{emojis.bp} Tiers range from I to XI (1 to 11)\n'
         f'{emojis.bp} Increases the number of items you get in adventures\n'
         f'{emojis.bp} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.bp} Increases the chance to keep a skill when fusing\n'
         f'{emojis.bp} Increased by fusing pets (see `{prefix}pet fusion`)'
     )
 
-    skills = (
-        f'{emojis.bp} There are 8 different skills (see `{prefix}pet skills`)\n'
+    normalskills = (
+        f'{emojis.bp} There are 8 normal skills (see `{prefix}pet skills`)\n'
         f'{emojis.bp} Skills have a rank that ranges from F to SS+\n'
         f'{emojis.bp} Mainly found by fusing pets (see `{prefix}pet fusion`)\n'
         f'{emojis.bp} Small chance of getting a skill when catching pets'
+    )
+    
+    specialskills = (
+        f'{emojis.bp} There are 6 special skills (see `{prefix}pet skills special`)\n'
+        f'{emojis.bp} Special skills don\'t have a rank and can **not** be lost\n'
+        f'{emojis.bp} Only available on special event reward pets\n'
+        f'{emojis.bp} Each special skill is unique to a certain special pet'
     )
                     
     type = (
@@ -128,6 +147,7 @@ async def pets_overview(prefix):
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
     )
 
@@ -144,7 +164,8 @@ async def pets_overview(prefix):
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='WHAT TO DO WITH PETS', value=whattodo, inline=False)
     embed.add_field(name='TIER', value=tier, inline=False)
-    embed.add_field(name='SKILLS', value=skills, inline=False)
+    embed.add_field(name='NORMAL SKILLS', value=normalskills, inline=False)
+    embed.add_field(name='SPECIAL SKILLS', value=specialskills, inline=False)
     embed.add_field(name='TYPE', value=type, inline=False)
     embed.add_field(name='SCORE', value=score, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -170,13 +191,14 @@ async def petscatch(prefix):
         f'{emojis.bp} If happiness is 85+ higher than hunger, catch chance is 100%\n'
         f'{emojis.bp} Example: `feed feed pat pat pat`\n'
         f'{emojis.bp} You can only use up to 6 commands\n'
-        f'{emojis.bp} Less commands = lower catch chance but higher chance for the pet to have a skill if caught (see `{prefix}pet skills`)'
+        f'{emojis.bp} Less commands = lower catch chance but higher chance for the pet to have a normal skill if caught (see `{prefix}pet skills`)'
     )
 
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
     )
 
@@ -200,8 +222,9 @@ async def petsfusion(prefix):
         f'{emojis.bp} Use `pets fusion [petID1] [petID2]`\n'
         f'{emojis.bp} You can fuse more than 2 pets but you shouldn\'t\n'
         f'{emojis.bp} You can **not** lose tiers when fusing\n'
-        f'{emojis.bp} You **can** lose skills when fusing\n'
-        f'{emojis.bp} Exception: You can not lose the {emojis.skillascended} ascended skill'
+        f'{emojis.bp} You can **not** lose special skills when fusing\n'
+        f'{emojis.bp} You **can** lose normal skills when fusing\n'
+        f'{emojis.bp} Exception: You can not lose {emojis.skillascended} ascended and {emojis.skillfighter} fighter'
     )
 
     tiers = (
@@ -210,11 +233,12 @@ async def petsfusion(prefix):
     )
 
     skills = (
-        f'{emojis.bp} You have a random chance of getting a new skill when fusing\n'
+        f'{emojis.bp} You have a random chance of getting a new normal skill when fusing\n'
+        f'{emojis.bp} You can **not** get special skills when fusing\n'
         f'{emojis.bp} The more skills you already have, the lower the chance\n'
         f'{emojis.bp} If your sole goal is getting skills, fuse with T1 pets\n'
-        f'{emojis.bp} You can keep skills you already have, but the chance depends on the skill rank (see `{prefix}pet skills`)\n'
-        f'{emojis.bp} To maximize the chance to keep skills, rank them to SS+ first\n'
+        f'{emojis.bp} You can keep normal skills you already have, but the chance depends on the skill rank (see `{prefix}pet skills`)\n'
+        f'{emojis.bp} To maximize the chance to keep normal skills, rank them to SS+ first\n'
         f'{emojis.bp} The max chance to keep a skill is 90%'
     )
 
@@ -226,7 +250,7 @@ async def petsfusion(prefix):
 
     whatfirst = (
         f'{emojis.bp} Try to tier up to T4+ before you start fusing for skills\n'
-        f'{emojis.bp} The best skill to keep first is {emojis.skillhappy} happy'
+        f'{emojis.bp} The best normal skill to keep first is {emojis.skillhappy} happy'
     )
                     
     skillsimpact = f'{emojis.bp} {emojis.skillhappy} **Happy**: Increases the chance to tier up'
@@ -235,13 +259,14 @@ async def petsfusion(prefix):
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
         color = global_data.color,
         title = 'PET FUSION',
-        description = 'You can fuse pets to tier them up and/or find or transfer skills.'
+        description = 'You can fuse pets to tier them up and/or find or transfer normal skills.'
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -255,7 +280,7 @@ async def petsfusion(prefix):
             
     return embed
 
-# Pet skills
+# Pet normal skills
 async def petsskills(prefix):
           
     normie = f'{emojis.bp} This is not a skill, it simply means the pet has no skills'
@@ -294,7 +319,8 @@ async def petsskills(prefix):
     fighter = (
         f'{emojis.bp} Pet can be used to acquire {emojis.dragonessence} dragon essence in D1-D9\n'
         f'{emojis.bp} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
-        f'{emojis.bp} You can **not** lose this skill when fusing'
+        f'{emojis.bp} You can **not** lose this skill when fusing\n'
+        f'{emojis.bp} Note: You need to be in {emojis.timetravel} TT 25+ to be able to use the skill'
     )
     
     skillranks = (
@@ -307,6 +333,7 @@ async def petsskills(prefix):
     
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
@@ -316,8 +343,9 @@ async def petsskills(prefix):
         color = global_data.color,
         title = 'PET SKILLS',
         description = (
-            f'Overview of all pet skills. See `{prefix}pets` on how to get skills.\n'
-            f'Note: Purple and yellow skills are rarer than blue ones.'
+            f'Overview of all **normal** pet skills. See `{prefix}pet` on how to get these skills.\n'
+            f'To see an overview of the **special** pet skills, see `{prefix}pet skills special`.\n'
+            f'Purple and yellow skills are rarer than blue ones.'
         )
     )    
     
@@ -332,6 +360,75 @@ async def petsskills(prefix):
     embed.add_field(name=f'EPIC {emojis.skillepic}', value=epic, inline=False)
     embed.add_field(name=f'ASCENDED {emojis.skillascended}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.skillfighter}', value=fighter, inline=False)
+    embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
+            
+    return embed
+
+# Pet special skills
+async def petsskillsspecial(prefix):
+          
+    competitive = (
+        f'{emojis.bp} The pet has 1 more score point\n'
+        f'{emojis.bp} It is currently unknown which pet has this skill'
+    )
+
+    fisherfish = (
+        f'{emojis.bp} If the pet finds fish, you get 3 times the amount\n'
+        f'{emojis.bp} This skill is unique to the {emojis.petpinkfish} pink fish pet\n'
+        f'{emojis.bp} This pet is a reward in the valentine event'
+    )
+
+    faster = (
+        f'{emojis.bp} If the pet also has the {emojis.skillfast} fast skill, the time reduction is doubled\n'
+        f'{emojis.bp} This skill is unique to the {emojis.petgoldenbunny} golden bunny pet\n'
+        f'{emojis.bp} This pet is a reward in the easter event'
+    )
+
+    monsterhunter = (
+        f'{emojis.bp} Has a chance to find random mob drops in pet adventures\n'
+        f'{emojis.bp} This skill is unique to the {emojis.petpumpkinbat} pumpkin bat pet\n'
+        f'{emojis.bp} This pet is a reward in the halloween event'
+    )
+    
+    gifter = (
+        f'{emojis.bp} Has a chance to find a random lootbox in a pet adventure\n'
+        f'{emojis.bp} This skill is unique to the {emojis.petsnowball} snowball pet\n'
+        f'{emojis.bp} This pet is a reward in the christmas event'
+    )
+    
+    booster = (
+        f'{emojis.bp} **All** pets have a chance to advance skills twice in a pet adventure\n'
+        f'{emojis.bp} This skill is unique to the {emojis.pethamster} hamster pet\n'
+        f'{emojis.bp} This pet is a reward in the anniversary event'
+    )
+    
+    skillranks = f'{emojis.bp} Special skills can not be ranked up'
+    
+    guides = (
+        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'SPECIAL PET SKILLS',
+        description = (
+            f'Overview of all **special** pet skills. Each special skill is unique to a certain special pet and can **not** be lost.\n'
+            f'To see an overview of the **normal** pet skills, see `{prefix}pet skills`.'
+        )
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name=f'COMPETITIVE {emojis.skillcompetitive}', value=competitive, inline=False)
+    embed.add_field(name=f'FISHERFISH {emojis.skillfisherfish}', value=fisherfish, inline=False)
+    embed.add_field(name=f'FASTER {emojis.skillfaster}', value=faster, inline=False)
+    embed.add_field(name=f'MONSTER HUNTER {emojis.skillmonsterhunter}', value=monsterhunter, inline=False)
+    embed.add_field(name=f'GIFTER {emojis.skillgifter}', value=gifter, inline=False)
+    embed.add_field(name=f'BOOSTER {emojis.skillbooster}', value=booster, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
             
@@ -362,7 +459,7 @@ async def petsadventures(prefix):
         f'{emojis.bp} Note: You get a pet **in addition** to the other reward'
     )
 
-    skillsimpact = (
+    normalskillsimpact = (
         f'{emojis.bp} {emojis.skillfast} **Fast**: Reduces the time to do adventures\n'
         f'{emojis.bp} {emojis.skilldigger} **Digger**: Increases the amount of coins you get\n'
         f'{emojis.bp} {emojis.skilllucky} **Lucky**: Increases the chance to find better items\n'
@@ -371,11 +468,20 @@ async def petsadventures(prefix):
         f'{emojis.bp} {emojis.skillascended} **Ascended**: Has a chance to find a pet'
     )
     
+    specialskillsimpact = (
+        f'{emojis.bp} {emojis.skillfisherfish} **Fisherfish**: Increases the amount of fish you get by 300%\n'
+        f'{emojis.bp} {emojis.skillfaster} **Faster**: Doubles time reduction from {emojis.skillfast} fast skill\n'
+        f'{emojis.bp} {emojis.skillmonsterhunter} **Monster hunter**: Has a chance to find mob drops\n'
+        f'{emojis.bp} {emojis.skillgifter} **Gifter**: Has a chance to find a lootbox\n'
+        f'{emojis.bp} {emojis.skillbooster} **BOOSTER**: All pets have a chance to advance skills twice'
+    )
+    
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_skills.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
@@ -388,7 +494,8 @@ async def petsadventures(prefix):
     embed.add_field(name='HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name='ADVENTURE TYPES', value=types, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name='SKILLS THAT AFFECT ADVENTURES', value=skillsimpact, inline=False)
+    embed.add_field(name='NORMAL SKILLS THAT AFFECT ADVENTURES', value=normalskillsimpact, inline=False)
+    embed.add_field(name='SPECIAL SKILLS THAT AFFECT ADVENTURES', value=specialskillsimpact, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed

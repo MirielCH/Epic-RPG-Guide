@@ -1,6 +1,8 @@
 # global_data.py
 
 import os
+import logging
+import logging.handlers
 
 # Get bot directory
 bot_dir = os.path.dirname(__file__)
@@ -26,5 +28,14 @@ async def default_footer(prefix):
     
     return footer
 
-# Error log file
+# Open error log file, create if it not exists
 logfile = os.path.join(bot_dir, 'logs/discord.log')
+if not os.path.isfile(logfile):
+    open(logfile, 'a').close()
+
+# Initialize logging
+logger = logging.getLogger('discord')
+logger.setLevel(logging.INFO)
+handler = logging.handlers.TimedRotatingFileHandler(filename=logfile,when='D',interval=1, encoding='utf-8', utc=True)
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
