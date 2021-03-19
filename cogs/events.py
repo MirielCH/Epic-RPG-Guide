@@ -47,20 +47,20 @@ class eventsCog(commands.Cog):
                 event_name = f'{event_name}{arg}'
             event_name = event_name.lower().replace(' ','').strip()
             if event_name.find('enchant') > -1:
-                    embed = await event_enchant(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_enchant(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
-                    embed = await event_epicguard(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_epicguard(ctx.prefix)
+                await ctx.send(embed=embed)
             elif event_name.find('god') > -1:
-                    embed = await event_god(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_god(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
-                    embed = await event_heal(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_heal(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
-                    embed = await event_legendary(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_legendary(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 if (event_name.find('summon') > -1):
                     embed = await event_lootboxsummoning(ctx.prefix)
@@ -69,44 +69,44 @@ class eventsCog(commands.Cog):
                     embed = await event_lootbox(ctx.prefix)
                     await ctx.send(embed=embed)
             elif event_name == 'arena':
-                    embed = await event_arena(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_arena(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
-                    embed = await event_coinrain(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_coinrain(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
-                    embed = await event_epictree(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_epictree(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
-                    embed = await event_megalodon(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_megalodon(ctx.prefix)
+                await ctx.send(embed=embed)
             elif event_name == 'miniboss':
-                    embed = await event_miniboss(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_miniboss(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('specialtrade') > -1) or (event_name.find('trade') > -1):
-                    embed = await event_specialtrade(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_specialtrade(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('bigarena') > -1):
-                    embed = await event_bigarena(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_bigarena(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('horserace') > -1) or (event_name.find('race') > -1):
-                    embed = await event_horserace(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_horserace(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('lottery') > -1) or (event_name.find('ticket') > -1):
-                    embed = await event_lottery(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_lottery(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('notsomini') > -1):
-                    embed = await event_notsominiboss(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_notsominiboss(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('pet') > -1) or (event_name.find('tournament') > -1):
-                    embed = await event_pettournamnent(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_pettournamnent(ctx.prefix)
+                await ctx.send(embed=embed)
             elif event_name.find('summon') > -1:
-                    embed = await event_lootboxsummoning(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_lootboxsummoning(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
-                    embed = await event_rubydragon(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await event_rubydragon(ctx.prefix)
+                await ctx.send(embed=embed)
             else:
                 await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
         else:
@@ -229,7 +229,7 @@ async def events_overview(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'EVENTS',
+        title = 'EVENTS',
         description = (
             f'This page lists the names of all possible events.\n'
             f'Use `{prefix}event [name]` to see details about an event.'

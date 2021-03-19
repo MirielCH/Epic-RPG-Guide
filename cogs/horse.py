@@ -132,7 +132,11 @@ class horseCog(commands.Cog):
                     f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n'
                 ) 
             else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}horsecalc [tier] [level]`\nYou can also omit all parameters to use your horse tier and level for the calculation.\n\nExamples: `{ctx.prefix}horsecalc 6 25` or `{ctx.prefix}horsecalc t7 l30` or `{ctx.prefix}horsecalc 6 25`')
+                await ctx.send(
+                    f'The command syntax is `{ctx.prefix}horsecalc [tier] [level]`\n'
+                    f'You can also omit all parameters to use your horse tier and level for the calculation.\n\n'
+                    f'Examples: `{ctx.prefix}horsecalc 6 25` or `{ctx.prefix}horsecalc t7 l30` or `{ctx.prefix}horsecalc 6 25`'
+                )
         else:
             try:
                 await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
@@ -214,7 +218,7 @@ class horseCog(commands.Cog):
                     f'Tip: You can use `{ctx.prefix}horsecalc [tier] [level]` to check the stats bonuses for any horse tier and level.'
                 ) 
             except asyncio.TimeoutError as error:
-                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
 # Initialization
 def setup(bot):
@@ -244,8 +248,8 @@ async def horses(prefix):
     )
             
     level = (
-        f'{emojis.bp} Levels range from 1 to (tier * 10)\n'
-        f'{emojis.bp} The max level increases by every lootboxer level > 100\n'
+        f'{emojis.bp} Levels range from 1 to ([tier] * 10) + [lootboxer bonus]\n'
+        f'{emojis.bp} Example: A T7 horse with lootboxer at 102 has a max level of 72\n'
         f'{emojis.bp} Leveling up increases the horse type bonus (see the [Wiki](https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'
         f'{emojis.bp} Increased by using `horse training` which costs coins\n'
         f'{emojis.bp} Training cost is reduced by leveling up lootboxer (see `{prefix}pr`)'
