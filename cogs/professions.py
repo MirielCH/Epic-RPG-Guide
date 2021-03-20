@@ -420,13 +420,13 @@ class professionsCog(commands.Cog):
                         merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
                     
                     output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
-                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{logs:,}** (if world buff: **{ceil(logs*0.9):,}**)'
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{logs:,}** (if world buff: **{ceil(logs/1.1):,}**)'
 
                     for merchant_level in merchant_levels:
                         merchant_level_no = merchant_level[0]
                         merchant_level_xp = merchant_level[1]
                         logs = merchant_level_xp*5
-                        output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{logs:,}** (if world buff: **{ceil(logs*0.9):,}**)'
+                        output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{logs:,}** (if world buff: **{ceil(logs/1.1):,}**)'
             
                     await ctx.send(output)
                 else:
@@ -1118,7 +1118,7 @@ class professionsCog(commands.Cog):
                             await ctx.send(
                                 f'You need to sell the following amount of {emojis.log} wooden logs to reach level 100:\n'
                                 f'{emojis.bp} ~**{logs_total:,}** without world buff\n'
-                                f'{emojis.bp} ~**{ceil(logs_total*0.9):,}** with world buff'
+                                f'{emojis.bp} ~**{ceil(logs_total/1.1):,}** with world buff'
                             )
                         else:
                             await ctx.send('Whelp, something went wrong here, sorry.')
@@ -1215,7 +1215,7 @@ class professionsCog(commands.Cog):
                                 await ctx.send(
                                     f'You need to sell the following amount of {emojis.log} wooden logs to reach level {level}:\n'
                                     f'{emojis.bp} ~**{logs_total:,}** without world buff\n'
-                                    f'{emojis.bp} ~**{ceil(logs_total*0.9):,}** with world buff'
+                                    f'{emojis.bp} ~**{ceil(logs_total/1.1):,}** with world buff'
                                 )
                             else:
                                 await ctx.send(f'Whelp, something went wrong here, sorry.')
