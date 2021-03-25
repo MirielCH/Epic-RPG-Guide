@@ -195,10 +195,11 @@ class professionsCog(commands.Cog):
                         enchanter_level_no = enchanter_level[0]
                         enchanter_level_xp = enchanter_level[1]
                         actual_xp = enchanter_level_xp - xp_rest
+                        actual_xp_wb = enchanter_level_xp - xp_rest_wb
                         ice_cream = ceil(actual_xp / 100)
-                        ice_cream_wb = ceil(actual_xp / 110)
+                        ice_cream_wb = ceil(actual_xp_wb / 110)
                         xp_rest = 100 - (actual_xp % 100)
-                        xp_rest_wb = 110 - (actual_xp % 110)
+                        xp_rest_wb = 110 - (actual_xp_wb % 110)
                         if xp_rest == 100:
                             xp_rest = 0
                         if xp_rest_wb == 110:
@@ -315,10 +316,11 @@ class professionsCog(commands.Cog):
                         worker_level_no = worker_level[0]
                         worker_level_xp = worker_level[1]
                         actual_xp = worker_level_xp - xp_rest
+                        actual_xp_wb = worker_level_xp - xp_rest_wb
                         lootboxes = ceil(actual_xp / 100)
-                        lootboxes_wb = ceil(actual_xp / 110)
+                        lootboxes_wb = ceil(actual_xp_wb / 110)
                         xp_rest = 100 - (actual_xp % 100)
-                        xp_rest_wb = 110 - (actual_xp % 110)
+                        xp_rest_wb = 110 - (actual_xp_wb % 110)
                         if xp_rest == 100:
                             xp_rest = 0
                         if xp_rest_wb == 110:
@@ -406,7 +408,8 @@ class professionsCog(commands.Cog):
                     pr_current_xp = int(pr_current_xp)
                     pr_needed_xp = int(pr_needed_xp)            
                     xp = pr_needed_xp - pr_current_xp
-                    logs = xp * 5  
+                    logs = xp * 5
+                    logs_wb = 5 * ceil((logs/1.1) / 5)
                     
                     levelrange = []
                     
@@ -420,13 +423,14 @@ class professionsCog(commands.Cog):
                         merchant_levels = await database.get_profession_levels(ctx,'merchant',levelrange)
                     
                     output = f'You need to sell the following amounts of {emojis.log} wooden logs:\n'\
-                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{logs:,}** (if world buff: **{ceil(logs/1.1):,}**)'
+                            f'{emojis.bp} Level {pr_level} to {pr_level+1}: **{logs:,}** (if world buff: **{logs_wb:,}**)'
 
                     for merchant_level in merchant_levels:
                         merchant_level_no = merchant_level[0]
                         merchant_level_xp = merchant_level[1]
                         logs = merchant_level_xp*5
-                        output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{logs:,}** (if world buff: **{ceil(logs/1.1):,}**)'
+                        logs_wb = 5 * ceil((logs/1.1) / 5)
+                        output = f'{output}\n{emojis.bp} Level {merchant_level_no-1} to {merchant_level_no}: **{logs:,}** (if world buff: **{logs_wb:,}**)'
             
                     await ctx.send(output)
                 else:
@@ -538,10 +542,11 @@ class professionsCog(commands.Cog):
                         worker_level_no = worker_level[0]
                         worker_level_xp = worker_level[1]
                         actual_xp = worker_level_xp - xp_rest
+                        actual_xp_wb = worker_level_xp - xp_rest_wb
                         pickaxes = ceil(actual_xp / 100)
-                        pickaxes_wb = ceil(actual_xp / 110)
+                        pickaxes_wb = ceil(actual_xp_wb / 110)
                         xp_rest = 100 - (actual_xp % 100)
-                        xp_rest_wb = 110 - (actual_xp % 110)
+                        xp_rest_wb = 110 - (actual_xp_wb % 110)
                         if xp_rest == 100:
                             xp_rest = 0
                         if xp_rest_wb == 110:
@@ -643,12 +648,13 @@ class professionsCog(commands.Cog):
                             for enchanter_level in enchanter_levels:
                                 enchanter_level_xp = enchanter_level[1]
                                 actual_xp = enchanter_level_xp - xp_rest
+                                actual_xp_wb = enchanter_level_xp - xp_rest_wb
                                 ice_cream = ceil(actual_xp / 100)
-                                ice_cream_wb = ceil(actual_xp / 110)
+                                ice_cream_wb = ceil(actual_xp_wb / 110)
                                 ice_cream_total = ice_cream_total + ice_cream
                                 ice_cream_total_wb = ice_cream_total_wb + ice_cream_wb
                                 xp_rest = 100 - (actual_xp % 100)
-                                xp_rest_wb = 110 - (actual_xp % 110)
+                                xp_rest_wb = 110 - (actual_xp_wb % 110)
                                 if xp_rest == 100:
                                     xp_rest = 0
                                 if xp_rest_wb == 110:
@@ -761,12 +767,13 @@ class professionsCog(commands.Cog):
                                 for enchanter_level in enchanter_levels:
                                     enchanter_level_xp = enchanter_level[1]
                                     actual_xp = enchanter_level_xp - xp_rest
+                                    actual_xp_wb = enchanter_level_xp - xp_rest_wb
                                     ice_cream = ceil(actual_xp / 100)
-                                    ice_cream_wb = ceil(actual_xp / 110)
+                                    ice_cream_wb = ceil(actual_xp_wb / 110)
                                     ice_cream_total = ice_cream_total + ice_cream
                                     ice_cream_total_wb = ice_cream_total_wb + ice_cream_wb
                                     xp_rest = 100 - (actual_xp % 100)
-                                    xp_rest_wb = 110 - (actual_xp % 110)
+                                    xp_rest_wb = 110 - (actual_xp_wb % 110)
                                     if xp_rest == 100:
                                         xp_rest = 0
                                     if xp_rest_wb == 110:
@@ -884,12 +891,13 @@ class professionsCog(commands.Cog):
                             for lootboxer_level in lootboxer_levels:
                                 lootboxer_level_xp = lootboxer_level[1]
                                 actual_xp = lootboxer_level_xp - xp_rest
+                                actual_xp_wb = lootboxer_level_xp - xp_rest_wb
                                 lootboxes = ceil(actual_xp / 100)
-                                lootboxes_wb = ceil(actual_xp / 110)
+                                lootboxes_wb = ceil(actual_xp_wb / 110)
                                 lootboxes_total = lootboxes_total + lootboxes
                                 lootboxes_total_wb = lootboxes_total_wb + lootboxes_wb
                                 xp_rest = 100 - (actual_xp % 100)
-                                xp_rest_wb = 110 - (actual_xp % 110)
+                                xp_rest_wb = 110 - (actual_xp_wb % 110)
                                 if xp_rest == 100:
                                     xp_rest = 0
                                 if xp_rest_wb == 110:
@@ -1002,12 +1010,13 @@ class professionsCog(commands.Cog):
                                 for lootboxer_level in lootboxer_levels:
                                     lootboxer_level_xp = lootboxer_level[1]
                                     actual_xp = lootboxer_level_xp - xp_rest
+                                    actual_xp_wb = lootboxer_level_xp - xp_rest_wb
                                     lootboxes = ceil(actual_xp / 100)
-                                    lootboxes_wb = ceil(actual_xp / 110)
+                                    lootboxes_wb = ceil(actual_xp_wb / 110)
                                     lootboxes_total = lootboxes_total + lootboxes
                                     lootboxes_total_wb = lootboxes_total_wb + lootboxes_wb
                                     xp_rest = 100 - (actual_xp % 100)
-                                    xp_rest_wb = 110 - (actual_xp % 110)
+                                    xp_rest_wb = 110 - (actual_xp_wb % 110)
                                     if xp_rest == 100:
                                         xp_rest = 0
                                     if xp_rest_wb == 110:
@@ -1114,11 +1123,13 @@ class professionsCog(commands.Cog):
                             
                             for merchant_level in merchant_levels:
                                 logs_total = logs_total + (merchant_level[1] * 5)
+                                
+                            logs_total_wb = 5 * ceil((logs_total/1.1) / 5)
                             
                             await ctx.send(
                                 f'You need to sell the following amount of {emojis.log} wooden logs to reach level 100:\n'
                                 f'{emojis.bp} ~**{logs_total:,}** without world buff\n'
-                                f'{emojis.bp} ~**{ceil(logs_total/1.1):,}** with world buff'
+                                f'{emojis.bp} ~**{logs_total_wb:,}** with world buff'
                             )
                         else:
                             await ctx.send('Whelp, something went wrong here, sorry.')
@@ -1211,11 +1222,13 @@ class professionsCog(commands.Cog):
                                 
                                 for merchant_level in merchant_levels:
                                     logs_total = logs_total + (merchant_level[1] * 5)
+                                    
+                                logs_total_wb = 5 * ceil((logs_total/1.1) / 5)
                                 
                                 await ctx.send(
                                     f'You need to sell the following amount of {emojis.log} wooden logs to reach level {level}:\n'
                                     f'{emojis.bp} ~**{logs_total:,}** without world buff\n'
-                                    f'{emojis.bp} ~**{ceil(logs_total/1.1):,}** with world buff'
+                                    f'{emojis.bp} ~**{logs_total_wb:,}** with world buff'
                                 )
                             else:
                                 await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -1326,12 +1339,13 @@ class professionsCog(commands.Cog):
                             for worker_level in worker_levels:
                                 worker_level_xp = worker_level[1]
                                 actual_xp = worker_level_xp - xp_rest
+                                actual_xp_wb = worker_level_xp - xp_rest_wb
                                 pickaxes = ceil(actual_xp / 100)
-                                pickaxes_wb = ceil(actual_xp / 110)
+                                pickaxes_wb = ceil(actual_xp_wb / 110)
                                 pickaxes_total = pickaxes_total + pickaxes
                                 pickaxes_total_wb = pickaxes_total_wb + pickaxes_wb
                                 xp_rest = 100 - (actual_xp % 100)
-                                xp_rest_wb = 110 - (actual_xp % 110)
+                                xp_rest_wb = 110 - (actual_xp_wb % 110)
                                 if xp_rest == 100:
                                     xp_rest = 0
                                 if xp_rest_wb == 110:
@@ -1444,12 +1458,13 @@ class professionsCog(commands.Cog):
                                 for worker_level in worker_levels:
                                     worker_level_xp = worker_level[1]
                                     actual_xp = worker_level_xp - xp_rest
+                                    actual_xp_wb = worker_level_xp - xp_rest_wb
                                     pickaxes = ceil(actual_xp / 100)
-                                    pickaxes_wb = ceil(actual_xp / 110)
+                                    pickaxes_wb = ceil(actual_xp_wb / 110)
                                     pickaxes_total = pickaxes_total + pickaxes
                                     pickaxes_total_wb = pickaxes_total_wb + pickaxes_wb
                                     xp_rest = 100 - (actual_xp % 100)
-                                    xp_rest_wb = 110 - (actual_xp % 110)
+                                    xp_rest_wb = 110 - (actual_xp_wb % 110)
                                     if xp_rest == 100:
                                         xp_rest = 0
                                     if xp_rest_wb == 110:
@@ -1940,7 +1955,10 @@ async def professions_worker(prefix):
 # Ascension
 async def professions_ascension(prefix):
     
-    requirements = f'{emojis.bp} All 5 profession at level 100+ (see `{prefix}pr level`)'
+    requirements = (
+        f'{emojis.bp} All 5 professions at level 100+ (see `{prefix}pr level`)\n'
+        f'{emojis.bp} {emojis.timetravel} TT 1+'
+    )
     
     benefits =(
         f'{emojis.bp} Get more materials by using high tier work commands early\n'

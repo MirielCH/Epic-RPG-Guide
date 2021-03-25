@@ -233,11 +233,14 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         if user_tt < 5:
             materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
     
-    if (area_no == 3) and (user_tt > 4):
+    if (area_no == 3) and (user_tt > 0):
+        materials = f'{emojis.bp} 15+ {emojis.wolfskin} wolf skins\n'\
+                    f'{emojis.bp} 15+ {emojis.zombieeye} zombie eyes'
+        
         if user_asc == 'ascended':
-            materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
+            materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
         else:
-            materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
+            materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
         
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
@@ -267,7 +270,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
-    if ((area_no == 3) and (user_tt > 4)) or (area_no in (5,8)):
+    if ((area_no == 3) and (user_tt > 0)) or (area_no in (5,8)):
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveller_prepare == True:
         embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
