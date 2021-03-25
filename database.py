@@ -226,8 +226,6 @@ async def get_item_data(ctx, itemname):
             itemnames = (itemname,'super log','epic log','','','','','')
         elif itemname == 'ruby armor':
             itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'hair sword':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
         elif itemname == 'coin armor':
             itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
         elif itemname == 'coin sword':
@@ -235,7 +233,7 @@ async def get_item_data(ctx, itemname):
         elif itemname == 'mermaid armor':
             itemnames = (itemname,'mega log','super log','epic log','golden fish','','','')
         elif itemname == 'electronical sword':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
+            itemnames = (itemname,'mega log','super log','epic log','','','','')
         elif itemname == 'electronical armor':
             itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
         elif itemname == 'edgy sword':

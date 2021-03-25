@@ -278,7 +278,7 @@ class craftingCog(commands.Cog):
                 try:
                     itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('uo ','ultra-omega ')
                     itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
-                    itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple')       
+                    itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple').replace('oranges','orange')
                     
                     shortcuts = {   
                         'ed sw': 'edgy sword',
@@ -329,7 +329,13 @@ class craftingCog(commands.Cog):
                         'hl': 'hyper log',
                         'ul': 'ultra log',
                         'bf': 'baked fish',
-                        'mc': 'mutant creature',
+                        'cc': 'carrotato chips',
+                        'carrotato': 'carrotato chips',
+                        'chips': 'carrotato chips',
+                        'cb': 'carrot bread',
+                        'oj': 'orange juice',
+                        'h': 'hairn',
+                        'orange': 'orange juice',
                         'fs': 'fruit salad',
                         'aj': 'apple juice',
                         'sc': 'super cookie',
@@ -528,6 +534,12 @@ async def mats(items_data, amount, prefix):
                 ingredients.append([value, emojis.arenacookie, 'arena cookie'])
             elif items_headers[header_index] == 'dragonessence':
                 ingredients.append([value, emojis.dragonessence, 'dragon essence'])
+            elif items_headers[header_index] == 'bread':
+                ingredients.append([value, emojis.bread, 'bread'])
+            elif items_headers[header_index] == 'carrot':
+                ingredients.append([value, emojis.carrot, 'carrot'])
+            elif items_headers[header_index] == 'potato':
+                ingredients.append([value, emojis.potato, 'potato'])
             elif items_headers[header_index] == 'lbrare':
                 ingredients.append([value, emojis.lbrare, 'rare lootbox'])
             elif items_headers[header_index] == 'lbomega':

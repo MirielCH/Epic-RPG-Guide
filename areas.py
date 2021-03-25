@@ -119,7 +119,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
             quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
         else:
             quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
-    elif (area_no == 3) and (user_tt > 4):
+    elif (area_no == 3) and (user_tt > 0):
         quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
     elif area_no in (5,8):
         if not player_level == 0:
@@ -183,10 +183,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                 work_cmd =  f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
                             f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
                             f'{emojis.bp} `{work_cmd_rich}` if you don\'t need coins'
-    elif 10 <= area_no <= 11:
-        if (area_no == 11) and (user_tt == 0):
-            work_cmd = f'{emojis.bp} `drill` if you need coins'
-        else:
+    elif area_no == 10:
             if user_asc == 'ascended':
                 if user_tt in (2,3,6,7,9,10,12,15,17,20,22,24):
                     work_cmd = f'{emojis.bp} `ascended dynamite`'
@@ -201,6 +198,26 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                     work_cmd =  f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
                                 f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
                                 f'{emojis.bp} `{work_cmd_rich}` if you don\'t need coins'
+    elif area_no == 11:
+            if user_tt == 0:
+                work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
+                            f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
+                            f'{emojis.bp} `drill` if you need coins'
+            else:
+                if user_asc == 'ascended':
+                    if user_tt in (2,3,6,7,9,10,12,15,17,20,22,24):
+                        work_cmd =  f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
+                                    f'{emojis.bp} `ascended dynamite` otherwise'
+                    else:
+                        work_cmd =  f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
+                                    f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
+                                    f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
+                                    f'{emojis.bp} `chainsaw` otherwise'
+                else:
+                    work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
+                                f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
+                                f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
+                                f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
     elif 12 <= area_no <= 15:
         if (area_no == 12) and (user_tt in (1,2)):
             work_cmd = f'{emojis.bp} `chainsaw` if you need logs\n'\
