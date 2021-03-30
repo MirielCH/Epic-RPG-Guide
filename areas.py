@@ -143,7 +143,6 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
     
     # New commands
-    
     if ((area_no == 4) and (user_tt > 0)) or ((area_no == 11) and (user_tt > 0)) or ((area_no == 12) and (user_tt > 1)):
         new_cmd_1 = ''
     elif ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 14)):
@@ -241,7 +240,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                 work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
                         f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
                         f'{emojis.bp} `dynamite` if you need coins'   
-        
+    
     # Materials areas 3, 5 and 8
     if area_no == 5:
         materials = f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'\

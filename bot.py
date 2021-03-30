@@ -1255,29 +1255,49 @@ async def calc(ctx, *args):
         pos = 1
         calculation_parsed = []
         number = ''
-        last_char_was_operator = True # Sollte eigentlich "last_char_was_operator_or_beginning_of_calculation" heissen, aber eh, too long, don't care
+        last_char_was_operator = False # Not really accurate name, I only use it to check for *, % and /. Multiple + and - are allowed.
+        last_char_was_number = False
         calculation_sliced = calculation
         try:
             while not pos == len(calculation)+1:
                 slice = calculation_sliced[0:1]
-                allowednumbers = set('1234567890.')
-                if set(slice).issubset(allowednumbers):
-                    number = f'{number}{slice}'
-                    last_char_was_operator = False
-                elif (slice == '-') or (slice == '+') or (slice == '/') or (slice == '*') or (slice == '%'):
-                    if ((slice == '+') or (slice == '-')) and last_char_was_operator == True:
-                        number = f'{number}{slice}'
+                allowedcharacters = set('1234567890.-+/*%()')
+                if set(slice).issubset(allowedcharacters):
+                    if slice.isnumeric():
+                        if last_char_was_number == True:
+                            number = f'{number}{slice}'
+                        else:
+                            number = slice
+                            last_char_was_number = True
                         last_char_was_operator = False
                     else:
-                        calculation_parsed.append(float(number))
-                        calculation_parsed.append(slice)
-                        number = ''
-                        last_char_was_operator = True
+                        if slice == '.':
+                            number = f'{number}{slice}'
+                        else:
+                            if not number == '':        
+                                calculation_parsed.append(float(number))
+                                number = ''
+                            
+                            if slice in ('*','%','/'):
+                                if last_char_was_operator == True:
+                                    await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
+                                    return
+                                else:
+                                    calculation_parsed.append(slice)
+                                    last_char_was_operator = True
+                            else:
+                                calculation_parsed.append(slice)
+                                last_char_was_operator = False
+                            last_char_was_number = False
+                else:
+                    await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
+                    return
 
                 calculation_sliced = calculation_sliced[1:]
                 pos = pos+1
             else:
-                calculation_parsed.append(float(number))
+                if not number=='':
+                    calculation_parsed.append(float(number))
         except:
             await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
             return

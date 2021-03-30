@@ -370,7 +370,8 @@ async def petsskillsspecial(prefix):
           
     competitive = (
         f'{emojis.bp} The pet has 1 more score point\n'
-        f'{emojis.bp} It is currently unknown which pet has this skill'
+        f'{emojis.bp} This skill is unique to the {emojis.petpanda} epic panda pet\n'
+        f'{emojis.bp} This pet was given to the first player who reached {emojis.timetravel} TT 100'
     )
 
     fisherfish = (

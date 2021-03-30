@@ -266,6 +266,7 @@ petgoldenbunny = '<:erg_goldenbunny:770327200674349056>'
 pethamster = '<:erg_hamster:770327200834388008>'
 pethappiness = ':heart:'
 pethunger = ':taco:'
+petpanda = '<:erg_petpanda:826345853110583357>'
 
 # Professions
 prworker = logepic
