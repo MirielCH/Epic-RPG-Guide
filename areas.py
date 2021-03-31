@@ -116,29 +116,79 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
     elif (1 <= area_no <= 4) and (user_tt == 0) :
         if not player_level == 0:
-            quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
+            quick_guide = (
+                f'{emojis.bp} Reach level {player_level}'
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
         else:
-            quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}'
+            quick_guide = (
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}'
+            )
     elif (area_no == 3) and (user_tt > 0):
-        quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+        quick_guide = (
+            f'{emojis.bp} Farm the materials mentioned below\n'
+            f'{emojis.bp} Reach level {player_level}'
+            f'{quick_guide_sword}{quick_guide_enchant_sword}'
+            f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+            f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+        )
     elif area_no in (5,8):
         if not player_level == 0:
-            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+            quick_guide = (
+                f'{emojis.bp} Farm the materials mentioned below\n'
+                f'{emojis.bp} Reach level {player_level}'
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
         else:
-            quick_guide = f'{emojis.bp} Farm the materials mentioned below\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+            quick_guide = (
+                f'{emojis.bp} Farm the materials mentioned below\n'
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
     elif area_no == 9:
         if not player_level == 0:
-            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+            quick_guide = (
+                f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
+                f'{emojis.bp} Reach level {player_level}'
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
         else:
-            quick_guide = f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+            quick_guide = (
+                f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
     else:
         if not player_level == 0:
             if area_no == 3:
-                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+                quick_guide = (
+                    f'{emojis.bp} Reach level {player_level}'
+                    f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                    f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                    f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                )
             else:
-                quick_guide = f'{emojis.bp} Reach level {player_level}{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+                quick_guide = (
+                    f'{emojis.bp} Reach level {player_level}'
+                    f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                    f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                    f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                )
         else:
-            quick_guide = f'{quick_guide_sword}{quick_guide_enchant_sword}{quick_guide_armor}{quick_guide_enchant_armor}\n{emojis.bp} Buy {emojis.lbedgy} EDGY lootboxes on cooldown'
+            quick_guide = (
+                f'{quick_guide_sword}{quick_guide_enchant_sword}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
+                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            )
     if not (int(area_no) in (1,2,4,6,12,13,14,15)) and not (time_traveller_prepare == True):
         quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
     
@@ -241,6 +291,159 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
                         f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
                         f'{emojis.bp} `dynamite` if you need coins'   
     
+    # Lootboxes
+    if user_tt == 0:
+        if 1 <= area_no <= 4:
+            lootboxes = (
+                f'{emojis.bp} Buy: Whatever lootbox you have unlocked and can afford\n'
+                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
+                f'{emojis.bp} Open: All other lootboxes'
+            )
+        elif area_no >= 5:
+            lootboxes = (
+                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                f'{emojis.bp} Open: All lootboxes'
+            )
+    elif 1 <= user_tt <= 9:
+        if 1 <= area_no <= 4:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A10 if you plan to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+        elif 5 <= area_no <= 9:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Open: All lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A10 if you plan to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+        elif area_no >= 10:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Open: All lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+    elif 10 <= user_tt <= 24:
+        if 1 <= area_no <= 4:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A10 if you plan to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+        elif area_no == 5:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Open: All lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A10 if you plan to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+        elif 6 <= area_no <= 9:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A10 if you plan to level lootboxer\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+        elif area_no >= 10:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
+                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
+                    f'{emojis.bp} Open: All other lootboxes'
+                )
+    elif user_tt >= 25:
+        if 1 <= area_no <= 5:
+            lootboxes = (
+                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                f'{emojis.bp} Open: {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY'
+            )
+        elif 6 <= area_no <= 9:
+            lootboxes = (
+                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
+                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
+            )
+        elif 10 <= area_no <= 14:
+            if user_asc == 'ascended':
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
+                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
+                )
+            else:
+                lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
+                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
+                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
+                )
+        elif area_no >= 15:
+            lootboxes = (
+                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
+                )
+                         
+    
     # Materials areas 3, 5 and 8
     if area_no == 5:
         materials = f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'\
@@ -283,6 +486,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         embed.add_field(name='NEW COMMANDS', value=f'{emojis.bp} {new_cmd}', inline=False)
     embed.add_field(name='BEST WORK COMMAND', value=work_cmd, inline=False)
     if not time_traveller_prepare == True:
+        embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
         embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                              f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
