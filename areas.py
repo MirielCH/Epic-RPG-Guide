@@ -224,72 +224,93 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
 
     if 1 <= area_no <= 9:
         if user_asc == 'ascended':
-            work_cmd = f'{emojis.bp} `ascended {work_cmd_asc}`'
+            if 1 <= area_no <= 3:
+                work_cmd = f'{emojis.bp} `ascended dynamite`'
+            elif 4 <= area_no <= 5:
+                work_cmd = (
+                    f'{emojis.bp} `ascended chainsaw` if worker 113 or higher\n'
+                    f'{emojis.bp} `ascended dynamite` otherwise'
+                )
+            elif 6 <= area_no <= 7:
+                work_cmd = (
+                    f'{emojis.bp} `ascended greenhouse` if worker 104 or higher\n'
+                    f'{emojis.bp} `ascended dynamite` otherwise'
+                )
+            elif area_no == 8:
+                work_cmd = (
+                    f'{emojis.bp} `ascended chainsaw` if worker 110 or higher\n'
+                    f'{emojis.bp} `ascended dynamite` otherwise'
+                )
+            elif area_no == 9:
+                work_cmd = (
+                    f'{emojis.bp} `ascended greenhouse` if worker 108 or higher\n'
+                    f'{emojis.bp} `ascended dynamite` otherwise'
+                )
         else:
             if money_nohorse == -1:
                 work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
             else:
-                work_cmd =  f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
-                            f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
-                            f'{emojis.bp} `{work_cmd_rich}` if you don\'t need coins'
+                work_cmd = (
+                    f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                    f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                    f'{emojis.bp} `{work_cmd_rich}` otherwise'
+                )
     elif area_no == 10:
             if user_asc == 'ascended':
-                if user_tt in (2,3,6,7,9,10,12,15,17,20,22,24):
-                    work_cmd = f'{emojis.bp} `ascended dynamite`'
-                else:
-                    work_cmd =  f'{emojis.bp} `ascended dynamite` if < {money_nohorse}m coins and horse is < T6\n'\
-                                f'{emojis.bp} `ascended dynamite` if < {money_t6horse}m coins and horse is T6+\n'\
-                                f'{emojis.bp} `chainsaw` if you don\'t need coins'
+                work_cmd = (
+                    f'{emojis.bp} `ascended dynamite` if you have all the {emojis.logultra} ULTRA logs you need for forging\n'
+                    f'{emojis.bp} `chainsaw` otherwise'
+                )
             else:
                 if money_nohorse == -1:
                     work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
                 else:
-                    work_cmd =  f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
-                                f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
-                                f'{emojis.bp} `{work_cmd_rich}` if you don\'t need coins'
+                    work_cmd = (
+                        f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                        f'{emojis.bp} `{work_cmd_rich}` otherwise'
+                    )
     elif area_no == 11:
             if user_tt == 0:
-                work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
-                            f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                            f'{emojis.bp} `drill` if you need coins'
+                work_cmd = (
+                    f'{emojis.bp} `chainsaw` if you need logs\n'
+                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'
+                    f'{emojis.bp} `drill` if you need coins'
+                )
             else:
                 if user_asc == 'ascended':
-                    if user_tt in (2,3,6,7,9,10,12,15,17,20,22,24):
-                        work_cmd =  f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                                    f'{emojis.bp} `ascended dynamite` otherwise'
-                    else:
-                        work_cmd =  f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                                    f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
-                                    f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'\
-                                    f'{emojis.bp} `chainsaw` otherwise'
+                    work_cmd = (
+                        f'{emojis.bp} `ascended dynamite` if you have all the {emojis.logultra} ULTRA logs you need for forging\n'
+                        f'{emojis.bp} `chainsaw` otherwise'
+                    )
                 else:
-                    work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
-                                f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                                f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
-                                f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                    work_cmd =  (
+                        f'{emojis.bp} `greenhouse` if you need apples or bananas\n'
+                        f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                        f'{emojis.bp} `chainsaw` otherwise'
+                    )
     elif 12 <= area_no <= 15:
-        if (area_no == 12) and (user_tt in (1,2)):
-            work_cmd = f'{emojis.bp} `chainsaw` if you need logs\n'\
-                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                    f'{emojis.bp} `dynamite` if you need coins'
-        elif (area_no == 13) and (user_tt in (3,4)):
-            work_cmd = f'{emojis.bp} `chainsaw` if you need logs\n'\
-                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                    f'{emojis.bp} `dynamite` if you need coins'
-        elif (area_no == 14) and (user_tt in (5,6,7,8)):
-            work_cmd = f'{emojis.bp} `chainsaw` if you need logs\n'\
-                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                    f'{emojis.bp} `dynamite` if you need coins'
+        if ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (user_tt in (5,6,7,8))):
+            work_cmd = (
+                f'{emojis.bp} `greenhouse` if you need apples or bananas\n'
+                f'{emojis.bp} `dynamite` if you need coins\n'
+                f'{emojis.bp} `chainsaw` otherwise'
+            )
         else:
             if not money_nohorse == 0:
-                work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
-                            f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                            f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'\
-                            f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                work_cmd = (
+                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'
+                    f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                    f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                    f'{emojis.bp} `chainsaw` otherwise'
+                )
             else:
-                work_cmd =  f'{emojis.bp} `chainsaw` if you need logs\n'\
-                        f'{emojis.bp} `greenhouse` if you need apples or bananas\n'\
-                        f'{emojis.bp} `dynamite` if you need coins'   
+                work_cmd = (
+                    f'{emojis.bp} `greenhouse` if you need apples or bananas\n'
+                    f'{emojis.bp} `dynamite` if you need coins\n'
+                    f'{emojis.bp} `chainsaw` otherwise'
+                )
     
     # Lootboxes
     if user_tt == 0:
