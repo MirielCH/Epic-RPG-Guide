@@ -1904,7 +1904,7 @@ async def professions_worker(prefix):
     )
     
     level_101 =(
-        f'{emojis.bp} Adds an incrasing chance to find other items with top tier work commands\n'
+        f'{emojis.bp} Adds an increasing chance to find other items with top tier work commands\n'
         f'{emojis.bp} `bigboat` gets a chance to drop {emojis.fruitbanana} bananas\n'
         f'{emojis.bp} `chainsaw` gets a chance to drop {emojis.fish} normie fish\n'
         f'{emojis.bp} `dynamite` gets a chance to drop {emojis.logsuper} SUPER logs\n'
