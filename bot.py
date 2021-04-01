@@ -8,7 +8,6 @@ import dungeons
 import global_data
 import emojis
 import areas
-import trading
 import misc
 import timetravel
 import dbl
@@ -46,7 +45,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading',]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -353,10 +352,12 @@ async def tradingguide(ctx):
     
     prefix = await database.get_prefix(bot, ctx)
                     
-    trading =       f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'\
-                    f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'\
-                    f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'\
-                    f'{emojis.bp} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
+    trading = (
+        f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
+        f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'
+        f'{emojis.bp} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
+    )
     
     embed = discord.Embed(
         color = global_data.color,
@@ -896,159 +897,6 @@ async def area(ctx, *args):
                 await ctx.send(f'Uhm, what.')           
                 return
         await ctx.send(embed=area_embed)
-
-
-
-# --- Trading ---
-
-# Command "trades" - Returns recommended trades of one area or all areas
-trades_aliases = ['tr','trade',]
-for x in range(1,16):
-    trades_aliases.append(f'tr{x}')    
-    trades_aliases.append(f'trades{x}') 
-    trades_aliases.append(f'trade{x}')
-
-@bot.command(aliases=trades_aliases)
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def trades(ctx, *args):
-    
-    user_settings = await database.get_settings(ctx)
-    if user_settings == None:
-        await database.first_time_user(bot, ctx)
-        return
-    
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    prefix = ctx.prefix
-    prefix = prefix.lower()
-    
-    if args:
-        if len(args)>1:
-            await ctx.send(f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
-            return
-        elif len(args)==1:
-            area_no = args[0]
-            if area_no.isnumeric():
-                area_no = int(area_no)
-                if 1 <= area_no <= 15:
-                    embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send(f'There is no area {area_no}, lol.')
-                    return
-            else:
-                await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
-                return
-        else:
-            await ctx.send(f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
-            return
-    else:
-        area_no = invoked.replace(f'{prefix}trades','').replace(f'{prefix}trade','').replace(f'{prefix}tr','')
-        if area_no.isnumeric():
-            area_no = int(area_no)
-            if 1 <= area_no <= 15:
-                embed = await trading.trades_area_specific(user_settings, area_no, ctx.prefix)
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send(f'There is no area {area_no}, lol.')
-                return       
-        else:
-            if area_no == '':             
-                embed = await trading.trades(user_settings, ctx.prefix)
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send(f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\nOr you can use `{prefix}trade` to see the trades of all areas.')
-
-# Command "traderates" - Returns trade rates of all areas
-@bot.command(aliases=('trr','rates','rate','traderate',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def traderates(ctx):
-    
-    traderate_data = await database.get_traderate_data(ctx, 'all')
-    
-    embed = await trading.traderates(traderate_data, ctx.prefix)
-    
-    await ctx.send(embed=embed)
-    
-# Command "tradecalc" - Calculates the trades up to A10
-@bot.command(aliases=('trc',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True)
-async def tradecalc(ctx, *args):
-    
-    if len(args) >= 3:
-        area = args[0]
-        area = area.lower().replace('a','')
-        amount = None
-        mat = ''
-        if area.isnumeric():
-            area = int(area)
-            if not 1 <= area <= 15:
-                await ctx.send(f'There is no area {area}.')
-                return
-        else:
-            await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`')
-            return
-        for arg in args[1:]:
-            argument = arg
-            argument = argument.replace('k','000').replace('m','000000')
-            if argument.isnumeric():
-                amount = argument
-            else:
-                mat = f'{mat}{argument}'
-                original_argument = f'{mat} {argument}'
-        
-        if amount:   
-            if not amount.isnumeric():
-                await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
-                return
-            try:
-                amount = int(amount)
-            except:
-                await ctx.send(f'Are you trying to break me or something? :thinking:')
-                return
-            if amount > 100000000000:
-                await ctx.send(f'Are you trying to break me or something? :thinking:')
-                return
-        else:
-            await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
-            return
-
-        mat = mat.lower()        
-        aliases = {
-            'f': 'fish',
-            'fishes': 'fish',
-            'normie fish': 'fish',
-            'l': 'log',
-            'logs': 'log',
-            'wooden log': 'log',
-            'wooden logs': 'log',
-            'a': 'apple',
-            'apples': 'apple',
-            'r': 'ruby',
-            'rubies': 'ruby',
-            'rubys': 'ruby'
-        }
-        if mat in aliases:
-            mat = aliases[mat]   
-        if not mat in ('fish','log','ruby','apple'):
-            await ctx.send(f'`{mat}` is not a valid material. The supported materials are (wooden) logs, (normie) fish, apples and rubies.')
-            return
-        
-        if mat == 'fish':
-            mat_output = f'{emojis.fish} fish'
-        elif mat == 'log':
-            mat_output = f'{emojis.log} wooden logs'
-        elif mat == 'apple':
-            mat_output = f'{emojis.apple} apples'
-        elif mat == 'ruby':
-            mat_output = f'{emojis.ruby} rubies'
-        
-        traderate_data = await database.get_traderate_data(ctx, 'all')
-        embed = await trading.matscalc(traderate_data, (area,mat,amount), ctx.prefix)
-        await ctx.send(embed=embed)
-    
-    else:
-        await ctx.send(f'The command syntax is:\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n{emojis.blank} or\n{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\nExample: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`')
 
 
 

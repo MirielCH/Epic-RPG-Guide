@@ -4,7 +4,6 @@ import discord
 import emojis
 import global_data
 import dungeons
-import trading
 
 from math import ceil
 
@@ -485,12 +484,12 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
     # Trades
-    trades = await trading.design_field_trades(area_no)
+    trades = await global_data.design_field_trades(area_no)
     
     # Trade rates
-    traderates = await trading.design_field_traderate(traderate_data)
+    traderates = await global_data.design_field_traderate(traderate_data)
     if not traderate_data_next == '':
-        traderates_next = await trading.design_field_traderate(traderate_data_next)
+        traderates_next = await global_data.design_field_traderate(traderate_data_next)
             
     # Embed
     embed = discord.Embed(
