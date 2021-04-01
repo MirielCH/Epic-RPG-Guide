@@ -56,52 +56,52 @@ class guildCog(commands.Cog):
                 all_args = f'{all_args}{arg}'
                 
             if (all_args.find('level') > -1) or (all_args.find('progress') > -1)or (all_args.find('lvl') > -1):
-                    embed = await guild_progress(prefix)
+                    embed = await embed_guild_progress(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (all_args.find('stat') > -1) or (all_args.find('stealth') > -1) or (all_args.find('energy') > -1):
-                    embed = await guild_stats(prefix)
+                    embed = await embed_guild_stats(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (all_args.find('weekly') > -1) or (all_args.find('reward') > -1):
-                    embed = await guild_weekly(prefix)
+                    embed = await embed_guild_weekly(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (all_args.find('command') > -1) or (all_args.find('cmd') > -1):
-                    embed = await guild_cmd(prefix)
+                    embed = await embed_guild_cmd(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (all_args.find('shop') > -1) or (all_args.find('omega') > -1) or (all_args.find('horse') > -1) or (all_args.find('cookie') > -1) or (all_args.find('rain') > -1) or (all_args.find('token') > -1) or (all_args.find('buy') > -1) or (all_args.find('buff') > -1):
-                    embed = await guild_shop(prefix)
+                    embed = await embed_guild_shop(prefix)
                     await ctx.send(embed=embed)
                     return
             else:
-                embed = await guild_overview(prefix)
+                embed = await embed_guild_overview(prefix)
                 await ctx.send(embed=embed)
                 return
         else:
             if (invoked.find('level') > -1) or (invoked.find('progress') > -1) or (invoked.find('lvl') > -1):
-                    embed = await guild_progress(prefix)
+                    embed = await embed_guild_progress(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (invoked.find('stat') > -1) or (invoked.find('stealth') > -1) or (invoked.find('energy') > -1):
-                    embed = await guild_stats(prefix)
+                    embed = await embed_guild_stats(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (invoked.find('weekly') > -1) or (invoked.find('reward') > -1):
-                    embed = await guild_weekly(prefix)
+                    embed = await embed_guild_weekly(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (invoked.find('command') > -1) or (invoked.find('cmd') > -1):
-                    embed = await guild_cmd(prefix)
+                    embed = await embed_guild_cmd(prefix)
                     await ctx.send(embed=embed)
                     return
             elif (invoked.find('shop') > -1) or (invoked.find('omega') > -1) or (invoked.find('horse') > -1) or (invoked.find('cookie') > -1) or (invoked.find('rain') > -1) or (invoked.find('token') > -1) or (invoked.find('buy') > -1) or (invoked.find('buff') > -1):
-                    embed = await guild_shop(prefix)
+                    embed = await embed_guild_shop(prefix)
                     await ctx.send(embed=embed)
                     return
             else:
-                embed = await guild_overview(prefix)
+                embed = await embed_guild_overview(prefix)
                 await ctx.send(embed=embed)
                 return
 
@@ -131,7 +131,7 @@ guide_weekly =      '`{prefix}guild weekly` : Weekly rewards and strategy'
 
 # --- Embeds ---
 # Guild main page
-async def guild_overview(prefix):
+async def embed_guild_overview(prefix):
         
     requirements =  f'{emojis.bp} You need to reach area 4 once to create or join a guild'
     
@@ -158,9 +158,10 @@ async def guild_overview(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD',
-        description = f'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
+        description = 'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
                     
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='REQUIREMENT', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
@@ -170,7 +171,7 @@ async def guild_overview(prefix):
     return embed
 
 # Guild commands (guide)
-async def guild_cmd(prefix):
+async def embed_guild_cmd(prefix):
     
     owner = (
         f'{emojis.bp} `rpg guild buy` : Buy something from the guild shop\n'
@@ -201,9 +202,12 @@ async def guild_cmd(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD HIERARCHY & COMMANDS',
-        description =  f'Every guild has 1 owner and up to 9 members.\nA lot of the guild commands can only be used by the owner.'
-                    
+        description = (
+            f'Every guild has 1 owner and up to 9 members.\n'
+            f'A lot of the guild commands can only be used by the owner.'
+        )           
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='OWNER COMMANDS', value=owner, inline=False)
     embed.add_field(name='MEMBER COMMANDS', value=member, inline=False)
@@ -212,7 +216,7 @@ async def guild_cmd(prefix):
     return embed
 
 # Guild levelling & bonuses
-async def guild_progress(prefix):
+async def embed_guild_progress(prefix):
     
     level_bonus = (
         f'{emojis.bp} The guild level increases the duel bonus\n'
@@ -238,9 +242,10 @@ async def guild_progress(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD LEVELS AND BONUSES',
-        description =  f'You can level up your guild to get an increasing duel bonus.'
+        description = 'You can level up your guild to get an increasing duel bonus.'
                     
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='LEVEL / BONUS', value=level_bonus, inline=False)
     embed.add_field(name='HOW TO GET GUILD XP', value=guild_xp, inline=False)
@@ -249,7 +254,7 @@ async def guild_progress(prefix):
     return embed
 
 # Guild shop
-async def guild_shop(prefix):
+async def embed_guild_shop(prefix):
     
     rewards = (
         f'{emojis.bp} {emojis.guildbuff} **ENERGY buff**: Increases {emojis.guildenergy} guild energy by 350  (2 {emojis.guildcoin})\n'
@@ -271,18 +276,21 @@ async def guild_shop(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD SHOP',
-        description = f'All items in the guild shop cost {emojis.guildcoin} guild coins which you get by getting high enough {emojis.guildenergy} energy in the weekly guild event.\nNote that only the guild owner can buy rewards from the guild shop.'
-                    
+        description = (
+            f'All items in the guild shop cost {emojis.guildcoin} guild coins which you get by getting high enough {emojis.guildenergy} energy in the weekly guild event.\n'
+            f'Note that only the guild owner can buy rewards from the guild shop.'
+        )           
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'AVAILABLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'BEST REWARD', value=best_reward, inline=False)
+    embed.add_field(name='AVAILABLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='BEST REWARD', value=best_reward, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     
     return embed
 
 # Guild stats
-async def guild_stats(prefix):
+async def embed_guild_stats(prefix):
     
     stealth = (
         f'{emojis.bp} Decreases the likelihood of getting raided\n'
@@ -309,9 +317,10 @@ async def guild_stats(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'GUILD STATS',
-        description = f'The guild stats are used to get the weekly rewards.'
+        description = 'The guild stats are used to get the weekly rewards.'
                     
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'STEALTH {emojis.guildstealth}', value=stealth, inline=False)
     embed.add_field(name=f'ENERGY {emojis.guildenergy}', value=energy, inline=False)
@@ -321,7 +330,7 @@ async def guild_stats(prefix):
     return embed
 
 # Guild weekly event
-async def guild_weekly(prefix):
+async def embed_guild_weekly(prefix):
     
     rewards = (
         f'{emojis.bp} 4,000 {emojis.guildenergy}: 200 guild XP, 10 {emojis.guildcoin} guild coins\n'
@@ -346,15 +355,18 @@ async def guild_weekly(prefix):
         f'{emojis.bp} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_shop.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}\n'
-    )
-                    
+    )               
     
     embed = discord.Embed(
         color = global_data.color,
         title = 'WEEKLY GUILD REWARDS',
-        description = f'Once a week, you get rewards based on your {emojis.guildenergy} energy. After that, your stats reset and you start over.\nTo increase your stats, raid or upgrade the guild.\nTo learn more about the stats, use `{prefix}guild stats`'
-                    
+        description = (
+            f'Once a week, you get rewards based on your {emojis.guildenergy} energy. After that, your stats reset and you start over.\n'
+            f'To increase your stats, raid or upgrade the guild.\n'
+            f'To learn more about the stats, use `{prefix}guild stats`'
+        )           
     )    
+    
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='WEEKLY REWARDS', value=rewards, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)

@@ -36,35 +36,35 @@ class horseCog(commands.Cog):
             elif len(args)==1:
                 arg = args[0]
                 if arg.find('tier') > -1:
-                    embed = await horsetiers(ctx.prefix)
+                    embed = await embed_horses_tiers(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif arg.find('type') > -1:
-                    embed = await horsetypes(ctx.prefix)
+                    embed = await embed_horses_types(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif arg.find('breed') > -1:
-                    embed = await horsebreeding(ctx.prefix)
+                    embed = await embed_horses_breeding(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif arg.find('calc') > -1:
                     x = await self.horsecalc(ctx)
                     return
                 else:
-                    embed = await horses(ctx.prefix)
+                    embed = await embed_horses_overview(ctx.prefix)
                     await ctx.send(embed=embed)
             else:
-                embed = await horses(ctx.prefix)
+                embed = await embed_horses_overview(ctx.prefix)
                 await ctx.send(embed=embed)
         else:
             if invoked.find('tier') > -1:
-                embed = await horsetiers(ctx.prefix)
+                embed = await embed_horses_tiers(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('type') > -1:
-                embed = await horsetypes(ctx.prefix)
+                embed = await embed_horses_types(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('breed') > -1:
-                embed = await horsebreeding(ctx.prefix)
+                embed = await embed_horses_breeding(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await horses(ctx.prefix)
+                embed = await embed_horses_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
     # Command "horsecalc" - Calculates the horse stats bonuses
@@ -238,7 +238,7 @@ guide_type = '`{prefix}horse type` : Details about horse types'
 
 # --- Embeds ---
 # Horse overview
-async def horses(prefix):
+async def embed_horses_overview(prefix):
 
     tier = (
         f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}horse tier`)\n'
@@ -284,7 +284,7 @@ async def horses(prefix):
     return embed
 
 # Horse tiers
-async def horsetiers(prefix):
+async def embed_horses_tiers(prefix):
 
     tier1 = f'{emojis.bp} No bonuses'
             
@@ -360,7 +360,7 @@ async def horsetiers(prefix):
     return embed
 
 # Horse types
-async def horsetypes(prefix):
+async def embed_horses_types(prefix):
 
     defender = (
         f'{emojis.bp} Increases overall DEF\n'
@@ -426,7 +426,7 @@ async def horsetypes(prefix):
     return embed
 
 # Horse breeding
-async def horsebreeding(prefix):
+async def embed_horses_breeding(prefix):
 
     howto = (
         f'{emojis.bp} Use `horse breeding [@player]`\n'

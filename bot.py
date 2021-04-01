@@ -8,7 +8,6 @@ import dungeons
 import global_data
 import emojis
 import areas
-import misc
 import dbl
 import aiohttp
 import database
@@ -44,7 +43,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.misc',]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -899,172 +898,7 @@ async def area(ctx, *args):
 
 
 
-# --- Miscellaneous ---
-
-# Command "tip" - Returns a random tip
-@bot.command(aliases=('tips',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def tip(ctx, *args):
-    
-    if args:
-        if len(args)==1:
-            id = args[0]
-            if id.isnumeric():
-                id = int(id)
-                tip = await database.get_tip(ctx, id)
-            else:
-                tip = await database.get_tip(ctx)
-        else:
-            tip = await database.get_tip(ctx)
-    else:
-        tip = await database.get_tip(ctx)
-    
-    embed = discord.Embed(
-        color = global_data.color,
-        title = f'TIP',
-        description = tip[0]
-    )    
-    
-    await ctx.send(embed=embed)
-    
-# Command "codes" - Redeemable codes
-@bot.command(aliases=('code',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def codes(ctx):
-    
-    codes = await database.get_codes(ctx)
-    
-    embed = await misc.codes(ctx.prefix, codes)
-    
-    await ctx.send(embed=embed)
-
-# Command "duels" - Returns all duelling weapons
-@bot.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
-@commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def duels(ctx):
-
-    embed = await misc.duels(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "coolness" - Coolness guide
-@bot.command(aliases=('cool',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def coolness(ctx):
-
-    embed = await misc.coolness(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "badges" - Badge guide
-@bot.command(aliases=('badge',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def badges(ctx):
-
-    embed = await misc.badges(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "calc" - Simple calculator
-@bot.command(aliases=('calculate','calculator',))
-@commands.bot_has_permissions(send_messages=True)
-async def calc(ctx, *args):
-
-    def formatNumber(num):
-        if num % 1 == 0:
-            return int(num)
-        else:
-            return num
-
-    if args:
-        calculation = ''
-        allowedchars = set('1234567890.-+/*%()')
-        
-        for arg in args:
-            calculation = f'{calculation}{arg}'
-        
-        if set(calculation).issubset(allowedchars):
-            if calculation.find('**') > -1:
-                await ctx.send(f'Invalid characters. Please only use numbers and supported operators.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
-                return
-            else:
-                pass
-        else:
-            await ctx.send(f'Invalid characters. Please only use numbers and supported operators.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
-            return
-            
-        # Parse open the calculation, convert all numbers to float and store it as a list
-        # This is necessary because Python has the annoying habit of allowing infinite integers which can completely lockup a system. Floats have overflow protection.
-        pos = 1
-        calculation_parsed = []
-        number = ''
-        last_char_was_operator = False # Not really accurate name, I only use it to check for *, % and /. Multiple + and - are allowed.
-        last_char_was_number = False
-        calculation_sliced = calculation
-        try:
-            while not pos == len(calculation)+1:
-                slice = calculation_sliced[0:1]
-                allowedcharacters = set('1234567890.-+/*%()')
-                if set(slice).issubset(allowedcharacters):
-                    if slice.isnumeric():
-                        if last_char_was_number == True:
-                            number = f'{number}{slice}'
-                        else:
-                            number = slice
-                            last_char_was_number = True
-                        last_char_was_operator = False
-                    else:
-                        if slice == '.':
-                            number = f'{number}{slice}'
-                        else:
-                            if not number == '':        
-                                calculation_parsed.append(float(number))
-                                number = ''
-                            
-                            if slice in ('*','%','/'):
-                                if last_char_was_operator == True:
-                                    await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
-                                    return
-                                else:
-                                    calculation_parsed.append(slice)
-                                    last_char_was_operator = True
-                            else:
-                                calculation_parsed.append(slice)
-                                last_char_was_operator = False
-                            last_char_was_number = False
-                else:
-                    await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
-                    return
-
-                calculation_sliced = calculation_sliced[1:]
-                pos = pos+1
-            else:
-                if not number=='':
-                    calculation_parsed.append(float(number))
-        except:
-            await ctx.send(f'Error while parsing your input. Please check your equation.\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
-            return
-        
-        # Reassemble and execute calculation
-        calculation_reassembled = ''
-        for slice in calculation_parsed:
-            calculation_reassembled = f'{calculation_reassembled}{slice}'
-        
-        try:
-            result = eval(calculation_reassembled)
-            result = formatNumber(result)
-            result = f'{result:,}'
-            if not len(result) > 2000:
-                await ctx.send(result)
-                return
-            else:
-                await ctx.send('Well. Whatever you calculated, the result is too long to display. GG.')
-                return
-        except:
-            await ctx.send(f'Well, _that_ didn\'t calculate to anything useful.\nWhat were you trying to do there? :thinking:')
-            return
-    else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\nSupported operators are `+`, `-`, `/`, `*` and `%`.')
+# --- Statisticts ---
 
 # Statistics command
 @bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))
@@ -1088,13 +922,13 @@ async def devstats(ctx):
         f'{emojis.bp} {guilds:,} servers\n'
         f'{emojis.bp} {len(bot.shards):,} shards\n'
         f'{emojis.bp} {user_number[0]:,} users\n'
-        f'{emojis.bp} {round(latency*1000):,} ms average latency\n'
+        f'{emojis.bp} {round(latency*1000):,} ms average latency'
     )
     
     
     embed = discord.Embed(
         color = global_data.color,
-        title = f'BOT STATISTICS'
+        title = 'BOT STATISTICS'
     )
         
     embed.add_field(name='BOT', value=general, inline=False)
@@ -1113,10 +947,13 @@ async def invite(ctx):
        
     embed = discord.Embed(
     color = global_data.color,
-    title = f'NEED A GUIDE?',
-    description =   f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'\
-                    f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'                  
+    title = 'NEED A GUIDE?',
+    description = (
+        f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
+        f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'
+    )
     )    
+    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
     await ctx.send(embed=embed)
@@ -1129,9 +966,9 @@ async def support(ctx):
     embed = discord.Embed(
     color = global_data.color,
     title = f'NEED BOT SUPPORT?',
-    description =   f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'
-                    
+    description =   f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'         
     )    
+    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
     await ctx.send(embed=embed)
@@ -1141,26 +978,31 @@ async def support(ctx):
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def links(ctx):
     
-    epicrpgguide =  f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'\
-                    f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)\n'\
-                    f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'  
+    epicrpgguide = (
+        f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
+        f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)\n'
+        f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'  
+    )
     
-    epicrpg =       f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'\
-                    f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
+    epicrpg = (
+        f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'
+        f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
+    )
     
-    others =        f'{emojis.bp} [MY EPIC RPG ROOM](https://discord.gg/myepicrpgroom)\n'\
-                    f'{emojis.bp} [My Epic RPG Reminder](https://discord.gg/kc3GcK44pJ)\n'\
+    others = (
+        f'{emojis.bp} [MY EPIC RPG ROOM](https://discord.gg/myepicrpgroom)\n'
+        f'{emojis.bp} [My Epic RPG Reminder](https://discord.gg/kc3GcK44pJ)\n'
+    )
     
     embed = discord.Embed(
     color = global_data.color,
-    title = f'SOME HELPFUL LINKS',
-    description =   f'There\'s a whole world out there.\n'\
-
+    title = 'SOME HELPFUL LINKS',
+    description = 'There\'s a whole world out there.'
     )    
+    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     embed.add_field(name=f'EPIC RPG', value=epicrpg, inline=False)
     embed.add_field(name=f'EPIC RPG GUIDE', value=epicrpgguide, inline=False)
-    #embed.add_field(name=f'EPIC RPG COMMUNITIES', value=others, inline=False)
     
     await ctx.send(embed=embed)
 
@@ -1171,10 +1013,13 @@ async def vote(ctx):
        
     embed = discord.Embed(
     color = global_data.color,
-    title = f'FEEL LIKE VOTING?',
-    description =   f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'\
-                    f'You can vote for me [here](https://top.gg/bot/770199669141536768/vote).'                  
+    title = 'FEEL LIKE VOTING?',
+    description = (
+        f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'
+        f'You can vote for me [here](https://top.gg/bot/770199669141536768/vote).'
+    )
     )    
+    
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     
     await ctx.send(embed=embed)
@@ -1184,7 +1029,10 @@ async def vote(ctx):
 @commands.bot_has_permissions(send_messages=True)
 async def donate(ctx):
     
-    await ctx.send(f'Aw that\'s nice of you but this is a free bot, you know.\nThanks though :heart:')
+    await ctx.send(
+        f'Aw that\'s nice of you but this is a free bot, you know.\n'
+        f'Thanks though :heart:'
+    )
 
 
 
@@ -1209,6 +1057,7 @@ async def brandon(ctx):
     )    
     
     await ctx.send(embed=embed)
+
 
 
 # --- Owner Commands ---

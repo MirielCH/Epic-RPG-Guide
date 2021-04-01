@@ -47,132 +47,132 @@ class eventsCog(commands.Cog):
                 event_name = f'{event_name}{arg}'
             event_name = event_name.lower().replace(' ','').strip()
             if event_name.find('enchant') > -1:
-                embed = await event_enchant(ctx.prefix)
+                embed = await embed_event_enchant(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
-                embed = await event_epicguard(ctx.prefix)
+                embed = await embed_event_epicguard(ctx.prefix)
                 await ctx.send(embed=embed)
             elif event_name.find('god') > -1:
-                embed = await event_god(ctx.prefix)
+                embed = await embed_event_god(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
-                embed = await event_heal(ctx.prefix)
+                embed = await embed_event_heal(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
-                embed = await event_legendary(ctx.prefix)
+                embed = await embed_event_legendary(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 if (event_name.find('summon') > -1):
-                    embed = await event_lootboxsummoning(ctx.prefix)
+                    embed = await embed_event_lootboxsummoning(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
-                    embed = await event_lootbox(ctx.prefix)
+                    embed = await embed_event_lootbox(ctx.prefix)
                     await ctx.send(embed=embed)
             elif event_name == 'arena':
-                embed = await event_arena(ctx.prefix)
+                embed = await embed_event_arena(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
-                embed = await event_coinrain(ctx.prefix)
+                embed = await embed_event_coinrain(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
-                embed = await event_epictree(ctx.prefix)
+                embed = await embed_event_epictree(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
-                embed = await event_megalodon(ctx.prefix)
+                embed = await embed_event_megalodon(ctx.prefix)
                 await ctx.send(embed=embed)
             elif event_name == 'miniboss':
-                embed = await event_miniboss(ctx.prefix)
+                embed = await embed_event_miniboss(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('specialtrade') > -1) or (event_name.find('trade') > -1):
-                embed = await event_specialtrade(ctx.prefix)
+                embed = await embed_event_specialtrade(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('bigarena') > -1):
-                embed = await event_bigarena(ctx.prefix)
+                embed = await embed_event_bigarena(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('horserace') > -1) or (event_name.find('race') > -1):
-                embed = await event_horserace(ctx.prefix)
+                embed = await embed_event_horserace(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('lottery') > -1) or (event_name.find('ticket') > -1):
-                embed = await event_lottery(ctx.prefix)
+                embed = await embed_event_lottery(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('notsomini') > -1):
-                embed = await event_notsominiboss(ctx.prefix)
+                embed = await embed_event_notsominiboss(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('pet') > -1) or (event_name.find('tournament') > -1):
-                embed = await event_pettournamnent(ctx.prefix)
+                embed = await embed_event_pettournamnent(ctx.prefix)
                 await ctx.send(embed=embed)
             elif event_name.find('summon') > -1:
-                embed = await event_lootboxsummoning(ctx.prefix)
+                embed = await embed_event_lootboxsummoning(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
-                embed = await event_rubydragon(ctx.prefix)
+                embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
         else:
             if invoked.find('enchant') > -1:
-                embed = await event_enchant(ctx.prefix)
+                embed = await embed_event_enchant(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('guard') > -1) or (invoked.find('jail') > -1):
-                embed = await event_epicguard(ctx.prefix)
+                embed = await embed_event_epicguard(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('heal') > -1):
-                embed = await event_heal(ctx.prefix)
+                embed = await embed_event_heal(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked in ('arena','arenaevent'):
-                embed = await event_arena(ctx.prefix)
+                embed = await embed_event_arena(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('rain') > -1) or (invoked.find('trumpet') > -1) or (invoked.find('catch') > -1):
-                embed = await event_coinrain(ctx.prefix)
+                embed = await embed_event_coinrain(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('tree') > -1) or (invoked.find('seed') > -1) or (invoked.find('chop') > -1):
-                embed = await event_epictree(ctx.prefix)
+                embed = await embed_event_epictree(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('god') > -1:
-                embed = await event_god(ctx.prefix)
+                embed = await embed_event_god(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked in ('boss','bossevent')) or (invoked.find('legendary') > -1):
-                embed = await event_legendary(ctx.prefix)
+                embed = await embed_event_legendary(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('megalodon') > -1) or (invoked.find('fish') > -1):
-                embed = await event_megalodon(ctx.prefix)
+                embed = await embed_event_megalodon(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked in ('miniboss','minibossevent'):
-                embed = await event_miniboss(ctx.prefix)
+                embed = await embed_event_miniboss(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('trade') > -1):
-                embed = await event_specialtrade(ctx.prefix)
+                embed = await embed_event_specialtrade(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('bigarena') > -1) or (invoked.find('arenabig') > -1):
-                embed = await event_bigarena(ctx.prefix)
+                embed = await embed_event_bigarena(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('race') > -1) or (invoked.find('racing') > -1):
-                embed = await event_horserace(ctx.prefix)
+                embed = await embed_event_horserace(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('lottery') > -1) or (invoked.find('ticket') > -1):
-                embed = await event_lottery(ctx.prefix)
+                embed = await embed_event_lottery(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('notsomini') > -1):
-                embed = await event_notsominiboss(ctx.prefix)
+                embed = await embed_event_notsominiboss(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('lootbox') > -1) or (invoked.find('lb') > -1):
                 if (invoked.find('summon') > -1):
-                    embed = await event_lootboxsummoning(ctx.prefix)
+                    embed = await embed_event_lootboxsummoning(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
-                    embed = await event_lootbox(ctx.prefix)
+                    embed = await embed_event_lootbox(ctx.prefix)
                     await ctx.send(embed=embed)
             elif (invoked.find('pet') > -1) or (invoked.find('tournament') > -1):
-                embed = await event_pettournamnent(ctx.prefix)
+                embed = await embed_event_pettournamnent(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('summon') > -1):
-                embed = await event_lootboxsummoning(ctx.prefix)
+                embed = await embed_event_lootboxsummoning(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
-                embed = await event_rubydragon(ctx.prefix)
+                embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await events_overview(ctx.prefix)
+                embed = await embed_events_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
 # Initialization
@@ -197,7 +197,7 @@ events_footer = 'Use {prefix}events to see a list of all events.'
 
 # --- Embeds: Overview ---
 # Events overview
-async def events_overview(prefix):
+async def embed_events_overview(prefix):
     
     sp_events = (
         f'{emojis.bp} `enchant`\n'
@@ -245,7 +245,7 @@ async def events_overview(prefix):
 
 # --- Embeds: Personal Events ---
 # Enchant event
-async def event_enchant(prefix):
+async def embed_event_enchant(prefix):
 
     trigger = f'{emojis.bp} `enchant`, `refine`, `transmute`, `transcend` (0.085 % chance)'
     
@@ -265,20 +265,20 @@ async def event_enchant(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'ENCHANT EVENT',
-        description =   f'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
+        title = 'ENCHANT EVENT',
+        description = 'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
-    embed.add_field(name=f'SAFEST ANSWER', value=safe_answer, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='SAFEST ANSWER', value=safe_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Epic Guard event
-async def event_epicguard(prefix):
+async def embed_event_epicguard(prefix):
 
     trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
     
@@ -303,20 +303,20 @@ async def event_epicguard(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'EPIC GUARD EVENT',
-        description =   f'This is a random captcha event to prevent autotyping.'
+        title = 'EPIC GUARD EVENT',
+        description = 'This is a random captcha event to prevent autotyping.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
-    embed.add_field(name=f'HOW TO GET OUT OF JAIL', value=jail, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
+    embed.add_field(name='HOW TO GET OUT OF JAIL', value=jail, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Heal event
-async def event_heal(prefix):
+async def embed_event_heal(prefix):
 
     trigger = f'{emojis.bp} `heal` (0.75 % chance)'
     
@@ -334,8 +334,8 @@ async def event_heal(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'HEAL EVENT',
-        description =  'This is a random personal event in which you encounter a mysterious man while healing yourself.'
+        title = 'HEAL EVENT',
+        description = 'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
@@ -347,7 +347,7 @@ async def event_heal(prefix):
     return embed
 
 # Lootbox event
-async def event_lootbox(prefix):
+async def embed_event_lootbox(prefix):
 
     trigger = f'{emojis.bp} `open` (0.5 % chance)'
     
@@ -366,20 +366,20 @@ async def event_lootbox(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'LOOTBOX EVENT',
+        title = 'LOOTBOX EVENT',
         description = 'This is a rare random personal event in which a lootboxes refuses to open.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
-    embed.add_field(name=f'RECOMMENDED ANSWER', value=rec_answer, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Ruby dragon event
-async def event_rubydragon(prefix):
+async def embed_event_rubydragon(prefix):
 
     trigger = f'{emojis.bp} Work commands (chance unknown)'
     
@@ -407,16 +407,16 @@ async def event_rubydragon(prefix):
         
     embed = discord.Embed(
         color = global_data.color,
-        title = f'THE RUBY DRAGON EVENT',
+        title = 'THE RUBY DRAGON EVENT',
         description = 'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
     )   
      
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS (START)', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS (RUBY DRAGON)', value=answers_ruby, inline=False)
-    embed.add_field(name=f'BEST ANSWERS', value=best_answer, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS (START)', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS (RUBY DRAGON)', value=answers_ruby, inline=False)
+    embed.add_field(name='BEST ANSWERS', value=best_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
@@ -424,7 +424,7 @@ async def event_rubydragon(prefix):
 
 # --- Embeds: Multiplayer events ---
 # Arena event
-async def event_arena(prefix):
+async def embed_event_arena(prefix):
 
     trigger = (
         f'{emojis.bp} `arena` or `arena @Users`\n'
@@ -452,21 +452,21 @@ async def event_arena(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'ARENA EVENT',
+        title = 'ARENA EVENT',
         description =   f'This is a multiplayer event in which up to 10 players fight each other.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'HOW TO START', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
-    embed.add_field(name=f'ARENA OR BIG ARENA?', value=whichone, inline=False)
+    embed.add_field(name='HOW TO START', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='ARENA OR BIG ARENA?', value=whichone, inline=False)
             
     return embed
 
 # Coin rain event
-async def event_coinrain(prefix):
+async def embed_event_coinrain(prefix):
 
     trigger = (
         f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
@@ -487,20 +487,20 @@ async def event_coinrain(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'COIN RAIN EVENT',
-        description =   f'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
+        title = 'COIN RAIN EVENT',
+        description = 'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Epic tree event
-async def event_epictree(prefix):
+async def embed_event_epictree(prefix):
 
     trigger = (
         f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
@@ -521,20 +521,20 @@ async def event_epictree(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'EPIC TREE EVENT',
-        description =   f'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
+        title = 'EPIC TREE EVENT',
+        description = 'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # God event
-async def event_god(prefix):
+async def embed_event_god(prefix):
 
     trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
     
@@ -555,20 +555,20 @@ async def event_god(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'GOD EVENT',
-        description =   f'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
+        title = 'GOD EVENT',
+        description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Legendary boss event
-async def event_legendary(prefix):
+async def embed_event_legendary(prefix):
 
     trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
     
@@ -585,20 +585,20 @@ async def event_legendary(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'LEGENDARY BOSS EVENT',
-        description =   f'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 players can defeat it.'
+        title = 'LEGENDARY BOSS EVENT',
+        description = 'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 players can defeat it.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Lootbox summoning event
-async def event_lootboxsummoning(prefix):
+async def embed_event_lootboxsummoning(prefix):
 
     trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
     
@@ -618,20 +618,20 @@ async def event_lootboxsummoning(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'LOOTBOX SUMMONING EVENT',
-        description =   f'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 players can help to do so.'
+        title = 'LOOTBOX SUMMONING EVENT',
+        description = 'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 players can help to do so.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Megalodon event
-async def event_megalodon(prefix):
+async def embed_event_megalodon(prefix):
 
     trigger = (
         f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
@@ -652,20 +652,20 @@ async def event_megalodon(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'MEGALODON EVENT',
-        description =   f'This is a multiplayer event in which a megalodon spawns in the river and up to 20 players can get some fish.'
+        title = 'MEGALODON EVENT',
+        description = 'This is a multiplayer event in which a megalodon spawns in the river and up to 20 players can get some fish.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
 # Miniboss event
-async def event_miniboss(prefix):
+async def embed_event_miniboss(prefix):
 
     trigger = (
         f'{emojis.bp} `miniboss` or `miniboss @Users`\n'
@@ -697,21 +697,21 @@ async def event_miniboss(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'MINIBOSS EVENT',
-        description =   f'This is a multiplayer event in which you fight a miniboss.'
+        title = 'MINIBOSS EVENT',
+        description = 'This is a multiplayer event in which you fight a miniboss.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'HOW TO START', value=trigger, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
-    embed.add_field(name=f'DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
+    embed.add_field(name='HOW TO START', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
             
     return embed
 
 # Special trade event
-async def event_specialtrade(prefix):
+async def embed_event_specialtrade(prefix):
 
     trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
     
@@ -729,15 +729,15 @@ async def event_specialtrade(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'SPECIAL TRADE EVENT',
-        description =   f'This is a random multiplayer event in which the epic NPC appears and offers one player a (very good) trade.'
+        title = 'SPECIAL TRADE EVENT',
+        description = 'This is a random multiplayer event in which the epic NPC appears and offers one player a (very good) trade.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'REQUIRED ANSWER', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
 
@@ -745,7 +745,7 @@ async def event_specialtrade(prefix):
 
 # --- Embeds: Global Events ---
 # Big arena event
-async def event_bigarena(prefix):
+async def embed_event_bigarena(prefix):
 
     schedule = f'{emojis.bp} Monday, Wednesday, Friday at 18:00 UTC'
     
@@ -763,21 +763,21 @@ async def event_bigarena(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'BIG ARENA EVENT',
-        description =   f'This is a global event which takes place three times a week.'
+        title = 'BIG ARENA EVENT',
+        description = 'This is a global event which takes place three times a week.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
-    embed.add_field(name=f'ARENA OR BIG ARENA?', value=whichone, inline=False)
+    embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='ARENA OR BIG ARENA?', value=whichone, inline=False)
             
     return embed
 
 # Horse race event
-async def event_horserace(prefix):
+async def embed_event_horserace(prefix):
 
     schedule = f'{emojis.bp} Every even hour (= every 2 hours)'
     
@@ -800,21 +800,21 @@ async def event_horserace(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'HORSE RACE EVENT',
-        description =   f'This is a global event which takes place every 2 hours.'
+        title = 'HORSE RACE EVENT',
+        description = 'This is a global event which takes place every 2 hours.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
-    embed.add_field(name=f'RACE OR BREED?', value=whichone, inline=False)
+    embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='RACE OR BREED?', value=whichone, inline=False)
     
     return embed
 
 # Pet tournament event
-async def event_pettournamnent(prefix):
+async def embed_event_pettournamnent(prefix):
 
     schedule = f'{emojis.bp} Every 12 hours at 08:00 / 20:00 UTC'
     
@@ -836,20 +836,20 @@ async def event_pettournamnent(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'PET TOURNAMENT EVENT',
-        description =   f'This is a global event which takes place every 12 hours.'
+        title = 'PET TOURNAMENT EVENT',
+        description = 'This is a global event which takes place every 12 hours.'
     )    
 
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     
     return embed    
 
 # Lottery event
-async def event_lottery(prefix):
+async def embed_event_lottery(prefix):
 
     schedule = f'{emojis.bp} Every 12 hours at 00:00 / 12:00 UTC'
     
@@ -869,20 +869,20 @@ async def event_lottery(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'LOTTERY EVENT',
-        description =   f'This is a global event which takes place every 12 hours.'
+        title = 'LOTTERY EVENT',
+        description = 'This is a global event which takes place every 12 hours.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     
     return embed
 
 # Not so mini boss event
-async def event_notsominiboss(prefix):
+async def embed_event_notsominiboss(prefix):
 
     schedule = f'{emojis.bp} Tuesday, Thursday, Saturday at 18:00 UTC'
     
@@ -904,23 +904,23 @@ async def event_notsominiboss(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'NOT SO MINI BOSS EVENT',
-        description =   f'This is a global event which takes place three times a week.'
+        title = 'NOT SO MINI BOSS EVENT',
+        description = 'This is a global event which takes place three times a week.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'SCHEDULE', value=schedule, inline=False)
-    embed.add_field(name=f'HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name=f'POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
-    embed.add_field(name=f'DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
+    embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
             
     return embed
 
 
 # --- Embeds: Seasonal events ---
 # Snowball fight event (xmas)
-async def event_snowball(prefix):
+async def embed_event_snowball(prefix):
 
     trigger = (
         f'{emojis.bp} Any command (chance unknown)\n'
@@ -945,14 +945,14 @@ async def event_snowball(prefix):
 
     embed = discord.Embed(
         color = global_data.color,
-        title = f'SNOWBALL FIGHT EVENT',
+        title = 'SNOWBALL FIGHT EVENT',
         description =   f'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
-    embed.add_field(name=f'TRIGGER', value=trigger, inline=False)
-    embed.add_field(name=f'POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
-    embed.add_field(name=f'BEST ANSWER', value=best_answer, inline=False)
-    embed.add_field(name=f'NOTE', value=note, inline=False)
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed

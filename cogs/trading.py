@@ -50,7 +50,7 @@ class tradingCog(commands.Cog):
                 if area_no.isnumeric():
                     area_no = int(area_no)
                     if 1 <= area_no <= 15:
-                        embed = await trades_area_specific(user_settings, area_no, ctx.prefix)
+                        embed = await embed_trades_area_specific(user_settings, area_no, ctx.prefix)
                         await ctx.send(embed=embed)
                     else:
                         await ctx.send(f'There is no area {area_no}, lol.')
@@ -72,14 +72,14 @@ class tradingCog(commands.Cog):
             if area_no.isnumeric():
                 area_no = int(area_no)
                 if 1 <= area_no <= 15:
-                    embed = await trades_area_specific(user_settings, area_no, ctx.prefix)
+                    embed = await embed_trades_area_specific(user_settings, area_no, ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'There is no area {area_no}, lol.')
                     return       
             else:
                 if area_no == '':             
-                    embed = await trades_all_areas(user_settings, ctx.prefix)
+                    embed = await embed_trades_all_areas(user_settings, ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(
@@ -91,11 +91,8 @@ class tradingCog(commands.Cog):
     @commands.command(aliases=('trr','rates','rate','traderate',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def traderates(self, ctx):
-        
         traderate_data = await database.get_traderate_data(ctx, 'all')
-        
-        embed = await trades_traderates(traderate_data, ctx.prefix)
-        
+        embed = await embed_traderates(traderate_data, ctx.prefix)
         await ctx.send(embed=embed)
     
     # Command "tradecalc" - Calculates the trades up to A10
@@ -178,7 +175,7 @@ class tradingCog(commands.Cog):
                 mat_output = f'{emojis.ruby} rubies'
             
             traderate_data = await database.get_traderate_data(ctx, 'all')
-            embed = await trades_tradecalc(traderate_data, (area,mat,amount), ctx.prefix)
+            embed = await embed_tradecalc(traderate_data, (area,mat,amount), ctx.prefix)
             await ctx.send(embed=embed)
         
         else:
@@ -190,8 +187,6 @@ class tradingCog(commands.Cog):
                 f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
             )
     
-    
-
 # Initialization
 def setup(bot):
     bot.add_cog(tradingCog(bot))
@@ -209,7 +204,7 @@ guide_tradecalc = '`{prefix}tradecalc` : Trade calculator'
 
 # --- Embeds ---
 # Trades before leaving area X
-async def trades_area_specific(user_settings, area_no, prefix):
+async def embed_trades_area_specific(user_settings, area_no, prefix):
     
     if area_no==11: 
         if user_settings[0]==0:
@@ -238,7 +233,7 @@ async def trades_area_specific(user_settings, area_no, prefix):
 
 
 # Trades before leaving all areas
-async def trades_all_areas(user_settings, prefix):
+async def embed_trades_all_areas(user_settings, prefix):
     
     guides = (
         f'{emojis.bp} {guide_trades_specific.format(prefix=prefix)}\n'
@@ -281,7 +276,7 @@ async def trades_all_areas(user_settings, prefix):
     return embed
 
 # Trade rates of all areas
-async def trades_traderates(traderate_data, prefix):
+async def embed_traderates(traderate_data, prefix):
 
     guides = (
         f'{emojis.bp} {guide_trades_specific.format(prefix=prefix)}\n'
@@ -330,8 +325,8 @@ async def trades_traderates(traderate_data, prefix):
             
     return embed
 
-# Mats calculator (aX mats > all area mats after trading)
-async def trades_tradecalc(traderate_data, areamats, prefix):
+# Trade calculator (aX mats > all area mats after trading)
+async def embed_tradecalc(traderate_data, areamats, prefix):
 
     current_area = areamats[0]
     original_area = current_area

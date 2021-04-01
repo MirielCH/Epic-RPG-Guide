@@ -31,51 +31,51 @@ class petsCog(commands.Cog):
         if args:
             arg = args[0]
             if (arg.find('catch') > -1) or (arg.find('find') > -1):
-                embed = await petscatch(ctx.prefix)
+                embed = await embed_pets_catch(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('fusi') > -1:
-                embed = await petsfusion(ctx.prefix)
+                embed = await embed_pets_fusion(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('skill') > -1:
                 if len(args) == 2:
                     arg2 = args[1]
                     if arg2.find('special') > -1:
-                        embed = await petsskillsspecial(ctx.prefix)
+                        embed = await embed_pets_skills_special(ctx.prefix)
                         await ctx.send(embed=embed)
                     else:
-                        embed = await petsskills(ctx.prefix)
+                        embed = await embed_pets_skills(ctx.prefix)
                         await ctx.send(embed=embed)
                 else:
-                    embed = await petsskills(ctx.prefix)
+                    embed = await embed_pets_skills(ctx.prefix)
                     await ctx.send(embed=embed)
             elif arg.find('adv') > -1:
-                embed = await petsadventures(ctx.prefix)
+                embed = await embed_pets_adventures(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await pets_overview(ctx.prefix)
+                embed = await embed_pets_overview(ctx.prefix)
                 await ctx.send(embed=embed)
         else:
             if (invoked.find('catch') > -1) or (invoked.find('find') > -1):
-                embed = await petscatch(ctx.prefix)
+                embed = await embed_pets_catch(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('fusi') > -1:
-                embed = await petsfusion(ctx.prefix)
+                embed = await embed_pets_fusion(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('skill') > -1:
                 if invoked.find('special') > -1:
-                    embed = await petsskillsspecial(ctx.prefix)
+                    embed = await embed_pets_skills_special(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
-                    embed = await petsskills(ctx.prefix)
+                    embed = await embed_pets_skills(ctx.prefix)
                     await ctx.send(embed=embed)
             elif invoked.find('skill') > -1:
-                embed = await petsskills(ctx.prefix)
+                embed = await embed_pets_skills(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('adv') > -1:
-                embed = await petsadventures(ctx.prefix)
+                embed = await embed_pets_adventures(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await pets_overview(ctx.prefix)
+                embed = await embed_pets_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
 # Initialization
@@ -97,7 +97,7 @@ guide_adv = '`{prefix}pet adv` : Details about pet adventures'
 
 # --- Embeds ---
 # Pets overview
-async def pets_overview(prefix):
+async def embed_pets_overview(prefix):
 
     requirements = (
         f'{emojis.bp} {emojis.timetravel} TT 2+\n'
@@ -173,7 +173,7 @@ async def pets_overview(prefix):
     return embed
 
 # Catching pets
-async def petscatch(prefix):
+async def embed_pets_catch(prefix):
           
     source = (
         f'{emojis.bp} After using `training` (4% chance, 10% with {emojis.horset9} T9 horse)\n'
@@ -216,7 +216,7 @@ async def petscatch(prefix):
     return embed
 
 # Pet fusion
-async def petsfusion(prefix):
+async def embed_pets_fusion(prefix):
           
     general = (
         f'{emojis.bp} Use `pets fusion [petID1] [petID2]`\n'
@@ -281,7 +281,7 @@ async def petsfusion(prefix):
     return embed
 
 # Pet normal skills
-async def petsskills(prefix):
+async def embed_pets_skills(prefix):
           
     normie = f'{emojis.bp} This is not a skill, it simply means the pet has no skills'
 
@@ -366,7 +366,7 @@ async def petsskills(prefix):
     return embed
 
 # Pet special skills
-async def petsskillsspecial(prefix):
+async def embed_pets_skills_special(prefix):
           
     competitive = (
         f'{emojis.bp} The pet has 1 more score point\n'
@@ -436,7 +436,7 @@ async def petsskillsspecial(prefix):
     return embed
 
 # Pet adventures
-async def petsadventures(prefix):
+async def embed_pets_adventures(prefix):
           
     usage = (
         f'{emojis.bp} Command: `pets adv [type] [petIDs]`\n'

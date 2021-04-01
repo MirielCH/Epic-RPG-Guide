@@ -66,11 +66,11 @@ class xmasCog(commands.Cog):
                 arg_full = f'{arg_full}{arg}'
             
             if arg_full.find('item') > -1:
-                embed = await xmas_item_overview(ctx.prefix)
+                embed = await embed_xmas_item_overview(ctx.prefix)
                 await ctx.send(embed=embed)
                 return
             elif arg_full.find('area') > -1:
-                embed = await xmas_area(ctx.prefix)
+                embed = await embed_xmas_area(ctx.prefix)
                 await ctx.send(embed=embed)
                 return
             
@@ -78,21 +78,21 @@ class xmasCog(commands.Cog):
                 arg_full = item_name_replacements[arg_full]
             
             if arg_full in items:
-                embed = await xmas_item(ctx.prefix, arg_full)
+                embed = await embed_xmas_item(ctx.prefix, arg_full)
                 await ctx.send(embed=embed)    
                 return
             else:
-                embed = await xmas_overview(ctx.prefix)
+                embed = await embed_xmas_overview(ctx.prefix)
                 await ctx.send(embed=embed)
         else:
             invoked = ctx.invoked_with
             invoked = invoked.lower().replace(ctx.prefix,'')
             if invoked in ('a0','area0'):
-                embed = await xmas_area(ctx.prefix)
+                embed = await embed_xmas_area(ctx.prefix)
                 await ctx.send(embed=embed)
                 return
             else:
-                embed = await xmas_overview(ctx.prefix)
+                embed = await embed_xmas_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
 # Initialization
@@ -114,7 +114,7 @@ xmas_footer =       'Use {prefix}xmas to see all available christmas guides'
 
 # --- Functions ---
 # All christmas items
-async def xmas_get_item(prefix,item):
+async def function_xmas_get_item(prefix,item):
     
     xmas_items = {
         'candycane': (
@@ -215,7 +215,7 @@ async def xmas_get_item(prefix,item):
 
 # --- Embeds ---
 # Christmas overview
-async def xmas_overview(prefix):
+async def embed_xmas_overview(prefix):
 
     whattodo = (
         f'{emojis.bp} Decorate a {emojis.xmastree} christmas **tree** to get a {emojis.petsnowball} pet (see `rpg xmas tree`)\n'
@@ -274,13 +274,13 @@ async def xmas_overview(prefix):
     return embed
 
 # Look up christmas items
-async def xmas_item(prefix, item):
+async def embed_xmas_item(prefix, item):
     
-    items = await xmas_get_item(prefix,item)
+    items = await function_xmas_get_item(prefix,item)
     
     embed = discord.Embed(
         color = global_data.color,
-        title = f'CHRISTMAS ITEMS',
+        title = 'CHRISTMAS ITEMS',
     )    
     
     embed.set_footer(text=f'{xmas_footer.format(prefix=prefix)}')
@@ -302,7 +302,7 @@ async def xmas_item(prefix, item):
     return embed
 
 # Christmas items overview
-async def xmas_item_overview(prefix):
+async def embed_xmas_item_overview(prefix):
     
     items = ['candy cane','hat','star','star parts','gingerbread','ornament','ornament part','present','pine needle','sleepy potion','snow','snow box']
     items = sorted(items)
@@ -331,7 +331,7 @@ async def xmas_item_overview(prefix):
     return embed
 
 # Christmas area
-async def xmas_area(prefix):
+async def embed_xmas_area(prefix):
     
     requirements = (
         f'{emojis.bp} Can only be reached by eating a {emojis.gingerbread} gingerbread\n'
@@ -356,7 +356,7 @@ async def xmas_area(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'CHRISTMAS AREA (AREA 0)',
-        description =   f'This is a special christmas themed area that will only be accessible during the christmas event.'
+        description = 'This is a special christmas themed area that will only be accessible during the christmas event.'
                       
     )    
     

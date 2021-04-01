@@ -37,53 +37,53 @@ class professionsCog(commands.Cog):
             arg = args[0]
                 
             if arg.find('level') > -1:
-                embed = await professions_leveling(ctx.prefix)
+                embed = await embed_professions_leveling(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('asc') > -1:
-                embed = await professions_ascension(ctx.prefix)
+                embed = await embed_ascension(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('work') > -1:
-                embed = await professions_worker(ctx.prefix)
+                embed = await embed_professions_worker(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('craft') > -1:
-                embed = await professions_crafter(ctx.prefix)
+                embed = await embed_professions_crafter(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('enchant') > -1:
-                embed = await professions_enchanter(ctx.prefix)
+                embed = await embed_professions_enchanter(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('merchant') > -1:
-                embed = await professions_merchant(ctx.prefix)
+                embed = await embed_professions_merchant(ctx.prefix)
                 await ctx.send(embed=embed)
             elif arg.find('lootbox') > -1:
-                embed = await professions_lootboxer(ctx.prefix)
+                embed = await embed_professions_lootboxer(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await professions_overview(ctx.prefix)
+                embed = await embed_professions_overview(ctx.prefix)
                 await ctx.send(embed=embed)
         else:
             if (invoked.find('level') > -1) or (invoked.find('lvl') > -1):
-                embed = await professions_leveling(ctx.prefix)
+                embed = await embed_professions_leveling(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('asc') > -1):
-                embed = await professions_ascension(ctx.prefix)
+                embed = await embed_ascension(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('work') > -1):
-                embed = await professions_worker(ctx.prefix)
+                embed = await embed_professions_worker(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('craft') > -1):
-                embed = await professions_crafter(ctx.prefix)
+                embed = await embed_professions_crafter(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('enchant') > -1):
-                embed = await professions_enchanter(ctx.prefix)
+                embed = await embed_professions_enchanter(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('merchant') > -1):
-                embed = await professions_merchant(ctx.prefix)
+                embed = await embed_professions_merchant(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (invoked.find('lootbox') > -1):
-                embed = await professions_lootboxer(ctx.prefix)
+                embed = await embed_professions_lootboxer(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
-                embed = await professions_overview(ctx.prefix)
+                embed = await embed_professions_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
     # Command "prc" - Info about crafting
@@ -1529,7 +1529,7 @@ calc_prwtotal = '`{prefix}prwtotal [2-100]` : Total pickaxes you need to reach `
 
 # --- Embeds ---
 # Professions overview
-async def professions_overview(prefix):
+async def embed_professions_overview(prefix):
 
     worker = (
         f'{emojis.bp} Increases the chance to get better items with work commands\n'
@@ -1593,7 +1593,7 @@ async def professions_overview(prefix):
     return embed
 
 # Professions leveling guide
-async def professions_leveling(prefix):
+async def embed_professions_leveling(prefix):
     
     crafter = (
         f'{emojis.bp} This is the first profession you should level up\n'
@@ -1683,7 +1683,7 @@ async def professions_leveling(prefix):
     return embed
 
 # Crafter guide
-async def professions_crafter(prefix):
+async def embed_professions_crafter(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the chance to get 10% materials back when crafting\n'
@@ -1724,7 +1724,7 @@ async def professions_crafter(prefix):
     return embed
 
 # Enchanter guide
-async def professions_enchanter(prefix):
+async def embed_professions_enchanter(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the chance to get a better enchant when enchanting\n'
@@ -1793,7 +1793,7 @@ async def professions_enchanter(prefix):
     return embed
 
 # Lootboxer guide
-async def professions_lootboxer(prefix):
+async def embed_professions_lootboxer(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the bank XP bonus\n'
@@ -1848,7 +1848,7 @@ async def professions_lootboxer(prefix):
     return embed
 
 # Merchant guide
-async def professions_merchant(prefix):
+async def embed_professions_merchant(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the amount of coins you get when selling items\n'
@@ -1896,7 +1896,7 @@ async def professions_merchant(prefix):
     return embed
 
 # Worker guide
-async def professions_worker(prefix):
+async def embed_professions_worker(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the chance to get a better item with work commands\n'
@@ -1953,7 +1953,7 @@ async def professions_worker(prefix):
     return embed
 
 # Ascension
-async def professions_ascension(prefix):
+async def embed_ascension(prefix):
     
     requirements = (
         f'{emojis.bp} All 5 professions at level 100+ (see `{prefix}pr level`)\n'

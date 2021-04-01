@@ -11,7 +11,7 @@ import database
 
 from discord.ext import commands
 
-# horse commands (cog)
+# time travel commands (cog)
 class timetravelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -46,16 +46,16 @@ class timetravelCog(commands.Cog):
                         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
                         return
                         
-                    tt_embed = await timetravel_specific(tt_data, ctx.prefix)
-                    await ctx.send(embed=tt_embed)
+                    embed = await embed_timetravel_specific(tt_data, ctx.prefix)
+                    await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
         else:
             tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
             
             if tt_no == '':
-                tt_embed = await timetravel_overview(ctx.prefix)
-                await ctx.send(embed=tt_embed)
+                embed = await embed_timetravel_overview(ctx.prefix)
+                await ctx.send(embed=embed)
             else:
                 if tt_no.isnumeric():
                     tt_no = int(tt_no)
@@ -64,8 +64,8 @@ class timetravelCog(commands.Cog):
                             tt_data = await database.get_tt_unlocks(ctx, int(tt_no))
                         else:
                             tt_data = (tt_no, 0, 0, '', '', '')
-                        tt_embed = await timetravel_specific(tt_data, ctx.prefix)
-                        await ctx.send(embed=tt_embed)
+                        embed = await embed_timetravel_specific(tt_data, ctx.prefix)
+                        await ctx.send(embed=embed)
                     else:
                         await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
                         return
@@ -95,8 +95,8 @@ class timetravelCog(commands.Cog):
             tt_data = await database.get_tt_unlocks(ctx, int(my_tt))
         else:
             tt_data = (my_tt,0,0,'','','')
-        tt_embed = await timetravel_specific(tt_data, ctx.prefix, True)
-        await ctx.send(embed=tt_embed)
+        embed = await embed_timetravel_specific(tt_data, ctx.prefix, True)
+        await ctx.send(embed=embed)
                 
     # Command "supertimetravel" - Information about super time travel
     @commands.command(aliases=('stt','supertt',))
@@ -109,9 +109,9 @@ class timetravelCog(commands.Cog):
                 await self.supertimetravelscore(ctx)
                 return
             else:
-                embed = await timetravel_supertimetravel(ctx.prefix)
+                embed = await embed_stt(ctx.prefix)
         else:
-            embed = await timetravel_supertimetravel(ctx.prefix)
+            embed = await embed_stt(ctx.prefix)
         
         await ctx.send(embed=embed)
         
@@ -119,9 +119,7 @@ class timetravelCog(commands.Cog):
     @commands.command(aliases=('sttscore','superttscore','stts',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def supertimetravelscore(self, ctx):
-
-        embed = await timetravel_stt_score(ctx.prefix)
-        
+        embed = await embed_stt_score(ctx.prefix)
         await ctx.send(embed=embed)
 
 # Initialization
@@ -142,7 +140,7 @@ guide_stt_score = '`{prefix}sttscore` : Details about STT score'
 
 # --- Embeds ---
 # Time travel overview
-async def timetravel_overview(prefix):
+async def embed_timetravel_overview(prefix):
 
     where = (
         f'{emojis.bp} {emojis.timetravel} TT 0: Beat dungeon 10, reach area 11\n'
@@ -192,7 +190,7 @@ async def timetravel_overview(prefix):
     return embed
 
 # Time travel guide for specific area
-async def timetravel_specific(tt_data, prefix, mytt=False):
+async def embed_timetravel_specific(tt_data, prefix, mytt=False):
 
     tt_no = int(tt_data[0])
     unlock_dungeon = int(tt_data[1])
@@ -345,7 +343,7 @@ async def timetravel_specific(tt_data, prefix, mytt=False):
     return embed
 
 # Super time travel
-async def timetravel_supertimetravel(prefix):
+async def embed_stt(prefix):
 
     requirements = (
         f'{emojis.bp} {emojis.timetravel} TT 25+\n'
@@ -393,7 +391,7 @@ async def timetravel_supertimetravel(prefix):
     return embed
 
 # Super time travel score calculation
-async def timetravel_stt_score(prefix):
+async def embed_stt_score(prefix):
 
     gear = f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 155.5 score'
     

@@ -21,14 +21,14 @@ class craftingCog(commands.Cog):
     @commands.command(aliases=('enchant','e','enchanting',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def enchants(self, ctx):
-        embed = await enchants_overview(ctx.prefix)
+        embed = await embed_enchants(ctx.prefix)
         await ctx.send(embed=embed)
         
     # Command "drops" - Returns all monster drops and where to get them
     @commands.command(aliases=('drop','mobdrop','mobdrops','mobsdrop','mobsdrops','monsterdrop','monsterdrops',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def drops(self, ctx):
-        embed = await drops_overview(ctx.prefix)
+        embed = await embed_drops(ctx.prefix)
         await ctx.send(embed=embed)
         
     # Command "dropchance" - Calculate current drop chance
@@ -221,7 +221,6 @@ class craftingCog(commands.Cog):
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
                 
-                
                 await ctx.send(
                     f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
@@ -364,7 +363,7 @@ class craftingCog(commands.Cog):
                     await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
                     return
                 
-                mats_data = await mats(items_data, amount, ctx.prefix)
+                mats_data = await function_mats(items_data, amount, ctx.prefix)
                 await ctx.send(mats_data)
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
@@ -454,7 +453,7 @@ class craftingCog(commands.Cog):
                 items_values = items_data[1]
                 itemtype = items_values[1]
                 
-                mats = await dismantle_mats(items_data, amount, ctx.prefix)
+                mats = await function_dismantle_mats(items_data, amount, ctx.prefix)
                 await ctx.send(mats)
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
@@ -469,7 +468,7 @@ def setup(bot):
 
 # --- Functions ---
 # List needed items for recipe
-async def mats(items_data, amount, prefix):
+async def function_mats(items_data, amount, prefix):
     
     items_headers = items_data[0]
     
@@ -590,13 +589,13 @@ async def mats(items_data, amount, prefix):
             total_apple = total_apple+ingredient_amount
         
         if ingredient_name in breakdown_list_logs:
-            ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
             total_logs = total_logs+ingredient_submats_logs[1]
         elif ingredient_name in breakdown_list_fish:
-            ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
             total_fish = total_fish+ingredient_submats_fish[1]
         elif ingredient_name == 'banana':
-            ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+            ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
             total_apple = total_apple+ingredient_submats_banana[1]
         
         ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
@@ -627,15 +626,15 @@ async def mats(items_data, amount, prefix):
             mats = f'{mats}\n> {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`'
     
             if ingredient_name in breakdown_list_logs:
-                ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
                 total_logs = total_logs+ingredient_submats_logs[1]
                 ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_logs[0]}'
             elif ingredient_name in breakdown_list_fish:
-                ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
                 total_fish = total_fish+ingredient_submats_fish[1]
                 ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_fish[0]}'
             elif ingredient_name == 'banana':
-                ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
+                ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
                 total_apple = total_apple+ingredient_submats_banana[1]
                 ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_banana[0]}'
         
@@ -656,7 +655,7 @@ async def mats(items_data, amount, prefix):
     return mats
 
 # Aufschlüsseln von Subamounts
-async def get_submats(items_data, amount, ingredient, dismantle=False):
+async def function_get_submats(items_data, amount, ingredient, dismantle=False):
         
     item1 = ''
     item2 = ''
@@ -728,7 +727,7 @@ async def get_submats(items_data, amount, ingredient, dismantle=False):
     return (breakdown, last_item_amount)
 
 # Dismantle items
-async def dismantle_mats(items_data, amount, prefix):
+async def function_dismantle_mats(items_data, amount, prefix):
     
     items_headers = items_data[0]
     
@@ -788,13 +787,13 @@ async def dismantle_mats(items_data, amount, prefix):
         ingredient_name = ingredient[2]
         
         if ingredient_name in breakdown_list_logs:
-            ingredient_submats_logs = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
             total_logs = total_logs+ingredient_submats_logs[1]
         elif ingredient_name in breakdown_list_fish:
-            ingredient_submats_fish = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
             total_fish = total_fish+ingredient_submats_fish[1]
         elif ingredient_name == 'banana':
-            ingredient_submats_banana = await get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
+            ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
             total_apple = total_apple+ingredient_submats_banana[1]
         
         ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
@@ -821,7 +820,7 @@ async def dismantle_mats(items_data, amount, prefix):
 
 # --- Embeds ---
 # Enchants
-async def enchants_overview(prefix):
+async def embed_enchants(prefix):
 
     buffs = (
         f'{emojis.bp} **Normie** - 5% buff\n'
@@ -863,7 +862,7 @@ async def enchants_overview(prefix):
     return embed
 
 # Monster drops
-async def drops_overview(prefix):
+async def embed_drops(prefix):
 
     items = (
         f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'
