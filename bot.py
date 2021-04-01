@@ -9,7 +9,6 @@ import global_data
 import emojis
 import areas
 import misc
-import timetravel
 import dbl
 import aiohttp
 import database
@@ -45,7 +44,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel',]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -898,110 +897,6 @@ async def area(ctx, *args):
                 return
         await ctx.send(embed=area_embed)
 
-
-
-# --- Time Travel ---
-
-# Command "ttX" - Specific tt information
-tt_aliases = ['timetravel',]
-for x in range(1,1000):
-    tt_aliases.append(f'tt{x}')    
-    tt_aliases.append(f'timetravel{x}') 
-
-@bot.command(name='tt',aliases=(tt_aliases))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def timetravel_specific(ctx, *args):
-    
-    invoked = ctx.message.content
-    invoked = invoked.lower()
-    
-    if args:
-        if len(args) > 1:
-            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-            return       
-        else:
-            tt_no = args[0]
-            if tt_no.isnumeric():
-                tt_no = int(tt_no)
-                if 1 <= tt_no <= 999:
-                    if 1 <= tt_no <= 25:
-                        tt_data = await database.get_tt_unlocks(ctx, tt_no)
-                    else:
-                        tt_data = (tt_no, 0, 0, '', '', '')
-                else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                    return
-                    
-                tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                await ctx.send(embed=tt_embed)
-            else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-    else:
-        tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
-        
-        if tt_no == '':
-            tt_embed = await timetravel.timetravel(ctx.prefix)
-            await ctx.send(embed=tt_embed)
-        else:
-            if tt_no.isnumeric():
-                tt_no = int(tt_no)
-                if 1 <= tt_no <= 999:
-                    if 1 <= tt_no <= 25:
-                        tt_data = await database.get_tt_unlocks(ctx, int(tt_no))
-                    else:
-                        tt_data = (tt_no, 0, 0, '', '', '')
-                    tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix)
-                    await ctx.send(embed=tt_embed)
-                else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                    return
-            else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                return
-
-# Command "supertimetravel" - Information about super time travel
-@bot.command(aliases=('stt','supertt',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def supertimetravel(ctx):
-    
-    tt_embed = await timetravel.supertimetravel(ctx.prefix)
-    
-    await ctx.send(embed=tt_embed)
-    
-# Command "sttscore" - Returns super time travel score calculations
-@bot.command(aliases=('sttscore','superttscore','stts',))
-@commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-async def supertimetravelscore(ctx):
-
-    embed = await timetravel.supertimetravelscore(ctx.prefix)
-    
-    await ctx.send(embed=embed)
-
-# Command "tt1000" - Because they will try
-@bot.command(aliases=('timetravel1000',))
-@commands.bot_has_permissions(send_messages=True)
-async def tt1000(ctx):
-    
-    await ctx.send('https://tenor.com/view/doctor-who-gif-7404461')
-
-# Command "mytt" - Information about user's TT
-@bot.command(aliases=('mytimetravel',))
-@commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def mytt(ctx):
-    
-    user_settings = await database.get_settings(ctx)
-    if user_settings == None:
-        await database.first_time_user(bot, ctx)
-        return
-    my_tt = int(user_settings[0])
-    
-    if 1 <= my_tt <= 25:    
-        tt_data = await database.get_tt_unlocks(ctx, int(my_tt))
-    else:
-        tt_data = (my_tt,0,0,'','','')
-    tt_embed = await timetravel.timetravel_specific(tt_data, ctx.prefix, True)
-    await ctx.send(embed=tt_embed)
-    
 
 
 # --- Miscellaneous ---
