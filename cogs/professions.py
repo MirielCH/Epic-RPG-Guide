@@ -1918,7 +1918,7 @@ async def professions_worker(prefix):
                 
     xp_gain = (
         f'{emojis.bp} `chop` / `fish` / `pickup` / `mine`: 4 XP\n'
-        f'{emojis.bp} `axe` / `ladder` / `pickase`: 8 XP\n'
+        f'{emojis.bp} `axe` / `ladder` / `pickaxe`: 8 XP\n'
         f'{emojis.bp} `net`: 9 XP\n'
         f'{emojis.bp} `bowsaw` / `tractor` / `drill`: 12 XP\n'
         f'{emojis.bp} `boat`: 13 XP\n'
