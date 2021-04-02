@@ -1,14 +1,197 @@
 # areas.py
 
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
 import discord
 import emojis
 import global_data
-import dungeons
+import database
 
+from discord.ext import commands
 from math import ceil
 
-# Create area embed
-async def area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
+# area commands (cog)
+class areasCog(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
+    area_aliases = ['area','areas',]
+    for x in range(1,16):
+        area_aliases.append(f'a{x}')    
+        area_aliases.append(f'area{x}') 
+
+    @commands.command(name='a',aliases=(area_aliases))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+    async def area(self, ctx, *args):
+        
+        invoked = ctx.message.content
+        invoked = invoked.lower()
+        prefix = ctx.prefix
+        prefix = prefix.lower()
+        if args:
+            if len(args) > 2:
+                await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
+            elif len(args) == 2:
+                try:
+                    args_full = str(args[1])
+                    args_full = args_full.lower()
+                    if args_full == 'full':
+                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
+                        if area_no.isnumeric():
+                            area_no = int(area_no)
+                            if 1<= area_no <= 15:
+                                area_data = await database.get_area_data(ctx, area_no)
+                                user_settings = await database.get_settings(ctx)
+                                if user_settings == None:
+                                    await database.first_time_user(bot, ctx)
+                                    return
+                                traderate_data = await database.get_traderate_data(ctx, area_no)
+                                if area_no < 15:
+                                    traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
+                                else:
+                                    traderate_data_next = ''
+                                user_settings_override = (25, user_settings[1],'override',)
+                                if area_no in (3,5):
+                                    mats_data = await database.get_mats_data(ctx, user_settings_override[0])
+                                else:
+                                    mats_data = ''
+                                embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
+                                await ctx.send(embed=embed)   
+                            else:
+                                await ctx.send(f'There is no area {area_no}, lol.')           
+                except:
+                    return
+            else:
+                try:
+                    area_no = args[0]
+                    if area_no.isnumeric():
+                        area_no = int(area_no)
+                        if 1 <= area_no <= 15:
+                            area_data = await database.get_area_data(ctx, area_no)
+                            user_settings = await database.get_settings(ctx)
+                            if user_settings == None:
+                                await database.first_time_user(bot, ctx)
+                                return
+                            traderate_data = await database.get_traderate_data(ctx, area_no)
+                            if area_no < 15:
+                                traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
+                            else:
+                                traderate_data_next = ''
+                            if area_no in (3,5):
+                                if user_settings[0] <= 25:
+                                    mats_data = await database.get_mats_data(ctx, user_settings[0])
+                                else:
+                                    mats_data = await database.get_mats_data(ctx, 25)
+                            else:
+                                mats_data = ''
+                            embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
+                            await ctx.send(embed=embed)
+                        else:
+                            await ctx.send(f'There is no area {area_no}, lol.')
+                    else:
+                        args_full = str(args[0])
+                        args_full = args_full.lower()
+                        if args_full == 'full':
+                            area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
+                            if area_no.isnumeric():
+                                area_no = int(area_no)
+                                if 1 <= area_no <= 15:
+                                    area_data = await database.get_area_data(ctx, int(area_no))
+                                    user_settings = await database.get_settings(ctx)
+                                    if user_settings == None:
+                                        await database.first_time_user(bot, ctx)
+                                        return
+                                    traderate_data = await database.get_traderate_data(ctx, area_no)
+                                    if area_no < 15:
+                                        traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
+                                    else:
+                                        traderate_data_next = ''
+                                    user_settings_override = (25, user_settings[1],'override',)
+                                    if area_no in (3,5):
+                                        mats_data = await database.get_mats_data(ctx, user_settings_override[0])
+                                    else:
+                                        mats_data = ''
+                                    embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
+                                    await ctx.send(embed=embed)
+                                else:
+                                    await ctx.send(f'There is no area {area_no}, lol.')
+                        else:
+                            await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
+                except:
+                    await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
+        else:
+            area_no = invoked.replace(f'{prefix}areas','').replace(f'{prefix}area','').replace(f'{prefix}a','')
+            if area_no.isnumeric():
+                area_no = int(area_no)
+                if not area_no == 0:
+                    area_data = await database.get_area_data(ctx, area_no)
+                    user_settings = await database.get_settings(ctx)
+                    if user_settings == None:
+                        await database.first_time_user(bot, ctx)
+                        return
+                    traderate_data = await database.get_traderate_data(ctx, area_no)
+                    if area_no < 15:
+                        traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
+                    else:
+                        traderate_data_next = ''
+                    if area_no in (3,5):
+                        if user_settings[0] <= 25:
+                            mats_data = await database.get_mats_data(ctx, user_settings[0])
+                        else:
+                            mats_data = await database.get_mats_data(ctx, 25)
+                    else:
+                        mats_data = ''
+                    embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
+            else:
+                if area_no == '':
+                    embed = await embed_areas_menu(ctx)
+                    await ctx.send(embed=embed)
+                    return
+                else:
+                    await ctx.send('Uhm, what.')           
+                    return
+            await ctx.send(embed=embed)
+
+# Initialization
+def setup(bot):
+    bot.add_cog(areasCog(bot))
+
+                  
+
+# --- Embeds ---
+# Areas menu
+async def embed_areas_menu(ctx):
+    
+    prefix = ctx.prefix
+    
+    area_guide = f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
+                    
+    trading = (
+        f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
+        f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates (all areas)'
+    )
+    
+    drops = f'{emojis.bp} `{prefix}drops` : Monster drops'
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'AREA GUIDES',
+        description = f'Hey **{ctx.author.name}**, what do you want to know?'
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='AREAS', value=area_guide, inline=False)
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='MONSTER DROPS', value=drops, inline=False)
+    
+    return embed
+
+# Area guide
+async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
     
     area_no = int(area_data[0])
     work_cmd_poor = area_data[1]
@@ -51,7 +234,7 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         mats_apple = mats_data[2]
 
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
-    field_rec_stats = await dungeons.design_field_rec_stats(field_rec_stats_data)
+    field_rec_stats = await global_data.design_field_rec_stats(field_rec_stats_data)
     
     if ((area_no == 12) and (user_tt < 1)) or ((area_no == 13) and (user_tt < 3)) or ((area_no == 14) and (user_tt < 5)) or ((area_no == 15) and (user_tt < 10)):
         time_traveller_area_locked = True
@@ -466,15 +649,19 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     
     # Materials areas 3, 5 and 8
     if area_no == 5:
-        materials = f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'\
-                    f'{emojis.bp} 30+ {emojis.zombieeye} zombie eyes\n'\
-                    f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns (after crafting)'
+        materials = (
+            f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'
+            f'{emojis.bp} 30+ {emojis.zombieeye} zombie eyes\n'
+            f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns (after crafting)'
+        )
         if user_tt < 5:
             materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
     
     if (area_no == 3) and (1 <= user_tt <= 4):
-        materials = f'{emojis.bp} 20 {emojis.wolfskin} wolf skins\n'\
-                    f'{emojis.bp} 20 {emojis.zombieeye} zombie eyes'
+        materials = (
+            f'{emojis.bp} 20 {emojis.wolfskin} wolf skins\n'
+            f'{emojis.bp} 20 {emojis.zombieeye} zombie eyes'
+        )
         
         if not mats_fish == 0:
             if user_asc == 'ascended':
@@ -498,13 +685,18 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     traderates = await global_data.design_field_traderate(traderate_data)
     if not traderate_data_next == '':
         traderates_next = await global_data.design_field_traderate(traderate_data_next)
-            
+    
+    # Note
+    note = (
+        f'This is the guide for **TT {user_tt}**, **{user_asc}**.\n'
+        f'If this is wrong, run `{prefix}setprogress`.'
+    )
+     
     # Embed
     embed = discord.Embed(
         color = global_data.color,
         title = f'AREA {area_no}',
         description = description  
-            
     )    
     embed.set_footer(text=footer)
     if not area_locked == '':
@@ -525,6 +717,6 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
     embed.add_field(name=f'TRADE RATES A{area_no}', value=traderates, inline=True)
     if not (traderate_data_next == '') and not (time_traveller_prepare == True):
         embed.add_field(name=f'TRADE RATES A{area_no+1}', value=traderates_next, inline=True)
-    embed.add_field(name=f'NOTE', value=f'This is the guide for **TT {user_tt}**, **{user_asc}**.\nIf this is wrong, run `{prefix}setprogress`.', inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     
     return embed

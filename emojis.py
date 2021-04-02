@@ -94,7 +94,10 @@ swordunicorn = '<:erg_unicornsword:770326606983069706>'
 swordwooden = '<:erg_woodensword:770326606539391057>'
 swordzombie = '<:erg_zombiesword:770326606941913118>'
 
-# Event: Christmas 2020
+# Event: Shared Items
+sleepypotion = '<:erg_sleepypotion:782200523776458772>'
+
+# Event: Christmas
 candycane = '<:erg_candycane:782200523713544242>'
 gingerbread = '<:erg_gingerbread:782200523733467156>'
 ornamentpart = '<:erg_ornamentpart:782200523688247306>'
@@ -107,7 +110,6 @@ presentmega = '<:erg_megapresent:782200523541053441>'
 presentomega = '<:erg_omegapresent:782200523524276226>'
 presentultra = '<:erg_ultrapresent:782200523725733918>'
 presentgodly = '<:erg_godlypresent:781654310911344650>'
-sleepypotion = '<:erg_sleepypotion:782200523776458772>'
 snow = '<:erg_snow:782200523931516978>'
 snowbox = '<:erg_snowbox:782200523851694090>'
 xmashat = '<:erg_christmashat:782200523448516609>'
@@ -119,6 +121,15 @@ xmasstarpart3 = '<:erg_starpart3:782200523868733460>'
 xmasstarpart4 = '<:erg_starpart4:782200523578540083>'
 xmasstarpart5 = '<:erg_starpart5:782200523976867850>'
 xmastree = ':christmas_tree:'
+
+# Event: Easter
+easterbunny = '<:erg_bunny:827437701849415720>'
+easteregg = '<:erg_easteregg:827437701502468108>'
+easteregggolden = '<:erg_goldenegg:827437701850071040>'
+easterlootbox = '<:erg_easterlootbox:827437701849939998>'
+easterrainbowcookie = '<:erg_rainbowcookie:827437701832769566>'
+easterspawner = '<:erg_bossspawner:827437701857935391>'
+petgoldenbunny = '<:erg_goldenbunny:770327200674349056>'
 
 # Event: Halloween
 petpumpkinbat = '<:erg_petpumpkinbat:817872700797747261>'
@@ -262,7 +273,6 @@ skillbooster = '<:erg_skillbooster:817823721628106812>'
 petcat = '<:erg_cat:770327200670416906>'
 petdog = '<:erg_dog:770327200310231075>'
 petdragon = '<:erg_dragon:770327200372228097>'
-petgoldenbunny = '<:erg_goldenbunny:770327200674349056>'
 pethamster = '<:erg_hamster:770327200834388008>'
 pethappiness = ':heart:'
 pethunger = ':taco:'

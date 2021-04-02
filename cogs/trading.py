@@ -17,6 +17,13 @@ class tradingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
+    # Trading menu
+    @commands.command(aliases=('trading',))
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def tradingguide(self, ctx):
+        embed = await embed_trading_menu(ctx)
+        await ctx.send(embed=embed)
+    
     # Command "trades" - Returns recommended trades of one area or all areas
     trades_aliases = ['tr','trade',]
     for x in range(1,16):
@@ -198,11 +205,34 @@ def setup(bot):
 guide_trades_all = '`{prefix}trades` / `{prefix}tr` : Trades (all areas)'
 guide_trades_specific = '`{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15'
 guide_traderates = '`{prefix}traderates` / `{prefix}trr` : Trade rates'
-guide_tradecalc = '`{prefix}tradecalc` : Trade calculator'
+guide_tradecalc = '`{prefix}tradecalc` / `{prefix}trc`  : Trade calculator'
 
 
 
 # --- Embeds ---
+# Trading menu
+async def embed_trading_menu(ctx):
+    
+    prefix = ctx.prefix
+                    
+    trading = (
+        f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
+        f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'
+        f'{emojis.bp} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
+    )
+    
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'TRADING GUIDES',
+        description = f'Hey **{ctx.author.name}**, what do you want to know?'
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    
+    return embed
+
 # Trades before leaving area X
 async def embed_trades_area_specific(user_settings, area_no, prefix):
     
