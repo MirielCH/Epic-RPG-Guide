@@ -472,14 +472,22 @@ async def area(area_data, mats_data, traderate_data, traderate_data_next, user_s
         if user_tt < 5:
             materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
     
-    if (area_no == 3) and (user_tt > 0):
-        materials = f'{emojis.bp} 15+ {emojis.wolfskin} wolf skins\n'\
-                    f'{emojis.bp} 15+ {emojis.zombieeye} zombie eyes'
+    if (area_no == 3) and (1 <= user_tt <= 4):
+        materials = f'{emojis.bp} 20 {emojis.wolfskin} wolf skins\n'\
+                    f'{emojis.bp} 20 {emojis.zombieeye} zombie eyes'
         
-        if user_asc == 'ascended':
-            materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
-        else:
-            materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
+        if not mats_fish == 0:
+            if user_asc == 'ascended':
+                materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
+            else:
+                materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
+    
+    if (area_no == 3) and (user_tt > 4):
+        if not mats_fish == 0:
+            if user_asc == 'ascended':
+                materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
+            else:
+                materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
         
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
