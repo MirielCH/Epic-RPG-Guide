@@ -202,10 +202,10 @@ def setup(bot):
 
 # --- Redundancies ---
 # Guides
-guide_trades_all = '`{prefix}trades` / `{prefix}tr` : Trades (all areas)'
-guide_trades_specific = '`{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15'
-guide_traderates = '`{prefix}traderates` / `{prefix}trr` : Trade rates'
-guide_tradecalc = '`{prefix}tradecalc` / `{prefix}trc`  : Trade calculator'
+guide_trades_all = '`{prefix}tr` : Trades (all areas)'
+guide_trades_specific = '`{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15'
+guide_traderates = '`{prefix}trr` : Trade rates'
+guide_tradecalc = '`{prefix}trc`  : Trade calculator'
 
 
 

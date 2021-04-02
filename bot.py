@@ -74,6 +74,7 @@ async def on_guild_join(guild):
         return
 
 
+
 # --- Error Handling ---
 
 # Error handling
@@ -238,54 +239,85 @@ async def settings(ctx):
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp','setpr','setp',))
 @commands.bot_has_permissions(send_messages=True)
-async def setprogress(ctx):
+async def setprogress(ctx, *args):
     
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
     
-    try:
-        await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]` (type `abort` to abort).')
-        answer_tt = await bot.wait_for('message', check=check, timeout = 30)
-        answer = answer_tt.content
-        answer = answer.lower()
-        if (answer == 'abort') or (answer == 'cancel'):
-            await ctx.send(f'Aborting.')
-            return
-        new_tt = answer_tt.content
-        if new_tt.isnumeric():
-            new_tt = int(answer_tt.content)            
-            if 0 <= new_tt <= 999:
-                await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
-                answer_ascended = await bot.wait_for('message', check=check, timeout=30)
-                answer = answer_ascended.content
-                answer = answer.lower()
-                if (answer == 'abort') or (answer == 'cancel'):
-                    await ctx.send(f'Aborting.')
-                    return
-                if answer in ['yes','y']:
-                    new_ascended = 'ascended'
-                    await database.set_progress(bot, ctx, new_tt, new_ascended)
-                    current_settings = await database.get_settings(ctx)
-                    if current_settings == None:
-                        await database.first_time_user(bot, ctx)
+    prefix = ctx.prefix
+    invoked = ctx.invoked_with
+    
+    error_syntax = (
+        f'The command syntax is `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` if you\'re ascended.\n'
+        f'You can also use `{prefix}{invoked}` and let me ask you.\n'
+        f'Examples: `{prefix}{invoked} tt5`, `{prefix}{invoked} 8 asc`'
+    )
+    
+    if args:
+        arg1 = args[0]
+        arg1 = arg1.replace('tt','')
+        if arg1.isnumeric():
+            arg1 = int(arg1)
+            if 0 <= arg1 <= 999:
+                new_tt = arg1
+                if len(args) > 1:
+                    arg2 = args[1]
+                    if arg2 in ('asc','ascended'):
+                        new_ascended = 'ascended'
+                    else:
+                        await ctx.send(error_syntax)
                         return
-                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
-                elif answer in ['no','n']:
-                    new_ascended = 'not ascended'
-                    await database.set_progress(bot, ctx, new_tt, new_ascended)        
-                    current_settings = await database.get_settings(ctx)
-                    if current_settings == None:
-                        await database.first_time_user(bot, ctx)
-                        return
-                    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
                 else:
-                    await ctx.send(f'**{ctx.author.name}**, please answer with `yes` or `no`. Aborting.')
+                    new_ascended = 'not ascended'
             else:
-                await ctx.send(f'**{ctx.author.name}**, please enter a number from 0 to 999. Aborting.')
+                await ctx.send(error_syntax)
+                return
         else:
-            await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')  
-    except asyncio.TimeoutError as error:
-        await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
+            await ctx.send(error_syntax)
+            return
+    else:
+        try:
+            await ctx.send(f'**{ctx.author.name}**, what **TT** are you currently in? `[0-999]` (type `abort` to abort).')
+            answer_tt = await bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_tt.content
+            answer = answer.lower()
+            if (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send('Aborting.')
+                return
+            new_tt = answer_tt.content
+            if new_tt.isnumeric():
+                new_tt = int(answer_tt.content)            
+                if 0 <= new_tt <= 999:
+                    await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
+                    answer_ascended = await bot.wait_for('message', check=check, timeout=30)
+                    answer = answer_ascended.content
+                    answer = answer.lower()
+                    if (answer == 'abort') or (answer == 'cancel'):
+                        await ctx.send('Aborting.')
+                        return
+                    if answer in ['yes','y']:
+                        new_ascended = 'ascended'
+                    elif answer in ['no','n']:
+                        new_ascended = 'not ascended'
+                    else:
+                        await ctx.send(f'**{ctx.author.name}**, please answer with `yes` or `no`. Aborting.')
+                        return
+                else:
+                    await ctx.send(f'**{ctx.author.name}**, please enter a number from 0 to 999. Aborting.')
+                    return
+            else:
+                await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')
+                return
+        except asyncio.TimeoutError as error:
+            await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
+            return
+
+    await database.set_progress(bot, ctx, new_tt, new_ascended)
+    current_settings = await database.get_settings(ctx)
+    if current_settings == None:
+        await database.first_time_user(bot, ctx)
+        return
+    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
 
 
 

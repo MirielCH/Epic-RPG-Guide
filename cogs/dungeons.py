@@ -206,11 +206,11 @@ class dungeonsCog(commands.Cog):
                             f'Note: `rpg p` does **not** work with profile backgrounds.\n'
                             f'If you have a background and are not a donor, please use `{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` instead.'
                         )
-                        answer_user_profile = await bot.wait_for('message', check=check, timeout = 30)
+                        answer_user_profile = await self.bot.wait_for('message', check=check, timeout = 30)
                         answer = answer_user_profile.content
                         answer = answer.lower()
                         if (answer == 'rpg p') or (answer == 'rpg profile') or (answer == 'rpg stats'):
-                            answer_bot_at = await bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                            answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                             try:
                                 profile = str(answer_bot_at.embeds[0].fields[1])
                             except:

@@ -17,7 +17,7 @@ class areasCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameter "full" to override the tt setting
+    # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameters for TT and ascension
     area_aliases = ['area','areas',]
     for x in range(1,16):
         area_aliases.append(f'a{x}')    
@@ -27,133 +27,160 @@ class areasCog(commands.Cog):
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def area(self, ctx, *args):
         
-        invoked = ctx.message.content
+        invoked = ctx.invoked_with
         invoked = invoked.lower()
         prefix = ctx.prefix
         prefix = prefix.lower()
-        if args:
-            if len(args) > 2:
-                await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
-            elif len(args) == 2:
-                try:
-                    args_full = str(args[1])
-                    args_full = args_full.lower()
-                    if args_full == 'full':
-                        area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
-                        if area_no.isnumeric():
-                            area_no = int(area_no)
-                            if 1<= area_no <= 15:
-                                area_data = await database.get_area_data(ctx, area_no)
-                                user_settings = await database.get_settings(ctx)
-                                if user_settings == None:
-                                    await database.first_time_user(bot, ctx)
-                                    return
-                                traderate_data = await database.get_traderate_data(ctx, area_no)
-                                if area_no < 15:
-                                    traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
-                                else:
-                                    traderate_data_next = ''
-                                user_settings_override = (25, user_settings[1],'override',)
-                                if area_no in (3,5):
-                                    mats_data = await database.get_mats_data(ctx, user_settings_override[0])
-                                else:
-                                    mats_data = ''
-                                embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                                await ctx.send(embed=embed)   
-                            else:
-                                await ctx.send(f'There is no area {area_no}, lol.')           
-                except:
-                    return
-            else:
-                try:
-                    area_no = args[0]
-                    if area_no.isnumeric():
-                        area_no = int(area_no)
-                        if 1 <= area_no <= 15:
-                            area_data = await database.get_area_data(ctx, area_no)
-                            user_settings = await database.get_settings(ctx)
-                            if user_settings == None:
-                                await database.first_time_user(bot, ctx)
-                                return
-                            traderate_data = await database.get_traderate_data(ctx, area_no)
-                            if area_no < 15:
-                                traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
-                            else:
-                                traderate_data_next = ''
-                            if area_no in (3,5):
-                                if user_settings[0] <= 25:
-                                    mats_data = await database.get_mats_data(ctx, user_settings[0])
-                                else:
-                                    mats_data = await database.get_mats_data(ctx, 25)
-                            else:
-                                mats_data = ''
-                            embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f'There is no area {area_no}, lol.')
-                    else:
-                        args_full = str(args[0])
-                        args_full = args_full.lower()
-                        if args_full == 'full':
-                            area_no = invoked.replace(args_full,'').replace(f' ','').replace(f'{prefix}area','').replace(f'{prefix}a','')
-                            if area_no.isnumeric():
-                                area_no = int(area_no)
-                                if 1 <= area_no <= 15:
-                                    area_data = await database.get_area_data(ctx, int(area_no))
-                                    user_settings = await database.get_settings(ctx)
-                                    if user_settings == None:
-                                        await database.first_time_user(bot, ctx)
-                                        return
-                                    traderate_data = await database.get_traderate_data(ctx, area_no)
-                                    if area_no < 15:
-                                        traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
-                                    else:
-                                        traderate_data_next = ''
-                                    user_settings_override = (25, user_settings[1],'override',)
-                                    if area_no in (3,5):
-                                        mats_data = await database.get_mats_data(ctx, user_settings_override[0])
-                                    else:
-                                        mats_data = ''
-                                    embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings_override, ctx.author.name, ctx.prefix)   
-                                    await ctx.send(embed=embed)
-                                else:
-                                    await ctx.send(f'There is no area {area_no}, lol.')
-                        else:
-                            await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
-                except:
-                    await ctx.send(f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`')           
-        else:
-            area_no = invoked.replace(f'{prefix}areas','').replace(f'{prefix}area','').replace(f'{prefix}a','')
-            if area_no.isnumeric():
-                area_no = int(area_no)
-                if not area_no == 0:
-                    area_data = await database.get_area_data(ctx, area_no)
-                    user_settings = await database.get_settings(ctx)
-                    if user_settings == None:
-                        await database.first_time_user(bot, ctx)
-                        return
-                    traderate_data = await database.get_traderate_data(ctx, area_no)
-                    if area_no < 15:
-                        traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
-                    else:
-                        traderate_data_next = ''
-                    if area_no in (3,5):
-                        if user_settings[0] <= 25:
-                            mats_data = await database.get_mats_data(ctx, user_settings[0])
-                        else:
-                            mats_data = await database.get_mats_data(ctx, 25)
-                    else:
-                        mats_data = ''
-                    embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
-            else:
-                if area_no == '':
-                    embed = await embed_areas_menu(ctx)
-                    await ctx.send(embed=embed)
-                    return
-                else:
-                    await ctx.send('Uhm, what.')           
-                    return
+        area_no = None
+        arg_tt = None
+        arg_asc = False
+        
+        error_syntax = (
+            f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`.\n'
+            f'If you want to see an area guide for a specific TT (0 - 999), you can add the TT after the command. To see the ascended version, add `asc`.\n'
+            f'Examples: `{prefix}a5 tt5`, `{prefix}a3 8 asc`'
+        )
+        
+        error_area_no = 'There is no area {area_no}, lol.'
+        
+        error_general = 'Oops. Something went wrong here.'
+        
+        if invoked == 'areas':
+            embed = await embed_areas_menu(ctx)
             await ctx.send(embed=embed)
+            return
+
+        if invoked in ('a','area'):
+            if args:
+                arg1 = args[0]
+                if arg1.isnumeric():
+                    arg1 = int(arg1)
+                    if 1 <= arg1 <= 15:
+                        area_no = arg1
+                    else:
+                        await ctx.send(error_area_no.format(area_no=arg1))
+                        return
+                else:
+                    await ctx.send(error_area_no.format(area_no=arg1))
+                    return
+                
+                if len(args) > 1:
+                    arg2 = args[1]
+                    arg2 = arg2.replace('tt','')
+                    if arg2.isnumeric():
+                        arg2 = int(arg2)
+                        if 0 <= arg2 <= 999:
+                            arg_tt = arg2
+                        else:
+                            await ctx.send(error_syntax)
+                            return
+                    else:
+                        if arg2 in ('asc','ascended'):
+                            arg_asc = True
+                        else:
+                            await ctx.send(error_syntax)
+                            return
+                    if len(args) > 2:
+                        arg3 = args[2]
+                        arg3 = arg3.replace('tt','')
+                        if arg3.isnumeric():
+                            arg3 = int(arg3)
+                            if 0 <= arg3 <= 999:
+                                arg_tt = arg3
+                            else:
+                                await ctx.send(error_syntax)
+                                return
+                        else:
+                            if arg3 in ('asc','ascended'):
+                                arg_asc = True
+                            else:
+                                await ctx.send(error_syntax)
+                                return
+            else:
+                await ctx.send(error_syntax)
+                return
+        else:
+            invoked_area = invoked.replace('area','').replace('a','')
+            if invoked_area.isnumeric():
+                invoked_area = int(invoked_area)
+                if 1 <= invoked_area <= 15:
+                    area_no = invoked_area
+                else:
+                    await ctx.send(error_general)
+                    return
+            else:
+                await ctx.send(error_general)
+                return
+            
+            if args:
+                arg1 = args[0]
+                arg1 = arg1.replace('tt','')
+                if arg1.isnumeric():
+                    arg1 = int(arg1)
+                    if 0 <= arg1 <= 999:
+                        arg_tt = arg1
+                    else:
+                        await ctx.send(error_syntax)
+                        return
+                else:
+                    if arg1 in ('asc','ascended'):
+                        arg_asc = True
+                    else:
+                        await ctx.send(error_syntax)
+                        return
+                if len(args) > 1:
+                    arg2 = args[1]
+                    arg2 = arg2.replace('tt','')
+                    if arg2.isnumeric():
+                        arg2 = int(arg2)
+                        if 0 <= arg2 <= 999:
+                            arg_tt = arg2
+                        else:
+                            await ctx.send(error_syntax)
+                            return
+                    else:
+                        if arg2 in ('asc','ascended'):
+                            arg_asc = True
+                        else:
+                            await ctx.send(error_syntax)
+                            return
+        
+        area_data = await database.get_area_data(ctx, area_no)
+        user_settings = await database.get_settings(ctx)
+        user_settings = list(user_settings)
+        
+        if user_settings == None:
+            await database.first_time_user(bot, ctx)
+            return
+        
+        if not arg_tt == None:
+            user_settings[0] = arg_tt
+            
+            if arg_asc == True:
+                user_settings[1] = 'ascended'
+            else:
+                user_settings[1] = 'not ascended'
+        else:
+            if arg_asc == True:
+                user_settings[1] = 'ascended'
+            
+        traderate_data = await database.get_traderate_data(ctx, area_no)
+        
+        if area_no < 15:
+            traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
+        else:
+            traderate_data_next = ''
+        
+        if area_no in (3,5):
+            if user_settings[0] <= 25:
+                mats_data = await database.get_mats_data(ctx, user_settings[0])
+            else:
+                mats_data = await database.get_mats_data(ctx, 25)
+        else:
+            mats_data = ''
+        
+        embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
+        await ctx.send(embed=embed)
 
 # Initialization
 def setup(bot):
@@ -247,17 +274,10 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
         time_traveller_prepare = False
         
     # Footer
-    if time_traveller_prepare == False:
-        footer = f'Tip: Use {prefix}d{dungeon_no} for details about the next dungeon.'
-    else:
-        footer = f'Tip: To see the full page use {prefix}a{area_no} full.'
+    footer = f'Tip: Use {prefix}d{dungeon_no} for details about the next dungeon.'
         
     # Description
-    if len(user_settings) > 2:
-        if user_settings[2] == 'override':
-            description = f'This is the guide for **TT {user_tt}**, **{user_asc}**.\n**You are seeing TT 25 because you used the parameter** `full`.'
-    else:
-        description = f'{area_description}'
+    description = f'{area_description}'
     
     # Area locked
     if time_traveller_area_locked == True:
@@ -688,14 +708,20 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     
     # Note
     note = (
-        f'This is the guide for **TT {user_tt}**, **{user_asc}**.\n'
-        f'If this is wrong, run `{prefix}setprogress`.'
+        f'{emojis.bp} To see the guide for another TT, use `{prefix}a{area_no} [tt]` or `{prefix}a{area_no} [tt] asc`\n'
+        f'{emojis.bp} To change your personal TT settings, use `{prefix}setprogress`.'
     )
+     
+    # Title
+    if user_asc == 'ascended':
+        title = f'AREA {area_no}  •  TT {user_tt}, {user_asc.upper()}'
+    else:
+        title = f'AREA {area_no}  •  TT {user_tt}'
      
     # Embed
     embed = discord.Embed(
         color = global_data.color,
-        title = f'AREA {area_no}',
+        title = title,
         description = description  
     )    
     embed.set_footer(text=footer)
