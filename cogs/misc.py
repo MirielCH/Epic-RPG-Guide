@@ -250,8 +250,7 @@ async def embed_codes(prefix, codes):
         description = (
             f'Use these codes with `rpg code` to get some free goodies.\n'
             f'Every code can only be redeemed once.'
-        )
-                      
+        )          
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -267,7 +266,7 @@ async def embed_coolness(prefix):
 
     usage = (
         f'{emojis.bp} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'
-        f'{emojis.bp} An unknown amount will be required for an upcoming dungeon'
+        f'{emojis.bp} You need at least 1000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
     )
                 
     req = f'{emojis.bp} Unlocks when you reach area 12 in {emojis.timetravel}TT 1'
@@ -292,11 +291,7 @@ async def embed_coolness(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'COOLNESS',
-        description = (
-            f'Coolness is a stat you start collecting after you reach area 12.\n'
-            f'It has currently no use (yet) apart from cosmetic profile badges.'
-        )
-                      
+        description = 'Coolness is a stat you start collecting once you reach area 12.'
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -318,7 +313,7 @@ async def embed_badges(prefix):
         f'{emojis.bp} {emojis.badge1000} : Unlocked with 1000 coolness\n'
         f'{emojis.bp} {emojis.badgea15} : Unlocked by reaching area 15 ({emojis.timetravel}TT 10)\n'
         f'{emojis.bp} {emojis.badgetop} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.bp} {emojis.badgeomega} : Currently unknown and unavailable'
+        f'{emojis.bp} {emojis.badgeomega} : Unlock requirements unknown'
     )
                 
     howtouse = (

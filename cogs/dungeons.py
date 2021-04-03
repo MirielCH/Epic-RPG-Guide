@@ -60,7 +60,7 @@ class dungeonsCog(commands.Cog):
                     if page.isnumeric():
                         page = int(page)
                         if page in (1,2):
-                            await dungeongear(ctx, page)
+                            await self.dungeongear(ctx, page)
                             return
                     else:
                         await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')           
@@ -82,10 +82,10 @@ class dungeonsCog(commands.Cog):
                         await ctx.send(f'There is no dungeon {arg}, lol.') 
                 else:
                     if arg == 'gear':
-                        await dungeongear(ctx, '1')
+                        await self.dungeongear(ctx, '1')
                         return
                     elif arg == 'stats':
-                        await dungeonstats(ctx)
+                        await self.dungeonstats(ctx)
                         return
                     else:
                         await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
@@ -104,7 +104,7 @@ class dungeonsCog(commands.Cog):
                     await ctx.send(f'There is no dungeon {dungeon_no}, lol.') 
             else:
                 if dungeon_no == '':
-                    await dungeonguide(ctx)
+                    await self.dungeonguide(ctx)
                     return
                 else:
                     await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
@@ -1020,7 +1020,8 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.bp} {emojis.horset6} T6+ horse\n'
             f'{emojis.bp} {player_sword_emoji} {player_sword}\n'
             f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'
-            f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
+            f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+\n'
+            f'{emojis.bp} 1000+ coolness'
         )
         strategy = f'{emojis.bp} Currently unknown'
         strategy_name = 'STRATEGY'
