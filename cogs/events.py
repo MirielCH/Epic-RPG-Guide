@@ -31,7 +31,8 @@ class eventsCog(commands.Cog):
         'lootbox','lootboxevent','lb','lbevent',
         'tournament','pettournament','petstournament','pet-tournament','pets-tournament',
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
-        'ruby','rubydragon','working','work','nothing'
+        'ruby','rubydragon','working','work','nothing',
+        'bunny','bunnyevent','bunnyboss','bunnybossevent'
     )
     
     # Command "events"
@@ -59,8 +60,12 @@ class eventsCog(commands.Cog):
                 embed = await embed_event_heal(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
-                embed = await embed_event_legendary(ctx.prefix)
-                await ctx.send(embed=embed)
+                if (invoked.find('bunny') > -1):
+                    embed = await embed_event_bunny(ctx.prefix)
+                    await ctx.send(embed=embed)
+                else:
+                    embed = await embed_event_legendary(ctx.prefix)
+                    await ctx.send(embed=embed)
             elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 if (event_name.find('summon') > -1):
                     embed = await embed_event_lootboxsummoning(ctx.prefix)
@@ -106,6 +111,12 @@ class eventsCog(commands.Cog):
                 await ctx.send(embed=embed)
             elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif (event_name.find('bunnyboss') > -1):
+                embed = await embed_event_bunnyboss(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif (event_name.find('bunny') > -1):
+                embed = await embed_event_bunny(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
@@ -171,6 +182,12 @@ class eventsCog(commands.Cog):
             elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
+            elif (invoked.find('bunnyboss') > -1):
+                embed = await embed_event_bunnyboss(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif (invoked.find('bunny') > -1):
+                embed = await embed_event_bunny(ctx.prefix)
+                await ctx.send(embed=embed)
             else:
                 embed = await embed_events_overview(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -198,6 +215,11 @@ events_footer = 'Use {prefix}events to see a list of all events.'
 # --- Embeds: Overview ---
 # Events overview
 async def embed_events_overview(prefix):
+    
+    easter_event = (
+        f'{emojis.bp} `bunny`\n'
+        f'{emojis.bp} `bunny boss`'
+    )
     
     sp_events = (
         f'{emojis.bp} `enchant`\n'
@@ -237,6 +259,7 @@ async def embed_events_overview(prefix):
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name=f'EASTER {emojis.easteregg}', value=easter_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -953,6 +976,88 @@ async def embed_event_snowball(prefix):
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+            
+    return embed
+
+# Bunny event (easter)
+async def embed_event_bunny(prefix):
+
+    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (0.75 % chance)'
+    
+    answers = (
+        f'{emojis.bp} The bunny has a {emojis.pethappiness} happiness and :carrot: hunger stat\n'
+        f'{emojis.bp} You can enter a line of commands to influence these stats\n'
+        f'{emojis.bp} `feed` decreases hunger by 18-22\n'
+        f'{emojis.bp} `pat` increases happiness by 8-12\n'
+        f'{emojis.bp} Example: `feed feed pat pat pat`\n'
+        f'{emojis.bp} If happiness is 85+ higher than hunger, catch chance is 100%\n'
+        f'{emojis.bp} You can only use up to 6 commands\n'
+        f'{emojis.bp} Less commands = 15 {emojis.easteregg} easter eggs for every command not used'
+    )
+    
+    rewards = (
+        f'{emojis.bp} {emojis.easterbunny} Bunny (used in crafting {emojis.easterspawner} boss spawners)\n'
+        f'{emojis.bp} {emojis.petgoldenbunny} Fake golden bunny. Gifts you a {emojis.easterspawner} boss spawner every day.'
+    )
+    
+    note =(
+        f'{emojis.bp} You can increase the chance of this event by crafting {emojis.easterrainbowcarrot} rainbow carrots\n'
+        f'{emojis.bp} You can craft up to 5 carrots which gives you a 3 % spawn chance'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'BUNNY EVENT',
+        description = 'This is a random personal easter event in which a bunny appears for you to tame.'
+    )    
+    
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+            
+    return embed
+
+# Bunny boss event (easter)
+async def embed_event_bunnyboss(prefix):
+
+    trigger = (
+        f'{emojis.bp} Craft a {emojis.easterspawner} boss spawner\n'
+        f'{emojis.bp} Use `egg use boss spawner` or `egg buy instant spawn`\n'
+        f'{emojis.bp} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
+    )
+    
+    answers = (
+        f'{emojis.bp} `fight` or `defend`\n'
+        f'{emojis.bp} Look at the boss stats to decide what to choose'
+    )
+    
+    rewards = (
+        f'{emojis.bp} 1 {emojis.easteregggolden} golden egg\n'
+        f'{emojis.bp} {emojis.easteregg} Easter eggs\n'
+        f'{emojis.bp} {emojis.arenacookie} Arena cookies\n'
+        f'{emojis.bp} {emojis.epiccoin} EPIC coins\n'
+        f'{emojis.bp} {emojis.easterlootbox} Easter lootboxes\n'
+        f'{emojis.bp} The participants have a chance to get a few {emojis.easteregg} easter eggs and {emojis.arenacookie} cookies'
+    )
+                
+    note = (
+        f'{emojis.bp} {events_multiplayer}\n'
+        f'{emojis.bp} {events_player_no.format(no=15)}'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'BUNNY BOSS EVENT',
+        description = 'This is a multiplayer easter event in which you fight a bunny boss.'
+    )    
+    
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='HOW TO START', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed

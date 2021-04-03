@@ -40,7 +40,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.easter',]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -123,39 +123,53 @@ async def helpguide(ctx):
     
     prefix = await database.get_prefix(bot, ctx)
     
-    progress =  f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'\
-                f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'\
-                f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'\
-                f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
+    easter = f'{emojis.bp} `{prefix}easter` : Easter event 2021\n'
     
-    crafting =  f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'\
-                f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'\
-                f'{emojis.bp} `{prefix}drops` : Monster drops\n'\
-                f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
+    progress = (
+        f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
+        f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
+        f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
+        f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
+    )
     
-    animals =   f'{emojis.bp} `{prefix}horse` : Horse guide\n'\
-                f'{emojis.bp} `{prefix}pet` : Pets guide\n'\
+    crafting = (
+        f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'
+        f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
+        f'{emojis.bp} `{prefix}drops` : Monster drops\n'
+        f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
+    )
     
-    trading =   f'{emojis.bp} `{prefix}trading` : Trading guides overview'
+    animals = (
+        f'{emojis.bp} `{prefix}horse` : Horse guide\n'
+        f'{emojis.bp} `{prefix}pet` : Pets guide\n'
+    )
+    
+    trading = f'{emojis.bp} `{prefix}trading` : Trading guides overview'
                 
     professions_value = f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
     
-    guild_overview =    f'{emojis.bp} `{prefix}guild` : Guild guide'
+    guild_overview = f'{emojis.bp} `{prefix}guild` : Guild guide'
     
-    event_overview =    f'{emojis.bp} `{prefix}events` : Event guides overview'
+    event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
     
-    misc =      f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'\
-                f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'\
-                f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'\
-                f'{emojis.bp} `{prefix}calc` : A basic calculator'
+    misc = (
+        f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
+        f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
+        f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'
+        f'{emojis.bp} `{prefix}calc` : A basic calculator'
+    )
                 
-    botlinks =  f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'\
-                f'{emojis.bp} `{prefix}support` : Visit the support server\n'\
-                f'{emojis.bp} `{prefix}links` : EPIC RPG wiki & support'
+    botlinks = (
+        f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'
+        f'{emojis.bp} `{prefix}support` : Visit the support server\n'
+        f'{emojis.bp} `{prefix}links` : EPIC RPG wiki & support'
+    )
                 
-    settings =  f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'\
-                f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'\
-                f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
+    settings = (
+        f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
+        f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
+        f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
+    )
     
     embed = discord.Embed(
         color = global_data.color,
@@ -163,6 +177,7 @@ async def helpguide(ctx):
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
+    embed.add_field(name=f'EASTER EVENT {emojis.easteregg}', value=easter, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
