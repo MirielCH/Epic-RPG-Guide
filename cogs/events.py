@@ -1035,7 +1035,7 @@ async def embed_event_bunnyboss(prefix):
     )
     
     rewards = (
-        f'{emojis.bp} 1 {emojis.easteregggolden} golden egg\n'
+        f'{emojis.bp} 1-2 {emojis.easteregggolden} golden eggs\n'
         f'{emojis.bp} {emojis.easteregg} Easter eggs\n'
         f'{emojis.bp} {emojis.arenacookie} Arena cookies\n'
         f'{emojis.bp} {emojis.epiccoin} EPIC coins\n'

@@ -240,9 +240,9 @@ async def embed_trades_area_specific(user_settings, area_no, prefix):
         if user_settings[0]==0:
             description = f'{emojis.bp} No trades because of {emojis.timetravel} time travel'
         else:
-            description = await global_data.design_field_trades(area_no)
+            description = await global_data.design_field_trades(area_no, user_settings[1])
     else:
-        description = await global_data.design_field_trades(area_no)
+        description = await global_data.design_field_trades(area_no, user_settings[1])
     
     guides = (
         f'{emojis.bp} {guide_trades_all.format(prefix=prefix)}\n'
@@ -289,16 +289,16 @@ async def embed_trades_all_areas(user_settings, prefix):
                 if user_settings[0]==0:
                     embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)    
                 else:
-                    field_value = await global_data.design_field_trades(x)
+                    field_value = await global_data.design_field_trades(x, user_settings[1])
                     embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             elif x==15:
                 if user_settings[0]<25:
                     embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)    
                 else:
-                    field_value = await global_data.design_field_trades(x)
+                    field_value = await global_data.design_field_trades(x, user_settings[1])
                     embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             else:
-                field_value = await global_data.design_field_trades(x)
+                field_value = await global_data.design_field_trades(x, user_settings[1])
                 embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
     
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)

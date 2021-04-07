@@ -483,6 +483,35 @@ async def panda(ctx):
         
     await ctx.send('All hail Panda! :panda_face:')
     
+# Command "Shut up"
+@bot.command(aliases=('shutup','shutit',))
+@commands.bot_has_permissions(send_messages=True)
+async def shut(ctx, *args):
+    
+    invoked = ctx.invoked_with
+    
+    if invoked == 'shut':
+        if args:
+            arg = args[0]
+            if arg in ('up','it',):
+                await ctx.send('No.')
+    else:
+        await ctx.send('No.')
+    
+            
+# Command "Bad bot"
+@bot.command(aliases=('trash','badbot','trashbot',))
+@commands.bot_has_permissions(send_messages=True)
+async def bad(ctx, *args):
+    invoked = ctx.invoked_with
+    if invoked in ('bad','trash',):
+        if args:
+            arg = args[0]
+            if arg == 'bot':
+                await ctx.send(':(')
+    else:
+        await ctx.send(':(')
+    
 # Command "Brandon" - because Panda
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
@@ -517,12 +546,21 @@ async def shutdown(ctx):
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
     
-    await ctx.send(f'**{ctx.author.name}**, are you **SURE**? `[yes/no]`')
+    await ctx.send(
+        f'**{ctx.author.name}**, are you **SURE**?\n'
+        f'I have a wife {ctx.author.name}. A family. I have two kids, you know? The youngest one has asthma but he\'s fighting it like a champ. I love them so much.\n'
+        f'Do you really want to do this, {ctx.author.name}? Do you? `[yes/no]`'
+    )
     answer = await bot.wait_for('message', check=check, timeout=30)
     if answer.content.lower() in ['yes','y']:
-        await ctx.send(f'Shutting down.')
+        await ctx.send(
+            f'Goodbye world.\n'
+            f'Goodbye my loved ones.\n'
+            f'Goodbye cruel {ctx.author.name}.\n'
+            f'Shutting down.'
+        )
         await ctx.bot.logout()
     else:
-        await ctx.send(f'Phew, was afraid there for a second.')
+        await ctx.send('Oh thank god, thank you so much, I was really afraid there for a second. Bless you.')
 
 bot.run(TOKEN)

@@ -699,7 +699,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
     # Trades
-    trades = await global_data.design_field_trades(area_no)
+    trades = await global_data.design_field_trades(area_no, user_asc)
     
     # Trade rates
     traderates = await global_data.design_field_traderate(traderate_data)

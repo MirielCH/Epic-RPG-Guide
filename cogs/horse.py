@@ -100,8 +100,8 @@ class horseCog(commands.Cog):
                     horse_tier = int(horse_tier)
                     if horse_level.isnumeric():
                         horse_level = int(horse_level)
-                        if not 1 <= horse_level <= (10*horse_tier):
-                            await ctx.send(f'`{horse_level}` is not a valid horse level for a T{horse_tier} horse.\nPlease enter a level between 1 and {10*horse_tier}.')
+                        if not horse_level >= 1:
+                            await ctx.send(f'`{horse_level}` is not a valid horse level for a T{horse_tier} horse.\nThe level needs to be 1 or higher.')
                             return
                     else:
                         await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse level to me :thinking:')

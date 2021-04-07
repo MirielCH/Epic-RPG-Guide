@@ -864,13 +864,46 @@ async def embed_enchants(prefix):
 # Monster drops
 async def embed_drops(prefix):
 
-    items = (
-        f'Area: 1~2\nSource: {emojis.mobwolf}\nValue: 5\'000\n'
-        f'{emojis.bp} {emojis.zombieeye} **Zombie Eye** - {emojis.mobzombie} Zombie in areas **3~4**\n'
-        f'{emojis.bp} {emojis.unicornhorn} **Unicorn Horn** - {emojis.mobunicorn} Unicorn in areas **5~6**\n'
-        f'{emojis.bp} {emojis.mermaidhair} **Mermaid Hair** - {emojis.mobmermaid} Mermaid in areas **7~8**\n'
-        f'{emojis.bp} {emojis.chip} **Chip** - {emojis.mobkillerrobot} Killer Robot in areas **9~10**\n'
-        f'{emojis.bp} Area: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000 coins'
+    wolfskin = (
+        f'{emojis.bp} Areas: 1~2\n'
+        f'{emojis.bp} Source: {emojis.mobwolf}\n'
+        f'{emojis.bp} Value: 500\n'
+        f'{emojis.blank}'
+    )
+    
+    zombieeye = (
+        f'{emojis.bp} Areas: 3~4\n'
+        f'{emojis.bp} Source: {emojis.mobzombie}\n'
+        f'{emojis.bp} Value: 2\'000\n'
+        f'{emojis.blank}'
+    )
+    
+    unicornhorn = (
+        f'{emojis.bp} Areas: 5~6\n'
+        f'{emojis.bp} Source: {emojis.mobunicorn}\n'
+        f'{emojis.bp} Value: 7\'500\n'
+        f'{emojis.blank}'
+    )
+    
+    mermaidhair = (
+        f'{emojis.bp} Areas: 7~8\n'
+        f'{emojis.bp} Source: {emojis.mobmermaid}\n'
+        f'{emojis.bp} Value: 30\'000\n'
+        f'{emojis.blank}'
+    )
+    
+    chip = (
+        f'{emojis.bp} Areas: 9~10\n'
+        f'{emojis.bp} Source: {emojis.mobkillerrobot}\n'
+        f'{emojis.bp} Value: 100\'000\n'
+        f'{emojis.blank}'
+    )
+    
+    dragonscale = (
+        f'{emojis.bp} Areas: 11~15\n'
+        f'{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}{emojis.mobolddragon}\n'
+        f'{emojis.bp} Value: 250\'000\n'
+        f'{emojis.blank}'
     )
 
     chance = (
@@ -889,17 +922,18 @@ async def embed_drops(prefix):
         title = 'MONSTER DROPS',
         description = (
             f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'
-            f'You can go back to previous areas with `rpg area`.\n{emojis.blank}'
+            f'You can go back to previous areas with `rpg area`.\n'
+            f'{emojis.blank}'
         )
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=f'{emojis.bp} Areas: 1~2\n{emojis.bp} Source: {emojis.mobwolf}\n{emojis.bp} Value: 500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=f'{emojis.bp} Areas: 3~4\n{emojis.bp} Source: {emojis.mobzombie}\n{emojis.bp} Value: 2\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=f'{emojis.bp} Areas: 5~6\n{emojis.bp} Source: {emojis.mobunicorn}\n{emojis.bp} Value: 7\'500\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=f'{emojis.bp} Areas: 7~8\n{emojis.bp} Source: {emojis.mobmermaid}\n{emojis.bp} Value: 30\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'CHIP {emojis.chip}', value=f'{emojis.bp} Areas: 9~10\n{emojis.bp} Source: {emojis.mobkillerrobot}\n{emojis.bp} Value: 100\'000\n{emojis.blank}', inline=True)
-    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=f'{emojis.bp} Areas: 11~14\n{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}\n{emojis.bp} Value: 250\'000\n{emojis.blank}', inline=True)
+    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=wolfskin, inline=True)
+    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=zombieeye, inline=True)
+    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=unicornhorn, inline=True)
+    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=mermaidhair, inline=True)
+    embed.add_field(name=f'CHIP {emojis.chip}', value=chip, inline=True)
+    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=dragonscale, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)    
             
     return embed
