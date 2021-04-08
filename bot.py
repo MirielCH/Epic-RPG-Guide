@@ -497,7 +497,6 @@ async def shut(ctx, *args):
                 await ctx.send('No.')
     else:
         await ctx.send('No.')
-    
             
 # Command "Bad bot"
 @bot.command(aliases=('trash','badbot','trashbot',))

@@ -87,7 +87,7 @@ class timetravelCog(commands.Cog):
         
         user_settings = await database.get_settings(ctx)
         if user_settings == None:
-            await database.first_time_user(bot, ctx)
+            await database.first_time_user(self.bot, ctx)
             return
         my_tt = int(user_settings[0])
         
@@ -355,7 +355,7 @@ async def embed_stt(prefix):
         f'{emojis.bp} Start with a new Tier I pet (300 score)\n'
         f'{emojis.bp} Start with +50 AT (400 score)\n'
         f'{emojis.bp} Start with +50 DEF (400 score)\n'
-        f'{emojis.bp} Start with 10 of each monster drop (400 score)\n'
+        f'{emojis.bp} Start with 35 of each monster drop (400 score)\n'
         f'{emojis.bp} Start with an OMEGA lootbox (500 score)\n'
         f'{emojis.bp} Start with a new Tier III pet (1,500 score)\n'
         f'{emojis.bp} Start with 10 ULTRA logs (1,750 score)\n'

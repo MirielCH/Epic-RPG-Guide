@@ -37,7 +37,7 @@ class tradingCog(commands.Cog):
         
         user_settings = await database.get_settings(ctx)
         if user_settings == None:
-            await database.first_time_user(bot, ctx)
+            await database.first_time_user(self.bot, ctx)
             return
         
         invoked = ctx.message.content
@@ -273,7 +273,7 @@ async def embed_trades_all_areas(user_settings, prefix):
     
     embed = discord.Embed(
         color = 8983807,
-        title = 'AREA TRADES',
+        title = 'AREA TRAfirst_time_userES',
         description = (
             f'This page lists all trades you should do before leaving each area.\n'
             f'Areas not listed here don\'t have any recommended trades.\n'
@@ -491,6 +491,11 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
             trade_fish_rate_past = past_area[2]
             trade_apple_rate_past = past_area[3]
             trade_ruby_rate_past = past_area[4]
+        else:
+            trade_best_change = 0
+            trade_fish_rate_past = trade_fish_rate
+            trade_apple_rate_past = trade_apple_rate
+            trade_ruby_rate_past = trade_ruby_rate
 
         if original_mat == 'log':
             if trade_best_change == 0:

@@ -61,7 +61,7 @@ class eventsCog(commands.Cog):
                 await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
                 if (invoked.find('bunny') > -1):
-                    embed = await embed_event_bunny(ctx.prefix)
+                    embed = await embed_event_bunnyboss(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     embed = await embed_event_legendary(ctx.prefix)
@@ -1014,7 +1014,7 @@ async def embed_event_bunny(prefix):
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
-    embed.add_field(name='POSSIBLE ANSWERS', value=answers, inline=False)
+    embed.add_field(name='HOW TO TAME THE BUNNY', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
             

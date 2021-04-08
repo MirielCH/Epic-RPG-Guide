@@ -147,10 +147,11 @@ class areasCog(commands.Cog):
         
         area_data = await database.get_area_data(ctx, area_no)
         user_settings = await database.get_settings(ctx)
-        user_settings = list(user_settings)
+        if not user_settings == None:
+            user_settings = list(user_settings)
         
         if user_settings == None:
-            await database.first_time_user(bot, ctx)
+            await database.first_time_user(self.bot, ctx)
             return
         
         if not arg_tt == None:
@@ -321,7 +322,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             quick_guide = (
                 f'{emojis.bp} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
-                f'{quick_guide_armor}{quick_guide_enchant_armor}'
+                f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
                 f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
             )
         else:
