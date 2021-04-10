@@ -1007,7 +1007,7 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'
             f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+'
         )
-        strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_15'
+        strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_15.1'
         strategy_name = 'STRATEGY'
         rewards = f'{emojis.bp} {emojis.timekey} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
@@ -1021,9 +1021,9 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.bp} {player_sword_emoji} {player_sword}\n'
             f'{emojis.bp} {emojis.petcat} T4+ cat pet\n{emojis.bp} {emojis.petdog} T4+ dog pet\n{emojis.bp} {emojis.petdragon} T4+ dragon pet\n'
             f'{emojis.bp} {emojis.timetravel} TT {dungeon_tt}+\n'
-            f'{emojis.bp} 1000+ coolness'
+            f'{emojis.bp} 2,000+ coolness'
         )
-        strategy = f'{emojis.bp} Currently unknown'
+        strategy = f'{emojis.bp} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
         strategy_name = 'STRATEGY'
         rewards = f'{emojis.bp} {emojis.timedragonessence} TIME dragon essence\n{emojis.bp} Unlocks area \'The TOP\''
     else:

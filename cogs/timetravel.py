@@ -307,8 +307,8 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
         f'{emojis.bp} If you need a higher score: Trade to {emojis.ruby} rubies (see `{prefix}sttscore`)\n'
         f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.bp} Sell everything you don\'t need for your desired score (see `{prefix}sttscore)`\n'
+        f'{emojis.bp} Do not sell items listed in `{prefix}tt`'
     )
     
     guides = (

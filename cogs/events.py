@@ -743,9 +743,17 @@ async def embed_event_specialtrade(prefix):
         f'{emojis.bp} Note: You need the items for the trade in your inventory'
     )
     
-    rewards = f'{emojis.bp} Rewards depend on the offered trade'
+    rewards = (
+        f'{emojis.bp} 1 {emojis.wolfskin} wolf skin (for 15 {emojis.log} wooden logs)\n'
+        f'{emojis.bp} 3 {emojis.epiccoin} EPIC coins (for 3 {emojis.coin} coins)\n'
+        f'{emojis.bp} 40 {emojis.fishgolden} golden fish (for 15 {emojis.lifepotion} life potions)\n'
+        f'{emojis.bp} 80 {emojis.logepic} EPIC logs (for 40 {emojis.log} wooden logs)\n'
+        f'{emojis.bp} 80 {emojis.fish} cookies (for 2 {emojis.arenacookie} cookies)\n'
+        f'{emojis.bp} 125 {emojis.arenacookie} cookies (for 5 {emojis.fish} normie fish)'
+    )
                     
     note = (
+        f'{emojis.bp} You have time to trade to the required material while the event is active\n'
         f'{emojis.bp} {events_multiplayer}\n'
         f'{emojis.bp} {events_first_one}'
     )
