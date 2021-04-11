@@ -273,7 +273,7 @@ async def embed_trades_all_areas(user_settings, prefix):
     
     embed = discord.Embed(
         color = 8983807,
-        title = 'AREA TRAfirst_time_userES',
+        title = 'AREA TRADES',
         description = (
             f'This page lists all trades you should do before leaving each area.\n'
             f'Areas not listed here don\'t have any recommended trades.\n'

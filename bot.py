@@ -156,7 +156,8 @@ async def helpguide(ctx):
         f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
         f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
         f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'
-        f'{emojis.bp} `{prefix}calc` : A basic calculator'
+        f'{emojis.bp} `{prefix}calc` : A basic calculator\n'
+        f'{emojis.bp} `{prefix}coincap` : Coin cap calculator'
     )
                 
     botlinks = (

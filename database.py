@@ -542,11 +542,14 @@ async def first_time_user(bot, ctx):
         
         prefix = ctx.prefix
         
-        await ctx.send(f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\nI have set your progress to '\
-                    f'**TT {current_tt}**, **{current_ascension}**.\n\n'\
-                    f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'\
-                    f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'\
-                    'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.')
+        await ctx.send(
+            f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+            f'I have set your progress to **TT {current_tt}**, **{current_ascension}**.\n\n'
+            f'** --> Please use `{ctx.prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
+            f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'
+            f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'
+            f'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.'
+        )
     except:
         raise
     else:

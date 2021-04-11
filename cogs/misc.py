@@ -8,6 +8,7 @@ import discord
 import emojis
 import global_data
 import database
+import asyncio
 
 from discord.ext import commands
 
@@ -192,6 +193,122 @@ class miscCog(commands.Cog):
         )    
         
         await ctx.send(embed=embed)
+        
+    # Command "coincap" - Calculate the coin cap
+    @commands.command(aliases=('coin',))
+    @commands.bot_has_permissions(send_messages=True, external_emojis=True)
+    async def coincap(self, ctx, *args):
+        
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+            
+        def epic_rpg_check(m):
+            correct_embed = False
+            try:
+                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+                if (embed_author.find(f'{ctx_author}\'s profile') > 1):
+                    correct_embed = True
+                else:
+                    correct_embed = False
+            except:
+                correct_embed = False
+            
+            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+        
+        prefix = ctx.prefix
+        
+        error_syntax = (
+            f'The command syntax is `{prefix}coincap [tt] [area]`\n'
+            f'You can also use `{prefix}coincap` and let me read your profile.\n'
+            f'Examples: `{prefix}coincap tt5 a12`, `{prefix}coincap 8 10`'
+        )
+        
+        user_tt = None
+        user_area = None
+        
+        if args:
+            if args[0] == 'cap':
+                args = list(args)
+                args.pop(0)
+            if len(args) > 0:
+                arg1 = args[0]
+                arg1 = arg1.replace('tt','')
+                if arg1.isnumeric():
+                    user_tt = int(arg1)
+                    if 0 <= user_tt <= 999:
+                        if len(args) > 1:
+                            arg2 = args[1]
+                            arg2 = arg2.replace('a','')
+                            if arg1.isnumeric():
+                                user_area = int(arg2)
+                                if 1 <= user_area <= 15:
+                                    if ((user_area == 12) and (user_tt < 1)) or ((user_area == 13) and (user_tt < 3)) or ((user_area == 14) and (user_tt < 5)) or ((user_area == 15) and (user_tt < 10)):
+                                        await ctx.send(f'You can not reach area {user_area} in TT {user_tt}.')
+                                        return
+                                else:
+                                    await ctx.send(f'Uhm what. Area {user_area}? Sure, send me a postcard.')
+                                    return
+                            else:
+                                await ctx.send(error_syntax)
+                                return
+                        else:
+                            await ctx.send(error_syntax)
+                            return
+                    else:
+                        await ctx.send(error_syntax)
+                        return
+                else:
+                    await ctx.send(error_syntax)
+                    return
+        
+        if (user_tt == None) or (user_tt == None):
+            try:
+                await ctx.send(
+                    f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
+                    f'Note: This does **not** work with profile backgrounds.\n'
+                    f'Please remove your background or use `{ctx.prefix}coincap [tt] [max area]` instead.'
+                )
+                answer_user_at = await self.bot.wait_for('message', check=check, timeout = 30)
+                answer = answer_user_at.content
+                answer = answer.lower()
+                if (answer == 'rpg p') or (answer == 'rpg profile') or (answer == 'rpg stats'):
+                    answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                    try:
+                        profile = str(answer_bot_at.embeds[0].fields[0])
+                    except:
+                        try:
+                            profile = str(answer_bot_at.embeds[0].fields[0])
+                        except:
+                            await ctx.send(
+                                f'Whelp, something went wrong here, sorry.\n'
+                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt] [max area]` instead.'
+                            )
+                            return
+                        
+                    start_area = profile.find('(Max:') + 6
+                    end_area = profile.find(')', start_area)
+                    user_area = profile[start_area:end_area]
+                    user_area = int(user_area)
+                    if profile.find('Time travels') > -1:
+                        start_tt = profile.find('Time travels**') + 16
+                        end_tt = profile.find('\',', start_tt)
+                        user_tt = profile[start_tt:end_tt]
+                        user_tt = int(user_tt)
+                    else:
+                        user_tt = 0
+                elif (answer == 'abort') or (answer == 'cancel'):
+                    await ctx.send('Aborting.')
+                    return
+                else:
+                    await ctx.send('Wrong input. Aborting.')
+                    return
+                                
+            except asyncio.TimeoutError as error:
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
+        
+        coin_cap = user_tt*user_tt*10000000000+(user_area*2500000)
+        await ctx.send(f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.')
 
 # Initialization
 def setup(bot):

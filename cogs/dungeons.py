@@ -472,7 +472,7 @@ guide_dungeon = '`{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15'
 guide_check = '`{prefix}dc{dungeon_no}` : Check if you\'re ready for this dungeon'
 guide_check_all = '`{prefix}dc1`-`{prefix}dc15` : Dungeon 1~15 stats check'
 guide_gear = '`{prefix}dg` : Recommended gear (all dungeons)'
-guide_stats = '`{prefix}ds` : Recommended gear (all dungeons)'
+guide_stats = '`{prefix}ds` : Recommended stats (all dungeons)'
 
 
 
@@ -885,22 +885,21 @@ async def embed_dungeon(dungeon_data, prefix):
     
     if min_players == max_players:
         players = f'{emojis.bp} {min_players}'
+        if not boss_life == 0:
+            try:
+                boss_life = f'{dungeon_data[5]:,}'
+            except:
+                boss_life = int(dungeon_data[5])
+        else:
+            boss_life = '-'
     else:
         players = f'{emojis.bp} {min_players}-{max_players}'
-        boss_life = f'{boss_life} per player'
+        boss_life = f'{boss_life:,} per player'
     
     if boss_at == 0:
         boss_at = '-'
     else:
         boss_at = f'~{boss_at}'
-    
-    if not boss_life == 0:
-        try:
-            boss_life = f'{dungeon_data[5]:,}'
-        except:
-            boss_life = int(dungeon_data[5])
-    else:
-        boss_life = '-'
     
     if not key_price == 0:
         try:
