@@ -325,7 +325,10 @@ async def setprogress(ctx, *args):
                 await ctx.send(f'**{ctx.author.name}**, please answer with a valid number. Aborting.')
                 return
         except asyncio.TimeoutError as error:
-            await ctx.send(f'**{ctx.author.name}**, you took too long to answer, RIP.')
+            await ctx.send(
+                f'**{ctx.author.name}**, you took too long to answer, RIP.\n\n'
+                f'Tip: You can also use `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` if you\'re ascended.'
+            )
             return
 
     await database.set_progress(bot, ctx, new_tt, new_ascended)

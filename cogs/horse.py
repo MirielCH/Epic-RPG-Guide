@@ -288,9 +288,9 @@ async def embed_horses_tiers(prefix):
 
     tier1 = f'{emojis.bp} No bonuses'
             
-    tier2 = f'{emojis.bp} 5% more coins when using`daily` and `weekly`'
+    tier2 = f'{emojis.bp} 5% more coins when using `daily` and `weekly`'
     
-    tier3 = f'{emojis.bp} 10% more coins when using`daily` and `weekly`'
+    tier3 = f'{emojis.bp} 10% more coins when using `daily` and `weekly`'
             
     tier4 = (
         f'{emojis.bp} Unlocks immortality in `hunt` and `adventure`\n'

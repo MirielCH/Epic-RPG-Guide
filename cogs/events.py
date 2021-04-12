@@ -226,17 +226,17 @@ async def embed_events_overview(prefix):
         f'{emojis.bp} `epic guard`\n'
         f'{emojis.bp} `heal`\n'
         f'{emojis.bp} `lootbox`\n'
-        f'{emojis.bp} `ruby dragon`'
+        f'{emojis.bp} `ruby dragon` / `work`'
     )
     
     mp_events = (
         f'{emojis.bp} `arena`\n'
-        f'{emojis.bp} `coin rain`\n'
-        f'{emojis.bp} `epic tree`\n'
+        f'{emojis.bp} `coin rain` / `catch`\n'
+        f'{emojis.bp} `epic tree` / `chop`\n'
         f'{emojis.bp} `god`\n'
         f'{emojis.bp} `legendary boss`\n'
-        f'{emojis.bp} `lootbox summoning`\n'
-        f'{emojis.bp} `megalodon`\n'
+        f'{emojis.bp} `lootbox summoning` / `summon`\n'
+        f'{emojis.bp} `megalodon` / `fish`\n'
         f'{emojis.bp} `miniboss`\n'
         f'{emojis.bp} `special trade`'
     )
