@@ -8,8 +8,11 @@ import discord
 import emojis
 import global_data
 import database
+import asyncio
 
 from discord.ext import commands
+from operator import itemgetter
+from math import floor
 
 # time travel commands (cog)
 class timetravelCog(commands.Cog):
@@ -108,6 +111,12 @@ class timetravelCog(commands.Cog):
             if arg == 'score':
                 await self.supertimetravelscore(ctx)
                 return
+            elif arg == 'calc':
+                if len(args) > 1:
+                    await self.sttcalc(ctx, args[1])
+                else:
+                    await self.sttcalc(ctx)
+                return
             else:
                 embed = await embed_stt(ctx.prefix)
         else:
@@ -118,9 +127,530 @@ class timetravelCog(commands.Cog):
     # Command "sttscore" - Returns super time travel score calculations
     @commands.command(aliases=('sttscore','superttscore','stts',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-    async def supertimetravelscore(self, ctx):
-        embed = await embed_stt_score(ctx.prefix)
+    async def supertimetravelscore(self, ctx, *args):
+        if args:
+            arg = args[0]
+            if arg == 'calc':
+                if len(args) > 1:
+                    await self.sttcalc(ctx, args[1])
+                else:
+                    await self.sttcalc(ctx)
+                return
+            else:
+                embed = await embed_stt_score(ctx.prefix)
+        else:        
+            embed = await embed_stt_score(ctx.prefix)
+        
         await ctx.send(embed=embed)
+        
+    # Command "sttcalc" - Calculates STT score based in inventory and area
+    @commands.command(aliases=('scorecalc','sttscorecalc','sttc','scalc','sc','superttcalc',))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True)
+    async def sttcalc(self, ctx, *args):
+        
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+        
+        def epic_rpg_check(m):
+            correct_embed = False
+            try:
+                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
+                if (embed_author.find(f'{ctx_author}\'s inventory') > 1):
+                    correct_embed = True
+                else:
+                    correct_embed = False
+            except:
+                correct_embed = False
+            
+            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+        
+        error_syntax = (
+            f'The command syntax is `{ctx.prefix}scorecalc [current max area]`\n'
+            f'Example: `{ctx.prefix}scorecalc a5`'
+        )
+        
+        if args:
+            if len(args) == 1:
+                area = args[0]
+                if area.find('top') > -1:
+                    area = 16
+                else:
+                    area = area.lower().replace('a','')
+                    if area.isnumeric():
+                        area = int(area)
+                        if not 1 <= area <= 16:
+                            await ctx.send(f'There is no area {area}.')
+                            return
+                    else:
+                        await ctx.send(f'There is no area {area}.')
+                        return
+            else:
+                await ctx.send(error_syntax)
+                return
+        else:
+            await ctx.send(error_syntax)
+            return
+        
+        try:
+            await ctx.send(f'**{ctx.author.name}**, please type `rpg i` (or `abort` to abort)')
+            answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
+            answer = answer_user_enchanter.content
+            answer = answer.lower()
+            if answer in ('rpg i','rpg inventory','rpg inv',):
+                answer_bot_inv = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
+                try:
+                    inventory = str(answer_bot_inv.embeds[0].fields).lower()
+                except:
+                    await ctx.send('Whelp, something went wrong here, sorry.')
+                    return
+                
+                log = 0
+                logepic = 0
+                logsuper= 0
+                logmega = 0
+                loghyper = 0
+                logultra = 0
+                fish = 0
+                fishgolden = 0
+                fishepic = 0
+                apple = 0
+                banana = 0
+                ruby = 0               
+                wolfskin = 0
+                zombieeye = 0
+                unicornhorn = 0
+                mermaidhair = 0
+                chip = 0
+                dragonscale = 0
+                lbcommon = 0
+                lbuncommon = 0
+                lbrare = 0
+                lbepic = 0
+                lbedgy = 0
+                lbomega = 0
+                lbgodly = 0
+                
+                if inventory.find('**normie fish**:') > -1:
+                    mat_start = inventory.find('**normie fish**:') + 17
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        fish = int(mat)
+                    elif mat_bottom.isnumeric():
+                        fish = int(mat_bottom)
+                if inventory.find('**golden fish**:') > -1:
+                    mat_start = inventory.find('**golden fish**:') + 17
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        fishgolden = int(mat)
+                    elif mat_bottom.isnumeric():
+                        fishgolden = int(mat_bottom)
+                if inventory.find('**epic fish**:') > -1:
+                    mat_start = inventory.find('**epic fish**:') + 15
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        fishepic = int(mat)
+                    elif mat_bottom.isnumeric():
+                        fishepic = int(mat_bottom)
+                if inventory.find('**wooden log**:') > -1:
+                    mat_start = inventory.find('**wooden log**:') + 16
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        log = int(mat)
+                    elif mat_bottom.isnumeric():
+                        log = int(mat_bottom)
+                if inventory.find('**epic log**:') > -1:
+                    mat_start = inventory.find('**epic log**:') + 14
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        logepic = int(mat)
+                    elif mat_bottom.isnumeric():
+                        logepic = int(mat_bottom)
+                if inventory.find('**super log**:') > -1:
+                    mat_start = inventory.find('**super log**:') + 15
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        logsuper = int(mat)
+                    elif mat_bottom.isnumeric():
+                        logsuper = int(mat_bottom)
+                if inventory.find('**mega log**:') > -1:
+                    mat_start = inventory.find('**mega log**:') + 14
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        logmega = int(mat)
+                    elif mat_bottom.isnumeric():
+                        logmega = int(mat_bottom)
+                if inventory.find('**hyper log**:') > -1:
+                    mat_start = inventory.find('**hyper log**:') + 15
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        loghyper = int(mat)
+                    elif mat_bottom.isnumeric():
+                        loghyper = int(mat_bottom)
+                if inventory.find('**ultra log**:') > -1:
+                    mat_start = inventory.find('**ultra log**:') + 15
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        logultra = int(mat)
+                    elif mat_bottom.isnumeric():
+                        logultra = int(mat_bottom)
+                if inventory.find('**apple**:') > -1:
+                    mat_start = inventory.find('**apple**:') + 11
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        apple = int(mat)
+                    elif mat_bottom.isnumeric():
+                        apple = int(mat_bottom)
+                if inventory.find('**banana**:') > -1:
+                    mat_start = inventory.find('**banana**:') + 12
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        banana = int(mat)
+                    elif mat_bottom.isnumeric():
+                        banana = int(mat_bottom)
+                if inventory.find('**ruby**:') > -1:
+                    mat_start = inventory.find('**ruby**:') + 10                        
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        ruby = int(mat)
+                    elif mat_bottom.isnumeric():
+                        ruby = int(mat_bottom)
+                if inventory.find('**wolf skin**:') > -1:
+                    mat_start = inventory.find('**wolf skin**:') + 15
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        wolfskin = int(mat)
+                    elif mat_bottom.isnumeric():
+                        wolfskin = int(mat_bottom)
+                if inventory.find('**zombie eye**:') > -1:
+                    mat_start = inventory.find('**zombie eye**:') + 16
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        zombieeye = int(mat)
+                    elif mat_bottom.isnumeric():
+                        zombieeye = int(mat_bottom)
+                if inventory.find('**unicorn horn**:') > -1:
+                    mat_start = inventory.find('**unicorn horn**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        unicornhorn = int(mat)
+                    elif mat_bottom.isnumeric():
+                        unicornhorn = int(mat_bottom)
+                if inventory.find('**mermaid hair**:') > -1:
+                    mat_start = inventory.find('**mermaid hair**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        mermaidhair = int(mat)
+                    elif mat_bottom.isnumeric():
+                        mermaidhair = int(mat_bottom)
+                if inventory.find('**chip**:') > -1:
+                    mat_start = inventory.find('**chip**:') + 10
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        chip = int(mat)
+                    elif mat_bottom.isnumeric():
+                        chip = int(mat_bottom)
+                if inventory.find('**dragon scale**:') > -1:
+                    mat_start = inventory.find('**dragon scale**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        dragonscale = int(mat)
+                    elif mat_bottom.isnumeric():
+                        dragonscale = int(mat_bottom)
+                if inventory.find('**common lootbox**:') > -1:
+                    mat_start = inventory.find('**common lootbox**:') + 20
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbcommon = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbcommon = int(mat_bottom)
+                if inventory.find('**uncommon lootbox**:') > -1:
+                    mat_start = inventory.find('**uncommon lootbox**:') + 22
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbuncommon = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbuncommon = int(mat_bottom)
+                if inventory.find('**rare lootbox**:') > -1:
+                    mat_start = inventory.find('**rare lootbox**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbrare = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbrare = int(mat_bottom)
+                if inventory.find('**epic lootbox**:') > -1:
+                    mat_start = inventory.find('**epic lootbox**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbepic = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbepic = int(mat_bottom)
+                if inventory.find('**edgy lootbox**:') > -1:
+                    mat_start = inventory.find('**edgy lootbox**:') + 18
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbedgy = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbedgy = int(mat_bottom)
+                if inventory.find('**omega lootbox**:') > -1:
+                    mat_start = inventory.find('**omega lootbox**:') + 19
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbomega = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbomega = int(mat_bottom)
+                if inventory.find('**godly lootbox**:') > -1:
+                    mat_start = inventory.find('**godly lootbox**:') + 19
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lbgodly = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lbgodly = int(mat_bottom)
+                
+            elif (answer == 'abort') or (answer == 'cancel'):
+                await ctx.send('Aborting.')
+                return
+            else:
+                await ctx.send('Wrong input. Aborting.')
+                return
+            # Do stuff
+            pass
+        except asyncio.TimeoutError as error:
+            await ctx.send(f'**{ctx.author.name}**, couldn\'t find your inventory, RIP.')
+            return
+            
+        traderate_data = await database.get_traderate_data(ctx, 'all')
+        
+        loghyper = loghyper + (logultra * 8)
+        logmega = logmega + (loghyper * 8)
+        logsuper = logsuper + (logmega * 8)
+        logepic = logepic + (logsuper * 8)
+        log = log + (logepic * 20)
+        fishgolden = fishgolden + (fishepic * 80)
+        fish = fish + (fishgolden * 12)
+        apple = apple + (banana * 12)
+
+        current_area = area
+        original_area = area
+        areas_best_changes = []
+        
+        # Get the amount of logs for the current area
+        current_area_rates = traderate_data[current_area-1]
+        current_fish_rate = current_area_rates[1]
+        current_apple_rate = current_area_rates[2]
+        current_ruby_rate = current_area_rates[3]
+        log = log + (fish * current_fish_rate)
+        if not current_apple_rate == 0:
+            log = log + (apple * current_apple_rate)
+            apple = 0
+        if not current_ruby_rate == 0:
+            log = log + (ruby * current_ruby_rate)
+            ruby = 0
+        
+        # Calculate the best trade rate for all areas
+        for area in traderate_data:
+            area_no = area[0]
+            area_no_next = area_no + 1
+            if not area_no_next == len(traderate_data)+1:
+                area_next = traderate_data[area_no_next-1]
+            else:
+                area_next = None
+            
+            fish_rate = area[1]
+            apple_rate = area[2]
+            ruby_rate = area[3]
+            if not area_next == None:
+                fish_rate_next = area_next[1]
+                apple_rate_next = area_next[2]
+                ruby_rate_next = area_next[3]
+            
+            if not area_next == None:
+                if not fish_rate == 0:
+                    fish_rate_change = fish_rate_next / fish_rate
+                else:
+                    fish_rate_change = 0
+                if not apple_rate == 0:
+                    apple_rate_change = apple_rate_next / apple_rate
+                else:
+                    apple_rate_change = 0
+                if not ruby_rate == 0:
+                    ruby_rate_change = ruby_rate_next / ruby_rate
+                else:
+                    ruby_rate_change = 0
+            else:
+                fish_rate_change = 1
+                apple_rate_change = 1
+                ruby_rate_change = 1
+            
+            if (fish_rate_change <= 1) and (apple_rate_change <= 1) and (ruby_rate_change <= 1):
+                best_change_index = 3
+            else:
+                all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
+                best_change = max(all_changes)
+                best_change_index = all_changes.index(best_change)
+            
+            areas_best_changes.append([area_no, best_change_index, fish_rate, apple_rate, ruby_rate])
+            
+            if area_next == None:
+                break
+        
+        # Get the amount of logs in each area
+        areas_log_amounts = []
+        trade_fish_rate_next = None
+        trade_apple_rate_next = None
+        trade_ruby_rate_next = None
+        for best_change in areas_best_changes[original_area-1:]:
+            trade_area = best_change[0]
+            trade_best_change = best_change[1]
+            trade_fish_rate = best_change[2]
+            trade_apple_rate = best_change[3]
+            trade_ruby_rate = best_change[4]
+            if not trade_area == len(areas_best_changes):
+                next_area = areas_best_changes[trade_area]
+                trade_fish_rate_next = next_area[2]
+                trade_apple_rate_next = next_area[3]
+                trade_ruby_rate_next = next_area[4]
+
+            if not (trade_apple_rate_next == 0) and not (apple == 0):
+                log = log + (apple * trade_apple_rate_next)
+                apple = 0
+            if not (trade_ruby_rate_next == 0) and not (ruby == 0):
+                log = log + (ruby * trade_ruby_rate_next)
+                ruby = 0
+                
+            if trade_area == original_area:
+                areas_log_amounts.append([trade_area, log, trade_ruby_rate])
+                
+            if trade_best_change == 0:
+                log = log / trade_fish_rate
+                log = log * trade_fish_rate_next
+            elif trade_best_change == 1:
+                log = log / trade_apple_rate
+                log = log * trade_apple_rate_next
+            elif trade_best_change == 2:
+                log = log / trade_ruby_rate
+                log = log * trade_ruby_rate_next
+        
+            if not trade_area == len(areas_best_changes):
+                areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
+        
+
+        a15 = areas_log_amounts[len(areas_log_amounts)-2]
+        a16 = areas_log_amounts[len(areas_log_amounts)-1]
+        log_a15 = a15[1]
+        ruby_rate_a15 = a15[2]
+        ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        log_a16 = a16[1]
+        ruby_rate_a16 = a16[2]
+        ruby_a16 = floor(log_a16 / ruby_rate_a16)
+        
+        score_lootboxes = lbcommon+(lbuncommon*2)+(lbrare*3)+(lbepic*4)+(lbedgy*5)+(lbomega*50)+(lbgodly*500)
+        score_mobdrops = floor(wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2)
+        score_ruby_a15 = floor(ruby_a15/25)
+        score_ruby_a16 = floor(ruby_a16/25)
+        
+        if original_area == 16:
+            message_area = 'The TOP'
+        else:
+            message_area = original_area
+        
+        if a15[0] == 15:
+            message_a15 = (
+                f'**Area 15**\n'
+                f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
+                f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
+                f'{emojis.bp} {score_ruby_a15:,} materials score ({ruby_a15:,} {emojis.ruby} rubies)\n'
+                f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a15:,} total score**\n\n'
+            )
+        else:
+            message_a15 = ''
+        
+        await ctx.send(
+            f'**{ctx.author.name}**, this is the STT score for your inventory, calculated up to area 15 / the TOP.\n'
+            f'The material calculation assumes that your current max area is **{message_area}**.\n'
+            f'Note that this score does not include gear and levels.\n\n'
+            f'{message_a15}'
+            f'**The TOP**\n'
+            f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
+            f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
+            f'{emojis.bp} {score_ruby_a16:,} materials score ({ruby_a16:,} {emojis.ruby} rubies)\n'
+            f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a16:,} total score**'
+        )
 
 # Initialization
 def setup(bot):
@@ -135,6 +665,7 @@ guide_mytt = '`{prefix}mytt` : Details about your current TT'
 guide_tt_specific = '`{prefix}tt1`-`{prefix}tt999` : Details about specific TTs and how to prepare'
 guide_stt = '`{prefix}stt` : Details about super time travel'
 guide_stt_score = '`{prefix}sttscore` : Details about STT score'
+guide_stt_score_calc = '`{prefix}scorecalc` / `{prefix}sc` : STT score calculator'
 
                     
 
@@ -369,7 +900,8 @@ async def embed_stt(prefix):
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_tt_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt_score.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_stt_score.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stt_score_calc.format(prefix=prefix)}'
     ) 
 
     embed = discord.Embed(
@@ -390,7 +922,7 @@ async def embed_stt(prefix):
             
     return embed
 
-# Super time travel score calculation
+# Super time travel score guide
 async def embed_stt_score(prefix):
 
     gear = f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 155.5 score'
@@ -421,13 +953,17 @@ async def embed_stt_score(prefix):
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_tt_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_stt.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_stt_score_calc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
         color = global_data.color,
-        title = 'SUPER TIME TRAVEL SCORE CALCULATION',
-        description = 'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.'              
+        title = 'SUPER TIME TRAVEL SCORE',
+        description = (
+            f'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.\n'
+            f'You can calculate the score of your inventory with `{prefix}scorecalc`.'
+        )
     )    
 
     embed.set_footer(text=await global_data.default_footer(prefix))

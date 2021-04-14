@@ -427,7 +427,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         else:
             ruby_rate_change = 0
         
-        if (fish_rate_change == 1) and (apple_rate_change == 1) and (ruby_rate_change == 1):
+        if (fish_rate_change <= 1) and (apple_rate_change <= 1) and (ruby_rate_change <= 1):
             best_change_index = 3
         else:
             all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
