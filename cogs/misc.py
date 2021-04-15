@@ -241,7 +241,11 @@ class miscCog(commands.Cog):
                             arg2 = args[1]
                             arg2 = arg2.replace('a','')
                             if arg1.isnumeric():
-                                user_area = int(arg2)
+                                try:
+                                    user_area = int(arg2)
+                                except:
+                                    await ctx.send(error_syntax)
+                                    return
                                 if 1 <= user_area <= 15:
                                     if ((user_area == 12) and (user_tt < 1)) or ((user_area == 13) and (user_tt < 3)) or ((user_area == 14) and (user_tt < 5)) or ((user_area == 15) and (user_tt < 10)):
                                         await ctx.send(f'You can not reach area {user_area} in TT {user_tt}.')
@@ -262,7 +266,7 @@ class miscCog(commands.Cog):
                     await ctx.send(error_syntax)
                     return
         
-        if (user_tt == None) or (user_tt == None):
+        if user_tt == None:
             try:
                 await ctx.send(
                     f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
@@ -306,6 +310,7 @@ class miscCog(commands.Cog):
                                 
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
+                return
         
         coin_cap = user_tt*user_tt*10000000000+(user_area*2500000)
         await ctx.send(f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.')

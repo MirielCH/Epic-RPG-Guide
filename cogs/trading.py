@@ -109,23 +109,26 @@ class tradingCog(commands.Cog):
         
         if len(args) >= 3:
             area = args[0]
-            area = area.lower().replace('a','')
             amount = None
             mat = ''
-            if area.isnumeric():
-                area = int(area)
-                if not 1 <= area <= 15:
-                    await ctx.send(f'There is no area {area}.')
-                    return
+            if area.find('top') > -1:
+                    area = 16
             else:
-                await ctx.send(
-                    f'The command syntax is:\n'
-                    f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
-                    f'{emojis.blank} or\n'
-                    f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
-                    f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
-                )
-                return
+                area = area.lower().replace('a','')
+                if area.isnumeric():
+                    area = int(area)
+                    if not 1 <= area <= 16:
+                        await ctx.send(f'There is no area {area}.')
+                        return
+                else:
+                    await ctx.send(
+                        f'The command syntax is:\n'
+                        f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
+                        f'{emojis.blank} or\n'
+                        f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
+                        f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
+                    )
+                    return
             for arg in args[1:]:
                 argument = arg
                 argument = argument.replace('k','000').replace('m','000000')
@@ -406,26 +409,29 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         if not area_no_next == len(traderate_data)+1:
             area_next = traderate_data[area_no_next-1]
         else:
-            break
+            area_next = None
+            
         fish_rate = area[1]
-        fish_rate_next = area_next[1]
         apple_rate = area[2]
-        apple_rate_next = area_next[2]
         ruby_rate = area[3]
-        ruby_rate_next = area_next[3]
+        if not area_next == None:
+            fish_rate_next = area_next[1]
+            apple_rate_next = area_next[2]
+            ruby_rate_next = area_next[3]
         
-        if not fish_rate == 0:
-            fish_rate_change = fish_rate_next / fish_rate
-        else:
-            fish_rate_change = 0
-        if not apple_rate == 0:
-            apple_rate_change = apple_rate_next / apple_rate
-        else:
-            apple_rate_change = 0
-        if not ruby_rate == 0:
-            ruby_rate_change = ruby_rate_next / ruby_rate
-        else:
-            ruby_rate_change = 0
+        if not area_next == None:
+            if not fish_rate == 0:
+                fish_rate_change = fish_rate_next / fish_rate
+            else:
+                fish_rate_change = 0
+            if not apple_rate == 0:
+                apple_rate_change = apple_rate_next / apple_rate
+            else:
+                apple_rate_change = 0
+            if not ruby_rate == 0:
+                ruby_rate_change = ruby_rate_next / ruby_rate
+            else:
+                ruby_rate_change = 0
         
         if (fish_rate_change <= 1) and (apple_rate_change <= 1) and (ruby_rate_change <= 1):
             best_change_index = 3
@@ -436,46 +442,59 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         
         areas_best_changes.append([area_no, best_change_index, fish_rate, apple_rate, ruby_rate])
     
+        if area_next == None:
+            break
+    
     # Get the amount of logs in each future area
     trade_amount = current_amount
     areas_log_amounts = []
-    for best_change in areas_best_changes[original_area-1:]:
+    
+    if original_area-1 == len(areas_best_changes)-1:
+        best_change = areas_best_changes[original_area-1]
         trade_area = best_change[0]
         trade_best_change = best_change[1]
         trade_fish_rate = best_change[2]
         trade_apple_rate = best_change[3]
         trade_ruby_rate = best_change[4]
-        if not trade_area+1 > len(areas_best_changes):
-            next_area = areas_best_changes[trade_area]
-            trade_fish_rate_next = next_area[2]
-            trade_apple_rate_next = next_area[3]
-            trade_ruby_rate_next = next_area[4]
+        areas_log_amounts.append([trade_area, trade_amount, current_mat,'0'])
+    else:
+        for best_change in areas_best_changes[original_area-1:len(areas_best_changes)-1]:
+            trade_area = best_change[0]
+            trade_best_change = best_change[1]
+            trade_fish_rate = best_change[2]
+            trade_apple_rate = best_change[3]
+            trade_ruby_rate = best_change[4]
+            if not trade_area+1 > len(areas_best_changes):
+                next_area = areas_best_changes[trade_area]
+                trade_fish_rate_next = next_area[2]
+                trade_apple_rate_next = next_area[3]
+                trade_ruby_rate_next = next_area[4]
 
-        if trade_area == original_area:
-            areas_log_amounts.append([trade_area, trade_amount, current_mat])
+            if trade_area == original_area:
+                areas_log_amounts.append([trade_area, trade_amount, current_mat,'0'])
 
-        if not current_mat == 'log':
-            if current_mat == 'apple':
-                if not trade_apple_rate_next == 0:
+            if not current_mat == 'log':
+                if current_mat == 'apple':
+                    if not trade_apple_rate_next == 0:
+                        trade_amount = trade_amount * trade_apple_rate_next
+                        current_mat = 'log'
+                elif current_mat == 'ruby':
+                    if not trade_ruby_rate_next == 0:
+                        trade_amount = trade_amount * trade_ruby_rate_next
+                        current_mat = 'log'
+            
+            if current_mat == 'log':
+                if trade_best_change == 0:
+                    trade_amount = trade_amount / trade_fish_rate
+                    trade_amount = trade_amount * trade_fish_rate_next
+                elif trade_best_change == 1:
+                    trade_amount = trade_amount / trade_apple_rate
                     trade_amount = trade_amount * trade_apple_rate_next
-                    current_mat = 'log'
-            elif current_mat == 'ruby':
-                if not trade_ruby_rate_next == 0:
+                elif trade_best_change == 2:
+                    trade_amount = trade_amount / trade_ruby_rate
                     trade_amount = trade_amount * trade_ruby_rate_next
-                    current_mat = 'log'
         
-        if current_mat == 'log':
-            if trade_best_change == 0:
-                trade_amount = trade_amount / trade_fish_rate
-                trade_amount = trade_amount * trade_fish_rate_next
-            elif trade_best_change == 1:
-                trade_amount = trade_amount / trade_apple_rate
-                trade_amount = trade_amount * trade_apple_rate_next
-            elif trade_best_change == 2:
-                trade_amount = trade_amount / trade_ruby_rate
-                trade_amount = trade_amount * trade_ruby_rate_next
-    
-        areas_log_amounts.append([trade_area+1, trade_amount, current_mat])
+            areas_log_amounts.append([trade_area+1, trade_amount, current_mat,'0'])
     
     # Get the amount of logs in each past area
     trade_amount = current_amount
@@ -509,7 +528,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
                 trade_amount = trade_amount * trade_ruby_rate_past
         
         if not trade_area == 1:
-            areas_log_amounts.append([trade_area-1, trade_amount, original_mat])
+            areas_log_amounts.append([trade_area-1, trade_amount, original_mat,'0'])
     
     areas_log_amounts = sorted(areas_log_amounts, key=itemgetter(0))
     
@@ -519,18 +538,44 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         f'{emojis.bp} {guide_traderates.format(prefix=prefix)}'
     )
     
+    if original_area == 16:
+        area_name_description = 'The TOP'
+    else:
+        area_name_description = f'Area {original_area}'
+    
     embed = discord.Embed(
         color = global_data.color,
         title = 'TRADE CALCULATOR',
-        description = f'If you have **{original_amount:,}** {original_emoji} in **area {original_area}** and follow all the trades correctly, this amounts to the following:'
+        description = f'If you have **{original_amount:,}** {original_emoji} in **{area_name_description}** and follow all the trades correctly, this amounts to the following:'
         )    
         
     embed.set_footer(text=await global_data.default_footer(prefix))
     
-    for area in areas_log_amounts[:12]:
+    previous_area = [0,0,]
+    previous_area_trade_rates = [0,0,0,0]
+    actual_areas = []
+    for area_x in areas_log_amounts:
+        area_trade_rates = traderate_data[area_x[0]-1]
+        if not area_x == 1:
+            previous_area_trade_rates = traderate_data[area_x[0]-2]
+        if not (area_trade_rates[1] == previous_area_trade_rates[1]) or not (area_trade_rates[2] == previous_area_trade_rates[2]) or not (area_trade_rates[3] == previous_area_trade_rates[3]):
+            actual_areas.append(list(area_x))
+        previous_area = area_x
+    
+    counter = 0
+    for index, area_x in enumerate(actual_areas):
+        counter = counter + 1
+        if not area_x[0] == counter:
+            actual_areas[index-1][3] = f'{actual_areas[index-1][0]}-{area_x[0]-1}'
+
+        actual_areas[index][3] = f'{area_x[0]}'
+        counter = area_x[0]
+    
+    for area in actual_areas:
         area_no = area[0]
         area_logs = int(area[1])
         area_mat = area[2]
+        area_name = area[3]
         area_trade_rates = traderate_data[area_no-1]
         area_fish_rate = area_trade_rates[1]
         area_apple_rate = area_trade_rates[2]
@@ -575,10 +620,10 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
             else:
                 area_mats = f'{emojis.bp} N/A'
         
-        if area_no == 12:
-            area_name = f'AREA {area_no}+'
+        if area_name == '16':
+            area_name = 'THE TOP'
         else:
-            area_name = f'AREA {area_no}'
+            area_name = f'AREA {area_name}'
         
         embed.add_field(name=area_name, value=area_mats, inline=True)
     
