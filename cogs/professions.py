@@ -688,7 +688,10 @@ class professionsCog(commands.Cog):
                 try:
                     level = int(arg)
                 except:
-                    await ctx.send(f'Are you trying to break me or something? :thinking:')
+                    await ctx.send(
+                        f'`{arg}` is not a valid target level. Please enter the level you want me to calculate to.\n'
+                        f'Example: `{ctx.prefix}pretotal 80`. If you want me to calculate to level 100, you can omit the level.'
+                    )
                     return
                 
                 if level < 2:
@@ -931,7 +934,10 @@ class professionsCog(commands.Cog):
                 try:
                     level = int(arg)
                 except:
-                    await ctx.send('Are you trying to break me or something? :thinking:')
+                    await ctx.send(
+                        f'`{arg}` is not a valid target level. Please enter the level you want me to calculate to.\n'
+                        f'Example: `{ctx.prefix}prltotal 80`. If you want me to calculate to level 100, you can omit the level.'
+                    )
                     return
                 
                 if level < 2:
@@ -1153,7 +1159,10 @@ class professionsCog(commands.Cog):
                 try:
                     level = int(arg)
                 except:
-                    await ctx.send('Are you trying to break me or something? :thinking:')
+                    await ctx.send(
+                        f'`{arg}` is not a valid target level. Please enter the level you want me to calculate to.\n'
+                        f'Example: `{ctx.prefix}prmtotal 80`. If you want me to calculate to level 100, you can omit the level.'
+                    )
                     return
                 
                 if level < 2:
@@ -1379,7 +1388,10 @@ class professionsCog(commands.Cog):
                 try:
                     level = int(arg)
                 except:
-                    await ctx.send('Are you trying to break me or something? :thinking:')
+                    await ctx.send(
+                        f'`{arg}` is not a valid target level. Please enter the level you want me to calculate to.\n'
+                        f'Example: `{ctx.prefix}prwtotal 80`. If you want me to calculate to level 100, you can omit the level.'
+                    )
                     return
                 
                 if level < 2:

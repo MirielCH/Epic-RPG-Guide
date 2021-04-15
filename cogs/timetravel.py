@@ -641,8 +641,8 @@ class timetravelCog(commands.Cog):
             message_a15 = ''
         
         await ctx.send(
-            f'**{ctx.author.name}**, this is the STT score for your inventory, calculated up to area 15 / the TOP.\n'
-            f'The material calculation assumes that your current max area is **{message_area}**.\n'
+            f'**{ctx.author.name}**, this is the theoretical STT score for your inventory, calculated up to area 15 / the TOP.\n'
+            f'The material calculation assumes that your **current** max area is **{message_area}** and that you trade **all** of your materials to rubies.\n'
             f'Note that this score does not include gear and levels.\n\n'
             f'{message_a15}'
             f'**The TOP**\n'
@@ -777,7 +777,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     prep_tt1_to_2 = (
         f'{emojis.bp} If your horse is T6+: Get 30m coins\n'
         f'{emojis.bp} If your horse is <T6: Get 50m coins\n'
-        f'{emojis.bp} If you need money: Use `drill` and sell mob drops\n'
+        f'{emojis.bp} If you need money: Do boosted minibosses, use `drill` and sell mob drops\n'
         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
         f'{emojis.bp} Level up professions (see `{prefix}prlevel`)\n'
         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
@@ -787,7 +787,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     prep_tt3_to_4 = (
         f'{emojis.bp} If your horse is T6+: Get 50m coins\n'
         f'{emojis.bp} If your horse is <T6: Get 150m coins\n'
-        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'
+        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
         f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
@@ -799,7 +799,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     prep_tt5_to_9 = (
         f'{emojis.bp} If your horse is T6+: Get 150m coins\n'
         f'{emojis.bp} If your horse is <T6: Get 350m coins\n'
-        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'
+        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
         f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
@@ -811,7 +811,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     prep_tt10_to_24 = (
         f'{emojis.bp} If your horse is T6+: Get 350m coins\n'
         f'{emojis.bp} If your horse is <T6: Get 850m coins\n'
-        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'
+        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
         f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
@@ -824,7 +824,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.bp} If your horse is T6+: Get 350m coins\n'
         f'{emojis.bp} If your horse is <T6: Get 850m coins\n'
         f'{emojis.bp} Note: You **need** a T6+ horse to do Dungeon 15\n'
-        f'{emojis.bp} If you need money: Use `dynamite` and sell mob drops\n'
+        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
         f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
         f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
         f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'

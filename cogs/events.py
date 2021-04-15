@@ -450,12 +450,16 @@ async def embed_event_rubydragon(prefix):
 async def embed_event_arena(prefix):
 
     trigger = (
-        f'{emojis.bp} `arena` or `arena @Users`\n'
+        f'{emojis.bp} `arena` to start the event alone\n'
+        f'{emojis.bp} `arena @Users` to start the event with up to 9 people for greater rewards\n'
         f'{emojis.bp} You can only mention users if their cooldown is ready\n'
         f'{emojis.bp} This will use up the cooldown of every player mentioned'
     )
     
-    answers = f'{emojis.bp} `join`'
+    answers = (
+        f'{emojis.bp} `yes` or `y` if you got mentioned\n'
+        f'{emojis.bp} `join` if you are a participant'
+    )
     
     rewards = (
         f'{emojis.bp} 1 {emojis.arenacookie} cookie per kill per initiator\n'
@@ -691,18 +695,22 @@ async def embed_event_megalodon(prefix):
 async def embed_event_miniboss(prefix):
 
     trigger = (
-        f'{emojis.bp} `miniboss` or `miniboss @Users`\n'
+        f'{emojis.bp} `miniboss` to start the event alone\n'
+        f'{emojis.bp} `miniboss @Users` to start the event with up to 9 people for greater rewards\n'
         f'{emojis.bp} You can only mention users if their cooldown is ready\n'
         f'{emojis.bp} This will use up the cooldown of every player mentioned'
     )
     
-    answers = f'{emojis.bp} `fight`'
+    answers = (
+        f'{emojis.bp} `yes` or `y` if you got mentioned\n'
+        f'{emojis.bp} `fight` if you are a participant'
+    )
     
     rewards = (
         f'{emojis.bp} {emojis.coin} Coins\n'
         f'{emojis.bp} Rare chance for the initiator(s) to get + 1 level\n'
-        f'{emojis.bp} The initiators reward depends on the level of the initiator and the users mentioned. It depends most on the initiator however, thus the player with the highest level should start the event.\n'
-        f'{emojis.bp} The participants get 5 % of the initiators reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.\n'
+        f'{emojis.bp} The initiator reward depends on the level of the initiator and the users mentioned. It depends most on the original initiator however, thus the player with the highest level should start the event.\n'
+        f'{emojis.bp} Participants get 5 % of the iniators\' reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.'
     )
                 
     note = (
@@ -721,7 +729,7 @@ async def embed_event_miniboss(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'MINIBOSS EVENT',
-        description = 'This is a multiplayer event in which you fight a miniboss.'
+        description = 'This is a multiplayer event in which you fight a miniboss to get coins.'
     )    
     
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
@@ -782,7 +790,11 @@ async def embed_event_bigarena(prefix):
     
     answers = f'{emojis.bp} `big arena join` (unlocked in area 7)'
     
-    rewards = f'{emojis.bp} {emojis.arenacookie} Arena cookies (usually 30+)'
+    rewards = (
+        f'{emojis.bp} ~1000+ {emojis.arenacookie} arena cookies for the winner\n'
+        f'{emojis.bp} ~200+ {emojis.arenacookie} arena cookies for second and third place\n'
+        f'{emojis.bp} ~30+ {emojis.arenacookie} arena cookies for everyone else'
+    )
                     
     note = (
         f'{emojis.bp} {events_official_server}\n'
