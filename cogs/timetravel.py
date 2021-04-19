@@ -173,6 +173,7 @@ class timetravelCog(commands.Cog):
         if args:
             if len(args) == 1:
                 area = args[0]
+                area = area.lower()
                 if area.find('top') > -1:
                     area = 16
                 else:
@@ -230,6 +231,7 @@ class timetravelCog(commands.Cog):
                 lbedgy = 0
                 lbomega = 0
                 lbgodly = 0
+                lifepotion = 0
                 
                 if inventory.find('**normie fish**:') > -1:
                     mat_start = inventory.find('**normie fish**:') + 17
@@ -481,6 +483,16 @@ class timetravelCog(commands.Cog):
                         lbgodly = int(mat)
                     elif mat_bottom.isnumeric():
                         lbgodly = int(mat_bottom)
+                if inventory.find('**life potion**:') > -1:
+                    mat_start = inventory.find('**life potion**:') + 17
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        lifepotion = int(mat)
+                    elif mat_bottom.isnumeric():
+                        lifeption = int(mat_bottom)
                 
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
@@ -623,7 +635,12 @@ class timetravelCog(commands.Cog):
         score_mobdrops = floor(wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2)
         score_ruby_a15 = floor(ruby_a15/25)
         score_ruby_a16 = floor(ruby_a16/25)
-        
+        score_lifepotions = floor(lifepotion/500000)
+        if score_lifepotions > 20:
+            score_lifepotions = 20
+        if score_lifepotions == 0:
+            score_lifepotions = 1
+            
         if original_area == 16:
             message_area = 'The TOP'
         else:
@@ -634,7 +651,7 @@ class timetravelCog(commands.Cog):
                 f'**Area 15**\n'
                 f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
                 f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-                f'{emojis.bp} {score_ruby_a15:,} materials score ({ruby_a15:,} {emojis.ruby} rubies)\n'
+                f'{emojis.bp} {score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} {emojis.ruby} rubies, {lifepotion:,} {emojis.lifepotion} life potions)\n'
                 f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a15:,} total score**\n\n'
             )
         else:
@@ -648,7 +665,7 @@ class timetravelCog(commands.Cog):
             f'**The TOP**\n'
             f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
             f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-            f'{emojis.bp} {score_ruby_a16:,} materials score ({ruby_a16:,} {emojis.ruby} rubies)\n'
+            f'{emojis.bp} {score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} {emojis.ruby} rubies, {lifepotion:,} {emojis.lifepotion} life potions)\n'
             f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a16:,} total score**'
         )
 

@@ -57,8 +57,9 @@ async def embed_easter_overview(prefix):
     )
 
     schedule = (
-        f'{emojis.bp} Event starts on April 3, 2021\n'
-        f'{emojis.bp} Event ends on April 17, 2021, 23:55 UTC'
+        f'{emojis.bp} Event started on April 3, 2021\n'
+        f'{emojis.bp} Event ended on April 17, 2021, 23:55 UTC\n'
+        f'{emojis.bp} Items will vanish on April 22, 2021, 23:55 UTC'
     )
                 
     guides = (

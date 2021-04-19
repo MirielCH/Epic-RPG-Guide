@@ -1532,10 +1532,10 @@ calc_pre = '`{prefix}pre` : Ice cream you need to cook for your next enchanter l
 calc_prl = '`{prefix}prl` : Lootboxes you need to cook for your next lootboxer levels'
 calc_prm = '`{prefix}prm` : Logs you need to sell for your next merchant levels'
 calc_prw = '`{prefix}prw` : Pickaxes you need to cook for your next worker levels'
-calc_pretotal = '`{prefix}pretotal [2-100]` : Total ice cream you need to reach `[2-100]`'
-calc_prltotal = '`{prefix}prltotal [2-100]` : Total lootboxes you need to reach `[2-100]`'
-calc_prmtotal = '`{prefix}prmtotal [2-100]` : Total logs you need to reach `[2-100]`'
-calc_prwtotal = '`{prefix}prwtotal [2-100]` : Total pickaxes you need to reach `[2-100]`'
+calc_pretotal = '`{prefix}pretotal [level]` : Total ice cream you need to reach `[level]`'
+calc_prltotal = '`{prefix}prltotal [level]` : Total lootboxes you need to reach `[level]`'
+calc_prmtotal = '`{prefix}prmtotal [level]` : Total logs you need to reach `[level]`'
+calc_prwtotal = '`{prefix}prwtotal [level]` : Total pickaxes you need to reach `[level]`'
                    
                     
 

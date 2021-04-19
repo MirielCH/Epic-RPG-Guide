@@ -228,17 +228,19 @@ class miscCog(commands.Cog):
         user_area = None
         
         if args:
-            if args[0] == 'cap':
+            if args[0].lower() == 'cap':
                 args = list(args)
                 args.pop(0)
             if len(args) > 0:
                 arg1 = args[0]
+                arg1 = arg1.lower()
                 arg1 = arg1.replace('tt','')
                 if arg1.isnumeric():
                     user_tt = int(arg1)
                     if 0 <= user_tt <= 999:
                         if len(args) > 1:
                             arg2 = args[1]
+                            arg2 = arg2.lower()
                             arg2 = arg2.replace('a','')
                             if arg1.isnumeric():
                                 try:
@@ -251,7 +253,7 @@ class miscCog(commands.Cog):
                                         await ctx.send(f'You can not reach area {user_area} in TT {user_tt}.')
                                         return
                                 else:
-                                    await ctx.send(f'Uhm what. Area {user_area}? Sure, send me a postcard.')
+                                    await ctx.send('Sure, send me a postcard from that totally legit area.')
                                     return
                             else:
                                 await ctx.send(error_syntax)
@@ -260,7 +262,7 @@ class miscCog(commands.Cog):
                             await ctx.send(error_syntax)
                             return
                     else:
-                        await ctx.send(error_syntax)
+                        await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
                         return
                 else:
                     await ctx.send(error_syntax)
@@ -313,7 +315,10 @@ class miscCog(commands.Cog):
                 return
         
         coin_cap = user_tt*user_tt*10000000000+(user_area*2500000)
-        await ctx.send(f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.')
+        await ctx.send(
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.\n'
+            f'You can not receive coins from other players or boosted minibosses that exceed this cap.'
+        )
 
 # Initialization
 def setup(bot):
@@ -388,7 +393,7 @@ async def embed_coolness(prefix):
 
     usage = (
         f'{emojis.bp} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'
-        f'{emojis.bp} You need at least 1000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
+        f'{emojis.bp} You need at least 2,000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
     )
                 
     req = f'{emojis.bp} Unlocks when you reach area 12 in {emojis.timetravel}TT 1'
