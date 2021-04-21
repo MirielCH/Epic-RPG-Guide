@@ -340,7 +340,7 @@ async def setprogress(ctx, *args):
 
 
 
-# --- Statisticts ---
+# --- Statistics ---
 
 # Statistics command
 @bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))

@@ -55,7 +55,7 @@ class miscCog(commands.Cog):
             if num % 1 == 0:
                 return int(num)
             else:
-                return num
+                return round(num,5)
 
         if args:
             calculation = ''

@@ -883,6 +883,9 @@ async def embed_dungeon(dungeon_data, prefix):
     field_rec_gear_data = (player_sword, player_sword_enchant, dungeon_data[20], player_armor, player_armor_enchant, dungeon_data[21])
     field_rec_gear = await function_design_field_rec_gear(field_rec_gear_data)
     
+    if 1 <= dungeon_no <= 9:
+        time_limit = f'{time_limit} per player'
+    
     if min_players == max_players:
         players = f'{emojis.bp} {min_players}'
         if not boss_life == 0:
