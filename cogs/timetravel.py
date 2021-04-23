@@ -754,6 +754,7 @@ async def embed_timetravel_overview(prefix):
         f'{emojis.bp} Items bought from the epic shop\n'
         f'{emojis.bp} Arena cookies \n'
         f'{emojis.bp} Dragon essences\n'
+        f'{emojis.bp} TIME dragon essences\n'
         f'{emojis.bp} Event items (if an event is active)\n'
         f'{emojis.bp} Your horse\n'
         f'{emojis.bp} Your pets\n'

@@ -322,6 +322,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.bp} This chance increases with skill rank\n'
         f'{emojis.bp} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.bp} You can **not** lose this skill when fusing\n'
+        f'{emojis.bp} To rank up the skill, you have to tier up further (1 rank per tier)\n'
         f'{emojis.bp} Note: You need to be in {emojis.timetravel} TT 25+ to be able to use the skill'
     )
     

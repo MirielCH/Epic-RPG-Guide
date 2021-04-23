@@ -497,7 +497,8 @@ async def embed_farm(prefix):
         f'{emojis.bp} {emojis.armorelectronical} Electronical Armor (**180** {emojis.bread})\n'
         f'{emojis.bp} {emojis.foodcarrotbread} Carrot Bread (**1** {emojis.bread} each). Gives +1 Level.\n'
         f'{emojis.bp} 1 STT score per **20** {emojis.bread}\n'
-        f'{emojis.bp} Can be sold for 3,000 coins'
+        f'{emojis.bp} Can be sold for 3,000 coins and 3 merchant XP\n'
+        f'{emojis.bp} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
     
     usage_carrot = (
@@ -505,20 +506,29 @@ async def embed_farm(prefix):
         f'{emojis.bp} {emojis.foodorangejuice} Orange Juice (**320** {emojis.carrot} each). Gives +3 {emojis.statdef} DEF and +3 {emojis.statat} AT.\n'
         f'{emojis.bp} {emojis.foodcarrotato} Carrotato Chips (**80** {emojis.carrot} each). Gives +25 random profession XP.\n'
         f'{emojis.bp} 1 STT score per **11** {emojis.carrot}\n'
-        f'{emojis.bp} Can be sold for 2,500 coins'
+        f'{emojis.bp} Can be sold for 2,500 coins and 3 merchant XP\n'
+        f'{emojis.bp} Can be used to change the horse name with `rpg horse feed`'
     )
     
     usage_potato = (
         f'{emojis.bp} {emojis.swordruby} Ruby Sword (**36** {emojis.potato})\n'
         f'{emojis.bp} {emojis.armorruby} Ruby Armor (**120** {emojis.potato})\n'
         f'{emojis.bp} {emojis.swordelectronical} Electronical Sword (**140** {emojis.potato})\n'
+        f'{emojis.bp} {emojis.foodcarrotato} Carrotato Chips (**80** {emojis.potato} each). Gives +25 random profession XP.\n'
         f'{emojis.bp} 1 STT score per **8** {emojis.potato}\n'
-        f'{emojis.bp} Can be sold for 2,000 coins'
+        f'{emojis.bp} Can be sold for 2,000 coins and 3 merchant XP'
+    )
+           
+    what_to_plant = (
+        f'{emojis.bp} If you want to cook food for levels or stats: {emojis.carrot} carrots\n'
+        f'{emojis.bp} If you want to get more coins: {emojis.bread} bread\n'
+        f'{emojis.bp} If you want to get a higher STT score: {emojis.potato} potatoes'
     )
                 
     note = (
         f'{emojis.bp} Farming is unlocked in area 4.\n'
         f'{emojis.bp} The command can be used in areas 1+ when ascended.\n'
+        f'{emojis.bp} The amount of items you gain increases with your TT'
     )
 
     embed = discord.Embed(
@@ -533,6 +543,7 @@ async def embed_farm(prefix):
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
     embed.add_field(name='CARROT USAGE', value=usage_carrot, inline=False)
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
+    embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed

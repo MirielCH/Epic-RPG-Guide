@@ -437,13 +437,13 @@ async def embed_event_rubydragon(prefix):
 
     answers_ruby = (
         f'{emojis.bp} `run`: The event ends, you get nothing\n'
-        f'{emojis.bp} `fight`: You fight the dragon and get 10 {emojis.ruby} rubies if you win\n'
+        f'{emojis.bp} `fight`: You fight the dragon and get 10 {emojis.ruby} rubies\n'
         f'{emojis.bp} `sleep`: The dragon leaves and you get 2 {emojis.ruby} rubies'
     )
 
     best_answer = (
-        f'{emojis.bp} First `move`, then `fight`. The chance to win is very high or even 100%\n'
-        f'{emojis.bp} If you want the original materials instead, use `sleep` right away'
+        f'{emojis.bp} First `move`, then `fight` if you want the 10 {emojis.ruby} rubies\n'
+        f'{emojis.bp} `sleep` if you want the original materials instead'
     )
     
     note = (
