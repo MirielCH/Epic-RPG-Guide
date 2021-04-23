@@ -521,7 +521,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             lootboxes = (
                 f'{emojis.bp} Buy: Whatever lootbox you have unlocked and can afford\n'
                 f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: All other lootboxes'
+                f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
             )
         elif area_no >= 5:
             lootboxes = (
@@ -534,14 +534,14 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
                     f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif 5 <= area_no <= 10:
             if user_asc == 'ascended':
@@ -553,7 +553,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no >= 11:
             if user_asc == 'ascended':
@@ -565,7 +565,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to cook'
                 )
     elif 10 <= user_tt <= 24:
         if 1 <= area_no <= 4:
@@ -573,14 +573,14 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
                     f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 5:
             if user_asc == 'ascended':
@@ -592,21 +592,21 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif 6 <= area_no <= 10:
             if user_asc == 'ascended':
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no >= 11:
             if user_asc == 'ascended':
@@ -620,53 +620,47 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
                     f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep or cook'
                 )
     elif user_tt >= 25:
-        if 1 <= area_no <= 5:
+        if 1 <= area_no <= 4:
             lootboxes = (
                 f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
-                f'{emojis.bp} Open: {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
+                f'{emojis.bp} Keep: {emojis.lbedgy} until A5\n'
+                f'{emojis.bp} Open: {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
             )
-        elif 6 <= area_no <= 10:
+        if area_no == 5:
             lootboxes = (
                 f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
+                f'{emojis.bp} Open: {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY, {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
+            )
+        elif 6 <= area_no <= 9:
+            lootboxes = (
+                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare for STT score\n'
                 f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
                 f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
+                f'{emojis.bp} Open: {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
             )
-        elif 11 <= area_no <= 14:
-            if user_asc == 'ascended':
-                lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
-                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
-                )
-            else:
-                lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
-                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
-                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
-                )
+        elif 10 <= area_no <= 14:
+            lootboxes = (
+                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC for STT score\n'
+                f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
+                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Open: {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
+            )
         elif area_no >= 15:
             lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY for STT score\n'
-                    f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                    f'{emojis.bp} Open: All excess {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes'
-                )
-                         
+                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC for STT score\n'
+                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.bp} Open: {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
+            )            
     
     # Materials areas 3, 5 and 8
     if area_no == 5:

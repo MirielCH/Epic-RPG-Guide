@@ -40,7 +40,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.easter',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.gambling',]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -123,8 +123,6 @@ async def helpguide(ctx):
     
     prefix = await database.get_prefix(bot, ctx)
     
-    easter = f'{emojis.bp} `{prefix}easter` : Easter event 2021\n'
-    
     progress = (
         f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
         f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
@@ -152,12 +150,14 @@ async def helpguide(ctx):
     
     event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
     
+    gambling_overview = f'{emojis.bp} `{prefix}gambling` : Gambling guides overview'
+    
     misc = (
-        f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
-        f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
-        f'{emojis.bp} `{prefix}tip` : A handy dandy random tip\n'
         f'{emojis.bp} `{prefix}calc` : A basic calculator\n'
-        f'{emojis.bp} `{prefix}coincap` : Coin cap calculator'
+        f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
+        f'{emojis.bp} `{prefix}coincap` : Coin cap calculator\n'
+        f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
+        f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
     )
                 
     botlinks = (
@@ -178,7 +178,6 @@ async def helpguide(ctx):
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
     embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
-    embed.add_field(name=f'EASTER EVENT {emojis.easteregg}', value=easter, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -186,6 +185,7 @@ async def helpguide(ctx):
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='GUILD', value=guild_overview, inline=False)
     embed.add_field(name='EVENTS', value=event_overview, inline=False)
+    embed.add_field(name='GAMBLING', value=gambling_overview, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)

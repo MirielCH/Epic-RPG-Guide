@@ -18,7 +18,7 @@ class eventsCog(commands.Cog):
         'heal','healevent',
         'arena','arenaevent',
         'coinrain','rain','cointrumpet','trumpet','catch','catchevent',
-        'epictree','tree','epicseed','seed','chop','chopevent',
+        'epictree','tree','epicseed','chop','chopevent',
         'god','godevent',
         'boss','legendary','legendaryboss','bossevent','legendarybossevent',
         'megalodon','fish','fishevent','megalodonevent',
@@ -32,7 +32,7 @@ class eventsCog(commands.Cog):
         'tournament','pettournament','petstournament','pet-tournament','pets-tournament',
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
         'ruby','rubydragon','working','work','nothing',
-        'bunny','bunnyevent','bunnyboss','bunnybossevent'
+        'failedseed','farm','farming',
     )
     
     # Command "events"
@@ -60,12 +60,8 @@ class eventsCog(commands.Cog):
                 embed = await embed_event_heal(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
-                if (invoked.find('bunny') > -1):
-                    embed = await embed_event_bunnyboss(ctx.prefix)
-                    await ctx.send(embed=embed)
-                else:
-                    embed = await embed_event_legendary(ctx.prefix)
-                    await ctx.send(embed=embed)
+                embed = await embed_event_legendary(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 if (event_name.find('summon') > -1):
                     embed = await embed_event_lootboxsummoning(ctx.prefix)
@@ -79,7 +75,7 @@ class eventsCog(commands.Cog):
             elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
                 embed = await embed_event_coinrain(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif (event_name.find('tree') > -1) or (event_name.find('seed') > -1) or (event_name.find('chop') > -1):
+            elif (event_name.find('tree') > -1) or (event_name.find('epicseed') > -1) or (event_name.find('chop') > -1):
                 embed = await embed_event_epictree(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('megalodon') > -1) or (event_name.find('ultrabait') > -1) or (event_name.find('fish') > -1):
@@ -112,11 +108,8 @@ class eventsCog(commands.Cog):
             elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif (event_name.find('bunnyboss') > -1):
-                embed = await embed_event_bunnyboss(ctx.prefix)
-                await ctx.send(embed=embed)
-            elif (event_name.find('bunny') > -1):
-                embed = await embed_event_bunny(ctx.prefix)
+            elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1):
+                embed = await embed_event_farm(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')          
@@ -136,7 +129,7 @@ class eventsCog(commands.Cog):
             elif (invoked.find('rain') > -1) or (invoked.find('trumpet') > -1) or (invoked.find('catch') > -1):
                 embed = await embed_event_coinrain(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif (invoked.find('tree') > -1) or (invoked.find('seed') > -1) or (invoked.find('chop') > -1):
+            elif (invoked.find('tree') > -1) or (invoked.find('epicseed') > -1) or (invoked.find('chop') > -1):
                 embed = await embed_event_epictree(ctx.prefix)
                 await ctx.send(embed=embed)
             elif invoked.find('god') > -1:
@@ -182,11 +175,8 @@ class eventsCog(commands.Cog):
             elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif (invoked.find('bunnyboss') > -1):
-                embed = await embed_event_bunnyboss(ctx.prefix)
-                await ctx.send(embed=embed)
-            elif (invoked.find('bunny') > -1):
-                embed = await embed_event_bunny(ctx.prefix)
+            elif (invoked.find('failedseed') > -1) or (invoked.find('farm') > -1):
+                embed = await embed_event_farm(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
                 embed = await embed_events_overview(ctx.prefix)
@@ -223,6 +213,7 @@ async def embed_events_overview(prefix):
     
     sp_events = (
         f'{emojis.bp} `enchant`\n'
+        f'{emojis.bp} `failed seed` / `farm`\n'
         f'{emojis.bp} `epic guard`\n'
         f'{emojis.bp} `heal`\n'
         f'{emojis.bp} `lootbox`\n'
@@ -259,7 +250,7 @@ async def embed_events_overview(prefix):
     )    
     
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'EASTER {emojis.easteregg}', value=easter_event, inline=False)
+    #embed.add_field(name=f'EASTER {emojis.easteregg}', value=easter_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -334,6 +325,38 @@ async def embed_event_epicguard(prefix):
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name='HOW TO GET OUT OF JAIL', value=jail, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+            
+    return embed
+
+# Failed seed event
+async def embed_event_farm(prefix):
+
+    trigger = f'{emojis.bp} `farm` (chance unknown)'
+    
+    answers = (
+        f'{emojis.bp} `cry`: The event ends, nothing happens\n'
+        f'{emojis.bp} `plant another`: Unknown (will update later)\n'
+        f'{emojis.bp} `fight`: Chance to get 20 levels, chance to get nothing.'
+    )
+        
+    rec_answer = f'{emojis.bp} `fight`'
+                    
+    note = (
+        f'{emojis.bp} This event is only available in {emojis.timetravel}TT 2+\n'
+        f'{emojis.bp} {events_personal}'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'FAILED SEED EVENT',
+        description = 'This is a random personal event in which your planted seed won\'t grow as expected.'
+    )    
+    
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed

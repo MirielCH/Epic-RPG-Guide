@@ -318,6 +318,8 @@ async def embed_pets_skills(prefix):
                     
     fighter = (
         f'{emojis.bp} Pet can be used to acquire {emojis.dragonessence} dragon essence in D1-D9\n'
+        f'{emojis.bp} You have a 20% base chance to get an essence after the dungeon\n'
+        f'{emojis.bp} This chance increases with skill rank\n'
         f'{emojis.bp} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.bp} You can **not** lose this skill when fusing\n'
         f'{emojis.bp} Note: You need to be in {emojis.timetravel} TT 25+ to be able to use the skill'
@@ -455,7 +457,7 @@ async def embed_pets_adventures(prefix):
     rewards = (
         f'{emojis.bp} **Items**: {emojis.log}{emojis.logepic}{emojis.logsuper}{emojis.logmega}{emojis.loghyper}{emojis.logultra} {emojis.fish}{emojis.fishgolden}{emojis.fishepic}{emojis.lifepotion}\n'
         f'{emojis.bp} **Coins**: ~ 700k+\n'
-        f'{emojis.bp} **Skill rank**: +1 rank of 1 random skill\n'
+        f'{emojis.bp} **Skill rank**: +1 rank of 1 skill the pet has\n'
         f'{emojis.bp} **Pet**: Random T1-3 pet (only if pet has {emojis.skillascended} ascended skill)\n'
         f'{emojis.bp} Note: You get a pet **in addition** to the other reward'
     )

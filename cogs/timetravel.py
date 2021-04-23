@@ -232,6 +232,10 @@ class timetravelCog(commands.Cog):
                 lbomega = 0
                 lbgodly = 0
                 lifepotion = 0
+                bread = 0
+                carrot = 0
+                potato = 0
+                seed = 0
                 
                 if inventory.find('**normie fish**:') > -1:
                     mat_start = inventory.find('**normie fish**:') + 17
@@ -493,6 +497,46 @@ class timetravelCog(commands.Cog):
                         lifepotion = int(mat)
                     elif mat_bottom.isnumeric():
                         lifeption = int(mat_bottom)
+                if inventory.find('**potato**:') > -1:
+                    mat_start = inventory.find('**potato**:') + 12
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        potato = int(mat)
+                    elif mat_bottom.isnumeric():
+                        potato = int(mat_bottom)
+                if inventory.find('**carrot**:') > -1:
+                    mat_start = inventory.find('**carrot**:') + 12
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        carrot = int(mat)
+                    elif mat_bottom.isnumeric():
+                        carrot = int(mat_bottom)
+                if inventory.find('**bread**:') > -1:
+                    mat_start = inventory.find('**bread**:') + 11
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        bread = int(mat)
+                    elif mat_bottom.isnumeric():
+                        bread = int(mat_bottom)
+                if inventory.find('seed**:') > -1:
+                    mat_start = inventory.find('seed**:') + 8
+                    mat_end = inventory.find(f'\\', mat_start)
+                    mat_end_bottom = inventory.find(f'\'', mat_start)
+                    mat = inventory[mat_start:mat_end]
+                    mat_bottom = inventory[mat_start:mat_end_bottom]
+                    if mat.isnumeric():
+                        seed = int(mat)
+                    elif mat_bottom.isnumeric():
+                        seed = int(mat_bottom)
                 
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
@@ -631,8 +675,9 @@ class timetravelCog(commands.Cog):
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
         
-        score_lootboxes = lbcommon+(lbuncommon*2)+(lbrare*3)+(lbepic*4)+(lbedgy*5)+(lbomega*50)+(lbgodly*500)
-        score_mobdrops = floor(wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2)
+        score_lootboxes = round((lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25),2)
+        score_mobdrops = round((wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2),2)
+        score_farm_items = floor((bread/19)+(carrot/11)+(potato/8))
         score_ruby_a15 = floor(ruby_a15/25)
         score_ruby_a16 = floor(ruby_a16/25)
         score_lifepotions = floor(lifepotion/500000)
@@ -640,6 +685,8 @@ class timetravelCog(commands.Cog):
             score_lifepotions = 20
         if score_lifepotions == 0:
             score_lifepotions = 1
+        if not seed == 0:
+            score_farm_items = score_farm_items + 1
             
         if original_area == 16:
             message_area = 'The TOP'
@@ -651,8 +698,9 @@ class timetravelCog(commands.Cog):
                 f'**Area 15**\n'
                 f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
                 f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-                f'{emojis.bp} {score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} {emojis.ruby} rubies, {lifepotion:,} {emojis.lifepotion} life potions)\n'
-                f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a15:,} total score**\n\n'
+                f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes)\n'
+                f'{emojis.bp} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
+                f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15:,} total score**\n\n'
             )
         else:
             message_a15 = ''
@@ -660,13 +708,14 @@ class timetravelCog(commands.Cog):
         await ctx.send(
             f'**{ctx.author.name}**, this is the theoretical STT score for your inventory, calculated up to area 15 / the TOP.\n'
             f'The material calculation assumes that your **current** max area is **{message_area}** and that you trade **all** of your materials to rubies.\n'
-            f'Note that this score does not include gear and levels.\n\n'
+            f'Note that this score does not include gear, levels and stats. This is only your inventory.\n\n'
             f'{message_a15}'
             f'**The TOP**\n'
             f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
             f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-            f'{emojis.bp} {score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} {emojis.ruby} rubies, {lifepotion:,} {emojis.lifepotion} life potions)\n'
-            f'{emojis.bp} **{score_lootboxes+score_mobdrops+score_ruby_a16:,} total score**'
+            f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes)\n'
+            f'{emojis.bp} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
+            f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16:,} total score**'
         )
 
 # Initialization
@@ -942,22 +991,36 @@ async def embed_stt(prefix):
 # Super time travel score guide
 async def embed_stt_score(prefix):
 
-    gear = f'{emojis.bp} {emojis.swordultraomega}{emojis.armorultraomega} ULTRA-OMEGA set = 155.5 score'
+    gear = (
+        f'{emojis.bp} {emojis.swordultraomega} ULTRA-OMEGA sword = ~74 score\n'
+        f'{emojis.bp} {emojis.armorultraomega} ULTRA-OMEGA armor = ~87 score\n'
+        f'{emojis.bp} Note: This is according to my own testing'
+    )
     
-    level = f'{emojis.bp} 1 level = 1 score'
+    level = (
+        f'{emojis.bp} 1 level = 0.5 score\n'
+        f'{emojis.bp} 1 {emojis.statdef} DEF + 1 {emojis.statat} AT + 5 {emojis.statlife} HP = 0.4 score'
+    )
     
     lootboxes = (
-        f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 1 score\n'
-        f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 2 score\n'
-        f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 3 score\n'
-        f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 4 score\n'
-        f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 5 score\n'
-        f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 50 score\n'
-        f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 500 score'
+        f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 0.05 score\n'
+        f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 0.1 score\n'
+        f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 0.15 score\n'
+        f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 0.2 score\n'
+        f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 0.25 score\n'
+        f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 2.5 score\n'
+        f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 25 score'
     )
                         
     materials = (
         f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'
+        f'{emojis.bp} 19 {emojis.bread} bread = 1 score\n'
+        f'{emojis.bp} 11 {emojis.carrot} carrots = 1 score\n'
+        f'{emojis.bp} 8 {emojis.potato} potatoes = 1 score\n'
+        f'{emojis.bp} **Take farm items score with a grain of salt for now**'
+    )    
+        
+    mobdrops = (
         f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'
         f'{emojis.bp} 9 {emojis.zombieeye} zombie eyes = 1 score\n'
         f'{emojis.bp} 7 {emojis.unicornhorn} unicorn horns = 1 score\n'
@@ -984,10 +1047,11 @@ async def embed_stt_score(prefix):
     )    
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='LEVEL', value=level, inline=False)
+    embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
     embed.add_field(name='MATERIALS', value=materials, inline=False)
+    embed.add_field(name='MOB DROPS', value=mobdrops, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
             
     return embed

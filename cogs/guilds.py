@@ -301,9 +301,9 @@ async def embed_guild_stats(prefix):
                     
     energy = (      
         f'{emojis.bp} Energy determines your weekly rank and reward\n'
-        f'{emojis.bp} You need 4,000 energy to get the max reward\n'
+        f'{emojis.bp} You need 2,000 energy to get the max reward\n'
         f'{emojis.bp} Can be increased by using `rpg guild raid`\n'
-        f'{emojis.bp} Ranking over 4,000 energy doesn\'t provide any additional rewards but is advised nonetheless so you stay over 4,000 in case you get raided'
+        f'{emojis.bp} Ranking over 2,000 energy doesn\'t provide any additional rewards but is advised nonetheless so you stay over 2,000 in case you get raided'
     )
                     
     guides = (      
@@ -333,11 +333,11 @@ async def embed_guild_stats(prefix):
 async def embed_guild_weekly(prefix):
     
     rewards = (
-        f'{emojis.bp} 4,000 {emojis.guildenergy}: 200 guild XP, 10 {emojis.guildcoin} guild coins\n'
-        f'{emojis.bp} 2,000 {emojis.guildenergy}: 150 guild XP, 5 {emojis.guildcoin} guild coins\n'
-        f'{emojis.bp} 1,000 {emojis.guildenergy}: 100 guild XP, 2 {emojis.guildcoin} guild coins\n'
-        f'{emojis.bp} 500 {emojis.guildenergy}: 75 guild XP\n'
-        f'{emojis.bp} 250 {emojis.guildenergy}: 50 guild XP\n'
+        f'{emojis.bp} 2,000 {emojis.guildenergy}: 200 guild XP, 10 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 1,000 {emojis.guildenergy}: 150 guild XP, 5 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 500 {emojis.guildenergy}: 100 guild XP, 2 {emojis.guildcoin} guild coins\n'
+        f'{emojis.bp} 250 {emojis.guildenergy}: 75 guild XP\n'
+        f'{emojis.bp} 100 {emojis.guildenergy}: 50 guild XP\n'
         f'{emojis.bp} 50 {emojis.guildenergy}: 25 guild XP\n'
         f'{emojis.bp} 10 {emojis.guildenergy}: 5 guild XP'
     )

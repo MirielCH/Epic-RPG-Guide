@@ -156,9 +156,11 @@ foodorangejuice = '<:erg_orangejuice:824526849970405386>'
 foodsupercookie = '<:erg_supercookie:770325211559362640>'
 
 # Gambling
+cups = '<:erg_cups:834855310433714233>'
+game_die = ':game_die:'
 slots_100 = ':100:'
 slots_clover = ':four_leaf_clover:'
-slots_diamond = ':diamond:'
+slots_diamond = ':gem:'
 slots_gift = ':gift:'
 slots_sparkles = ':sparkles:'
 wheel_black = ':black_large_square:'
