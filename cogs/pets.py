@@ -443,7 +443,8 @@ async def embed_pets_adventures(prefix):
     usage = (
         f'{emojis.bp} Command: `pets adv [type] [petIDs]`\n'
         f'{emojis.bp} Use `pets adv cancel [petID]` to cancel an adventure\n'
-        f'{emojis.bp} You can only send **1** pet unless you have the {emojis.skillepic} EPIC skill'
+        f'{emojis.bp} You can only send **1** pet unless you have the {emojis.skillepic} EPIC skill\n'
+        f'{emojis.bp} Note: To send all EPIC pets at once, use `pets adv [type] epic`'
     )
 
     types = (

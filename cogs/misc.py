@@ -45,6 +45,13 @@ class miscCog(commands.Cog):
     async def badges(self, ctx):
         embed = await embed_badges(ctx.prefix)
         await ctx.send(embed=embed)
+
+    # Command "farm" - Farming guide
+    @commands.command(aliases=('farming',))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+    async def farm(self, ctx):
+        embed = await embed_farm(ctx.prefix)
+        await ctx.send(embed=embed)
     
     # Command "calc" - Simple calculator
     @commands.command(aliases=('calculate','calculator',))
@@ -464,6 +471,68 @@ async def embed_badges(prefix):
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='AVAILABLE BADGES', value=badges, inline=False)
     embed.add_field(name='HOW TO USE', value=howtouse, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+            
+    return embed
+
+# Farming
+async def embed_farm(prefix):
+
+    planting_normal = (
+        f'{emojis.bp} Use `rpg farm` to plant {emojis.seed} seeds. Buy seeds in the shop for 2,000 coins.\n'
+        f'{emojis.bp} This gives you XP and either {emojis.bread} bread, {emojis.carrot} carrots or {emojis.potato} potatoes\n'
+        f'{emojis.bp} You have a 4% chance to receive special seeds (see below)\n'
+        f'{emojis.bp} The cooldown of the command is 10m (donor reduction applies)'
+    )
+    
+    planting_special = (
+        f'{emojis.bp} There are three special seeds: {emojis.seedbread} bread, {emojis.seedcarrot} carrot and {emojis.seedpotato} potato seed\n'
+        f'{emojis.bp} You can plant them with `rpg farm [type]` (e.g. `rpg farm carrot`)\n'
+        f'{emojis.bp} The crop will be the same type (e.g. a {emojis.seedcarrot} carrot seed gives you {emojis.carrot} carrots)\n'
+        f'{emojis.bp} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
+    )
+                
+    usage_bread = (
+        f'{emojis.bp} {emojis.swordhair} Hair Sword (**220** {emojis.bread})\n'
+        f'{emojis.bp} {emojis.armorelectronical} Electronical Armor (**180** {emojis.bread})\n'
+        f'{emojis.bp} {emojis.foodcarrotbread} Carrot Bread (**1** {emojis.bread} each). Gives +1 Level.\n'
+        f'{emojis.bp} 1 STT score per **20** {emojis.bread}\n'
+        f'{emojis.bp} Can be sold for 3,000 coins'
+    )
+    
+    usage_carrot = (
+        f'{emojis.bp} {emojis.foodcarrotbread} Carrot Bread (**160** {emojis.carrot} each). Gives +1 Level.\n'
+        f'{emojis.bp} {emojis.foodorangejuice} Orange Juice (**320** {emojis.carrot} each). Gives +3 {emojis.statdef} DEF and +3 {emojis.statat} AT.\n'
+        f'{emojis.bp} {emojis.foodcarrotato} Carrotato Chips (**80** {emojis.carrot} each). Gives +25 random profession XP.\n'
+        f'{emojis.bp} 1 STT score per **11** {emojis.carrot}\n'
+        f'{emojis.bp} Can be sold for 2,500 coins'
+    )
+    
+    usage_potato = (
+        f'{emojis.bp} {emojis.swordruby} Ruby Sword (**36** {emojis.potato})\n'
+        f'{emojis.bp} {emojis.armorruby} Ruby Armor (**120** {emojis.potato})\n'
+        f'{emojis.bp} {emojis.swordelectronical} Electronical Sword (**140** {emojis.potato})\n'
+        f'{emojis.bp} 1 STT score per **8** {emojis.potato}\n'
+        f'{emojis.bp} Can be sold for 2,000 coins'
+    )
+                
+    note = (
+        f'{emojis.bp} Farming is unlocked in area 4.\n'
+        f'{emojis.bp} The command can be used in areas 1+ when ascended.\n'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'FARMING',
+        description = f'It ain\'t much, but it\'s honest work.'
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
+    embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
+    embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
+    embed.add_field(name='CARROT USAGE', value=usage_carrot, inline=False)
+    embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed

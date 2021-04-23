@@ -256,7 +256,7 @@ async def embed_cups(prefix):
     )
     
     chances = (
-        f'{emojis.bp} 33.33% go get pick the correct cup'
+        f'{emojis.bp} 33.33% chance to pick the correct cup'
     )
     
     note = f'{emojis.bp} The cups don\'t move, so don\'t bother waiting for a hint, there is none'

@@ -677,7 +677,7 @@ class timetravelCog(commands.Cog):
         
         score_lootboxes = round((lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25),2)
         score_mobdrops = round((wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2),2)
-        score_farm_items = floor((bread/19)+(carrot/11)+(potato/8))
+        score_farm_items = floor((bread/20)+(carrot/11)+(potato/8))
         score_ruby_a15 = floor(ruby_a15/25)
         score_ruby_a16 = floor(ruby_a16/25)
         score_lifepotions = floor(lifepotion/500000)
@@ -1014,7 +1014,7 @@ async def embed_stt_score(prefix):
                         
     materials = (
         f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'
-        f'{emojis.bp} 19 {emojis.bread} bread = 1 score\n'
+        f'{emojis.bp} 20 {emojis.bread} bread = 1 score\n'
         f'{emojis.bp} 11 {emojis.carrot} carrots = 1 score\n'
         f'{emojis.bp} 8 {emojis.potato} potatoes = 1 score\n'
         f'{emojis.bp} **Take farm items score with a grain of salt for now**'

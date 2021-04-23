@@ -32,7 +32,7 @@ class eventsCog(commands.Cog):
         'tournament','pettournament','petstournament','pet-tournament','pets-tournament',
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
         'ruby','rubydragon','working','work','nothing',
-        'failedseed','farm','farming',
+        'failedseed','farmevent',
     )
     
     # Command "events"
@@ -336,8 +336,8 @@ async def embed_event_farm(prefix):
     
     answers = (
         f'{emojis.bp} `cry`: The event ends, nothing happens\n'
-        f'{emojis.bp} `plant another`: Unknown (will update later)\n'
-        f'{emojis.bp} `fight`: Chance to get 20 levels, chance to get nothing.'
+        f'{emojis.bp} `plant another`: Chance to get get your seed back (more info TBD)\n'
+        f'{emojis.bp} `fight`: Chance to get 20 levels, chance to get your seed back.'
     )
         
     rec_answer = f'{emojis.bp} `fight`'
