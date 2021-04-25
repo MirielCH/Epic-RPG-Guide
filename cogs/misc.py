@@ -321,7 +321,7 @@ class miscCog(commands.Cog):
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
         
-        coin_cap = user_tt*user_tt*10000000000+(user_area*2500000)
+        coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
         await ctx.send(
             f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.\n'
             f'You can not receive coins from other players or boosted minibosses that exceed this cap.'
@@ -493,41 +493,41 @@ async def embed_farm(prefix):
     )
                 
     usage_bread = (
-        f'{emojis.bp} {emojis.swordhair} Hair Sword (**220** {emojis.bread})\n'
-        f'{emojis.bp} {emojis.armorelectronical} Electronical Armor (**180** {emojis.bread})\n'
-        f'{emojis.bp} {emojis.foodcarrotbread} Carrot Bread (**1** {emojis.bread} each). Gives +1 Level.\n'
+        f'{emojis.bp} {emojis.swordhair} `Hair Sword` ➜ 7 {emojis.mermaidhair} + **220** {emojis.bread}\n'
+        f'{emojis.bp} {emojis.armorelectronical} `Electronical Armor` ➜ 12 {emojis.chip} + 1 {emojis.loghyper} + **180** {emojis.bread}\n'
+        f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ **1** {emojis.bread} + 160 {emojis.carrot}\n'
         f'{emojis.bp} 1 STT score per **20** {emojis.bread}\n'
         f'{emojis.bp} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.bp} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
     
     usage_carrot = (
-        f'{emojis.bp} {emojis.foodcarrotbread} Carrot Bread (**160** {emojis.carrot} each). Gives +1 Level.\n'
-        f'{emojis.bp} {emojis.foodorangejuice} Orange Juice (**320** {emojis.carrot} each). Gives +3 {emojis.statdef} DEF and +3 {emojis.statat} AT.\n'
-        f'{emojis.bp} {emojis.foodcarrotato} Carrotato Chips (**80** {emojis.carrot} each). Gives +25 random profession XP.\n'
-        f'{emojis.bp} 1 STT score per **11** {emojis.carrot}\n'
+        f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ 1 {emojis.bread} + **160** {emojis.carrot}\n'
+        f'{emojis.bp} {emojis.foodorangejuice} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.carrot}\n'
+        f'{emojis.bp} {emojis.foodcarrotato} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.potato} + **80** {emojis.carrot}\n'
+        f'{emojis.bp} 1 STT score per **25** {emojis.carrot}\n'
         f'{emojis.bp} Can be sold for 2,500 coins and 3 merchant XP\n'
         f'{emojis.bp} Can be used to change the horse name with `rpg horse feed`'
     )
     
     usage_potato = (
-        f'{emojis.bp} {emojis.swordruby} Ruby Sword (**36** {emojis.potato})\n'
-        f'{emojis.bp} {emojis.armorruby} Ruby Armor (**120** {emojis.potato})\n'
-        f'{emojis.bp} {emojis.swordelectronical} Electronical Sword (**140** {emojis.potato})\n'
-        f'{emojis.bp} {emojis.foodcarrotato} Carrotato Chips (**80** {emojis.potato} each). Gives +25 random profession XP.\n'
-        f'{emojis.bp} 1 STT score per **8** {emojis.potato}\n'
+        f'{emojis.bp} {emojis.swordruby} `Ruby Sword` ➜ 4 {emojis.ruby} + 1 {emojis.logmega} + **36** {emojis.potato}\n'
+        f'{emojis.bp} {emojis.armorruby} `Ruby Armor` ➜ 7 {emojis.ruby} + 4 {emojis.unicornhorn} + **120** {emojis.potato} + 2 {emojis.logmega}\n'
+        f'{emojis.bp} {emojis.swordelectronical} `Electronical Sword` ➜ 8 {emojis.chip} + 1 {emojis.logmega} + **140** {emojis.potato}\n'
+        f'{emojis.bp} {emojis.foodcarrotato} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.potato} + 80 {emojis.carrot}\n'
+        f'{emojis.bp} 1 STT score per **30** {emojis.potato}\n'
         f'{emojis.bp} Can be sold for 2,000 coins and 3 merchant XP'
     )
            
     what_to_plant = (
         f'{emojis.bp} If you want to cook food for levels or stats: {emojis.carrot} carrots\n'
-        f'{emojis.bp} If you want to get more coins: {emojis.bread} bread\n'
-        f'{emojis.bp} If you want to get a higher STT score: {emojis.potato} potatoes'
+        f'{emojis.bp} If you want to get more coins or a higher STT score: {emojis.bread} bread\n'
+        f'{emojis.bp} If you want to flex potatoes for some reason: {emojis.potato} potatoes'
     )
                 
     note = (
         f'{emojis.bp} Farming is unlocked in area 4.\n'
-        f'{emojis.bp} The command can be used in areas 1+ when ascended.\n'
+        f'{emojis.bp} The command can be used in area 1+ when ascended.\n'
         f'{emojis.bp} The amount of items you gain increases with your TT'
     )
 

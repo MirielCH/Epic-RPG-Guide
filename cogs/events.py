@@ -108,7 +108,7 @@ class eventsCog(commands.Cog):
             elif (event_name.find('ruby') > -1) or (event_name.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1):
+            elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1) or (event_name.find('seed') > -1):
                 embed = await embed_event_farm(ctx.prefix)
                 await ctx.send(embed=embed)
             else:
@@ -335,9 +335,9 @@ async def embed_event_farm(prefix):
     trigger = f'{emojis.bp} `farm` (chance unknown)'
     
     answers = (
-        f'{emojis.bp} `cry`: The event ends, nothing happens\n'
-        f'{emojis.bp} `plant another`: Chance to get get your seed back (more info TBD)\n'
-        f'{emojis.bp} `fight`: Chance to get 20 levels, chance to get your seed back.'
+        f'{emojis.bp} `cry`: You get 1 crop and your seed back.\n'
+        f'{emojis.bp} `plant another`: You get your seed back.\n'
+        f'{emojis.bp} `fight`: Small chance to get 20 levels and your seed back, high chance to only get your seed back.'
     )
         
     rec_answer = f'{emojis.bp} `fight`'
@@ -731,9 +731,9 @@ async def embed_event_miniboss(prefix):
     
     rewards = (
         f'{emojis.bp} {emojis.coin} Coins\n'
-        f'{emojis.bp} Rare chance for the initiator(s) to get + 1 level\n'
+        f'{emojis.bp} 2.5% chance for the initiator(s) to get + 1 level\n'
         f'{emojis.bp} The initiator reward depends on the level of the initiator and the users mentioned. It depends most on the original initiator however, thus the player with the highest level should start the event.\n'
-        f'{emojis.bp} Participants get 5 % of the iniators\' reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.'
+        f'{emojis.bp} Participants get 5% of the iniators\' reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.'
     )
                 
     note = (
@@ -741,7 +741,7 @@ async def embed_event_miniboss(prefix):
         f'{emojis.bp} {events_player_no.format(no=10)}\n'
         f'{emojis.bp} This event shares its cooldown with `dungeons`\n'
         f'{emojis.bp} This event shares its cooldown with `not so mini boss`\n'
-        f'{emojis.bp} The chance increases by 5 % for every participant'
+        f'{emojis.bp} The chance increases by 5% for every participant'
     )
 
     whichone = (

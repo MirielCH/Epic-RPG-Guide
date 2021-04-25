@@ -81,7 +81,7 @@ class timetravelCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True)
     async def tt1000(self, ctx):
         
-        await ctx.send('https://tenor.com/view/doctor-who-gif-7404461')
+        await ctx.send('https://tenor.com/view/doctor-who-snap-tardis-david-tennant-gif-17590283')
 
     # Command "mytt" - Information about user's TT
     @commands.command(aliases=('mytimetravel',))
@@ -677,7 +677,7 @@ class timetravelCog(commands.Cog):
         
         score_lootboxes = round((lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25),2)
         score_mobdrops = round((wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2),2)
-        score_farm_items = floor((bread/20)+(carrot/11)+(potato/8))
+        score_farm_items = floor((bread/20)+(carrot/25)+(potato/30)+(seed/2500))
         score_ruby_a15 = floor(ruby_a15/25)
         score_ruby_a16 = floor(ruby_a16/25)
         score_lifepotions = floor(lifepotion/500000)
@@ -685,8 +685,6 @@ class timetravelCog(commands.Cog):
             score_lifepotions = 20
         if score_lifepotions == 0:
             score_lifepotions = 1
-        if not seed == 0:
-            score_farm_items = score_farm_items + 1
             
         if original_area == 16:
             message_area = 'The TOP'
@@ -698,7 +696,7 @@ class timetravelCog(commands.Cog):
                 f'**Area 15**\n'
                 f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
                 f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-                f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes)\n'
+                f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
                 f'{emojis.bp} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
                 f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15:,} total score**\n\n'
             )
@@ -713,7 +711,7 @@ class timetravelCog(commands.Cog):
             f'**The TOP**\n'
             f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
             f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-            f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes)\n'
+            f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
             f'{emojis.bp} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
             f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16:,} total score**'
         )
@@ -1014,16 +1012,17 @@ async def embed_stt_score(prefix):
     )
                         
     materials = (
+        f'{emojis.bp} 30 {emojis.potato} potatoes = 1 score\n'
         f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'
+        f'{emojis.bp} 25 {emojis.carrot} carrots = 1 score\n'
         f'{emojis.bp} 20 {emojis.bread} bread = 1 score\n'
-        f'{emojis.bp} 11 {emojis.carrot} carrots = 1 score\n'
-        f'{emojis.bp} 8 {emojis.potato} potatoes = 1 score\n'
+        f'{emojis.bp} 2500 {emojis.seed} seed = 1 score\n'
         f'{emojis.bp} **Take farm items score with a grain of salt for now**'
     )    
         
     mobdrops = (
         f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'
-        f'{emojis.bp} 9 {emojis.zombieeye} zombie eyes = 1 score\n'
+        f'{emojis.bp} 10 {emojis.zombieeye} zombie eyes = 1 score\n'
         f'{emojis.bp} 7 {emojis.unicornhorn} unicorn horns = 1 score\n'
         f'{emojis.bp} 5 {emojis.mermaidhair} mermaid hairs = 1 score\n'
         f'{emojis.bp} 4 {emojis.chip} chips = 1 score\n'
