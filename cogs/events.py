@@ -294,7 +294,7 @@ async def embed_event_enchant(prefix):
 # Epic Guard event
 async def embed_event_epicguard(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = f'{emojis.bp} Most commands that have a cooldown, with the exception of multiplayer commands like `arena`, `duel`, `horse breed` or `miniboss` (chance unknown)'
     
     answers = (
         f'{emojis.bp} The name of the random item the guard shows you\n'
@@ -405,7 +405,7 @@ async def embed_event_lootbox(prefix):
     
     rec_answer = (
         f'{emojis.bp} `fight` if lootboxer < 100\n'
-        f'{emojis.bp} `magic spell` if lootboxer is maxed'
+        f'{emojis.bp} `magic spell` if lootboxer 100+'
     )
                     
     note = f'{emojis.bp} {events_personal}'
@@ -954,13 +954,13 @@ async def embed_event_notsominiboss(prefix):
     
     answers = f'{emojis.bp} `not so mini boss join` (unlocked in area 10)'
     
-    rewards = f'{emojis.bp} A small amount of {emojis.dragonscale} dragon scales if the boss dies'
+    rewards = f'{emojis.bp} 2-4 {emojis.dragonscale} dragon scales **if** the boss dies'
                     
     note = (
         f'{emojis.bp} {events_official_server}\n'
         f'{emojis.bp} {events_once_cycle}\n'
         f'{emojis.bp} This event shares its cooldown with `miniboss` and `dungeon`\n'
-        f'{emojis.bp} This event has a chance to fail'
+        f'{emojis.bp} This event has a 20% chance to fail'
     )
                     
     whichone = (

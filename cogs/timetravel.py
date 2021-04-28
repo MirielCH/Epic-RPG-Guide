@@ -683,7 +683,7 @@ class timetravelCog(commands.Cog):
         score_lifepotions = floor(lifepotion/500000)
         if score_lifepotions > 20:
             score_lifepotions = 20
-        if score_lifepotions == 0:
+        if score_lifepotions == 0 and lifepotion > 0:
             score_lifepotions = 1
             
         if original_area == 16:
@@ -698,7 +698,7 @@ class timetravelCog(commands.Cog):
                 f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
                 f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
                 f'{emojis.bp} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
-                f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15:,} total score**\n\n'
+                f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,} total score**\n\n'
             )
         else:
             message_a15 = ''
@@ -713,7 +713,7 @@ class timetravelCog(commands.Cog):
             f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
             f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
             f'{emojis.bp} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
-            f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16:,} total score**'
+            f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,} total score**'
         )
 
 # Initialization
@@ -990,10 +990,13 @@ async def embed_stt(prefix):
 # Super time travel score guide
 async def embed_stt_score(prefix):
 
+    base = (
+        f'{emojis.bp} If you are level 200, have the ULTRA-OMEGA set and your inventory is empty, you have 355.5 score'
+    )
+
     gear = (
         f'{emojis.bp} {emojis.swordultraomega} ULTRA-OMEGA sword = ~74 score\n'
-        f'{emojis.bp} {emojis.armorultraomega} ULTRA-OMEGA armor = ~87 score\n'
-        f'{emojis.bp} Note: This is according to my own testing'
+        f'{emojis.bp} {emojis.armorultraomega} ULTRA-OMEGA armor = ~87 score'
     )
     
     level = (
@@ -1047,6 +1050,7 @@ async def embed_stt_score(prefix):
     )    
 
     embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='BASE SCORE', value=base, inline=False)
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)

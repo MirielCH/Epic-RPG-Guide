@@ -493,7 +493,7 @@ async def embed_farm(prefix):
     )
                 
     usage_bread = (
-        f'{emojis.bp} {emojis.swordhair} `Hair Sword` ➜ 7 {emojis.mermaidhair} + **220** {emojis.bread}\n'
+        f'{emojis.bp} {emojis.swordhair} `Hair Sword` ➜ 4 {emojis.mermaidhair} + **220** {emojis.bread}\n'
         f'{emojis.bp} {emojis.armorelectronical} `Electronical Armor` ➜ 12 {emojis.chip} + 1 {emojis.loghyper} + **180** {emojis.bread}\n'
         f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ **1** {emojis.bread} + 160 {emojis.carrot}\n'
         f'{emojis.bp} 1 STT score per **20** {emojis.bread}\n'
@@ -526,9 +526,10 @@ async def embed_farm(prefix):
     )
                 
     note = (
-        f'{emojis.bp} Farming is unlocked in area 4.\n'
-        f'{emojis.bp} The command can be used in area 1+ when ascended.\n'
-        f'{emojis.bp} The amount of items you gain increases with your TT'
+        f'{emojis.bp} Farming is unlocked in area 4\n'
+        f'{emojis.bp} The command can be used in area 1+ when ascended\n'
+        f'{emojis.bp} The amount of items you gain increases with your TT\n'
+        f'{emojis.bp} You can not farm in the TOP'
     )
 
     embed = discord.Embed(

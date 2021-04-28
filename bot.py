@@ -178,7 +178,7 @@ async def helpguide(ctx):
         title = 'EPIC RPG GUIDE',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )    
-    embed.set_footer(text=f'Tip: If you ever forget the prefix, simply ping me with the command \'prefix\'.')
+    embed.set_footer(text='Note: This is not an official guide bot.')
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -281,6 +281,9 @@ async def setprogress(ctx, *args):
                     arg2 = args[1]
                     if arg2 in ('asc','ascended'):
                         new_ascended = 'ascended'
+                        if new_tt == 0:
+                            await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
+                            return
                     else:
                         await ctx.send(error_syntax)
                         return
@@ -444,8 +447,8 @@ async def links(ctx):
     )    
     
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    embed.add_field(name='EPIC RPG', value=epicrpg, inline=False)
     embed.add_field(name='EPIC RPG GUIDE', value=epicrpgguide, inline=False)
+    embed.add_field(name='EPIC RPG', value=epicrpg, inline=False)
     
     await ctx.send(embed=embed)
 
@@ -489,7 +492,7 @@ async def panda(ctx):
     await ctx.send('All hail Panda! :panda_face:')
     
 # Command "Shut up"
-@bot.command(aliases=('shutup','shutit',))
+@bot.command(aliases=('shutup','shutit','shutup!','shutit!'))
 @commands.bot_has_permissions(send_messages=True)
 async def shut(ctx, *args):
     
@@ -498,23 +501,45 @@ async def shut(ctx, *args):
     if invoked == 'shut':
         if args:
             arg = args[0]
-            if arg in ('up','it',):
+            if arg in ('up','it','up!','it!'):
                 await ctx.send('No.')
     else:
         await ctx.send('No.')
             
 # Command "Bad bot"
-@bot.command(aliases=('trash','badbot','trashbot',))
+@bot.command(aliases=('bad!','trash','trash!','badbot','trashbot','badbot!','trashbot!','delete',))
 @commands.bot_has_permissions(send_messages=True)
 async def bad(ctx, *args):
     invoked = ctx.invoked_with
     if invoked in ('bad','trash',):
         if args:
             arg = args[0]
-            if arg == 'bot':
-                await ctx.send(':(')
+            if arg in ('bot','bot!'):
+                await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
     else:
-        await ctx.send(':(')
+        await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
+        
+# Command "Good bot"
+@bot.command(aliases=('nice','great','amazing','useful','best',))
+@commands.bot_has_permissions(send_messages=True)
+async def good(ctx, *args):
+    if args:
+        arg = args[0]
+        if arg in ('bot','bot!'):
+            await ctx.send('https://tenor.com/view/raquita-gif-9201609')
+            
+# Command "Good bot"
+@bot.command(aliases=('thank','thanks!'))
+@commands.bot_has_permissions(send_messages=True)
+async def thanks(ctx, *args):
+    invoked = ctx.invoked_with
+    if invoked == 'thank':
+        if args:
+            arg = args[0]
+            if arg in ('you', 'you!'):
+                await ctx.send(f'You\'re welcome! :heart:')
+    else:
+        await ctx.send(f'You\'re welcome! :heart:')
     
 # Command "Brandon" - because Panda
 @bot.command()

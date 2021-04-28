@@ -1,8 +1,13 @@
 # pets.py
 
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
 import discord
 import emojis
 import global_data
+import database
 
 from discord.ext import commands
 
@@ -78,6 +83,73 @@ class petsCog(commands.Cog):
                 embed = await embed_pets_overview(ctx.prefix)
                 await ctx.send(embed=embed)
 
+    # Command "Fuse" - Recommendations for pet tiers in fusions
+    @commands.command(aliases=('petfuse',))
+    @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
+    async def fuse(self, ctx, *args):
+    
+        prefix = ctx.prefix
+    
+        syntax = (
+            f'The syntax is:\n'
+            f'{emojis.bp} `{prefix}fuse [tier]` to get recommendations for your current TT.\n'
+            f'{emojis.bp} `{prefix}fuse [tier] [tt]` to get recommendations for another TT.\n\n'
+            f'Examples: `{prefix}fuse t5` / `{prefix}fuse 6 25`'
+        )
+    
+        if args:
+            if len(args) in (1,2):
+                pet_tier = args[0]
+                if pet_tier.lower().find('tt') > -1:
+                    await ctx.send(syntax)
+                    return
+                pet_tier = pet_tier.lower().replace('t','')
+                if pet_tier.isnumeric():
+                    pet_tier = int(pet_tier)
+                    if not 1 <= pet_tier <= 12:
+                        await ctx.send(f'Please enter a pet tier between 1 and 12.')
+                        return
+                    if pet_tier == 12:
+                        await ctx.send(
+                            f'There is no fusion data for T12 pets yet.\n'
+                            f'However, do not try this before TT 25 at the absolute earliest and only use **T11** + **T11**.'
+                        )
+                        return
+                else:
+                    await ctx.send(syntax)
+                    return
+                if len(args) == 2:
+                    user_tt = args[1]
+                    user_tt = user_tt.lower().replace('tt','')
+                    if user_tt.isnumeric():
+                        user_tt = int(user_tt)
+                        if not 0 <= user_tt <= 999:
+                            await ctx.send(f'Please enter a TT between 0 and 999.')
+                            return
+                    else:
+                        await ctx.send(syntax)
+                        return
+                elif len(args) > 2:
+                    await ctx.send(syntax)
+                    return
+                else:
+                    current_settings = await database.get_settings(ctx)
+                    user_tt = current_settings[0]
+                
+                embed = await embed_fuse(ctx.prefix, pet_tier, user_tt)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(syntax)
+                return
+        else:
+            await ctx.send(
+                f'This command takes a pet of a certain tier and tells you:\n'
+                f'{emojis.bp} What you can fuse if you **want** that tier\n'
+                f'{emojis.bp} What you can fuse if you **have** that tier\n\n'
+                f'{syntax}'
+            )
+        
+
 # Initialization
 def setup(bot):
     bot.add_cog(petsCog(bot))
@@ -89,6 +161,7 @@ def setup(bot):
 guide_overview = '`{prefix}pet` : Pets overview'
 guide_catch = '`{prefix}pet catch` : How to find and catch pets'
 guide_fusion = '`{prefix}pet fusion` : Details about pet fusion'
+guide_fuse = '`{prefix}fuse` : Pet fusion recommendations'
 guide_skills = '`{prefix}pet skills` : Details about pet skills'
 guide_skills_special = '`{prefix}pet skills special` : Details about special pet skills'
 guide_adv = '`{prefix}pet adv` : Details about pet adventures'
@@ -108,7 +181,7 @@ async def embed_pets_overview(prefix):
 
                      
     tier = (
-        f'{emojis.bp} Tiers range from I to XI (1 to 11)\n'
+        f'{emojis.bp} Tiers range from I to XII (1 to 12)\n'
         f'{emojis.bp} Increases the number of items you get in adventures\n'
         f'{emojis.bp} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.bp} Increases the chance to keep a skill when fusing\n'
@@ -148,7 +221,8 @@ async def embed_pets_overview(prefix):
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_adv.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_fuse.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
@@ -220,7 +294,7 @@ async def embed_pets_fusion(prefix):
           
     general = (
         f'{emojis.bp} Use `pets fusion [petID1] [petID2]`\n'
-        f'{emojis.bp} You can fuse more than 2 pets but you shouldn\'t\n'
+        f'{emojis.bp} You can fuse more than 2 pets but you should only do that if you want to maximize the chance to keep certain skills or want to control the type you get\n'
         f'{emojis.bp} You can **not** lose tiers when fusing\n'
         f'{emojis.bp} You can **not** lose special skills when fusing\n'
         f'{emojis.bp} You **can** lose normal skills when fusing\n'
@@ -228,24 +302,29 @@ async def embed_pets_fusion(prefix):
     )
 
     tiers = (
-        f'{emojis.bp} Fuse 2 pets of the **same** tier for max chance to get a tier\n'
+        f'{emojis.bp} Check `{prefix}fuse` on what to fuse to get a tier up\n'
+        f'{emojis.bp} For the highest chance of a tier up, fuse 2 pets of the **same** tier\n'
         f'{emojis.bp} The chance to tier up gets lower the higher your tier is'
     )
 
     skills = (
         f'{emojis.bp} You have a random chance of getting a new normal skill when fusing\n'
         f'{emojis.bp} You can **not** get special skills when fusing\n'
-        f'{emojis.bp} The more skills you already have, the lower the chance\n'
-        f'{emojis.bp} If your sole goal is getting skills, fuse with T1 pets\n'
-        f'{emojis.bp} You can keep normal skills you already have, but the chance depends on the skill rank (see `{prefix}pet skills`)\n'
-        f'{emojis.bp} To maximize the chance to keep normal skills, rank them to SS+ first\n'
-        f'{emojis.bp} The max chance to keep a skill is 90%'
+        f'{emojis.bp} The more skills you already have, the lower the chance to get one\n'
+        f'{emojis.bp} If your sole goal is getting skills, fuse with T1 throwaway pets\n'
+        f'{emojis.bp} You can keep normal skills you already have, but the chance depends on the skill rank and how many of that skill you have in the fusion (see `{prefix}pet skills`)\n'
+        f'{emojis.bp} To maximize the chance to keep normal skills, rank them to SS+ first and fuse pets that have the same skill\n'
+        f'{emojis.bp} The exact chances to keep skills are unknown'
     )
 
     type = (
-        f'{emojis.bp} Fusing changes your pet type randomly\n'
-        f'{emojis.bp} Exception: Fusing an event pet will give you the event pet back\n'
-        f'{emojis.bp} Note: You can only fuse 2+ event pets if they all are the **same** type'
+        f'{emojis.bp} The resulting type depends on the most used type in the fusion\n'
+        f'{emojis.bp} If you fuse different types evenly, the result is randomly one of those types\n'
+        f'{emojis.bp} Example 1: {emojis.petcat} + {emojis.petcat} results in {emojis.petcat}\n'
+        f'{emojis.bp} Example 2: {emojis.petdog} + {emojis.petcat} + {emojis.petdog} results in {emojis.petdog}\n'
+        f'{emojis.bp} Example 3: {emojis.petcat} + {emojis.petdog} results in {emojis.petcat} **or** {emojis.petdog}\n'
+        f'{emojis.bp} Exception: Fusing an event pet will always give you the event pet back\n'
+        f'{emojis.bp} Note: You can only fuse multiple event pets if they all are the **same** type'
     )
 
     whatfirst = (
@@ -260,7 +339,8 @@ async def embed_pets_fusion(prefix):
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_adv.format(prefix=prefix)}'
+        f'{emojis.bp} {guide_adv.format(prefix=prefix)}\n'
+        f'{emojis.bp} {guide_fuse.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
@@ -502,5 +582,222 @@ async def embed_pets_adventures(prefix):
     embed.add_field(name='NORMAL SKILLS THAT AFFECT ADVENTURES', value=normalskillsimpact, inline=False)
     embed.add_field(name='SPECIAL SKILLS THAT AFFECT ADVENTURES', value=specialskillsimpact, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
+            
+    return embed
+
+# Pet fusion recommendations
+async def embed_fuse(prefix, pet_tier, user_tt):
+          
+    if pet_tier == 1:
+        how_to_get_tier = f'{emojis.bp} There are no lower tier fusions'
+        what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T1** ➜ **T2**'
+    elif pet_tier == 2:
+        how_to_get_tier = f'{emojis.bp} **T1** + **T1**'
+        what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T2** ➜ **T3**'
+    elif pet_tier == 3:
+        how_to_get_tier = f'{emojis.bp} **T1** + **T2**'
+        if 0 <= user_tt <= 9:
+            what_to_fuse_with_tier = f'{emojis.bp} **T3** + **T3** ➜ **T4**'
+        elif 10 <= user_tt <= 24:
+            what_to_fuse_with_tier = f'{emojis.bp} **T2** + **T3** ➜ **T4**'
+        else:
+            what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T3** ➜ **T4**'
+    elif pet_tier == 4:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T3** + **T3**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T4** + **T4** ➜ **T5**'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T2** + **T3**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T3** + **T4** ➜ **T5**\n'
+                f'{emojis.bp} **T4** + **T5** ➜ **T6**'
+            )
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T3**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T2** + **T4** ➜ **T5**\n'
+                f'{emojis.bp} **T4** + **T6** ➜ **T7**'
+            )
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T3**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T4** ➜ **T5**'
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T3**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T1** + **T4** ➜ **T5**\n'
+                f'{emojis.bp} **T4** + **T7** ➜ **T8**'
+            )
+        else:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T3**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T4** ➜ **T5**'
+    elif pet_tier == 5:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T4** + **T4**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T5** + **T5** ➜ **T6**'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T3** + **T4**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T4** + **T5** ➜ **T6**\n'
+                f'{emojis.bp} **T5** + **T6** ➜ **T7**'
+            )
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T2** + **T4**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T3** + **T5** ➜ **T6**'
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T4**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T2** + **T5** ➜ **T6**\n'
+                f'{emojis.bp} **T5** + **T7** ➜ **T8**'
+            )
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T4**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T5** ➜ **T6**'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T4**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T1** + **T5** ➜ **T6**\n'
+                f'{emojis.bp} **T5** + **T8** ➜ **T9**'
+            )
+    elif pet_tier == 6:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T5** + **T5**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T6** + **T6** ➜ **T7**'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T4** + **T5**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T5** + **T6** ➜ **T7**'
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T3** + **T5**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T4** + **T6** ➜ **T7**\n'
+                f'{emojis.bp} **T6** + **T7** ➜ **T8**'
+            )
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T2** + **T5**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T3** + **T6** ➜ **T7**\n'
+                f'{emojis.bp} **T6** + **T8** ➜ **T9**'
+            )
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T5**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T2** + **T6** ➜ **T7**\n'
+                f'{emojis.bp} **T6** + **T8** ➜ **T9**'
+            )
+        else:
+            how_to_get_tier = f'{emojis.bp} **T1** + **T5**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T2** + **T6** ➜ **T7**'
+    elif pet_tier == 7:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T6** + **T6**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T7** + **T7** ➜ **T8**'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T5** + **T6**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T7** + **T7** ➜ **T8**'
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T4** + **T6**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T6** + **T7** ➜ **T8**\n'
+                f'{emojis.bp} **T7** + **T8** ➜ **T9**'
+            )
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T3** + **T6**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T5** + **T7** ➜ **T8**'
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T2** + **T6**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T4** + **T7** ➜ **T8**'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T2** + **T6**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T3** + **T7** ➜ **T8**'
+    elif pet_tier == 8:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T7** + **T7**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T8** ➜ **T9**'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T7** + **T7**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T8** ➜ **T9**'
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T6** + **T7**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T7** + **T8** ➜ **T9**'
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T5** + **T7**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T6** + **T8** ➜ **T9**\n'
+                f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+            )
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T4** + **T7**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T6** + **T8** ➜ **T9**\n'
+                f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+            )
+        else:
+            how_to_get_tier = f'{emojis.bp} **T3** + **T7**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T5** + **T8** ➜ **T9**\n'
+                f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+            )
+    elif pet_tier == 9:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} **T8** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} None. A T9 is unlikely to tier up in this TT.'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T8** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T9** + **T9** ➜ **T10**'
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T7** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T9** + **T9** ➜ **T10**'
+        elif 41 <= user_tt <= 60:
+            how_to_get_tier = f'{emojis.bp} **T6** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+        elif 61 <= user_tt <= 90:
+            how_to_get_tier = f'{emojis.bp} **T6** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T5** + **T8**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T9** ➜ **T10**'
+    elif pet_tier == 10:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} None. A T10 is unlikely to get in this TT.'
+            what_to_fuse_with_tier = f'{emojis.bp} None. A T10 is unlikely to tier up in this TT.'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} **T9** + **T9**'
+            what_to_fuse_with_tier = f'{emojis.bp} None. A T10 is unlikely to tier up in this TT.'
+        elif 25 <= user_tt <= 40:
+            how_to_get_tier = f'{emojis.bp} **T9** + **T9**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T10** + **T10** ➜ **T11**'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T8** + **T9**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T10** + **T10** ➜ **T11**'
+    elif pet_tier == 11:
+        if 0 <= user_tt <= 9:
+            how_to_get_tier = f'{emojis.bp} None. A T11 is unlikely to get in this TT.'
+            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
+        elif 10 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} None. A T11 is unlikely to get in this TT.'
+            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T10** + **T10**'
+            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
+    
+    note = (
+        f'{emojis.bp} Tier up is **not** guaranteed!\n'
+        f'{emojis.bp} If you want the maximum chance, do same-tier fusions.\n'
+        f'{emojis.bp} You can lose skills in fusions!\n'
+        f'{emojis.bp} If you are unsure about fusions, see `{prefix}pet fusion`'
+    )
+    
+    guides = (
+        f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = f'TIER {pet_tier} PET FUSIONS • TT {user_tt}'
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name=f'MINIMUM FUSION TO GET A T{pet_tier} PET', value=how_to_get_tier, inline=False)
+    embed.add_field(name=f'MINIMUM FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
             
     return embed
