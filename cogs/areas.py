@@ -739,7 +739,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             lootboxes = (
                 f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                 f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
-                f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
+                f'{emojis.bp} Keep: {emojis.lbrare} Rare, {emojis.lbepic} EPIC until A3\n'
                 f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
                 f'{emojis.bp} Open: {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
             )

@@ -324,7 +324,8 @@ class miscCog(commands.Cog):
         coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
         await ctx.send(
             f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.\n'
-            f'You can not receive coins from other players or boosted minibosses that exceed this cap.'
+            f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
+            f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
 
 # Initialization
