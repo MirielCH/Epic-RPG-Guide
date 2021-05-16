@@ -1699,7 +1699,7 @@ async def embed_professions_crafter(prefix):
     
     base_bonus = (
         f'{emojis.bp} Increases the chance to get 10% materials back when crafting\n'
-        f'{emojis.bp} The chance increase at level 100 is 90%'
+        f'{emojis.bp} The chance at level 100 is 80%'
     )
     
     level_101 =(

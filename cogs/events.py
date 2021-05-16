@@ -897,7 +897,7 @@ async def embed_event_pettournamnent(prefix):
         f'{emojis.bp} You can only enter **1** pet per cycle\n'
         f'{emojis.bp} You can apply with any pet, even pets on adventures\n'
         f'{emojis.bp} Your chance to win is influenced by your pet\'s score (see `{prefix}pet`)\n'
-        f'{emojis.bp} The tournament will not happen if there are less than 100 pets'
+        f'{emojis.bp} The tournament will not happen if there are less than 50 pets'
     )
 
     embed = discord.Embed(
