@@ -1704,7 +1704,7 @@ async def embed_professions_crafter(prefix):
     
     level_101 =(
         f'{emojis.bp} Increases the percentage of items returned\n'
-        f'{emojis.bp} The percentage increase by 1% per level above 100 (101 = 11%, 102 = 12%, ...)'
+        f'{emojis.bp} The percentage increases logarithmically'
     )
     
     how_to_get_xp = (
@@ -1745,7 +1745,7 @@ async def embed_professions_enchanter(prefix):
     
     level_101 =(
         f'{emojis.bp} Adds a chance to win the price of the enchant instead of spending it\n'
-        f'{emojis.bp} The exact chance increase is unknown'
+        f'{emojis.bp} The chance is 2% at level 101 and increases by 2% for every level'
     )
     
     how_to_get_xp = (
@@ -1917,6 +1917,7 @@ async def embed_professions_worker(prefix):
     
     level_101 =(
         f'{emojis.bp} Adds an increasing chance to find other items with top tier work commands\n'
+        f'{emojis.bp} The chance is 4% at level 101 and increases by 4% for every level\n'
         f'{emojis.bp} `bigboat` gets a chance to drop {emojis.fruitbanana} bananas\n'
         f'{emojis.bp} `chainsaw` gets a chance to drop {emojis.fish} normie fish\n'
         f'{emojis.bp} `dynamite` gets a chance to drop {emojis.logsuper} SUPER logs\n'

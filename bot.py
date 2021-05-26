@@ -155,7 +155,6 @@ async def helpguide(ctx):
     misc = (
         f'{emojis.bp} `{prefix}calc` : A basic calculator\n'
         f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
-        f'{emojis.bp} `{prefix}coincap` : Coin cap calculator\n'
         f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
         f'{emojis.bp} `{prefix}farm` : Farming guide\n'
         f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
