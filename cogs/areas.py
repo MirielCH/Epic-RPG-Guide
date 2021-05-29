@@ -584,7 +584,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A3 (A11 if you plan to level lootboxer)\n'
                     f'{emojis.bp} Keep: {emojis.lbepic} EPIC until A3\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
@@ -600,7 +599,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 4:
@@ -614,7 +612,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 5:
@@ -626,8 +623,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.bp} Open: All lootboxes'
                 )
         elif area_no == 6:
             if user_asc == 'ascended':
@@ -639,7 +635,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
@@ -652,8 +647,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.bp} Open: All lootboxes'
                 )
         elif area_no >= 11:
             if user_asc == 'ascended':
@@ -664,8 +658,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to cook'
+                    f'{emojis.bp} Open: All lootboxes'
                 )
     elif 10 <= user_tt <= 24:
         if 1 <= area_no <= 2:
@@ -679,8 +672,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A3 (A11 if you plan to level lootboxer)\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC until A3\n'
+                    f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
@@ -695,7 +687,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 4:
@@ -709,7 +700,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 5:
@@ -721,8 +711,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.bp} Open: All lootboxes'
                 )
         elif area_no == 6:
             if user_asc == 'ascended':
@@ -735,7 +724,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
@@ -750,7 +738,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare until A11 if you plan to level lootboxer\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
                     f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
@@ -765,8 +752,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 lootboxes = (
                     f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
                     f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes if you need to level lootboxer\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep or cook'
+                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
                 )
     elif user_tt >= 25:
         if 1 <= area_no <= 2:

@@ -1626,13 +1626,10 @@ async def embed_professions_leveling(prefix):
     )
                 
     lootboxer = (
-        f'{emojis.bp} Level up by opening lootboxes or cooking {emojis.foodfilledlootbox} filled lootboxes\n'
+        f'{emojis.bp} Level up by opening lootboxes\n'
         f'{emojis.bp} Better lootboxes give more XP (see `{prefix}pr lootboxer`)\n'
-        f'{emojis.bp} Try to keep the level at about the same as worker\n'
-        f'{emojis.bp} If below worker, save {emojis.lbrare} rare lootboxes and cook them in area 10+\n'
-        f'{emojis.bp} If needed, you can also buy {emojis.lbrare} rare lootboxes instead of EDGY ones\n'
-        f'{emojis.bp} Use `hunt hardmode` whenever you have access (unlocks in A13)\n'
-        f'{emojis.bp} Tip: You can quickly calculate what you need to cook with `{prefix}prl`'
+        f'{emojis.bp} It should not be necessary to cook {emojis.foodfilledlootbox} filled lootboxes anymore\n'
+        f'{emojis.bp} Use `hunt hardmode` whenever you have access (unlocks in A13)'
     )
                     
     worker = (
@@ -1640,7 +1637,6 @@ async def embed_professions_leveling(prefix):
         f'{emojis.bp} Higher tier work commands give more XP (see `{prefix}pr worker`)\n'
         f'{emojis.bp} Try to keep the level at about the same as lootboxer\n'
         f'{emojis.bp} If lower than lootboxer, consider cooking {emojis.foodbananapickaxe} banana pickaxes\n'
-        f'{emojis.bp} Note that pickaxes are pretty expensive, only do it if you have the materials\n'
         f'{emojis.bp} Tip: You can quickly calculate the pickaxes you need with `{prefix}prw`'
     )
     
@@ -1686,8 +1682,8 @@ async def embed_professions_leveling(prefix):
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'1. CRAFTER {emojis.prcrafter}', value=crafter, inline=False)
     embed.add_field(name=f'2. MERCHANT {emojis.prmerchant}', value=merchant, inline=False)
-    embed.add_field(name=f'3. LOOTBOXER {emojis.prlootboxer}', value=lootboxer, inline=False)
-    embed.add_field(name=f'4. WORKER {emojis.prworker}', value=worker, inline=False)
+    embed.add_field(name=f'3. WORKER {emojis.prworker}', value=worker, inline=False)
+    embed.add_field(name=f'4. LOOTBOXER {emojis.prlootboxer}', value=lootboxer, inline=False)
     embed.add_field(name=f'5. ENCHANTER {emojis.prenchanter}', value=enchanter, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -1821,7 +1817,7 @@ async def embed_professions_lootboxer(prefix):
     
     how_to_get_xp = (
         f'{emojis.bp} Open lootboxes\n'
-        f'{emojis.bp} Cook {emojis.foodfilledlootbox} filled lootboxes (100 XP each)\n'
+        f'{emojis.bp} ~~Cook {emojis.foodfilledlootbox} filled lootboxes (100 XP each)~~ (don\'t do that)\n'
     )
                 
     xp_gain = (
