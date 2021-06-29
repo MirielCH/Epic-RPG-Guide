@@ -883,7 +883,8 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
         f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.bp} Don\'t forget to sell your armor and sword!\n'
+        f'{emojis.bp} Tip: Claim the {emojis.badgea15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_tt25 = (

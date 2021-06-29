@@ -134,7 +134,7 @@ class professionsCog(commands.Cog):
             answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
             answer = answer_user_enchanter.content
             answer = answer.lower()
-            if (answer == 'rpg pr enchanter'):
+            if answer in ('rpg pr enchanter','rpg profession enchanter', 'rpg professions enchanter'):
                 answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                 try:
                     pr_worker = str(answer_bot_at.embeds[0].fields[0])
@@ -254,7 +254,7 @@ class professionsCog(commands.Cog):
             answer_user_lootboxer = await self.bot.wait_for('message', check=check, timeout = 30)
             answer = answer_user_lootboxer.content
             answer = answer.lower()
-            if (answer == 'rpg pr lootboxer'):
+            if answer in ('rpg pr lootboxer','rpg profession lootboxer', 'rpg professions lootboxer'):
                 answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                 try:
                     pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
@@ -375,7 +375,7 @@ class professionsCog(commands.Cog):
             answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
             answer = answer_user_merchant.content
             answer = answer.lower()
-            if (answer == 'rpg pr merchant'):
+            if answer in ('rpg pr merchant','rpg profession merchant', 'rpg professions merchant'):
                 answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                 try:
                     pr_merchant = str(answer_bot_at.embeds[0].fields[0])
@@ -480,7 +480,7 @@ class professionsCog(commands.Cog):
             answer_user_worker = await self.bot.wait_for('message', check=check, timeout = 30)
             answer = answer_user_worker.content
             answer = answer.lower()
-            if (answer == 'rpg pr worker'):
+            if answer in ('rpg pr worker','rpg profession worker', 'rpg professions worker'):
                 answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                 try:
                     pr_worker = str(answer_bot_at.embeds[0].fields[0])
@@ -592,7 +592,7 @@ class professionsCog(commands.Cog):
                 answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_enchanter.content
                 answer = answer.lower()
-                if (answer == 'rpg pr enchanter'):
+                if answer in ('rpg pr enchanter','rpg profession enchanter', 'rpg professions enchanter'):
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                     try:
                         pr_enchanter = str(answer_bot_at.embeds[0].fields[0])
@@ -709,7 +709,7 @@ class professionsCog(commands.Cog):
                     answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
                     answer = answer_user_enchanter.content
                     answer = answer.lower()
-                    if (answer == 'rpg pr enchanter'):
+                    if answer in ('rpg pr enchanter','rpg profession enchanter', 'rpg professions enchanter'):
                         answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                         try:
                             pr_enchanter = str(answer_bot_at.embeds[0].fields[0])
@@ -838,7 +838,7 @@ class professionsCog(commands.Cog):
                 answer_user_lootboxer = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_lootboxer.content
                 answer = answer.lower()
-                if (answer == 'rpg pr lootboxer'):
+                if answer in ('rpg pr lootboxer','rpg profession lootboxer', 'rpg professions lootboxer'):
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                     try:
                         pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
@@ -955,7 +955,7 @@ class professionsCog(commands.Cog):
                     answer_user_lootboxer = await self.bot.wait_for('message', check=check, timeout = 30)
                     answer = answer_user_lootboxer.content
                     answer = answer.lower()
-                    if (answer == 'rpg pr lootboxer'):
+                    if answer in ('rpg pr lootboxer','rpg profession lootboxer', 'rpg professions lootboxer'):
                         answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                         try:
                             pr_lootboxer = str(answer_bot_at.embeds[0].fields[0])
@@ -1084,7 +1084,7 @@ class professionsCog(commands.Cog):
                 answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_merchant.content
                 answer = answer.lower()
-                if (answer == 'rpg pr merchant'):
+                if answer in ('rpg pr merchant','rpg profession merchant', 'rpg professions merchant'):
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                     try:
                         pr_merchant = str(answer_bot_at.embeds[0].fields[0])
@@ -1180,7 +1180,7 @@ class professionsCog(commands.Cog):
                     answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
                     answer = answer_user_merchant.content
                     answer = answer.lower()
-                    if (answer == 'rpg pr merchant'):
+                    if answer in ('rpg pr merchant','rpg profession merchant', 'rpg professions merchant'):
                         answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                         try:
                             pr_merchant = str(answer_bot_at.embeds[0].fields[0])
@@ -1292,7 +1292,7 @@ class professionsCog(commands.Cog):
                 answer_user_worker = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_worker.content
                 answer = answer.lower()
-                if (answer == 'rpg pr worker'):
+                if answer in ('rpg pr worker','rpg profession worker', 'rpg professions worker'):
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                     try:
                         pr_worker = str(answer_bot_at.embeds[0].fields[0])
@@ -1409,7 +1409,7 @@ class professionsCog(commands.Cog):
                     answer_user_worker = await self.bot.wait_for('message', check=check, timeout = 30)
                     answer = answer_user_worker.content
                     answer = answer.lower()
-                    if (answer == 'rpg pr worker'):
+                    if answer in ('rpg pr worker','rpg profession worker', 'rpg professions worker'):
                         answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                         try:
                             pr_worker = str(answer_bot_at.embeds[0].fields[0])

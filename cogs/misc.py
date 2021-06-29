@@ -206,12 +206,13 @@ class miscCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, external_emojis=True)
     async def coincap(self, ctx, *args):
         
+        """
         await ctx.send(
                 f'**{ctx.author.name}**, this command is disabled because the known formula was confirmed to be wrong.\n'
                 f'The correct formula is currently unkown.'
             )
-        
         """
+        
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
             
@@ -333,7 +334,6 @@ class miscCog(commands.Cog):
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
             f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
-        """
 
 # Initialization
 def setup(bot):

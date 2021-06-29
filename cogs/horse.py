@@ -394,8 +394,7 @@ async def embed_horses_types(prefix):
     
     besttype = (
         f'{emojis.bp} If you are in {emojis.timetravel} TT 0-2: SPECIAL\n'
-        f'{emojis.bp} If you are in {emojis.timetravel} TT 3-19: DEFENDER (if T6 L30+)\n'
-        f'{emojis.bp} If you are in {emojis.timetravel} TT 20+:  DEFENDER (if T6 L30+), maybe TANK (if T8 L80+)'
+        f'{emojis.bp} If you are in {emojis.timetravel} TT 3+: DEFENDER (if T6 L30+)'
     )
                 
     guides = (
