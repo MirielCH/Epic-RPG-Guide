@@ -205,339 +205,36 @@ class timetravelCog(commands.Cog):
                 except:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-                
-                log = 0
-                logepic = 0
-                logsuper= 0
-                logmega = 0
-                loghyper = 0
-                logultra = 0
-                fish = 0
-                fishgolden = 0
-                fishepic = 0
-                apple = 0
-                banana = 0
-                ruby = 0               
-                wolfskin = 0
-                zombieeye = 0
-                unicornhorn = 0
-                mermaidhair = 0
-                chip = 0
-                dragonscale = 0
-                lbcommon = 0
-                lbuncommon = 0
-                lbrare = 0
-                lbepic = 0
-                lbedgy = 0
-                lbomega = 0
-                lbgodly = 0
-                lifepotion = 0
-                bread = 0
-                carrot = 0
-                potato = 0
-                seed = 0
-                
-                if inventory.find('**normie fish**:') > -1:
-                    mat_start = inventory.find('**normie fish**:') + 17
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        fish = int(mat)
-                    elif mat_bottom.isnumeric():
-                        fish = int(mat_bottom)
-                if inventory.find('**golden fish**:') > -1:
-                    mat_start = inventory.find('**golden fish**:') + 17
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        fishgolden = int(mat)
-                    elif mat_bottom.isnumeric():
-                        fishgolden = int(mat_bottom)
-                if inventory.find('**epic fish**:') > -1:
-                    mat_start = inventory.find('**epic fish**:') + 15
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        fishepic = int(mat)
-                    elif mat_bottom.isnumeric():
-                        fishepic = int(mat_bottom)
-                if inventory.find('**wooden log**:') > -1:
-                    mat_start = inventory.find('**wooden log**:') + 16
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        log = int(mat)
-                    elif mat_bottom.isnumeric():
-                        log = int(mat_bottom)
-                if inventory.find('**epic log**:') > -1:
-                    mat_start = inventory.find('**epic log**:') + 14
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        logepic = int(mat)
-                    elif mat_bottom.isnumeric():
-                        logepic = int(mat_bottom)
-                if inventory.find('**super log**:') > -1:
-                    mat_start = inventory.find('**super log**:') + 15
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        logsuper = int(mat)
-                    elif mat_bottom.isnumeric():
-                        logsuper = int(mat_bottom)
-                if inventory.find('**mega log**:') > -1:
-                    mat_start = inventory.find('**mega log**:') + 14
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        logmega = int(mat)
-                    elif mat_bottom.isnumeric():
-                        logmega = int(mat_bottom)
-                if inventory.find('**hyper log**:') > -1:
-                    mat_start = inventory.find('**hyper log**:') + 15
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        loghyper = int(mat)
-                    elif mat_bottom.isnumeric():
-                        loghyper = int(mat_bottom)
-                if inventory.find('**ultra log**:') > -1:
-                    mat_start = inventory.find('**ultra log**:') + 15
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        logultra = int(mat)
-                    elif mat_bottom.isnumeric():
-                        logultra = int(mat_bottom)
-                if inventory.find('**apple**:') > -1:
-                    mat_start = inventory.find('**apple**:') + 11
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        apple = int(mat)
-                    elif mat_bottom.isnumeric():
-                        apple = int(mat_bottom)
-                if inventory.find('**banana**:') > -1:
-                    mat_start = inventory.find('**banana**:') + 12
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        banana = int(mat)
-                    elif mat_bottom.isnumeric():
-                        banana = int(mat_bottom)
-                if inventory.find('**ruby**:') > -1:
-                    mat_start = inventory.find('**ruby**:') + 10                        
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        ruby = int(mat)
-                    elif mat_bottom.isnumeric():
-                        ruby = int(mat_bottom)
-                if inventory.find('**wolf skin**:') > -1:
-                    mat_start = inventory.find('**wolf skin**:') + 15
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        wolfskin = int(mat)
-                    elif mat_bottom.isnumeric():
-                        wolfskin = int(mat_bottom)
-                if inventory.find('**zombie eye**:') > -1:
-                    mat_start = inventory.find('**zombie eye**:') + 16
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        zombieeye = int(mat)
-                    elif mat_bottom.isnumeric():
-                        zombieeye = int(mat_bottom)
-                if inventory.find('**unicorn horn**:') > -1:
-                    mat_start = inventory.find('**unicorn horn**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        unicornhorn = int(mat)
-                    elif mat_bottom.isnumeric():
-                        unicornhorn = int(mat_bottom)
-                if inventory.find('**mermaid hair**:') > -1:
-                    mat_start = inventory.find('**mermaid hair**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        mermaidhair = int(mat)
-                    elif mat_bottom.isnumeric():
-                        mermaidhair = int(mat_bottom)
-                if inventory.find('**chip**:') > -1:
-                    mat_start = inventory.find('**chip**:') + 10
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        chip = int(mat)
-                    elif mat_bottom.isnumeric():
-                        chip = int(mat_bottom)
-                if inventory.find('**dragon scale**:') > -1:
-                    mat_start = inventory.find('**dragon scale**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        dragonscale = int(mat)
-                    elif mat_bottom.isnumeric():
-                        dragonscale = int(mat_bottom)
-                if inventory.find('**common lootbox**:') > -1:
-                    mat_start = inventory.find('**common lootbox**:') + 20
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbcommon = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbcommon = int(mat_bottom)
-                if inventory.find('**uncommon lootbox**:') > -1:
-                    mat_start = inventory.find('**uncommon lootbox**:') + 22
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbuncommon = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbuncommon = int(mat_bottom)
-                if inventory.find('**rare lootbox**:') > -1:
-                    mat_start = inventory.find('**rare lootbox**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbrare = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbrare = int(mat_bottom)
-                if inventory.find('**epic lootbox**:') > -1:
-                    mat_start = inventory.find('**epic lootbox**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbepic = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbepic = int(mat_bottom)
-                if inventory.find('**edgy lootbox**:') > -1:
-                    mat_start = inventory.find('**edgy lootbox**:') + 18
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbedgy = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbedgy = int(mat_bottom)
-                if inventory.find('**omega lootbox**:') > -1:
-                    mat_start = inventory.find('**omega lootbox**:') + 19
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbomega = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbomega = int(mat_bottom)
-                if inventory.find('**godly lootbox**:') > -1:
-                    mat_start = inventory.find('**godly lootbox**:') + 19
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lbgodly = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lbgodly = int(mat_bottom)
-                if inventory.find('**life potion**:') > -1:
-                    mat_start = inventory.find('**life potion**:') + 17
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        lifepotion = int(mat)
-                    elif mat_bottom.isnumeric():
-                        lifeption = int(mat_bottom)
-                if inventory.find('**potato**:') > -1:
-                    mat_start = inventory.find('**potato**:') + 12
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        potato = int(mat)
-                    elif mat_bottom.isnumeric():
-                        potato = int(mat_bottom)
-                if inventory.find('**carrot**:') > -1:
-                    mat_start = inventory.find('**carrot**:') + 12
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        carrot = int(mat)
-                    elif mat_bottom.isnumeric():
-                        carrot = int(mat_bottom)
-                if inventory.find('**bread**:') > -1:
-                    mat_start = inventory.find('**bread**:') + 11
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        bread = int(mat)
-                    elif mat_bottom.isnumeric():
-                        bread = int(mat_bottom)
-                if inventory.find('seed**:') > -1:
-                    mat_start = inventory.find('seed**:') + 8
-                    mat_end = inventory.find(f'\\', mat_start)
-                    mat_end_bottom = inventory.find(f'\'', mat_start)
-                    mat = inventory[mat_start:mat_end]
-                    mat_bottom = inventory[mat_start:mat_end_bottom]
-                    if mat.isnumeric():
-                        seed = int(mat)
-                    elif mat_bottom.isnumeric():
-                        seed = int(mat_bottom)
-                
+                fish = await global_data.inventory_get(inventory, 'normie fish')
+                fishgolden = await global_data.inventory_get(inventory, 'golden fish')
+                fishepic = await global_data.inventory_get(inventory, 'epic fish')
+                log = await global_data.inventory_get(inventory, 'wooden log')
+                logepic = await global_data.inventory_get(inventory, 'epic log')
+                logsuper = await global_data.inventory_get(inventory, 'super log')
+                logmega = await global_data.inventory_get(inventory, 'mega log')
+                loghyper = await global_data.inventory_get(inventory, 'hyper log')
+                logultra = await global_data.inventory_get(inventory, 'ultra log')
+                apple = await global_data.inventory_get(inventory, 'apple')
+                banana = await global_data.inventory_get(inventory, 'banana')
+                ruby = await global_data.inventory_get(inventory, 'ruby')
+                wolfskin = await global_data.inventory_get(inventory, 'wolf skin')
+                zombieeye = await global_data.inventory_get(inventory, 'zombie eye')
+                unicornhorn = await global_data.inventory_get(inventory, 'unicorn horn')
+                mermaidhair = await global_data.inventory_get(inventory, 'mermaid hair')
+                chip = await global_data.inventory_get(inventory, 'chip')
+                dragonscale = await global_data.inventory_get(inventory, 'dragon scale')
+                lbcommon = await global_data.inventory_get(inventory, 'common lootbox')
+                lbuncommon = await global_data.inventory_get(inventory, 'uncommon lootbox')
+                lbrare = await global_data.inventory_get(inventory, 'rare lootbox')
+                lbepic = await global_data.inventory_get(inventory, 'epic lootbox')
+                lbedgy = await global_data.inventory_get(inventory, 'edgy lootbox')
+                lbomega = await global_data.inventory_get(inventory, 'omega lootbox')
+                lbgodly = await global_data.inventory_get(inventory, 'godly lootbox')
+                lifepotion = await global_data.inventory_get(inventory, 'life potion')
+                potato = await global_data.inventory_get(inventory, 'potato')
+                carrot = await global_data.inventory_get(inventory, 'carrot')
+                bread = await global_data.inventory_get(inventory, 'bread')
+                seed = await global_data.inventory_get(inventory, 'seed')
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
                 return

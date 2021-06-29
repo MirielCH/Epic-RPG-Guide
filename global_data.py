@@ -201,3 +201,23 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
         )
     
     return field_value
+
+# Get amount of material in inventory
+async def inventory_get(inventory, material):
+    
+    if inventory.find(f'**{material}**:') > -1:
+        mat_start = inventory.find(f'**{material}**:') + len(f'**{material}**:')+1
+        mat_end = inventory.find(f'\\', mat_start)
+        mat_end_bottom = inventory.find(f'\'', mat_start)
+        mat = inventory[mat_start:mat_end]
+        mat_bottom = inventory[mat_start:mat_end_bottom]
+        if mat.isnumeric():
+            mat = int(mat)
+        elif mat_bottom.isnumeric():
+            mat = int(mat_bottom)
+        else:
+            mat = 0
+    else:
+        mat = 0
+        
+    return mat
