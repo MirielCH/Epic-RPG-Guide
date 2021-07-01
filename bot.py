@@ -133,6 +133,7 @@ async def helpguide(ctx):
     crafting = (
         f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'
         f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
+        f'{emojis.bp} `{prefix}invcalc` / `{prefix}ic` : Inventory calculator\n'
         f'{emojis.bp} `{prefix}drops` : Monster drops\n'
         f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     )
@@ -519,13 +520,17 @@ async def bad(ctx, *args):
         await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
         
 # Command "Good bot"
-@bot.command(aliases=('nice','great','amazing','useful','best',))
+@bot.command(aliases=('nice','great','amazing','useful','best','goodbot','bestbot','greatbot','nicebot',))
 @commands.bot_has_permissions(send_messages=True)
 async def good(ctx, *args):
-    if args:
-        arg = args[0]
-        if arg in ('bot','bot!'):
-            await ctx.send('https://tenor.com/view/raquita-gif-9201609')
+    invoked = ctx.invoked_with
+    if invoked in ('good','great','nice','best','useful','amazing'):
+        if args:
+            arg = args[0]
+            if arg in ('bot','bot!'):
+                await ctx.send('https://tenor.com/view/raquita-gif-9201609')
+    else:
+        await ctx.send('https://tenor.com/view/raquita-gif-9201609')
             
 # Command "Good bot"
 @bot.command(aliases=('thank','thanks!'))

@@ -241,8 +241,6 @@ class timetravelCog(commands.Cog):
             else:
                 await ctx.send('Wrong input. Aborting.')
                 return
-            # Do stuff
-            pass
         except asyncio.TimeoutError as error:
             await ctx.send(f'**{ctx.author.name}**, couldn\'t find your inventory, RIP.')
             return
