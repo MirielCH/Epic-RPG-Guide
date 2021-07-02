@@ -462,6 +462,48 @@ async def get_settings(ctx):
   
     return current_settings
 
+# Get monster data by areas
+async def get_mob_data(ctx, areas):
+    """
+    areas: tuple/list that contains two areas: from_area and until_area.
+    Example: get_mob_data(ctx, (1,4,)) returns the mobs for areas 1, 2, 3 and 4
+    """
+    
+    try:
+        cur=erg_db.cursor()    
+        cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE area_from >= ? and area_until <= ?', (areas[0],areas[1],))
+        record = cur.fetchall()
+        
+        
+        if record:
+            mob_data = record
+        else:
+            await log_error(ctx, 'No mob data found in database.')
+    except sqlite3.Error as error:
+        global_data.logger.error(error)
+        await log_error(ctx, error)
+        
+    return mob_data
+
+# Get monster by name
+async def get_mob_by_name(ctx, name):
+    
+    try:
+        cur=erg_db.cursor()    
+        cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE name = ? COLLATE NOCASE', (name,))
+        record = cur.fetchone()
+
+        if record:
+            mob = record
+        else:
+            mob = None
+            await log_error(ctx, 'No mob found in database.')
+    except sqlite3.Error as error:
+        global_data.logger.error(error)
+        await log_error(ctx, error)
+        
+    return mob
+
 
 
 # --- Write Data ---

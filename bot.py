@@ -40,7 +40,7 @@ async def update_stats(bot):
 # --- Command Initialization ---
 
 bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.gambling',]
+cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.gambling','cogs.monsters']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -151,6 +151,11 @@ async def helpguide(ctx):
     
     event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
     
+    monsters = (
+        f'{emojis.bp} `{prefix}mobs` : List of all monsters\n'
+        f'{emojis.bp} `{prefix}dailymob` : Where to find the daily monster'
+    )
+    
     gambling_overview = f'{emojis.bp} `{prefix}gambling` : Gambling guides overview'
     
     misc = (
@@ -186,6 +191,7 @@ async def helpguide(ctx):
     embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
     embed.add_field(name='GUILD', value=guild_overview, inline=False)
     embed.add_field(name='EVENTS', value=event_overview, inline=False)
+    embed.add_field(name='MONSTERS', value=monsters, inline=False)
     embed.add_field(name='GAMBLING', value=gambling_overview, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
