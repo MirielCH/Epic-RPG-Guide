@@ -378,7 +378,10 @@ async def embed_pets_skills(prefix):
     
     lucky = f'{emojis.bp} Increases the chance to find better items in adventures'
     
-    timetraveler = f'{emojis.bp} Has a chance of finishing an adventure instantly'
+    timetraveler = (
+        f'{emojis.bp} Has a chance of finishing an adventure instantly\n'
+        f'{emojis.bp} Note: You can not cancel an adventure if the pet has this skill\n'
+    )
     
     epic = (
         f'{emojis.bp} If you send this pet on an adventure, you can send another\n'
@@ -525,7 +528,8 @@ async def embed_pets_adventures(prefix):
         f'{emojis.bp} Command: `pets adv [type] [petIDs]`\n'
         f'{emojis.bp} Use `pets adv cancel [petID]` to cancel an adventure\n'
         f'{emojis.bp} You can only send **1** pet unless you have the {emojis.skillepic} EPIC skill\n'
-        f'{emojis.bp} Note: To send all EPIC pets at once, use `pets adv [type] epic`'
+        f'{emojis.bp} Note: To send all EPIC pets at once, use `pets adv [type] epic`\n'
+        f'{emojis.bp} Note: You can not cancel an adventure if the pet has the {emojis.skilltraveler} time traveler skill \n'
     )
 
     types = (

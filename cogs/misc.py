@@ -415,7 +415,7 @@ async def embed_coolness(prefix):
                 
     howtoget = (
         f'{emojis.bp} `ultraining` awards 2 coolness per stage (unlocked in A12)\n'
-        f'{emojis.bp} Survive adventures with 1 HP\n'
+        f'{emojis.bp} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.bp} Open {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes\n'
         f'{emojis.bp} Get {emojis.loghyper} HYPER or {emojis.logultra} ULTRA logs from work commands\n'
         f'{emojis.bp} Forge ULTRA-EDGY or higher gear\n'

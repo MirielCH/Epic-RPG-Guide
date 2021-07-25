@@ -391,6 +391,7 @@ class horseCog(commands.Cog):
                 
             except asyncio.TimeoutError as error:
                     await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                    return
         
         if lootboxer_level == 0:
             try:
@@ -421,6 +422,7 @@ class horseCog(commands.Cog):
                     return
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')         
+                return
         
         horse_emoji = getattr(emojis, f'horset{horse_tier}')
                     
@@ -556,6 +558,7 @@ class horseCog(commands.Cog):
                 return   
         except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                return
                 
         try:
             await ctx.send(f'**{ctx.author.name}**, please type `rpg pr` (or `abort` to abort)')
@@ -584,7 +587,8 @@ class horseCog(commands.Cog):
                 await ctx.send('Whelp, something went wrong here, sorry.')
                 return
         except asyncio.TimeoutError as error:
-            await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')         
+            await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')      
+            return   
         
         horse_emoji = getattr(emojis, f'horset{horse_tier}')
                     

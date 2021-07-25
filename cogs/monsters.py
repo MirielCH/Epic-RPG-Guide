@@ -11,7 +11,7 @@ import database
 import asyncio
 
 from discord.ext import commands
-from discord_components import DiscordComponents, Button, ButtonStyle, InteractionType
+# from discord_components import Button, ButtonStyle, InteractionType
 
 # monsters commands (cog)
 class monstersCog(commands.Cog):
@@ -31,6 +31,10 @@ class monstersCog(commands.Cog):
         info_area_16 = (
             f'Area 16 (aka The TOP) does not have its own monsters.\n'
             f'Instead the EPIC NPC poses as a random monster which can be any monster from all the other areas.'
+        )
+        error_syntax = ( #Temporary solution because buttons use a shit ton of cpu for some reason
+            f'This command shows all mobs in an area.\n'
+            f'The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 15.'
         )
         
         if args:
@@ -56,11 +60,15 @@ class monstersCog(commands.Cog):
                     await ctx.send(error_area)
                     return
         else:
-            area = 1
+            await ctx.send(error_syntax)
+            return
+            # area = 1
 
         mobs_data = await database.get_mob_data(ctx, (1,15))
         embed = await embed_mobs(prefix, mobs_data, area)
+        await ctx.send(embed=embed)
         
+        """
         if area == 1:
             components=[
                 [
@@ -137,7 +145,7 @@ class monstersCog(commands.Cog):
                 )
                 global_data.logger.error(f'Error occured while waiting for button input in mob list: {error}')
                 break
-            
+            """
     # Daily mob lookup
     @commands.command(aliases=('mobdaily','daily',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
@@ -196,7 +204,6 @@ class monstersCog(commands.Cog):
 
 # Initialization
 def setup(bot):
-    DiscordComponents(bot)
     bot.add_cog(monstersCog(bot))
 
 
@@ -214,8 +221,8 @@ guide_mob_daily = '`{prefix}dailymob` : Where to find the daily monster'
 async def embed_mobs(prefix, mobs_data, area):
                                     
     guides = (
-        f'{emojis.bp} {guide_mobs_all.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_mobs_area.format(prefix=prefix)}\n'
+        #f'{emojis.bp} {guide_mobs_all.format(prefix=prefix)}\n'
+        #f'{emojis.bp} {guide_mobs_area.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_mob_daily.format(prefix=prefix)}'
     )
 

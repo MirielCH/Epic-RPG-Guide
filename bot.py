@@ -16,6 +16,7 @@ from discord.ext import commands, tasks
 from datetime import datetime
 from discord.ext.commands import CommandNotFound
 from math import ceil
+#from discord_components import DiscordComponents
 
 # Read the bot token from the .env file
 load_dotenv()
@@ -52,7 +53,7 @@ if __name__ == '__main__':
 # Set bot status when ready
 @bot.event
 async def on_ready():
-    
+    #DiscordComponents(bot)
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
     await update_stats.start(bot)
@@ -152,7 +153,7 @@ async def helpguide(ctx):
     event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
     
     monsters = (
-        f'{emojis.bp} `{prefix}mobs` : List of all monsters\n'
+        f'{emojis.bp} `{prefix}mobs [area]` : List of all monsters in area [area]\n'
         f'{emojis.bp} `{prefix}dailymob` : Where to find the daily monster'
     )
     

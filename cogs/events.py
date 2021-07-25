@@ -306,11 +306,12 @@ async def embed_event_epicguard(prefix):
     jail = (
         f'{emojis.bp} If you answer wrong, you will be put in jail\n'
         f'{emojis.bp} Use `rpg jail` and then `protest`\n'
-        f'{emojis.bp} Do **not** try to kill the guard, there is a high chance to die'
+        f'{emojis.bp} Do not try to kill the guard, there is a high chance of losing XP\n'
+        f'{emojis.bp} If you manage to kill the guard anyway, you will get 100 XP'
     )
                     
     note = (
-        f'{emojis.bp} {events_horse.format(emoji=emojis.horset4)}\n'
+        f'{emojis.bp} You can lose XP in this event, but you can not die\n'
         f'{emojis.bp} You get some coins if you answer the question correctly\n'
         f'{emojis.bp} {events_personal}'
     )
