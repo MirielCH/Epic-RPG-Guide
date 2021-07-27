@@ -713,15 +713,15 @@ class craftingCog(commands.Cog):
             
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
-                fish_calc = fish_calc + (ruby * 225)
+                fish_calc = fish + (ruby * 225)
             elif area in (3,4):
                 log_calc = log_calc + (apple_calc * apple_rate)
-                fish_calc = fish_calc + (ruby * 225)
+                fish_calc = fish + (ruby * 225)
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
             
-            fish_calc = fish + (log_calc // fish_rate)
+            fish_calc = fish_calc + (log_calc // fish_rate)
             fishgolden_calc = fishgolden + (fishepic * 80) + (fish_calc // 15)
             
             result_value = fishgolden_calc
@@ -738,15 +738,15 @@ class craftingCog(commands.Cog):
             
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
-                fish_calc = fish_calc + (ruby * 225)
+                fish_calc = fish + (ruby * 225)
             elif area in (3,4):
                 log_calc = log_calc + (apple_calc * apple_rate)
-                fish_calc = fish_calc + (ruby * 225)
+                fish_calc = fish + (ruby * 225)
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
             
-            fish_calc = fish + (log_calc // fish_rate)
+            fish_calc = fish_calc + (log_calc // fish_rate)
             fishgolden_calc = fishgolden + (fish_calc // 15)
             fishepic_calc = fishepic + (fishgolden_calc // 100)
             

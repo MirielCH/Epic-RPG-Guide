@@ -622,6 +622,100 @@ class horseCog(commands.Cog):
             level_cost_total = level_cost_total + level_cost
         
         await ctx.send(f'Levelling a {horse_emoji} **T{horse_tier} L{horse_level}** horse to **L{horse_target_level}** with lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.')
+        
+    # Command "htctest" - Calculate total horse training costs up to level x
+    @commands.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True)
+    async def htctest(self, ctx, *args):
+        
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+        
+        prefix = ctx.prefix
+        horse_target_level = 0
+        
+        syntax = (
+            f'The command syntax is `{prefix}htctest [horse tier] [horse current level] [horse target level] [lootboxer level]`.'
+        )
+        
+        if len(args) == 4:
+            arg_horse_tier = args[0].lower().replace('t','')
+            arg_current_level = args[1].lower().replace('l','')
+            arg_target_level = args[2].lower().replace('l','')
+            arg_lb_level = args[3].lower().replace('l','')
+            if arg_target_level.isnumeric():
+                try:
+                    horse_target_level = int(arg_target_level)
+                    if not 2 <= horse_target_level <= 140:
+                        await ctx.send(f'**{ctx.author.name}**, the horse target level has to be between 2 and 140.\n\n{syntax}')
+                        return
+                except:
+                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level.\n\n{syntax}')
+                    return
+            if arg_current_level.isnumeric():
+                try:
+                    horse_level = int(arg_current_level)
+                    if not 2 <= horse_level <= 140:
+                        await ctx.send(f'**{ctx.author.name}**, the horse level has to be between 2 and 140.\n\n{syntax}')
+                        return
+                except:
+                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level.\n\n{syntax}')
+                    return
+            if arg_horse_tier.isnumeric():
+                try:
+                    horse_tier = int(arg_horse_tier)
+                    if not 1 <= horse_tier <= 9:
+                        await ctx.send(f'**{ctx.author.name}**, the horse tier has to be between 1 and 9.\n\n{syntax}')
+                        return
+                except:
+                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse tier.\n\n{syntax}')
+                    return
+            if arg_lb_level.isnumeric():
+                try:
+                    lootboxer_level = int(arg_lb_level)
+                    if not 1 <= lootboxer_level <= 140:
+                        await ctx.send(f'**{ctx.author.name}**, the lootboxer level has to be between 1 and 140.\n\n{syntax}')
+                        return
+                except:
+                    await ctx.send(f'**{ctx.author.name}**, this is not a valid lootboxer level.\n\n{syntax}')
+                    return
+        else:
+            await ctx.send(syntax)
+            return
+        
+        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+                    
+        if lootboxer_level > 100:
+            horse_max_level = 10*horse_tier+(lootboxer_level-100)
+        else:
+            horse_max_level = 10*horse_tier
+        
+        if horse_target_level == 0:
+            horse_target_level = horse_max_level
+        
+        if horse_target_level > horse_max_level:
+            await ctx.send(f'**{ctx.author.name}**, you have not specified a valid horse target level. With a {horse_emoji} **T{horse_tier}** horse and lootboxer **L{lootboxer_level}**, your max horse level is **L{horse_max_level}**.')
+            return
+        
+        if horse_target_level < horse_level:
+            await ctx.send(f'**{ctx.author.name}**, sorry mate, but training your horse to level down is not exactly an option right now.')
+            return
+        
+        if horse_max_level == horse_level:
+            await ctx.send(f'**{ctx.author.name}**, your horse is already at max level. You can\'t level up any further until you increase your lootboxer profession.')
+            return
+        
+        if horse_target_level == horse_level:
+            await ctx.send(f'**{ctx.author.name}**, your horse is already at the target level.')
+            return
+        
+        level_cost_total = 0
+        for level in range(horse_level, horse_target_level):
+            level_cost = floor((level**4) * ((level**2) + (210*level) + 2200) * (500 - (lootboxer_level**1.2)) / 100000)
+            level_cost_total = level_cost_total + level_cost
+        
+        await ctx.send(f'Levelling a {horse_emoji} **T{horse_tier} L{horse_level}** horse to **L{horse_target_level}** with lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.')
 
 # Initialization
 def setup(bot):

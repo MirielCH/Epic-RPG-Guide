@@ -181,6 +181,12 @@ class monstersCog(commands.Cog):
                 end_daily = embed_world.find('**\\nThis monster')
                 start_daily = embed_world.rfind('**',0,end_daily) + 2
                 daily_mob = embed_world[start_daily:end_daily]
+            elif answer in ('abort','cancel'):
+                await ctx.send('Aborting.')
+                return
+            else:
+                await ctx.send(f'Wrong input. Aborting.')
+                return
             
             mob = await database.get_mob_by_name(ctx, daily_mob)
             

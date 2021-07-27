@@ -53,6 +53,13 @@ class miscCog(commands.Cog):
         embed = await embed_farm(ctx.prefix)
         await ctx.send(embed=embed)
     
+    # Command "start" - Starter guide
+    @commands.command(aliases=('starting','startguide','starterguide','startingguide'))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+    async def start(self, ctx):
+        embed = await embed_start(ctx.prefix)
+        await ctx.send(embed=embed)
+    
     # Command "calc" - Simple calculator
     @commands.command(aliases=('calculate','calculator',))
     @commands.bot_has_permissions(send_messages=True)
@@ -554,5 +561,59 @@ async def embed_farm(prefix):
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
+            
+    return embed
+
+
+# Starter guide
+async def embed_start(prefix):
+
+    goal = (
+        f'The goal is to advance until you reach your highest reachable area. At that point you can time travel.\n'
+        f'Think of this as new game+. This resets your progress but unlocks more of the game. For more information see `{prefix}tt`.\n'
+        f'To check out the available commands in this game, use `rpg start` and `rpg help`.'
+    )
+                
+    areas_dungeons = (
+        f'You advance by moving through areas. You can check what you should do in each area in the area guides (see `{prefix}areas`).\n'
+        f'To leave an area and advance to the next one you have to beat the dungeon for that area (so to leave area 1 you do dungeon 1).\n'
+        f'Dungeons 1 to 9 are simple tank and spank affairs, there is no gear check. So, if needed, you can enter them undergeared and get carried.\n'
+        f'**This does not work for dungeons 10+**. To enter those you **need** to have certain gear.'
+    )
+                
+    first_run = (
+        f'Your first run is called TT0 (time travel 0) because you haven\'t time traveled yet. In TT0 you need to reach area 11 which means you need to beat dungeon 10.\n'
+        f'Now, as mentioned, D10 has gear requirements, so you can not cheese that dungeon, you **need** to craft the following gear:\n'
+        f'{emojis.swordedgy} EDGY Sword (requires 1 {emojis.logultra} ULTRA log)\n'
+        f'{emojis.armoredgy} EDGY Armor (requires a lot of mob drops)\n'
+        f'The ULTRA log needed for the sword equals 250,000 wooden logs and the mob drops for the armor are pretty rare (see `{prefix}drops`).\n'
+        f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny EDGY gear.'
+    )
+    
+    grinding_trades = (
+        f'Grinding all those materials takes time, so you want to do this smartly.\n'
+        f'Trade rates are the single most important thing in this game to help you saving time. Every area has different trade rates, so every time you advance, your trade rates change (see `{prefix}trr`). You can **not** go back to earlier trade rates, these are tied to your highest unlocked area.\n'
+        f'This means you can save a lot of time and materials if you farm **early** and exploit the trade rate changes to multiply your inventory. See `{prefix}trading` for more trading info.\n'
+        f'In TT0 the most important area is **area 5**. You want to stay there until you have the recommended materials (see `{prefix}a5`).\n'
+        f'If you do this, you will save a ton of time later on and be able to craft that EDGY gear as soon as you reach areas 9 and 10. Don\'t forget to check out the area guides for other recommendations.'
+    )
+    
+    tips = (
+        f'{emojis.bp} Yes, farming in area 5 is boring. But do not leave the area early, you **will** regret it.\n'
+        f'{emojis.bp} Do not craft the EDGY Sword before area 10. You will lose materials if you do.'
+    )
+
+    embed = discord.Embed(
+        color = global_data.color,
+        title = 'STARTER GUIDE',
+        description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
+    )    
+    
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
+    embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
+    embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
+    embed.add_field(name='GRINDING & TRADES', value=grinding_trades, inline=False)
+    embed.add_field(name='TIPS', value=tips, inline=False)
             
     return embed

@@ -125,6 +125,7 @@ async def helpguide(ctx):
     prefix = await database.get_prefix(bot, ctx)
     
     progress = (
+        f'{emojis.bp} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
         f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
         f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
