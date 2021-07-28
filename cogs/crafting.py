@@ -720,6 +720,7 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
+                fish_calc = fish
             
             fish_calc = fish_calc + (log_calc // fish_rate)
             fishgolden_calc = fishgolden + (fishepic * 80) + (fish_calc // 15)
@@ -743,6 +744,7 @@ class craftingCog(commands.Cog):
                 log_calc = log_calc + (apple_calc * apple_rate)
                 fish_calc = fish + (ruby * 225)
             else:
+                fish_calc = fish
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
             

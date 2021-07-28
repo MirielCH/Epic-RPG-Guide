@@ -716,8 +716,8 @@ async def embed_stt_score(prefix):
         f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'
         f'{emojis.bp} 25 {emojis.carrot} carrots = 1 score\n'
         f'{emojis.bp} 20 {emojis.bread} bread = 1 score\n'
-        f'{emojis.bp} 2500 {emojis.seed} seed = 1 score\n'
-        f'{emojis.bp} **Take farm items score with a grain of salt for now**'
+        f'{emojis.bp} 2,500 {emojis.seed} seed = 1 score\n'
+        f'{emojis.bp} 5,000 {emojis.apple} apples = 1 score\n'
     )    
         
     mobdrops = (
