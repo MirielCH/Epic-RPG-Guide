@@ -3,7 +3,7 @@
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
+sys.path.insert(0, parent_dir)
 import discord
 import emojis
 import global_data
@@ -16,17 +16,17 @@ from math import ceil
 class areasCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     # Command for areas, can be invoked with "aX", "a X", "areaX" and "area X", optional parameters for TT and ascension
     area_aliases = ['area','areas',]
     for x in range(1,16):
-        area_aliases.append(f'a{x}')    
-        area_aliases.append(f'area{x}') 
+        area_aliases.append(f'a{x}')
+        area_aliases.append(f'area{x}')
 
     @commands.command(name='a',aliases=(area_aliases))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def area(self, ctx, *args):
-        
+
         invoked = ctx.invoked_with
         invoked = invoked.lower()
         prefix = ctx.prefix
@@ -34,17 +34,17 @@ class areasCog(commands.Cog):
         area_no = None
         arg_tt = None
         arg_asc = False
-        
+
         error_syntax = (
             f'The command syntax is `{prefix}area [#]` or `{prefix}a1`-`{prefix}a15`.\n'
             f'If you want to see an area guide for a specific TT (0 - 999), you can add the TT after the command. To see the ascended version, add `asc`.\n'
             f'Examples: `{prefix}a5 tt5`, `{prefix}a3 8 asc`'
         )
-        
+
         error_area_no = 'There is no area {area_no}, lol.'
-        
+
         error_general = 'Oops. Something went wrong here.'
-        
+
         if invoked == 'areas':
             embed = await embed_areas_menu(ctx)
             await ctx.send(embed=embed)
@@ -63,7 +63,7 @@ class areasCog(commands.Cog):
                 else:
                     await ctx.send(error_area_no.format(area_no=arg1))
                     return
-                
+
                 if len(args) > 1:
                     arg2 = args[1]
                     arg2 = arg2.replace('tt','')
@@ -111,7 +111,7 @@ class areasCog(commands.Cog):
             else:
                 await ctx.send(error_general)
                 return
-            
+
             if args:
                 arg1 = args[0]
                 arg1 = arg1.replace('tt','')
@@ -144,19 +144,19 @@ class areasCog(commands.Cog):
                         else:
                             await ctx.send(error_syntax)
                             return
-        
+
         area_data = await database.get_area_data(ctx, area_no)
         user_settings = await database.get_settings(ctx)
         if not user_settings == None:
             user_settings = list(user_settings)
-        
+
         if user_settings == None:
             await database.first_time_user(self.bot, ctx)
             return
-        
+
         if not arg_tt == None:
             user_settings[0] = arg_tt
-            
+
             if arg_asc == True:
                 if arg_tt == 0:
                     await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
@@ -167,14 +167,14 @@ class areasCog(commands.Cog):
         else:
             if arg_asc == True:
                 user_settings[1] = 'ascended'
-            
+
         traderate_data = await database.get_traderate_data(ctx, area_no)
-        
+
         if area_no < 15:
             traderate_data_next = await database.get_traderate_data(ctx, area_no+1)
         else:
             traderate_data_next = ''
-        
+
         if area_no in (3,5):
             if user_settings[0] <= 25:
                 mats_data = await database.get_mats_data(ctx, user_settings[0])
@@ -182,7 +182,7 @@ class areasCog(commands.Cog):
                 mats_data = await database.get_mats_data(ctx, 25)
         else:
             mats_data = ''
-        
+
         embed = await embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, ctx.author.name, ctx.prefix)
         await ctx.send(embed=embed)
 
@@ -190,40 +190,40 @@ class areasCog(commands.Cog):
 def setup(bot):
     bot.add_cog(areasCog(bot))
 
-                  
+
 
 # --- Embeds ---
 # Areas menu
 async def embed_areas_menu(ctx):
-    
+
     prefix = ctx.prefix
-    
+
     area_guide = f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
-                    
+
     trading = (
         f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
         f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
         f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates (all areas)'
     )
-    
+
     drops = f'{emojis.bp} `{prefix}drops` : Monster drops'
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'AREA GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='AREAS', value=area_guide, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='MONSTER DROPS', value=drops, inline=False)
-    
+
     return embed
 
 # Area guide
 async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, user_settings, user_name, prefix):
-    
+
     area_no = int(area_data[0])
     work_cmd_poor = area_data[1]
     work_cmd_rich = area_data[2]
@@ -261,47 +261,47 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     user_asc = user_settings[1]
 
     if not mats_data == '':
-        mats_fish = mats_data[1] 
+        mats_fish = mats_data[1]
         mats_apple = mats_data[2]
 
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await global_data.design_field_rec_stats(field_rec_stats_data)
-    
+
     if ((area_no == 12) and (user_tt < 1)) or ((area_no == 13) and (user_tt < 3)) or ((area_no == 14) and (user_tt < 5)) or ((area_no == 15) and (user_tt < 10)):
         time_traveller_area_locked = True
     else:
         time_traveller_area_locked = False
-    
+
     if ((area_no == 11) and (user_tt == 0)) or ((area_no == 12) and (1 <= user_tt <= 2)) or ((area_no == 13) and (3 <= user_tt <= 4)) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 24)):
         time_traveller_prepare = True
     else:
         time_traveller_prepare = False
-        
+
     # Footer
     footer = f'Tip: Use {prefix}d{dungeon_no} for details about the next dungeon.'
-        
+
     # Description
     description = f'{area_description}'
-    
+
     # Area locked
     if time_traveller_area_locked == True:
         area_locked = f'{emojis.bp} **You can not reach this area in your current TT**'
         footer = f'Tip: See {prefix}tt for details about time traveling'
     else:
         area_locked = ''
-        
+
     # Quick Guide
     quick_guide_sword = ''
     quick_guide_armor = ''
     quick_guide_enchant_sword = ''
     quick_guide_enchant_armor = ''
-    
+
     if upgrade_sword == 'true':
         quick_guide_sword = f'\n{emojis.bp} Craft {player_sword_emoji} {player_sword}'
-    
+
     if upgrade_armor == 'true':
         quick_guide_armor = f'\n{emojis.bp} Craft {player_armor_emoji} {player_armor}'
-    
+
     if not player_sword_enchant == '':
         if upgrade_sword == 'true':
             quick_guide_enchant_sword = f' and enchant to [{player_sword_enchant}+]'
@@ -309,7 +309,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             if upgrade_sword_enchant == 'true':
                 quick_guide_enchant_sword = f'\n{emojis.bp} Enchant {player_sword_emoji} {player_sword} to [{player_sword_enchant}+]'
         player_sword_enchant = f'[{player_sword_enchant}]'
-    
+
     if not player_armor_enchant == '':
         if upgrade_armor == 'true':
             quick_guide_enchant_armor = f' and enchant to [{player_armor_enchant}+]'
@@ -360,7 +360,6 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     elif area_no == 7:
         if not player_level == 0:
             quick_guide = (
-                f'{emojis.bp} Farm the materials mentioned below\n'
                 f'{emojis.bp} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
@@ -414,23 +413,23 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             )
     if not (int(area_no) in (1,2,4,6,12,13,14,15)) and not (time_traveller_prepare == True):
         quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
-    
+
     # New commands
     if ((area_no == 4) and (user_tt > 0)) or ((area_no == 11) and (user_tt > 0)) or ((area_no == 12) and (user_tt > 1)):
         new_cmd_1 = ''
     elif ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (5 <= user_tt <= 9)) or ((area_no == 15) and (10 <= user_tt <= 14)):
         new_cmd_1 = 'time travel'
-        
+
     new_cmd = ''
     all_new_cmd = [new_cmd_1, new_cmd_2, new_cmd_3,]
     all_new_cmd = filter(lambda entry: entry != '', all_new_cmd)
-    
+
     for x in all_new_cmd:
         if not new_cmd == '':
             new_cmd = f'{new_cmd}, `{x}`'
         else:
             new_cmd = f'`{x}`'
-    
+
     # Best work commands
     if user_tt in (0,1):
         money_nohorse = money_tt1_nohorse
@@ -444,7 +443,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     elif user_tt > 8:
         money_nohorse = money_tt10_nohorse
         money_t6horse = money_tt10_t6horse
-    
+
     if 1 <= area_no <= 9:
         if user_asc == 'ascended' and not user_tt == 1:
                 if 1 <= area_no <= 3:
@@ -534,7 +533,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.bp} `dynamite` if you need coins\n'
                     f'{emojis.bp} `chainsaw` otherwise'
                 )
-    
+
     # Lootboxes
     if user_tt == 0:
         if 1 <= area_no <= 2:
@@ -807,8 +806,8 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.bp} Open: {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
-            )            
-    
+            )
+
     # Materials areas 3, 5 and 8
     if area_no == 5:
         materials = (
@@ -818,54 +817,54 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
         )
         if user_tt < 5:
             materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
-    
+
     if (area_no == 3) and (1 <= user_tt <= 4):
         materials = (
             f'{emojis.bp} 20 {emojis.wolfskin} wolf skins\n'
             f'{emojis.bp} 20 {emojis.zombieeye} zombie eyes'
         )
-        
+
         if not mats_fish == 0:
             if user_asc == 'ascended':
                 materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
             else:
                 materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
-    
+
     if (area_no == 3) and (user_tt > 4):
         if not mats_fish == 0:
             if user_asc == 'ascended':
                 materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
             else:
                 materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
-        
+
     if area_no == 8:
         materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
     # Trades
     trades = await global_data.design_field_trades(area_no, user_asc)
-    
+
     # Trade rates
     traderates = await global_data.design_field_traderate(traderate_data)
     if not traderate_data_next == '':
         traderates_next = await global_data.design_field_traderate(traderate_data_next)
-    
+
     # Note
     note = (
         f'{emojis.bp} To see the guide for another TT, use `{prefix}a{area_no} [tt]` or `{prefix}a{area_no} [tt] asc`\n'
         f'{emojis.bp} To change your personal TT settings, use `{prefix}setprogress`.'
     )
-     
+
     # Title
     if user_asc == 'ascended':
         title = f'AREA {area_no}  •  TT {user_tt}, {user_asc.upper()}'
     else:
         title = f'AREA {area_no}  •  TT {user_tt}'
-     
+
     # Embed
     embed = discord.Embed(
         color = global_data.color,
         title = title,
-        description = description  
-    )    
+        description = description
+    )
     embed.set_footer(text=footer)
     if not area_locked == '':
             embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
@@ -879,7 +878,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                                  f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}\n'
                                  f'{emojis.bp} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook {emojis.foodorangejuice} orange juice or {emojis.foodapplejuice} apple juice.', inline=False)
-        else:            
+        else:
             embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
                                  f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
@@ -891,5 +890,5 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     if not (traderate_data_next == '') and not (time_traveller_prepare == True):
         embed.add_field(name=f'TRADE RATES A{area_no+1}', value=traderates_next, inline=True)
     embed.add_field(name='NOTE', value=note, inline=False)
-    
+
     return embed

@@ -10,6 +10,7 @@ import dbl
 import aiohttp
 import database
 import logging
+import importlib
 
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -36,16 +37,17 @@ async def update_stats(bot):
     except Exception as e:
         global_data.logger.error(f'Failed to post server count: {e}')
 
-          
 
-# --- Command Initialization ---
+# --- Bot Initialization ---
+intents = discord.Intents.none()
+intents.guilds = True   # for on_guild_join() and bot.guilds
+intents.messages = True   # for the calculators
 
-bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True)
+bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True, intents=intents)
 cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.gambling','cogs.monsters']
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
-
 
 
 # --- Ready & Join Events ---
@@ -57,19 +59,19 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
     await update_stats.start(bot)
-    
+
 # Send message to system channel when joining a server
 @bot.event
 async def on_guild_join(guild):
-    
+
     try:
         prefix = await database.get_prefix(bot, guild, True)
-        
+
         welcome_message =   f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'\
                             f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'\
                             f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'\
                             f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'\
-        
+
         await guild.system_channel.send(welcome_message)
     except:
         return
@@ -121,9 +123,9 @@ async def on_command_error(ctx, error):
 @bot.command(name='guide',aliases=('help','g','h',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def helpguide(ctx):
-    
+
     prefix = await database.get_prefix(bot, ctx)
-    
+
     progress = (
         f'{emojis.bp} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
@@ -131,7 +133,7 @@ async def helpguide(ctx):
         f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
         f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
     )
-    
+
     crafting = (
         f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'
         f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
@@ -139,27 +141,27 @@ async def helpguide(ctx):
         f'{emojis.bp} `{prefix}drops` : Monster drops\n'
         f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
     )
-    
+
     animals = (
         f'{emojis.bp} `{prefix}horse` : Horse guide\n'
         f'{emojis.bp} `{prefix}pet` : Pets guide\n'
     )
-    
+
     trading = f'{emojis.bp} `{prefix}trading` : Trading guides overview'
-                
+
     professions_value = f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
-    
+
     guild_overview = f'{emojis.bp} `{prefix}guild` : Guild guide'
-    
+
     event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
-    
+
     monsters = (
         f'{emojis.bp} `{prefix}mobs [area]` : List of all monsters in area [area]\n'
         f'{emojis.bp} `{prefix}dailymob` : Where to find the daily monster'
     )
-    
+
     gambling_overview = f'{emojis.bp} `{prefix}gambling` : Gambling guides overview'
-    
+
     misc = (
         f'{emojis.bp} `{prefix}calc` : A basic calculator\n'
         f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
@@ -167,24 +169,24 @@ async def helpguide(ctx):
         f'{emojis.bp} `{prefix}farm` : Farming guide\n'
         f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
     )
-                
+
     botlinks = (
         f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'
         f'{emojis.bp} `{prefix}support` : Visit the support server\n'
         f'{emojis.bp} `{prefix}links` : EPIC RPG wiki & support'
     )
-                
+
     settings = (
         f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
         f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
         f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
     )
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'EPIC RPG GUIDE',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
-    )    
+    )
     embed.set_footer(text='Note: This is not an official guide bot.')
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
@@ -198,19 +200,19 @@ async def helpguide(ctx):
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=settings, inline=False)
-    
+
     await ctx.send(embed=embed)
-    
-    
+
+
 
 # --- Server Settings ---
-   
+
 # Command "setprefix" - Sets new prefix (if user has "manage server" permission)
 @bot.command()
 @commands.has_permissions(manage_guild=True)
 @commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx, *new_prefix):
-    
+
     if new_prefix:
         if len(new_prefix)>1:
             await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
@@ -224,7 +226,7 @@ async def setprefix(ctx, *new_prefix):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def prefix(ctx):
-    
+
     current_prefix = await database.get_prefix(bot, ctx)
     await ctx.send(f'The prefix for this server is `{current_prefix}`\nTo change the prefix use `{current_prefix}setprefix [prefix]`')
 
@@ -236,48 +238,48 @@ async def prefix(ctx):
 @bot.command(aliases=('me',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def settings(ctx):
-    
+
     current_settings = await database.get_settings(ctx)
     if current_settings == None:
         await database.first_time_user(bot, ctx)
         return
-    
+
     if current_settings:
         username = ctx.author.name
         ascension = current_settings[1]
-        
+
         settings = f'{emojis.bp} Current run: **TT {current_settings[0]}**\n'\
                    f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
-        
+
         embed = discord.Embed(
         color = global_data.color,
         title = f'USER SETTINGS',
         description =   f'Hey there, **{ctx.author.name}**.\n'\
                         f'These settings are used by some guides to tailor the information to your current progress.'
-        )    
-        
+        )
+
         embed.set_footer(text=f'Tip: Use {ctx.prefix}setprogress to change your settings.')
         embed.add_field(name=f'YOUR CURRENT SETTINGS', value=settings, inline=False)
-        
+
         await ctx.send(embed=embed)
-    
+
 # Command "setprogress" - Sets TT and ascension
 @bot.command(aliases=('sp','setpr','setp',))
 @commands.bot_has_permissions(send_messages=True)
 async def setprogress(ctx, *args):
-    
+
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
-    
+
     prefix = ctx.prefix
     invoked = ctx.invoked_with
-    
+
     error_syntax = (
         f'The command syntax is `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` if you\'re ascended.\n'
         f'You can also use `{prefix}{invoked}` and let me ask you.\n'
         f'Examples: `{prefix}{invoked} tt5`, `{prefix}{invoked} 8 asc`'
     )
-    
+
     if args:
         arg1 = args[0]
         arg1 = arg1.replace('tt','')
@@ -314,7 +316,7 @@ async def setprogress(ctx, *args):
                 return
             new_tt = answer_tt.content
             if new_tt.isnumeric():
-                new_tt = int(answer_tt.content)            
+                new_tt = int(answer_tt.content)
                 if 0 <= new_tt <= 999:
                     await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
                     answer_ascended = await bot.wait_for('message', check=check, timeout=30)
@@ -348,7 +350,7 @@ async def setprogress(ctx, *args):
     if current_settings == None:
         await database.first_time_user(bot, ctx)
         return
-    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')     
+    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_settings[0]}**, **{current_settings[1]}**.')
 
 
 
@@ -369,36 +371,36 @@ async def devstats(ctx):
         else:
             shard_active = 'Active'
         shard_latency = f'{shard_latency}\n{emojis.bp} Shard {x}: {shard_active}, {round(bot.shards[x].latency*1000)} ms latency'
-        
+
     shard_latency = shard_latency.strip()
-    
+
     general = (
         f'{emojis.bp} {guilds:,} servers\n'
         f'{emojis.bp} {len(bot.shards):,} shards\n'
         f'{emojis.bp} {user_number[0]:,} users\n'
         f'{emojis.bp} {round(latency*1000):,} ms average latency'
     )
-    
-    
+
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'BOT STATISTICS'
     )
-        
+
     embed.add_field(name='BOT', value=general, inline=False)
     embed.add_field(name='SHARDS', value=shard_latency, inline=False)
-    
-    await ctx.send(embed=embed)
-    
-    
 
-# --- Links --- 
+    await ctx.send(embed=embed)
+
+
+
+# --- Links ---
 
 # Command "invite"
 @bot.command(aliases=('inv',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def invite(ctx):
-       
+
     embed = discord.Embed(
     color = global_data.color,
     title = 'NEED A GUIDE?',
@@ -406,65 +408,65 @@ async def invite(ctx):
         f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
         f'You can invite me [here](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot).'
     )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    
+
     await ctx.send(embed=embed)
 
 # Command "support"
 @bot.command(aliases=('supportserver','server',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def support(ctx):
-       
+
     embed = discord.Embed(
     color = global_data.color,
     title = 'NEED BOT SUPPORT?',
-    description = f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'         
-    )    
-    
+    description = f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    
+
     await ctx.send(embed=embed)
-    
+
 # Command "links"
 @bot.command(aliases=('link','wiki',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def links(ctx):
-    
+
     epicrpgguide = (
         f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
         f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=bot)\n'
-        f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'  
+        f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'
     )
-    
+
     epicrpg = (
         f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'
         f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
     )
-    
+
     others = (
         f'{emojis.bp} [MY EPIC RPG ROOM](https://discord.gg/myepicrpgroom)\n'
         f'{emojis.bp} [My Epic RPG Reminder](https://discord.gg/kc3GcK44pJ)\n'
     )
-    
+
     embed = discord.Embed(
     color = global_data.color,
     title = 'SOME HELPFUL LINKS',
     description = 'There\'s a whole world out there.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     embed.add_field(name='EPIC RPG GUIDE', value=epicrpgguide, inline=False)
     embed.add_field(name='EPIC RPG', value=epicrpg, inline=False)
-    
+
     await ctx.send(embed=embed)
 
 # Command "vote"
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def vote(ctx):
-       
+
     embed = discord.Embed(
     color = global_data.color,
     title = 'FEEL LIKE VOTING?',
@@ -472,17 +474,17 @@ async def vote(ctx):
         f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'
         f'You can vote for me [here](https://top.gg/bot/770199669141536768/vote).'
     )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    
+
     await ctx.send(embed=embed)
 
 # Command "donate"
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def donate(ctx):
-    
+
     await ctx.send(
         f'Aw that\'s nice of you but this is a free bot, you know.\n'
         f'Thanks though :heart:'
@@ -496,16 +498,16 @@ async def donate(ctx):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def panda(ctx):
-        
+
     await ctx.send('All hail Panda! :panda_face:')
-    
+
 # Command "Shut up"
 @bot.command(aliases=('shutup','shutit','shutup!','shutit!'))
 @commands.bot_has_permissions(send_messages=True)
 async def shut(ctx, *args):
-    
+
     invoked = ctx.invoked_with
-    
+
     if invoked == 'shut':
         if args:
             arg = args[0]
@@ -513,7 +515,7 @@ async def shut(ctx, *args):
                 await ctx.send('No.')
     else:
         await ctx.send('No.')
-            
+
 # Command "Bad bot"
 @bot.command(aliases=('bad!','trash','trash!','badbot','trashbot','badbot!','trashbot!','delete',))
 @commands.bot_has_permissions(send_messages=True)
@@ -526,7 +528,7 @@ async def bad(ctx, *args):
                 await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
     else:
         await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
-        
+
 # Command "Good bot"
 @bot.command(aliases=('nice','great','amazing','useful','best','goodbot','bestbot','greatbot','nicebot',))
 @commands.bot_has_permissions(send_messages=True)
@@ -539,7 +541,7 @@ async def good(ctx, *args):
                 await ctx.send('https://tenor.com/view/raquita-gif-9201609')
     else:
         await ctx.send('https://tenor.com/view/raquita-gif-9201609')
-            
+
 # Command "Good bot"
 @bot.command(aliases=('thank','thanks!'))
 @commands.bot_has_permissions(send_messages=True)
@@ -552,18 +554,18 @@ async def thanks(ctx, *args):
                 await ctx.send(f'You\'re welcome! :heart:')
     else:
         await ctx.send(f'You\'re welcome! :heart:')
-    
+
 # Command "Brandon" - because Panda
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def brandon(ctx):
-        
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'WHAT TO DO WITH BRANDON',
         description = 'Don\'t even _think_ about dismantling him. You monster.'
-    )    
-    
+    )
+
     await ctx.send(embed=embed)
 
 
@@ -574,53 +576,42 @@ async def brandon(ctx):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def test(ctx):
-    
+
     await ctx.send('Hey hey. Oh it\'s you, Miri! Yes I\'m online, thanks for asking.')
 
-# Eval
-@bot.command(aliases=('eval',))
-@commands.is_owner()
-@commands.bot_has_permissions(send_messages=True)
-async def evaluate(ctx):
-    
-    message_prefix_command = f'{ctx.prefix}{ctx.invoked_with} '
-    eval_command_start = ctx.message.content.find(message_prefix_command) + len(message_prefix_command)
-    eval_command = ctx.message.content[eval_command_start:]
-    
-    try:
-        result = eval(eval_command)
-        if result:
-            await ctx.send(result)
-        else:
-            await ctx.send('No return value')
-    except Exception as e:
-        await ctx.send(e)
-        
-# Reload cogs
+
+# Reload cogs & modules
 @bot.command(aliases=('reload_cog',))
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def reload(ctx, *args):
-    
+
     if args:
-        actions = []
-        reloaded = []
-        for arg in args:
-            cog_name = f'cogs.{arg}'
-            try:
-                result = bot.reload_extension(cog_name)
-                if result == None:
-                    actions.append(f'Extension \'{cog_name}\' reloaded.')
-                else:
-                    actions.append(f'**{cog_name}: {result}**')
-            except Exception as e:
-                actions.append(f'**{cog_name}: {e}**')
-                
-        message = ''
-        for action in actions:
-            message = f'{message}\n{action}'
-            
-        await ctx.send(message) 
+        arg = args[0].lower()
+        if arg in ('lib','libs','modules','module'):
+            importlib.reload(database)
+            importlib.reload(emojis)
+            importlib.reload(global_data)
+            await ctx.send('Modules reloaded.')
+        else:
+            actions = []
+            reloaded = []
+            for arg in args:
+                cog_name = f'cogs.{arg}'
+                try:
+                    result = bot.reload_extension(cog_name)
+                    if result == None:
+                        actions.append(f'Extension \'{cog_name}\' reloaded.')
+                    else:
+                        actions.append(f'{cog_name}: {result}')
+                except Exception as e:
+                    actions.append(f'{cog_name}: {e}')
+
+            message = ''
+            for action in actions:
+                message = f'{message}\n{action}'
+
+            await ctx.send(message)
     else:
         await ctx.send('Uhm, what.')
 
@@ -632,7 +623,7 @@ async def shutdown(ctx):
 
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
-    
+
     await ctx.send(
         f'**{ctx.author.name}**, are you **SURE**?\n'
         f'I have a wife {ctx.author.name}. A family. I have two kids, you know? The youngest one has asthma but he\'s fighting it like a champ. I love them so much.\n'
