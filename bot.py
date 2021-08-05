@@ -8,11 +8,11 @@ from math import ceil
 import os
 import shutil
 import sqlite3
+from typing import Union
 
 import dbl
 import discord
 from discord.ext import commands, tasks
-from discord.ext.commands import CommandNotFound
 from dotenv import load_dotenv
 
 import emojis
@@ -79,38 +79,34 @@ async def on_guild_join(guild: discord.Guild):
 
 # --- Error Handling ---
 @bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, CommandNotFound):
+async def on_command_error(ctx: commands.Context, error: Exception):
+    """Runs when an error occurs and handles them accordingly.
+    Interesting errors get written to the database for further review.
+    """
+
+    async def send_error(ctx: commands.Context, error: Union[Exception, str]):
+        """Sends error message as embed"""
+        embed = discord.Embed(title='An error occured')
+        embed.add_field(name='Command', value=f'`{ctx.command.qualified_name}`', inline=False)
+        embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
+        await ctx.send(embed=embed)
+
+    if isinstance(error, (commands.CommandNotFound, database.FirstTimeUser, commands.NotOwner)):
         return
-    elif isinstance(error, (commands.MissingPermissions)):
-        missing_perms = ''
-        for missing_perm in error.missing_perms:
-            missing_perm = missing_perm.replace('_',' ').title()
-            if not missing_perms == '':
-                missing_perms = f'{missing_perms}, `{missing_perm}`'
-            else:
-                missing_perms = f'`{missing_perm}`'
-        await ctx.send(f'Sorry **{ctx.author.name}**, you need the permission(s) {missing_perms} to use this command.')
-    elif isinstance(error, (commands.BotMissingPermissions)):
-        missing_perms = ''
-        for missing_perm in error.missing_perms:
-            missing_perm = missing_perm.replace('_',' ').title()
-            if not missing_perms == '':
-                missing_perms = f'{missing_perms}, `{missing_perm}`'
-            else:
-                missing_perms = f'`{missing_perm}`'
-        try:
-            await ctx.send(f'Sorry **{ctx.author.name}**, I\'m missing the permission(s) {missing_perms} to be able to run this command.')
-        except:
+    elif isinstance(error, commands.DisabledCommand):
+        await ctx.send(f'Command `{ctx.command.qualified_name}` is temporarily disabled.')
+    elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
+                            commands.TooManyArguments, commands.BadArgument)):
+        await send_error(ctx, error)
+    elif isinstance(error, commands.BotMissingPermissions):
+        if 'send_messages' in error.missing_perms:
             return
-    elif isinstance(error, (commands.NotOwner)):
-        return
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f'You\'re missing some arguments.')
-    elif isinstance(error, database.FirstTimeUser):
-        return
+        elif 'embed_links' in error.missing_perms:
+            await ctx.send(error)
+        else:
+            await send_error(ctx, error)
     else:
-        await database.log_error(ctx, error) # To the database you go
+        await database.log_error(ctx, error)
 
 
 # --- Main menu ---
@@ -256,6 +252,7 @@ async def setprogress(ctx: commands.Context, *args: str):
         )
     if args:
         arg_ascended = None
+        args = [arg.lower() for arg in args]
         if len(args) == 2:
             arg_tt, arg_ascended = args
         elif len(args) == 1:
@@ -263,14 +260,12 @@ async def setprogress(ctx: commands.Context, *args: str):
         else:
             await ctx.send(error_syntax)
             return
-        arg_tt = arg_tt.lower()
         arg_tt = arg_tt.replace('tt','')
         if arg_tt.isnumeric():
             arg_tt = int(arg_tt)
             if 0 <= arg_tt <= 999:
                 new_tt = arg_tt
                 if arg_ascended is not None:
-                    arg_ascended = arg_ascended.lower()
                     if arg_ascended in ('asc','ascended'):
                         new_ascended = 'ascended'
                         if new_tt == 0:
@@ -467,6 +462,7 @@ async def shut(ctx: commands.Context, *args: str):
     invoked = ctx.invoked_with.lower()
     if invoked == 'shut':
         if args:
+            args = [arg.lower() for arg in args]
             arg, *_ = args
             if arg in ('up','it','up!','it!'):
                 await ctx.send('No.')
@@ -481,6 +477,7 @@ async def bad(ctx: commands.Context, *args: str):
     invoked = ctx.invoked_with.lower()
     if invoked in ('bad','trash',):
         if args:
+            args = [arg.lower() for arg in args]
             arg, *_ = args
             if arg in ('bot','bot!'):
                 await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
@@ -495,6 +492,7 @@ async def good(ctx: commands.Context, *args: str):
     invoked = ctx.invoked_with.lower()
     if invoked in ('good','great','nice','best','useful','amazing'):
         if args:
+            args = [arg.lower() for arg in args]
             arg, *_ = args
             if arg in ('bot','bot!'):
                 await ctx.send('https://tenor.com/view/raquita-gif-9201609')
@@ -509,6 +507,7 @@ async def thanks(ctx: commands.Context, *args: str):
     invoked = ctx.invoked_with.lower()
     if invoked == 'thank':
         if args:
+            args = [arg.lower() for arg in args]
             arg, *_ = args
             if arg in ('you', 'you!'):
                 await ctx.send(f'You\'re welcome! :heart:')
@@ -543,8 +542,8 @@ async def test(ctx: commands.Context):
 async def reload(ctx: commands.Context, *args: str):
     """Reloads modules and cogs"""
     if args:
+        args = [arg.lower() for arg in args]
         arg, *_ = args
-        arg = arg.lower()
         if arg in ('lib','libs','modules','module'):
             importlib.reload(database)
             importlib.reload(emojis)
