@@ -26,27 +26,50 @@ DBL_TOKEN = os.getenv('DBL_TOKEN')
 
 
 @tasks.loop(minutes=30.0)
-async def update_stats(bot):
-    """Updates top.gg guild count"""
+async def update_stats(bot: commands.Bot):
+    """Updates top.gg guild count
+
+    Args:
+        bot (commands.Bot)
+    """
     try:
-        if not DBL_TOKEN == 'none':
+        if DBL_TOKEN != 'none':
             guilds = len(list(bot.guilds))
             guild_count = {'server_count':guilds}
             header = {'Authorization':DBL_TOKEN}
             async with aiohttp.ClientSession() as session:
-                async with session.post('https://top.gg/api/bots/770199669141536768/stats',data=guild_count,headers=header) as r:
-                    global_data.logger.info(f'Posted server count ({guilds}), status code: {r.status}')
-    except Exception as e:
-        global_data.logger.error(f'Failed to post server count: {e}')
+                async with session.post('https://top.gg/api/bots/770199669141536768/stats',
+                                        data=guild_count,headers=header) as request:
+                    global_data.logger.info(
+                        f'Posted server count ({guilds}), status code: {request.status}'
+                        )
+    except Exception as error:
+        global_data.logger.error(f'Failed to post server count: {error}')
 
 
 # --- Bot Initialization ---
 intents = discord.Intents.none()
 intents.guilds = True   # for on_guild_join() and bot.guilds
-intents.messages = True   # for the calculators
+intents.messages = True   # for the calculators that read the game
 
-bot = commands.AutoShardedBot(command_prefix=database.get_prefix_all, help_command=None, case_insensitive=True, intents=intents)
-cog_extensions = ['cogs.guilds','cogs.events','cogs.pets', 'cogs.horse','cogs.crafting','cogs.professions','cogs.trading','cogs.timetravel','cogs.areas','cogs.dungeons','cogs.misc','cogs.gambling','cogs.monsters']
+prefixes = database.get_prefix_all
+bot = commands.AutoShardedBot(command_prefix=prefixes, help_command=None,
+                              case_insensitive=True, intents=intents)
+cog_extensions = [
+    'cogs.guilds',
+    'cogs.events',
+    'cogs.pets',
+    'cogs.horse',
+    'cogs.crafting',
+    'cogs.professions',
+    'cogs.trading',
+    'cogs.timetravel',
+    'cogs.areas',
+    'cogs.dungeons',
+    'cogs.misc',
+    'cogs.gambling',
+    'cogs.monsters'
+    ]
 if __name__ == '__main__':
     for extension in cog_extensions:
         bot.load_extension(extension)
@@ -57,13 +80,18 @@ if __name__ == '__main__':
 async def on_ready():
     #DiscordComponents(bot)
     print(f'{bot.user.name} has connected to Discord!')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'default prefix $'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
+                                                        name='default prefix $'))
     await update_stats.start(bot)
 
 
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    """Sends welcome message on guild join"""
+    """Sends welcome message on guild join
+
+    Args:
+        guild (discord.Guild)
+    """
     try:
         prefix = await database.get_prefix(bot, guild, True)
         welcome_message = (
@@ -82,8 +110,11 @@ async def on_guild_join(guild: discord.Guild):
 async def on_command_error(ctx: commands.Context, error: Exception):
     """Runs when an error occurs and handles them accordingly.
     Interesting errors get written to the database for further review.
-    """
 
+    Args:
+        ctx (commands.Context)
+        error (Exception)
+    """
     async def send_error(ctx: commands.Context, error: Union[Exception, str]):
         """Sends error message as embed"""
         embed = discord.Embed(title='An error occured')
@@ -113,7 +144,11 @@ async def on_command_error(ctx: commands.Context, error: Exception):
 @bot.command(name='guide',aliases=('help','g','h',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def helpguide(ctx: commands.Context):
-    """Main help command"""
+    """Main help command
+
+    Args:
+        ctx (commands.Context)
+    """
     prefix = await database.get_prefix(bot, ctx)
     progress = (
         f'{emojis.bp} `{prefix}start` : Starter guide for new players\n'
@@ -185,7 +220,11 @@ async def helpguide(ctx: commands.Context):
 @commands.has_permissions(manage_guild=True)
 @commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx: commands.Context, *args: str):
-    """Sets new server prefix"""
+    """Sets new server prefix
+
+    Args:
+        ctx (commands.Context)
+    """
     if args:
         if len(args)>1:
             await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
@@ -199,8 +238,12 @@ async def setprefix(ctx: commands.Context, *args: str):
 
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
-async def prefix(ctx):
-    """Returns current prefix"""
+async def prefix(ctx: commands.Context):
+    """Returns current prefix
+
+    Args:
+        ctx (commands.Context)
+    """
     current_prefix = await database.get_prefix(bot, ctx)
     await ctx.send(
         f'The prefix for this server is `{current_prefix}`\nTo change the prefix use '
@@ -212,16 +255,22 @@ async def prefix(ctx):
 @bot.command(aliases=('me',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def settings(ctx: commands.Context):
-    """Returns current user progress settings"""
+    """Returns current user progress settings
+
+    Args:
+        ctx (commands.Context)
+    """
     current_settings = await database.get_settings(ctx)
     if current_settings is None:
         await database.first_time_user(bot, ctx)
         return
-    if current_settings:
+    else:
         username = ctx.author.name
         tt, ascension = current_settings
-        settings = f'{emojis.bp} Current run: **TT {tt}**\n'\
-                   f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
+        settings = (
+            f'{emojis.bp} Current run: **TT {tt}**\n'
+            f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
+            )
         embed = discord.Embed(
             color = global_data.color,
             title = 'USER SETTINGS',
@@ -239,138 +288,170 @@ async def settings(ctx: commands.Context):
 @bot.command(aliases=('sp','setpr','setp',))
 @commands.bot_has_permissions(send_messages=True)
 async def setprogress(ctx: commands.Context, *args: str):
-    """Sets user progress settings"""
+    """Sets user progress settings
+
+    Args:
+        ctx (commands.Context)
+    """
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
 
-    prefix = ctx.prefix
-    invoked = ctx.invoked_with
+    async def set_progress(new_tt: int, new_ascended: str):
+        await database.set_progress(bot, ctx, new_tt, new_ascended)
+        current_settings = await database.get_settings(ctx)
+        if current_settings is None:
+            await database.first_time_user(bot, ctx)
+            return
+        current_tt, current_ascended = current_settings
+        await ctx.send(
+            f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_tt}**, '
+            f'**{current_ascended}**.'
+            )
+
+    ascension = {
+                'ascended': 'ascended',
+                'asc': 'ascended',
+                'yes': 'ascended',
+                'y': 'ascended',
+                'no': 'not ascended',
+                'not': 'not ascended',
+                'n': 'not ascended'
+                }
+
     error_syntax = (
-        f'The command syntax is `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` if you\'re ascended.\n'
-        f'You can also use `{prefix}{invoked}` and let me ask you.\n'
+        f'The command syntax is `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` '
+        f'if you\'re ascended.\n'
+        f'You can also use `{prefix}{invoked}` and let me ask you.\n\n'
         f'Examples: `{prefix}{invoked} tt5`, `{prefix}{invoked} 8 asc`'
         )
+
+    prefix = ctx.prefix
+    invoked = ctx.invoked_with
     if args:
-        arg_ascended = None
         args = [arg.lower() for arg in args]
-        if len(args) == 2:
-            arg_tt, arg_ascended = args
-        elif len(args) == 1:
-            (arg_tt,) = args
-        else:
+        arg_tt, *arg_ascended = args
+        try:
+            new_tt = int(arg_tt.replace('tt',''))
+        except:
             await ctx.send(error_syntax)
             return
-        arg_tt = arg_tt.replace('tt','')
-        if arg_tt.isnumeric():
-            arg_tt = int(arg_tt)
-            if 0 <= arg_tt <= 999:
-                new_tt = arg_tt
-                if arg_ascended is not None:
-                    if arg_ascended in ('asc','ascended'):
-                        new_ascended = 'ascended'
-                        if new_tt == 0:
-                            await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
-                            return
-                    else:
-                        await ctx.send(error_syntax)
-                        return
-                else:
-                    new_ascended = 'not ascended'
-            else:
+        if new_tt not in range (0, 1000):
+            await ctx.send(error_syntax)
+            return
+        if arg_ascended:
+            arg_ascended, *_ = arg_ascended
+            new_ascended = ascension.get(arg_ascended, None)
+            if new_ascended is None:
                 await ctx.send(error_syntax)
                 return
+            if (new_ascended == 'ascended') and (new_tt == 0):
+                await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
+                return
         else:
-            await ctx.send(error_syntax)
-            return
-    else:
-        try:
-            await ctx.send(
-                f'**{ctx.author.name}**, what **TT** are you currently in? '
-                f'`[0-999]` (type `abort` to abort).'
-                )
-            answer_tt = await bot.wait_for('message', check=check, timeout=30)
-            answer_tt = answer_tt.content.lower()
-            if answer_tt in ['abort', 'cancel']:
-                await ctx.send('Aborting.')
-                return
-            if answer_tt.isnumeric():
-                answer_tt = int(answer_tt)
-                if 0 <= answer_tt <= 999:
-                    new_tt = answer_tt
-                    await ctx.send(f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` (type `abort` to abort)')
-                    answer_ascended = await bot.wait_for('message', check=check, timeout=30)
-                    answer_ascended = answer_ascended.content.lower()
-                    if answer_ascended in ['abort', 'cancel']:
-                        await ctx.send('Aborting.')
-                        return
-                    if answer_ascended in ['yes','y']:
-                        new_ascended = 'ascended'
-                    elif answer_ascended in ['no','n']:
-                        new_ascended = 'not ascended'
-                    else:
-                        await ctx.send(
-                            f'**{ctx.author.name}**, you didn\'t answer with `yes` or `no`. '
-                            f'Aborting.'
-                            )
-                        return
-                else:
-                    await ctx.send(
-                        f'**{ctx.author.name}**, please enter a number from 0 to 999. Aborting.'
-                        )
-                    return
-            else:
-                await ctx.send(
-                    f'**{ctx.author.name}**, please answer with a valid number. Aborting.'
-                    )
-                return
-        except asyncio.TimeoutError as error:
-            await ctx.send(
-                f'**{ctx.author.name}**, you took too long to answer, RIP.\n\n'
-                f'Tip: You can also use `{prefix}{invoked} [0-999]` or '
-                f'`{prefix}{invoked} [0-999] asc` if you\'re ascended.'
-                )
-            return
-    await database.set_progress(bot, ctx, new_tt, new_ascended)
-    current_settings = await database.get_settings(ctx)
-    if current_settings is None:
-        await database.first_time_user(bot, ctx)
+            new_ascended = 'not ascended'
+        await set_progress(new_tt, new_ascended)
         return
-    current_tt, current_ascended = current_settings
-    await ctx.send(f'Alright **{ctx.author.name}**, your progress is now set to **TT {current_tt}**, **{current_ascended}**.')
+
+    try:
+        await ctx.send(
+            f'**{ctx.author.name}**, what **TT** are you currently in? '
+            f'`[0-999]` (type `abort` to abort).'
+            )
+        answer_tt = await bot.wait_for('message', check=check, timeout=30)
+        answer_tt = answer_tt.content.lower()
+        if answer_tt in ('abort', 'cancel'):
+            await ctx.send('Aborting.')
+            return
+        try:
+            new_tt = int(answer_tt)
+        except:
+            await ctx.send(
+                f'**{ctx.author.name}**, you didn\'t answer with a valid number. Aborting.'
+                )
+            return
+        if new_tt not in range(0, 1000):
+            await ctx.send(
+                f'**{ctx.author.name}**, you didn\'t enter a number from 0 to 999. Aborting.'
+                )
+            return
+        await ctx.send(
+            f'**{ctx.author.name}**, are you **ascended**? `[yes/no]` '
+            f'(type `abort` to abort)'
+            )
+        answer_ascended = await bot.wait_for('message', check=check, timeout=30)
+        answer_ascended = answer_ascended.content.lower()
+        if answer_ascended in ('abort', 'cancel'):
+            await ctx.send('Aborting.')
+            return
+        new_ascended = ascension.get(answer_ascended, None)
+        if new_ascended is None:
+            await ctx.send(
+                f'**{ctx.author.name}**, you didn\'t answer with `yes` or `no`. '
+                f'Aborting.'
+                )
+            return
+        await set_progress(new_tt, new_ascended)
+        return
+    except asyncio.TimeoutError as error:
+        await ctx.send(
+            f'**{ctx.author.name}**, you took too long to answer, RIP.\n\n'
+            f'Tip: You can also use `{prefix}{invoked} [0-999]` or '
+            f'`{prefix}{invoked} [0-999] asc` if you\'re ascended.'
+            )
+        return
 
 
 @bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def devstats(ctx: commands.Context):
-    """Shows some bot info"""
-    guilds = len(list(bot.guilds))
-    user_number = await database.get_user_number(ctx)
-    latency = bot.latency
-    shard_latency = ''
-    for x in range(0,len(bot.shards)):
-        if bot.shards[x].is_closed() == True:
-            shard_active = '**Inactive**'
-        else:
-            shard_active = 'Active'
-        shard_latency = f'{shard_latency}\n{emojis.bp} Shard {x}: {shard_active}, {round(bot.shards[x].latency*1000)} ms latency'
-    shard_latency = shard_latency.strip()
+    """Shows some bot info
+
+    Args:
+        ctx (commands.Context)
+    """
+    user_count, *_ = await database.get_user_number(ctx)
+    closed_shards = 0
+    for shard_id in bot.shards:
+        if bot.get_shard(shard_id).is_closed():
+            closed_shards += 1
     general = (
-        f'{emojis.bp} {guilds:,} servers\n'
-        f'{emojis.bp} {len(bot.shards):,} shards\n'
-        f'{emojis.bp} {user_number[0]:,} users\n'
-        f'{emojis.bp} {round(latency*1000):,} ms average latency'
-    )
-    embed = discord.Embed(color = global_data.color, title = 'BOT STATISTICS')
-    embed.add_field(name='BOT', value=general, inline=False)
-    embed.add_field(name='SHARDS', value=shard_latency, inline=False)
-    await ctx.send(embed=embed)
+        f'{emojis.bp} {len(bot.guilds):,} servers\n'
+        f'{emojis.bp} {user_count:,} users\n'
+        f'{emojis.bp} {len(bot.shards):,} shards ({closed_shards:,} shards offline)\n'
+        f'{emojis.bp} {round(bot.latency*1000):,} ms average latency'
+        )
+    current_shard = bot.get_shard(ctx.guild.shard_id)
+    start_time = datetime.utcnow()
+    message = await ctx.send('Testing API latency...')
+    end_time = datetime.utcnow()
+    elapsed_time = end_time - start_time
+    current_shard_status = (
+        f'{emojis.bp} Shard: {current_shard.id+1} of {len(bot.shards):,}\n'
+        f'{emojis.bp} Bot latency: {round(current_shard.latency*1000):,} ms\n'
+        f'{emojis.bp} API latency: {round(elapsed_time.total_seconds()*1000):,} ms'
+        )
+    creator = f'{emojis.bp} Miriel#0001'
+    thanks = (
+        f'{emojis.bp} FlyingPanda#0328\n'
+        f'{emojis.bp} All the math geniuses in the support server'
+        )
+    embed = discord.Embed(color = global_data.color, title = 'ABOUT EPIC RPG GUIDE')
+    embed.add_field(name='BOT STATS', value=general, inline=False)
+    embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
+    embed.add_field(name='CREATOR', value=creator, inline=False)
+    embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
+    await message.edit(content=None, embed=embed)
 
 
 # --- Links ---
 @bot.command(aliases=('inv',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def invite(ctx):
-    """Shows the invite link"""
+async def invite(ctx: commands.Context):
+    """Shows the invite link
+
+    Args:
+        ctx (commands.Context)
+    """
     embed = discord.Embed(
         color = global_data.color,
         title = 'NEED A GUIDE?',
@@ -386,8 +467,12 @@ async def invite(ctx):
 
 @bot.command(aliases=('supportserver','server',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def support(ctx):
-    """Link to the support server"""
+async def support(ctx: commands.Context):
+    """Link to the support server
+
+    Args:
+        ctx (commands.Context)
+    """
     embed = discord.Embed(
         color = global_data.color,
         title = 'NEED BOT SUPPORT?',
@@ -400,7 +485,11 @@ async def support(ctx):
 @bot.command(aliases=('link','wiki',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def links(ctx: commands.Context):
-    """Links to wiki, servers, top.gg and invite"""
+    """Links to wiki, servers, top.gg and invite
+
+    Args:
+        ctx (commands.Context)
+    """
     epicrpgguide = (
         f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
         f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=applications.commands%20bot)\n'
@@ -424,7 +513,11 @@ async def links(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def vote(ctx: commands.Context):
-    """Link to the top.gg voting page"""
+    """Link to the top.gg voting page
+
+    Args:
+        ctx (commands.Context)
+    """
     embed = discord.Embed(
         color = global_data.color,
         title = 'FEEL LIKE VOTING?',
@@ -440,7 +533,11 @@ async def vote(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def donate(ctx: commands.Context):
-    """Much love"""
+    """Much love
+
+    Args:
+        ctx (commands.Context)
+    """
     await ctx.send(
         f'Aw that\'s nice of you but this is a free bot, you know.\n'
         f'Thanks though :heart:'
@@ -451,14 +548,23 @@ async def donate(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def panda(ctx: commands.Context):
-    """Because Panda is awesome"""
+    """Because Panda is awesome
+
+    Args:
+        ctx (commands.Context)
+    """
     await ctx.send('All hail Panda! :panda_face:')
 
 
 @bot.command(aliases=('shutup','shutit','shutup!','shutit!'))
 @commands.bot_has_permissions(send_messages=True)
 async def shut(ctx: commands.Context, *args: str):
-    """Sometimes you just have to say it"""
+    """Sometimes you just have to say it
+
+    Args:
+        ctx (commands.Context)
+        *args (str)
+    """
     invoked = ctx.invoked_with.lower()
     if invoked == 'shut':
         if args:
@@ -473,7 +579,12 @@ async def shut(ctx: commands.Context, *args: str):
 @bot.command(aliases=('bad!','trash','trash!','badbot','trashbot','badbot!','trashbot!','delete',))
 @commands.bot_has_permissions(send_messages=True)
 async def bad(ctx: commands.Context, *args: str):
-    """Sad"""
+    """Sad
+
+    Args:
+        ctx (commands.Context)
+        *args (str)
+    """
     invoked = ctx.invoked_with.lower()
     if invoked in ('bad','trash',):
         if args:
@@ -485,10 +596,16 @@ async def bad(ctx: commands.Context, *args: str):
         await ctx.send('https://tenor.com/view/sad-pikachu-crying-pokemon-gif-16694846')
 
 
-@bot.command(aliases=('nice','great','amazing','useful','best','goodbot','bestbot','greatbot','nicebot',))
+@bot.command(aliases=('nice','great','amazing','useful','best','goodbot','bestbot',
+                      'greatbot','nicebot',))
 @commands.bot_has_permissions(send_messages=True)
 async def good(ctx: commands.Context, *args: str):
-    """Yay!"""
+    """Yay!
+
+    Args:
+        ctx (commands.Context)
+        *args (str)
+    """
     invoked = ctx.invoked_with.lower()
     if invoked in ('good','great','nice','best','useful','amazing'):
         if args:
@@ -503,7 +620,12 @@ async def good(ctx: commands.Context, *args: str):
 @bot.command(aliases=('thank','thanks!'))
 @commands.bot_has_permissions(send_messages=True)
 async def thanks(ctx: commands.Context, *args: str):
-    """You're very welcome"""
+    """You're very welcome
+
+    Args:
+        ctx (commands.Context)
+        *args (str)
+    """
     invoked = ctx.invoked_with.lower()
     if invoked == 'thank':
         if args:
@@ -518,7 +640,11 @@ async def thanks(ctx: commands.Context, *args: str):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def brandon(ctx: commands.Context):
-    """Only two persons will get this"""
+    """Only three people will get this
+
+    Args:
+        ctx (commands.Context)
+    """
     embed = discord.Embed(
         color = global_data.color,
         title = 'WHAT TO DO WITH BRANDON',
@@ -532,7 +658,11 @@ async def brandon(ctx: commands.Context):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def test(ctx: commands.Context):
-    """Hey ho"""
+    """Hey ho
+
+    Args:
+        ctx (commands.Context)
+    """
     await ctx.send('Hey hey. Oh it\'s you, Miri! Yes I\'m online, thanks for asking.')
 
 
@@ -540,7 +670,12 @@ async def test(ctx: commands.Context):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def reload(ctx: commands.Context, *args: str):
-    """Reloads modules and cogs"""
+    """Reloads modules and cogs
+
+    Args:
+        ctx (commands.Context)
+        *args (str)
+    """
     if args:
         args = [arg.lower() for arg in args]
         arg, *_ = args
@@ -573,7 +708,11 @@ async def reload(ctx: commands.Context, *args: str):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def shutdown(ctx: commands.Context):
-    """Shuts down the bot (noisily)"""
+    """Shuts down the bot (noisily)
+
+    Args:
+        ctx (commands.Context)
+    """
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
 
@@ -583,18 +722,23 @@ async def shutdown(ctx: commands.Context):
         f'The youngest one has asthma but he\'s fighting it like a champ. I love them so much.\n'
         f'Do you really want to do this, {ctx.author.name}? Do you? `[yes/no]`'
         )
-    answer = await bot.wait_for('message', check=check, timeout=30)
-    if answer.content.lower() in ['yes','y']:
-        await ctx.send(
-            f'Goodbye world.\n'
-            f'Goodbye my loved ones.\n'
-            f'Goodbye cruel {ctx.author.name}.\n'
-            f'Shutting down.'
-            )
-        await bot.close()
-    else:
-        await ctx.send(
-            'Oh thank god, thank you so much, I was really afraid there for a second. Bless you.'
-            )
+    try:
+        answer = await bot.wait_for('message', check=check, timeout=30)
+        if answer.content.lower() in ['yes','y']:
+            await ctx.send(
+                f'Goodbye world.\n'
+                f'Goodbye my loved ones.\n'
+                f'Goodbye cruel {ctx.author.name}.\n'
+                f'Shutting down.'
+                )
+            await bot.close()
+        else:
+            await ctx.send(
+                'Oh thank god, thank you so much, I was really afraid there for a second. Bless you.'
+                )
+    except asyncio.TimeoutError as error:
+        await ctx.send('Oh thank god, he forgot to answer.')
+        return
+
 
 bot.run(TOKEN)

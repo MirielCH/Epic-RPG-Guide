@@ -9,7 +9,7 @@ from datetime import datetime
 # Set name of database file
 dbfile = global_data.dbfile
 
-# Open connection to the local database    
+# Open connection to the local database
 erg_db = sqlite3.connect(dbfile, isolation_level=None)
 
 
@@ -22,12 +22,12 @@ class FirstTimeUser(commands.CommandError):
 
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 async def get_prefix_all(bot, ctx):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
         record = cur.fetchone()
-        
+
         if record:
             prefix = record[1]
         else:
@@ -36,22 +36,22 @@ async def get_prefix_all(bot, ctx):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return commands.when_mentioned_or(prefix)(bot, ctx)
 
 # Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
 async def get_prefix(bot, ctx, guild_join=False):
-    
+
     if guild_join == False:
         guild = ctx.guild
     else:
         guild = ctx
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (guild.id,))
         record = cur.fetchone()
-        
+
         if record:
             prefix = record[1]
         else:
@@ -62,22 +62,22 @@ async def get_prefix(bot, ctx, guild_join=False):
             await log_error(ctx, error)
         else:
             await log_error(ctx, error, True)
-        
+
     return prefix
 
 # Get dungeon data for the dungeon commands
 async def get_dungeon_data(ctx, dungeon):
-    
+
     if dungeon == 151:
         dungeon = 15
     elif dungeon == 152:
         dungeon = 15.2
-     
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
         record = cur.fetchone()
-        
+
         if record:
             dungeon_data = record
         else:
@@ -85,17 +85,17 @@ async def get_dungeon_data(ctx, dungeon):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return dungeon_data
 
 # Get dungeon data for the recommended stats of all dungeons
 async def get_rec_stats_data(ctx):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d WHERE dungeon BETWEEN 1 AND 16')
         record = cur.fetchall()
-        
+
         if record:
             rec_stats_data = record
         else:
@@ -103,12 +103,12 @@ async def get_rec_stats_data(ctx):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return rec_stats_data
 
 # Get dungeon data for the recommended gear of all dungeons
 async def get_rec_gear_data(ctx, page):
-    
+
     try:
         cur=erg_db.cursor()
         if page == 1:
@@ -116,19 +116,19 @@ async def get_rec_gear_data(ctx, page):
         elif page == 2:
             cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 16')
         record = cur.fetchall()
-        
+
         if record:
             rec_gear_data = record
         else:
             await log_error(ctx, 'No recommended dungeon gear data found in database.')
     except sqlite3.Error as error:
         await log_error(ctx, error)
-        
+
     return rec_gear_data
 
 # Get dungeon data for the dungeon check command
 async def get_dungeon_check_data(ctx, dungeon_no=0):
-    
+
     try:
         cur=erg_db.cursor()
         if dungeon_no == 0:
@@ -137,21 +137,21 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
         else:
             cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
             record = cur.fetchone()
-            
+
         if record:
             dungeon_check_data = record
         else:
-            await log_error(ctx, 'No recommended dungeon check data found in database.')            
-    
+            await log_error(ctx, 'No recommended dungeon check data found in database.')
+
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return dungeon_check_data
 
 # Get area data for the area embeds
 async def get_area_data(ctx, area):
-    
+
     try:
         cur=erg_db.cursor()
         select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.money_tt1_t6horse, a.money_tt1_nohorse, a.money_tt3_t6horse, a.money_tt3_nohorse, a.money_tt5_t6horse, a.money_tt5_nohorse, a.money_tt10_t6horse, a.money_tt10_nohorse, '\
@@ -159,7 +159,7 @@ async def get_area_data(ctx, area):
                         'i2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
         cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE a.area=?', (area,))
         record = cur.fetchone()
-        
+
         if record:
             area_data = record
         else:
@@ -167,7 +167,7 @@ async def get_area_data(ctx, area):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return area_data
 
 # Get mats data for the needed mats of area 3 and 5
@@ -176,7 +176,7 @@ async def get_mats_data(ctx, user_tt):
         cur=erg_db.cursor()
         cur.execute('SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
-        
+
         if record:
             mats_data = record
         else:
@@ -184,16 +184,16 @@ async def get_mats_data(ctx, user_tt):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return mats_data
 
 # Get items
 async def get_item_data(ctx, itemname):
     try:
         cur=erg_db.cursor()
-        
+
         items_data = []
-        
+
         if itemname == 'ultra log':
             itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
         elif itemname == 'hyper log':
@@ -264,27 +264,27 @@ async def get_item_data(ctx, itemname):
             itemnames = (itemname,'super log','epic log','banana','','','','')
         else:
             itemnames = (itemname,'','','','','','','')
-            
+
         cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?,?,?,?) ORDER BY level DESC;', itemnames)
         record = cur.fetchall()
-            
+
         if record:
             items_columns = []
             colnames = cur.description
-            
+
             for row in colnames:
                 items_columns.append(row[0])
             items_data = [items_columns,]
-            
+
             for row in record:
                 items_data.append(list(row))
         else:
             items_data = ''
-        
+
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return items_data
 
 # Get tt unlocks
@@ -293,7 +293,7 @@ async def get_tt_unlocks(ctx, user_tt):
         cur=erg_db.cursor()
         cur.execute('SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
-        
+
         if record:
             tt_unlock_data = record
         else:
@@ -301,15 +301,15 @@ async def get_tt_unlocks(ctx, user_tt):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return tt_unlock_data
 
 # Get trade rate data
 async def get_traderate_data(ctx, areas):
-    
+
     try:
         cur=erg_db.cursor()
-        
+
         if (type(areas) == str) and (areas == 'all'):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
             record = cur.fetchall()
@@ -322,7 +322,7 @@ async def get_traderate_data(ctx, areas):
         else:
             await log_error(ctx, 'Parameter \'areas\' has an invalid format, could not get traderate data.')
             return
-        
+
         if record:
             traderate_data = record
         else:
@@ -330,15 +330,13 @@ async def get_traderate_data(ctx, areas):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return traderate_data
 
 # Get profession XP
 async def get_profession_levels(ctx, profession, levelrange):
-    
-    start_level = levelrange[0]
-    end_level = levelrange[1]
-    
+
+    start_level, end_level = levelrange
     if profession == 'worker':
         query = 'SELECT level, worker_xp FROM professions WHERE level BETWEEN ? and ?'
     elif profession == 'merchant':
@@ -350,12 +348,11 @@ async def get_profession_levels(ctx, profession, levelrange):
     else:
         await log_error(ctx, 'Unknown profession, could not generate profession query.')
         return
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute(query, (start_level, end_level,))
         record = cur.fetchall()
-        
         if record:
             profession_levels = record
         else:
@@ -363,12 +360,12 @@ async def get_profession_levels(ctx, profession, levelrange):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return profession_levels
 
 # Get random tip
 async def get_tip(ctx, id=0):
-    
+
     try:
         cur=erg_db.cursor()
         if id > 0:
@@ -377,7 +374,7 @@ async def get_tip(ctx, id=0):
         elif id == 0:
             cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
             record = cur.fetchone()
-        
+
         if record:
             tip = record
         else:
@@ -385,17 +382,17 @@ async def get_tip(ctx, id=0):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return tip
 
 # Get horse data
 async def get_horse_data(ctx, tier):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM horses WHERE tier=?',(tier,))
         record = cur.fetchone()
-        
+
         if record:
             horse_data = record
         else:
@@ -403,17 +400,17 @@ async def get_horse_data(ctx, tier):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return horse_data
 
 # Get redeemable codes
 async def get_codes(ctx):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM codes ORDER BY code')
         record = cur.fetchall()
-        
+
         if record:
             codes = record
         else:
@@ -421,17 +418,17 @@ async def get_codes(ctx):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return codes
 
 # Get user count
 async def get_user_number(ctx):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT COUNT(*) FROM settings_user')
         record = cur.fetchone()
-        
+
         if record:
             user_number = record
         else:
@@ -439,27 +436,27 @@ async def get_user_number(ctx):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return user_number
-   
+
 # Check database for user settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
 async def get_settings(ctx):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
         record = cur.fetchone()
-        
+
         if record:
             current_settings = (record[1], record[2])
         else:
             cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, 0, 'not ascended',))
             current_settings = None
-            
+
     except sqlite3.Error as error:
         global_data.logger.error(error)
-        await log_error(ctx, error)    
-  
+        await log_error(ctx, error)
+
     return current_settings
 
 # Get monster data by areas
@@ -468,13 +465,13 @@ async def get_mob_data(ctx, areas):
     areas: tuple/list that contains two areas: from_area and until_area.
     Example: get_mob_data(ctx, (1,4,)) returns the mobs for areas 1, 2, 3 and 4
     """
-    
+
     try:
-        cur=erg_db.cursor()    
+        cur=erg_db.cursor()
         cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE area_from >= ? and area_until <= ?', (areas[0],areas[1],))
         record = cur.fetchall()
-        
-        
+
+
         if record:
             mob_data = record
         else:
@@ -482,14 +479,14 @@ async def get_mob_data(ctx, areas):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return mob_data
 
 # Get monster by name
 async def get_mob_by_name(ctx, name):
-    
+
     try:
-        cur=erg_db.cursor()    
+        cur=erg_db.cursor()
         cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE name = ? COLLATE NOCASE', (name,))
         record = cur.fetchone()
 
@@ -501,7 +498,7 @@ async def get_mob_by_name(ctx, name):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
     return mob
 
 
@@ -515,9 +512,9 @@ async def set_prefix(bot, ctx, new_prefix):
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
         record = cur.fetchone()
-        
+
         if record:
-            cur.execute('UPDATE settings_guild SET prefix = ? where guild_id = ?', (new_prefix, ctx.guild.id,))           
+            cur.execute('UPDATE settings_guild SET prefix = ? where guild_id = ?', (new_prefix, ctx.guild.id,))
         else:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
@@ -526,12 +523,12 @@ async def set_prefix(bot, ctx, new_prefix):
 
 # Set progress settings
 async def set_progress(bot, ctx, new_tt, new_ascended):
-    
+
     try:
         cur=erg_db.cursor()
         cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
         record = cur.fetchone()
-        
+
         if record:
             cur.execute('UPDATE settings_user SET timetravel = ?, ascended = ? where user_id = ?', (new_tt, new_ascended, ctx.author.id,))
         else:
@@ -539,13 +536,13 @@ async def set_progress(bot, ctx, new_tt, new_ascended):
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
-        
+
 
 # --- Error Logging ---
 
 # Error logging
 async def log_error(ctx, error, guild_join=False):
-    
+
     if guild_join == False:
         try:
             settings = ''
@@ -564,26 +561,26 @@ async def log_error(ctx, error, guild_join=False):
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
         except sqlite3.Error as db_error:
             print(f'Error inserting error (ha) into database.\n{db_error}')
-            
-            
+
+
 
 # --- First Time User ---
 
 # Welcome message to inform the user of his/her initial settings
 async def first_time_user(bot, ctx):
-    
+
     try:
         current_settings = await get_settings(ctx)
-        
+
         if current_settings == None:
             current_tt = 0
             current_ascension = 'not ascended'
         else:
             current_tt = current_settings[0]
             current_ascension = current_settings[1]
-        
+
         prefix = ctx.prefix
-        
+
         await ctx.send(
             f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
             f'I have set your progress to **TT {current_tt}**, **{current_ascension}**.\n\n'

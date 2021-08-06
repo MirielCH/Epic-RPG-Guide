@@ -21,12 +21,12 @@ dungeon13 = os.path.join(bot_dir, 'images/dungeon13.png')
 default_prefix = '$'
 
 # Embed color
-color = 8983807
+color = 0x8914FF
 
 # Set default footer
 async def default_footer(prefix):
     footer = f'Use {prefix}guide or {prefix}g to see all available guides.'
-    
+
     return footer
 
 # Open error log file, create if it not exists
@@ -185,18 +185,18 @@ item_aliases = {
 #--- Functions accessed by multiple cogs ----
 # Create field "trade rates" for area & trading
 async def design_field_traderate(traderate_data):
-        
+
     field_value = f'{emojis.bp} 1 {emojis.fish} ⇄ {emojis.log} {traderate_data[1]}'
     if not traderate_data[2] == 0:
         field_value = f'{field_value}\n{emojis.bp} 1 {emojis.apple} ⇄ {emojis.log} {traderate_data[2]}'
         if not traderate_data[3] == 0:
             field_value = f'{field_value}\n{emojis.bp} 1 {emojis.ruby} ⇄ {emojis.log} {traderate_data[3]}'
-            
+
     return (field_value)
 
 # Trade for area X for area & trading
 async def design_field_trades(area_no, ascended='not ascended'):
-    
+
     if int(area_no) in (1,2,4,6,12,13,14):
         field_value = f'{emojis.bp} None'
     elif int(area_no) == 3:
@@ -277,7 +277,7 @@ async def design_field_trades(area_no, ascended='not ascended'):
 
 # Create field "Recommended Stats" for areas & dungeons
 async def design_field_rec_stats(field_rec_stats_data, short_version=False):
-    
+
     player_at = field_rec_stats_data[0]
     player_def = field_rec_stats_data[1]
     player_carry_def = field_rec_stats_data[2]
@@ -292,7 +292,7 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
     player_at = f'{player_at:,}'
     player_def = f'{player_def:,}'
     player_life = f'{player_life:,}'
-    
+
     if short_version == False:
         if life_boost == 'true':
             if dungeon_no < 11:
@@ -303,7 +303,7 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
             life_boost = ''
     else:
         life_boost = ''
-    
+
     if not player_carry_def == 0:
         if short_version == False:
             player_carry_def = f'({player_carry_def}+ to carry)'
@@ -311,19 +311,19 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
             player_carry_def = f'({player_carry_def})'
     else:
         player_carry_def = ''
-        
+
     if player_at == '0':
         player_at = '-'
-    
+
     if player_def == '0':
         player_def = '-'
-        
+
     if player_life == '0':
         player_life = '-'
-    
+
     if player_level == 0:
         player_level = '-'
-    
+
     if short_version == False:
         field_value = (
             f'{emojis.bp} {emojis.statat} **AT**: {player_at}\n'
@@ -338,12 +338,12 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
             f'{emojis.statlife} **LIFE**: {player_life} {life_boost}\n'
             f'{emojis.statlevel} **LEVEL**: {player_level}\n{emojis.blank}'
         )
-    
+
     return field_value
 
 # Get amount of material in inventory
 async def inventory_get(inventory, material):
-    
+
     if inventory.find(f'**{material}**:') > -1:
         mat_start = inventory.find(f'**{material}**:') + len(f'**{material}**:')+1
         mat_end = inventory.find(f'\\', mat_start)
@@ -358,5 +358,5 @@ async def inventory_get(inventory, material):
             mat = 0
     else:
         mat = 0
-        
+
     return mat

@@ -3,12 +3,13 @@
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
+sys.path.insert(0, parent_dir)
 import discord
 import emojis
 import global_data
 import database
 import asyncio
+from decimal import Decimal, ROUND_HALF_UP
 
 from discord.ext import commands
 
@@ -16,29 +17,29 @@ from discord.ext import commands
 class miscCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     # Command "duels" - Returns all duelling weapons
     @commands.command(aliases=('duel','duelling','dueling','duelweapons','duelweapon',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def duels(self, ctx):
         embed = await embed_duels(ctx.prefix)
         await ctx.send(embed=embed)
-    
+
     # Command "codes" - Redeemable codes
     @commands.command(aliases=('code',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def codes(self, ctx):
         codes = await database.get_codes(ctx)
         embed = await embed_codes(ctx.prefix, codes)
-        await ctx.send(embed=embed)            
-    
+        await ctx.send(embed=embed)
+
     # Command "coolness" - Coolness guide
     @commands.command(aliases=('cool',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def coolness(self, ctx):
         embed = await embed_coolness(ctx.prefix)
         await ctx.send(embed=embed)
-        
+
     # Command "badges" - Badge guide
     @commands.command(aliases=('badge',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
@@ -52,48 +53,46 @@ class miscCog(commands.Cog):
     async def farm(self, ctx):
         embed = await embed_farm(ctx.prefix)
         await ctx.send(embed=embed)
-    
+
     # Command "start" - Starter guide
     @commands.command(aliases=('starting','startguide','starterguide','startingguide'))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def start(self, ctx):
         embed = await embed_start(ctx.prefix)
         await ctx.send(embed=embed)
-    
+
     # Command "calc" - Simple calculator
     @commands.command(aliases=('calculate','calculator',))
     @commands.bot_has_permissions(send_messages=True)
     async def calc(self, ctx, *args):
-
         def formatNumber(num):
             if num % 1 == 0:
                 return int(num)
             else:
-                return round(num,5)
+                num = num.quantize(Decimal('1.1234567890'), rounding=ROUND_HALF_UP)
+                return num
 
         if args:
             calculation = ''
             allowedchars = set('1234567890.-+/*%()')
-            
+
             for arg in args:
                 calculation = f'{calculation}{arg}'
-            
+
             if set(calculation).issubset(allowedchars):
-                if calculation.find('**') > -1:
+                if '**' in calculation:
                     await ctx.send(
                         f'Invalid characters. Please only use numbers and supported operators.\n'
                         f'Supported operators are `+`, `-`, `/`, `*` and `%`.'
                     )
                     return
-                else:
-                    pass
             else:
                 await ctx.send(
                     f'Invalid characters. Please only use numbers and supported operators.\n'
                     f'Supported operators are `+`, `-`, `/`, `*` and `%`.'
                 )
                 return
-                
+
             # Parse open the calculation, convert all numbers to float and store it as a list
             # This is necessary because Python has the annoying habit of allowing infinite integers which can completely lockup a system. Floats have overflow protection.
             pos = 1
@@ -103,12 +102,12 @@ class miscCog(commands.Cog):
             last_char_was_number = False
             calculation_sliced = calculation
             try:
-                while not pos == len(calculation)+1:
+                while pos != len(calculation) + 1:
                     slice = calculation_sliced[0:1]
                     allowedcharacters = set('1234567890.-+/*%()')
                     if set(slice).issubset(allowedcharacters):
                         if slice.isnumeric():
-                            if last_char_was_number == True:
+                            if last_char_was_number:
                                 number = f'{number}{slice}'
                             else:
                                 number = slice
@@ -118,10 +117,10 @@ class miscCog(commands.Cog):
                             if slice == '.':
                                 number = f'{number}{slice}'
                             else:
-                                if not number == '':        
-                                    calculation_parsed.append(float(number))
+                                if number != '':
+                                    calculation_parsed.append(Decimal(float(number)))
                                     number = ''
-                                
+
                                 if slice in ('*','%','/'):
                                     if last_char_was_operator == True:
                                         await ctx.send(
@@ -144,26 +143,30 @@ class miscCog(commands.Cog):
                         return
 
                     calculation_sliced = calculation_sliced[1:]
-                    pos = pos+1
+                    pos += 1
                 else:
-                    if not number=='':
-                        calculation_parsed.append(float(number))
+                    if number != '':
+                        calculation_parsed.append(Decimal(float(number)))
             except:
                 await ctx.send(
                     f'Error while parsing your input. Please check your equation.\n'
                     f'Supported operators are `+`, `-`, `/`, `*` and `%`.'
                 )
                 return
-            
+
             # Reassemble and execute calculation
             calculation_reassembled = ''
             for slice in calculation_parsed:
                 calculation_reassembled = f'{calculation_reassembled}{slice}'
-            
+
             try:
                 result = eval(calculation_reassembled)
+                result = Decimal(eval(calculation_reassembled))
                 result = formatNumber(result)
-                result = f'{result:,}'
+                if isinstance(result, int):
+                    result = f'{result:,}'
+                else:
+                    result = f'{result:,}'.rstrip('0').rstrip('.')
                 if not len(result) > 2000:
                     await ctx.send(result)
                     return
@@ -181,12 +184,12 @@ class miscCog(commands.Cog):
                 f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [calculation]`\n'
                 f'Supported operators are `+`, `-`, `/`, `*` and `%`.'
             )
-            
+
     # Command "tip" - Returns a random tip
     @commands.command(aliases=('tips',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def tip(self, ctx, *args):
-        
+
         if args:
             if len(args)==1:
                 id = args[0]
@@ -199,30 +202,30 @@ class miscCog(commands.Cog):
                 tip = await database.get_tip(ctx)
         else:
             tip = await database.get_tip(ctx)
-        
+
         embed = discord.Embed(
             color = global_data.color,
             title = 'TIP',
             description = tip[0]
-        )    
-        
+        )
+
         await ctx.send(embed=embed)
-        
+
     # Command "coincap" - Calculate the coin cap
     @commands.command(aliases=('coin',))
     @commands.bot_has_permissions(send_messages=True, external_emojis=True)
     async def coincap(self, ctx, *args):
-        
+
         """
         await ctx.send(
                 f'**{ctx.author.name}**, this command is disabled because the known formula was confirmed to be wrong.\n'
                 f'The correct formula is currently unkown.'
             )
         """
-        
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-            
+
         def epic_rpg_check(m):
             correct_embed = False
             try:
@@ -234,20 +237,20 @@ class miscCog(commands.Cog):
                     correct_embed = False
             except:
                 correct_embed = False
-            
+
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-        
+
         prefix = ctx.prefix
-        
+
         error_syntax = (
             f'The command syntax is `{prefix}coincap [tt] [area]`\n'
             f'You can also use `{prefix}coincap` and let me read your profile.\n'
             f'Examples: `{prefix}coincap tt5 a12`, `{prefix}coincap 8 10`'
         )
-        
+
         user_tt = None
         user_area = None
-        
+
         if args:
             if args[0].lower() == 'cap':
                 args = list(args)
@@ -288,7 +291,7 @@ class miscCog(commands.Cog):
                 else:
                     await ctx.send(error_syntax)
                     return
-        
+
         if user_tt == None:
             try:
                 await ctx.send(
@@ -312,7 +315,7 @@ class miscCog(commands.Cog):
                                 f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt] [max area]` instead.'
                             )
                             return
-                        
+
                     start_area = profile.find('(Max:') + 6
                     end_area = profile.find(')', start_area)
                     user_area = profile[start_area:end_area]
@@ -330,11 +333,11 @@ class miscCog(commands.Cog):
                 else:
                     await ctx.send('Wrong input. Aborting.')
                     return
-                                
+
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-        
+
         coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
         await ctx.send(
             f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.\n'
@@ -346,7 +349,7 @@ class miscCog(commands.Cog):
 def setup(bot):
     bot.add_cog(miscCog(bot))
 
-                    
+
 
 # --- Embeds ---
 # Duels
@@ -361,7 +364,7 @@ async def embed_duels(prefix):
         f'{emojis.bp} {emojis.duelgear}{emojis.duelgear} - **Gear** (both sword and armor)\n'
         f'{emojis.bp} {emojis.duelenchants}{emojis.duelenchants} - **Enchants** (both sword and armor)'
     )
-    
+
     randomness = (
         f'{emojis.bp} Every duel score gets multiplied by 0.75 ~ 1.25\n'
         f'{emojis.bp} Thus the duel outcome can be highly unexpected'
@@ -372,12 +375,12 @@ async def embed_duels(prefix):
         title = 'DUELS',
         description = 'Winning a duel depends on the chosen weapon and some luck.'
     )
-    
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
     embed.add_field(name='TIP', value=f'{emojis.bp} Unless you are __very__ rich, don\'t choose coins.', inline=False)
-            
+
     return embed
 
 # Redeemable codes
@@ -386,7 +389,7 @@ async def embed_codes(prefix, codes):
     temporary_value = ''
     permanent_value = ''
 
-    for code in codes:  
+    for code in codes:
         temporary_code = code[2]
         if temporary_code == 'True':
             temporary_value = f'{temporary_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
@@ -399,15 +402,15 @@ async def embed_codes(prefix, codes):
         description = (
             f'Use these codes with `rpg code` to get some free goodies.\n'
             f'Every code can only be redeemed once.'
-        )          
-    )    
-    
+        )
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
-    
+
     if not temporary_value == '':
         embed.add_field(name='TEMPORARY EVENT CODES', value=temporary_value, inline=False)
     embed.add_field(name='PERMANENT CODES', value=permanent_value, inline=False)
-            
+
     return embed
 
 # Coolness
@@ -417,9 +420,9 @@ async def embed_coolness(prefix):
         f'{emojis.bp} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'
         f'{emojis.bp} You need at least 2,000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
     )
-                
+
     req = f'{emojis.bp} Unlocks when you reach area 12 in {emojis.timetravel}TT 1'
-                
+
     howtoget = (
         f'{emojis.bp} `ultraining` awards 2 coolness per stage (unlocked in A12)\n'
         f'{emojis.bp} Do an adventure with full HP and survive with 1 HP\n'
@@ -429,7 +432,7 @@ async def embed_coolness(prefix):
         f'{emojis.bp} Ascend a pet\n'
         f'{emojis.bp} Do other \'cool\' actions that are currently unknown'
     )
-                
+
     note = (
         f'{emojis.bp} You don\'t lose coolness when you time travel\n'
         f'{emojis.bp} You can get coolness in every area once it\'s unlocked\n'
@@ -441,14 +444,14 @@ async def embed_coolness(prefix):
         color = global_data.color,
         title = 'COOLNESS',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='REQUIREMENTS', value=req, inline=False)
     embed.add_field(name='HOW TO GET COOLNESS', value=howtoget, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-            
+
     return embed
 
 # Badges
@@ -464,13 +467,13 @@ async def embed_badges(prefix):
         f'{emojis.bp} {emojis.badgetop} : Unlocked by beating D15-2 and reaching the TOP\n'
         f'{emojis.bp} {emojis.badgeomega} : Unlock requirements unknown'
     )
-                
+
     howtouse = (
         f'{emojis.bp} Use `rpg badge list` to get the ID of the badges you want\n'
         f'{emojis.bp} Use `rpg badge claim [ID]` to claim a badge\n'
         f'{emojis.bp} Use `rpg badge [ID]` to activate or deactivate a badge'
     )
-                
+
     note = (
         f'{emojis.bp} You can have several badges active at the same time\n'
         f'{emojis.bp} You can only claim badges you have unlocked\n'
@@ -480,14 +483,14 @@ async def embed_badges(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = 'BADGES',
-        description = 'Badges are cosmetic only profile decorations.'      
-    )    
-    
+        description = 'Badges are cosmetic only profile decorations.'
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='AVAILABLE BADGES', value=badges, inline=False)
     embed.add_field(name='HOW TO USE', value=howtouse, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-            
+
     return embed
 
 # Farming
@@ -499,14 +502,14 @@ async def embed_farm(prefix):
         f'{emojis.bp} You have a 4% chance to receive special seeds (see below)\n'
         f'{emojis.bp} The cooldown of the command is 10m (donor reduction applies)'
     )
-    
+
     planting_special = (
         f'{emojis.bp} There are three special seeds: {emojis.seedbread} bread, {emojis.seedcarrot} carrot and {emojis.seedpotato} potato seed\n'
         f'{emojis.bp} You can plant them with `rpg farm [type]` (e.g. `rpg farm carrot`)\n'
         f'{emojis.bp} The crop will be the same type (e.g. a {emojis.seedcarrot} carrot seed gives you {emojis.carrot} carrots)\n'
         f'{emojis.bp} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
     )
-                
+
     usage_bread = (
         f'{emojis.bp} {emojis.swordhair} `Hair Sword` ➜ 4 {emojis.mermaidhair} + **220** {emojis.bread}\n'
         f'{emojis.bp} {emojis.armorelectronical} `Electronical Armor` ➜ 12 {emojis.chip} + 1 {emojis.loghyper} + **180** {emojis.bread}\n'
@@ -515,7 +518,7 @@ async def embed_farm(prefix):
         f'{emojis.bp} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.bp} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
-    
+
     usage_carrot = (
         f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ 1 {emojis.bread} + **160** {emojis.carrot}\n'
         f'{emojis.bp} {emojis.foodorangejuice} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.carrot}\n'
@@ -524,7 +527,7 @@ async def embed_farm(prefix):
         f'{emojis.bp} Can be sold for 2,500 coins and 3 merchant XP\n'
         f'{emojis.bp} Can be used to change the horse name with `rpg horse feed`'
     )
-    
+
     usage_potato = (
         f'{emojis.bp} {emojis.swordruby} `Ruby Sword` ➜ 4 {emojis.ruby} + 1 {emojis.logmega} + **36** {emojis.potato}\n'
         f'{emojis.bp} {emojis.armorruby} `Ruby Armor` ➜ 7 {emojis.ruby} + 4 {emojis.unicornhorn} + **120** {emojis.potato} + 2 {emojis.logmega}\n'
@@ -533,13 +536,13 @@ async def embed_farm(prefix):
         f'{emojis.bp} 1 STT score per **30** {emojis.potato}\n'
         f'{emojis.bp} Can be sold for 2,000 coins and 3 merchant XP'
     )
-           
+
     what_to_plant = (
         f'{emojis.bp} If you want to cook food for levels or stats: {emojis.carrot} carrots\n'
         f'{emojis.bp} If you want to get more coins or a higher STT score: {emojis.bread} bread\n'
         f'{emojis.bp} If you want to flex potatoes for some reason: {emojis.potato} potatoes'
     )
-                
+
     note = (
         f'{emojis.bp} Farming is unlocked in area 4\n'
         f'{emojis.bp} The command can be used in area 1+ when ascended\n'
@@ -551,8 +554,8 @@ async def embed_farm(prefix):
         color = global_data.color,
         title = 'FARMING',
         description = f'It ain\'t much, but it\'s honest work.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
     embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
@@ -561,7 +564,7 @@ async def embed_farm(prefix):
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-            
+
     return embed
 
 
@@ -573,14 +576,14 @@ async def embed_start(prefix):
         f'Think of this as new game+. This resets your progress but unlocks more of the game. For more information see `{prefix}tt`.\n'
         f'To check out the available commands in this game, use `rpg start` and `rpg help`.'
     )
-                
+
     areas_dungeons = (
         f'You advance by moving through areas. You can check what you should do in each area in the area guides (see `{prefix}areas`).\n'
         f'To leave an area and advance to the next one you have to beat the dungeon for that area (so to leave area 1 you do dungeon 1).\n'
         f'Dungeons 1 to 9 are simple tank and spank affairs, there is no gear check. So, if needed, you can enter them undergeared and get carried.\n'
         f'**This does not work for dungeons 10+**. To enter those you **need** to have certain gear.'
     )
-                
+
     first_run = (
         f'Your first run is called TT0 (time travel 0) because you haven\'t time traveled yet. In TT0 you need to reach area 11 which means you need to beat dungeon 10.\n'
         f'Now, as mentioned, D10 has gear requirements, so you can not cheese that dungeon, you **need** to craft the following gear:\n'
@@ -589,7 +592,7 @@ async def embed_start(prefix):
         f'The ULTRA log needed for the sword equals 250,000 wooden logs and the mob drops for the armor are pretty rare (see `{prefix}drops`).\n'
         f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny EDGY gear.'
     )
-    
+
     grinding_trades = (
         f'Grinding all those materials takes time, so you want to do this smartly.\n'
         f'Trade rates are the single most important thing in this game to help you saving time. Every area has different trade rates, so every time you advance, your trade rates change (see `{prefix}trr`). You can **not** go back to earlier trade rates, these are tied to your highest unlocked area.\n'
@@ -597,7 +600,7 @@ async def embed_start(prefix):
         f'In TT0 the most important area is **area 5**. You want to stay there until you have the recommended materials (see `{prefix}a5`).\n'
         f'If you do this, you will save a ton of time later on and be able to craft that EDGY gear as soon as you reach areas 9 and 10. Don\'t forget to check out the area guides for other recommendations.'
     )
-    
+
     tips = (
         f'{emojis.bp} Yes, farming in area 5 is boring. But do not leave the area early, you **will** regret it.\n'
         f'{emojis.bp} Do not craft the EDGY Sword before area 10. You will lose materials if you do.'
@@ -607,13 +610,13 @@ async def embed_start(prefix):
         color = global_data.color,
         title = 'STARTER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
     embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
     embed.add_field(name='GRINDING & TRADES', value=grinding_trades, inline=False)
     embed.add_field(name='TIPS', value=tips, inline=False)
-            
+
     return embed
