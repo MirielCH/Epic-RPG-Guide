@@ -1,8 +1,9 @@
 # global_data.py
 
-import os
 import logging
 import logging.handlers
+import os
+
 import emojis
 
 # Get bot directory

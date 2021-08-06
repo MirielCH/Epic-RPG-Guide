@@ -1,46 +1,44 @@
 # dungeons.py
 
-import os,sys,inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
-import discord
 import asyncio
+from humanfriendly import format_timespan
+
+import discord
+from discord.ext import commands
+
+import database
 import emojis
 import global_data
-import database
 
-from discord.ext import commands
-from humanfriendly import format_timespan
 
 # dungeon commands (cog)
 class dungeonsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     # Dungeons menu
     @commands.command(aliases=('dungeons',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def dungeonguide(self, ctx):
         embed = await embed_dungeons_menu(ctx)
         await ctx.send(embed=embed)
-    
+
     # Dungeon guide, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
     dungeon_aliases = ['dungeon','dung','dung15-1','d15-1','dungeon15-1','dung15-2','d15-2','dungeon15-2','dung152','d152','dungeon152','dung151','d151','dungeon151',]
     for x in range(1,16):
-        dungeon_aliases.append(f'd{x}')    
-        dungeon_aliases.append(f'dungeon{x}') 
+        dungeon_aliases.append(f'd{x}')
+        dungeon_aliases.append(f'dungeon{x}')
         dungeon_aliases.append(f'dung{x}')
 
     @commands.command(name='d',aliases=(dungeon_aliases))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True, attach_files=True)
     async def dungeon(self, ctx, *args):
-        
+
         invoked = ctx.message.content
         invoked = invoked.lower()
         prefix = ctx.prefix
         prefix = prefix.lower()
-        
+
         if args:
             if len(args)>2:
                 if len(args)==3:
@@ -63,7 +61,7 @@ class dungeonsCog(commands.Cog):
                             await self.dungeongear(ctx, page)
                             return
                     else:
-                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')           
+                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
                 else:
                     await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
             elif len(args) == 1:
@@ -79,7 +77,7 @@ class dungeonsCog(commands.Cog):
                         else:
                             await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
                     else:
-                        await ctx.send(f'There is no dungeon {arg}, lol.') 
+                        await ctx.send(f'There is no dungeon {arg}, lol.')
                 else:
                     if arg == 'gear':
                         await self.dungeongear(ctx, '1')
@@ -101,14 +99,14 @@ class dungeonsCog(commands.Cog):
                     else:
                         await ctx.send(file=dungeon_embed[0], embed=dungeon_embed[1])
                 else:
-                    await ctx.send(f'There is no dungeon {dungeon_no}, lol.') 
+                    await ctx.send(f'There is no dungeon {dungeon_no}, lol.')
             else:
                 if dungeon_no == '':
                     await self.dungeonguide(ctx)
                     return
                 else:
                     await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
-    
+
     # Command "dungeonstats" - Returns recommended stats for all dungeons
     @commands.command(aliases=('dstats','ds',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
@@ -116,18 +114,18 @@ class dungeonsCog(commands.Cog):
         rec_stats_data = await database.get_rec_stats_data(ctx)
         embed = await embed_dungeon_rec_stats(rec_stats_data, ctx.prefix)
         await ctx.send(embed=embed)
-        
+
     # Command "dungeongear" - Returns recommended gear for all dungeons
     @commands.command(aliases=('dgear','dg','dg1','dg2',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def dungeongear(self, ctx, *args):
-        
+
         invoked = ctx.message.content
         invoked = invoked.lower()
-        
+
         if args:
             if len(args)>1:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
                 return
             elif len(args)==1:
                 page = args[0]
@@ -138,10 +136,10 @@ class dungeonsCog(commands.Cog):
                             embed = await embed_dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
                             await ctx.send(embed=embed)
                         else:
-                            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
                             return
                 else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
                     return
         else:
             page = invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','').replace(f'{ctx.prefix}dg','')
@@ -156,17 +154,17 @@ class dungeonsCog(commands.Cog):
                     embed = await embed_dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
                     await ctx.send(embed=embed)
                 else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`') 
+                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
                     return
-    
+
     # Command "dungeoncheck" - Checks user stats against recommended stats
     @commands.command(aliases=('dcheck','dungcheck','dc','check',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def dungeoncheck(self, ctx, *args):
-        
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-        
+
         def epic_rpg_check(m):
             correct_embed = False
             try:
@@ -178,10 +176,10 @@ class dungeonsCog(commands.Cog):
                     correct_embed = False
             except:
                 correct_embed = False
-            
+
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-        
-        try: 
+
+        try:
             dungeon_no = 0
             if len(args) == 0:
                 explanation = (
@@ -283,7 +281,7 @@ class dungeonsCog(commands.Cog):
                         user_life = int(args[2])
                         if (user_at == 0) or (user_def == 0) or (user_life == 0) or (user_at > 10000) or (user_def > 10000) or (user_life > 10000):
                             await ctx.send('NICE STATS. Not gonna buy it though.')
-                            return 
+                            return
                         else:
                             dungeon_check_data = await database.get_dungeon_check_data(ctx)
                             user_stats = [user_at, user_def, user_life]
@@ -299,24 +297,24 @@ class dungeonsCog(commands.Cog):
                     f'•`{ctx.prefix}{ctx.invoked_with} [AT] [DEF] [LIFE]` if you have a profile background.'
                 )
         except:
-            raise      
+            raise
 
     # Command "dungeoncheckX" - Checks user stats against recommended stats of a specific dungeon
     dungeon_check_aliases = ['dcheck1','check1','dungcheck1','dc1','dcheck15-1','check15-1','dungcheck15-1','dc15-1','dcheck151','check151','dungcheck151','dc151','dcheck15-2','check15-2','dungcheck15-2','dc15-2','dcheck152','check152','dungcheck152','dc152',]
     for x in range(2,16):
-        dungeon_check_aliases.append(f'dcheck{x}')    
+        dungeon_check_aliases.append(f'dcheck{x}')
         dungeon_check_aliases.append(f'check{x}')
-        dungeon_check_aliases.append(f'dungeoncheck{x}') 
+        dungeon_check_aliases.append(f'dungeoncheck{x}')
         dungeon_check_aliases.append(f'dungcheck{x}')
         dungeon_check_aliases.append(f'dc{x}')
 
     @commands.command(aliases=dungeon_check_aliases)
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def dungeoncheck1(self, ctx, *args):
-        
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-            
+
         def epic_rpg_check(m):
             correct_embed = False
             try:
@@ -328,16 +326,16 @@ class dungeonsCog(commands.Cog):
                     correct_embed = False
             except:
                 correct_embed = False
-            
+
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-        
-        try: 
+
+        try:
             invoked = ctx.invoked_with
             invoked = invoked.lower()
-            
+
             dungeon_no = invoked.replace('dungeoncheck','').replace('dungcheck','').replace('dcheck','').replace('check','').replace('dc','').replace('-','')
             dungeon_no = int(dungeon_no)
-        
+
             if dungeon_no in (10,15,151,152):
                 user_stats = (0,0,0)
                 if dungeon_no == 151:
@@ -442,7 +440,7 @@ class dungeonsCog(commands.Cog):
                             user_life = int(args[2])
                             if (user_at == 0) or (user_def == 0) or (user_life == 0) or (user_at > 10000) or (user_def > 10000) or (user_life > 10000):
                                 await ctx.send('NICE STATS. Not gonna buy it though.')
-                                return 
+                                return
                             else:
                                 dungeon_check_data = await database.get_dungeon_check_data(ctx, dungeon_no)
                                 user_stats = [user_at, user_def, user_life]
@@ -464,7 +462,7 @@ class dungeonsCog(commands.Cog):
 def setup(bot):
     bot.add_cog(dungeonsCog(bot))
 
-                  
+
 
 # --- Redundancies ---
 # Guides
@@ -479,52 +477,52 @@ guide_stats = '`{prefix}ds` : Recommended stats (all dungeons)'
 # --- Functions ---
 # Create field "Recommended gear"
 async def function_design_field_rec_gear(field_rec_gear_data):
-    
+
     player_sword = field_rec_gear_data[0]
     player_sword_enchant = field_rec_gear_data[1]
     player_sword_emoji = getattr(emojis, field_rec_gear_data[2])
     player_armor = field_rec_gear_data[3]
     player_armor_enchant = field_rec_gear_data[4]
     player_armor_emoji = getattr(emojis, field_rec_gear_data[5])
-    
+
     if not player_armor_enchant == '':
         player_armor_enchant = f'[{player_armor_enchant}]'
-    
+
     if not player_sword_enchant == '':
         player_sword_enchant = f'[{player_sword_enchant}]'
-    
+
     field_value = f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}'
     if not player_armor == 'None':
         field_value = f'{field_value}\n{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}'
-    
+
     return field_value
 
 # Create field "Check dungeon stats" for areas and dungeons
 async def function_design_field_check_stats(field_check_stats_data, user_data, prefix, short_version):
-    
+
     user_at = user_data[0]
     user_def = user_data[1]
     user_life = user_data[2]
-    
+
     player_at = field_check_stats_data[0]
     player_def = field_check_stats_data[1]
     player_carry_def = field_check_stats_data[2]
     player_life = field_check_stats_data[3]
     dungeon_no = field_check_stats_data[4]
-    
+
     if not dungeon_no == 15.2:
         dungeon_no = int(dungeon_no)
-    
+
     check_at = 'N/A'
     check_def = 'N/A'
     check_carry_def = 'N/A'
     check_life = 'N/A'
-    
+
     user_at_check_result = 'N/A'
     user_def_check_result = 'N/A'
     user_carry_def_check_result = 'N/A'
     user_life_check_result = 'N/A'
-    
+
     check_results = ''
 
     if dungeon_no <= 9:
@@ -538,7 +536,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_at_check_result = 'pass'
         else:
             check_at = f'{emojis.checkignore} **AT**: -'
-        
+
         if not player_def == 0:
             if user_def < player_def:
                 user_def_check_result = 'fail'
@@ -546,7 +544,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_def_check_result = 'pass'
         else:
             check_def = f'{emojis.checkignore} **DEF**: -'
-    
+
         if not player_carry_def == 0:
             if user_def < player_carry_def:
                 user_carry_def_check_result = 'fail'
@@ -554,7 +552,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_carry_def_check_result = 'pass'
         else:
             check_carry_def = f'{emojis.checkignore} **Carry DEF**: -'
-            
+
         if not player_life == 0:
             if user_life < player_life:
                 if user_def >= player_carry_def:
@@ -571,7 +569,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_life_check_result = 'pass'
         else:
             check_life = f'{emojis.checkignore} **LIFE**: -'
-    
+
     elif dungeon_no == 11:
         if user_at < player_at:
             user_at_check_result = 'fail'
@@ -600,7 +598,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                     user_life_check_result = 'fail'
         elif user_life >= player_life:
             user_life_check_result = 'pass'
-            
+
     elif dungeon_no == 12:
         if user_def < player_def:
             user_def_check_result = 'fail'
@@ -617,13 +615,13 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_life_check_result = 'fail'
         elif user_life >= player_life:
             user_life_check_result = 'pass'
-  
+
     elif dungeon_no == 13:
         if user_life < player_life:
             user_life_check_result = 'fail'
         else:
             user_life_check_result = 'pass'
-  
+
     elif dungeon_no == 14:
         if user_def < player_def:
             user_def_check_result = 'fail'
@@ -640,7 +638,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 user_life_check_result = 'fail'
         elif user_life >= player_life:
             user_life_check_result = 'pass'
-            
+
     if user_at_check_result == 'pass':
         check_at = f'{emojis.checkok} **AT**: {player_at}'
     elif user_at_check_result == 'warn':
@@ -649,7 +647,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
         check_at = f'{emojis.checkfail} **AT**: {player_at}'
     elif user_at_check_result == 'ignore':
         check_at = f'{emojis.checkignore} **AT**: {player_at}'
-    
+
     if user_def_check_result == 'pass':
         check_def = f'{emojis.checkok} **DEF**: {player_def}'
     elif user_def_check_result == 'warn':
@@ -658,7 +656,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
         check_def = f'{emojis.checkfail} **DEF**: {player_def}'
     elif user_def_check_result == 'ignore':
         check_def = f'{emojis.checkignore} **DEF**: {player_def}'
-    
+
     if user_carry_def_check_result == 'pass':
         check_carry_def = f'{emojis.checkok} **Carry DEF**: {player_carry_def}'
     elif user_carry_def_check_result == 'warn':
@@ -667,7 +665,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
         check_carry_def = f'{emojis.checkfail} **Carry DEF**: {player_carry_def}'
     elif user_carry_def_check_result == 'ignore':
         check_carry_def = f'{emojis.checkignore} **Carry DEF**: {player_carry_def}'
-        
+
     if user_life_check_result == 'pass':
         check_life = f'{emojis.checkok} **LIFE**: {player_life}'
     elif user_life_check_result == 'passA':
@@ -682,12 +680,12 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
         check_life = f'{emojis.checkfail} **LIFE**: {player_life}'
     elif user_life_check_result == 'ignore':
         check_life = f'{emojis.checkignore} **LIFE**: {player_life}'
-    
+
     if short_version == True:
         bulletpoint = ''
     else:
         bulletpoint = f'{emojis.bp}'
-    
+
     field_value = ''
     if not check_at == 'N/A':
         field_value =   f'{bulletpoint} {check_at}'
@@ -701,12 +699,12 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
     if field_value == '':
         field_value = f'{bulletpoint}Stats irrelevant'
     if short_version == True:
-        field_value =   f'{field_value}\n{emojis.blank}'                        
-    
+        field_value =   f'{field_value}\n{emojis.blank}'
+
     if short_version == False:
         user_stats_check_results = [['AT',user_at_check_result], ['DEF', user_def_check_result], ['LIFE', user_life_check_result]]
         player_stats_check = [player_at, player_def, player_life]
-        
+
         if dungeon_no in (10,15,15.2):
             check_results = f'{emojis.bp} Stats are irrelevant for this dungeon'
             if dungeon_no == 10:
@@ -747,7 +745,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
         elif dungeon_no == 12:
             if (user_def_check_result == 'fail') or (check_life == 'fail'):
-                check_results = f'{emojis.bp} You are not yet ready for this dungeon'    
+                check_results = f'{emojis.bp} You are not yet ready for this dungeon'
                 if user_def_check_result == 'fail':
                     check_results = f'{check_results}\n{emojis.bp} You should increase your **DEF** to **{player_def}**'
                 if user_life_check_result == 'fail':
@@ -760,7 +758,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach recommended **LIFE**'
                 if (user_life_check_result == 'passC'):
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
-                check_results = f'{check_results}\n{emojis.bp} Note that higher **LIFE** will still help in beating the dungeon'    
+                check_results = f'{check_results}\n{emojis.bp} Note that higher **LIFE** will still help in beating the dungeon'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
         elif dungeon_no == 13:
             if user_life_check_result == 'fail':
@@ -773,11 +771,11 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
             else:
                 check_results = f'{emojis.bp} Your stats are high enough for this dungeon'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
-                
+
         elif dungeon_no == 14:
             if (user_def_check_result == 'fail') or user_life_check_result == 'fail':
                 check_results = f'{emojis.bp} You are not yet ready for this dungeon'
-                
+
                 if user_def_check_result == 'fail':
                     check_results = f'{check_results}\n{emojis.bp} You should increase your **DEF** to **{player_def}**'
                 if user_life_check_result == 'fail':
@@ -791,7 +789,7 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 if (user_life_check_result == 'passC'):
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
             check_results = f'{check_results}\n{emojis.bp} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
-                
+
         else:
             if user_carry_def_check_result == 'pass':
                 check_results = f'{emojis.bp} You are ready **and** can carry other players'
@@ -812,10 +810,10 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost B to reach recommended **LIFE**'
                 if (user_life_check_result == 'passC'):
                     check_results = f'{check_results}\n{emojis.bp} Note: You need a {emojis.lifeboost} LIFE boost C to reach recommended **LIFE**'
-            
+
     else:
         check_results = 'N/A'
-        
+
     return (field_value, check_results)
 
 
@@ -823,35 +821,35 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
 # --- Embeds ---
 # Dungeons menu
 async def embed_dungeons_menu(ctx):
-        
+
     prefix = ctx.prefix
-    
+
     dungeon_guide = (
         f'{emojis.bp} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'
         f'{emojis.bp} `{prefix}dgear` / `{prefix}dg` : Recommended gear (all dungeons)\n'
         f'{emojis.bp} `{prefix}dstats` / `{prefix}ds` : Recommended stats (all dungeons)'
     )
-    
+
     statscheck = (
         f'{emojis.bp} `{prefix}dc1`-`{prefix}dc15` : Dungeon 1~15 stats check\n'
         f'{emojis.bp} `{prefix}dcheck` / `{prefix}dc` : Dungeon stats check (all dungeons)'
     )
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'DUNGEON GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='DUNGEONS', value=dungeon_guide, inline=False)
     embed.add_field(name='STATS CHECK', value=statscheck, inline=False)
-    
+
     return embed
 
 # Dungeon guide
 async def embed_dungeon(dungeon_data, prefix):
-    
+
     dungeon_no = dungeon_data[0]
     dungeon_tt = dungeon_data[1]
     boss_name = dungeon_data[2]
@@ -876,16 +874,16 @@ async def embed_dungeon(dungeon_data, prefix):
     player_armor_emoji = getattr(emojis, dungeon_data[21])
     img_dungeon = ''
     image_url = ''
-    
+
     field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
     field_rec_stats = await global_data.design_field_rec_stats(field_rec_stats_data)
-    
+
     field_rec_gear_data = (player_sword, player_sword_enchant, dungeon_data[20], player_armor, player_armor_enchant, dungeon_data[21])
     field_rec_gear = await function_design_field_rec_gear(field_rec_gear_data)
-    
+
     if 1 <= dungeon_no <= 9:
         time_limit = f'{time_limit} per player'
-    
+
     if min_players == max_players:
         players = f'{emojis.bp} {min_players}'
         if not boss_life == 0:
@@ -898,12 +896,12 @@ async def embed_dungeon(dungeon_data, prefix):
     else:
         players = f'{emojis.bp} {min_players}-{max_players}'
         boss_life = f'{boss_life:,} per player'
-    
+
     if boss_at == 0:
         boss_at = '-'
     else:
         boss_at = f'~{boss_at}'
-    
+
     if not key_price == 0:
         try:
             key_price = f'{dungeon_data[8]:,}'
@@ -912,7 +910,7 @@ async def embed_dungeon(dungeon_data, prefix):
         key_price = f'{key_price} coins'
     else:
         key_price = f'You can only enter this dungeon with a {emojis.horset6} T6+ horse.'
-    
+
     if 1 <= dungeon_no <= 9:
         embed_description = 'This is a simple stats based dungeon.'
         requirements = f'{emojis.bp} {emojis.dkey1} Dungeon key **OR** {emojis.horset6} T6+ horse'
@@ -1034,24 +1032,24 @@ async def embed_dungeon(dungeon_data, prefix):
         requirements = f'{emojis.bp} N/A'
         strategy = f'{emojis.bp} N/A'
         strategy_name = 'STRATEGY'
-    
+
     if isinstance(dungeon_no, float):
         dungeon_no = f'{dungeon_no:g}'
-    
+
     embed_title = f'DUNGEON {dungeon_no}'
-    
+
     guides = (
         f'{emojis.bp} {guide_check.format(prefix=prefix,dungeon_no=dungeon_no)}\n'
         f'{emojis.bp} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}'
-    )  
-    
+    )
+
     embed = discord.Embed(
         color = global_data.color,
         title = embed_title,
         description = embed_description
     )
-    
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='BOSS', value=f'{emojis.bp} {boss_emoji} {boss_name}', inline=False)
     embed.add_field(name='PLAYERS', value=players, inline=False)
@@ -1067,7 +1065,7 @@ async def embed_dungeon(dungeon_data, prefix):
     if not image_url == '':
         embed.set_image(url=image_url)
         embed.add_field(name=image_name, value=f'** **', inline=False)
-    
+
     return (img_dungeon, embed)
 
 # Recommended stats for all dungeons
@@ -1077,31 +1075,31 @@ async def embed_dungeon_rec_stats(rec_stats_data, prefix):
         f'{emojis.bp} {guide_check_all.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}'
-    ) 
-    
+    )
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'RECOMMENDED STATS FOR ALL DUNGEONS',
         description = f'\u200b'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
-    
+
     for dung_x in rec_stats_data:
         dungeon_no = dung_x[6]
         if dungeon_no == 15:
             dungeon_no = '15-1'
         elif dungeon_no == 15.2:
             dungeon_no = '15-2'
-        
+
         if isinstance(dungeon_no, float):
             dungeon_no = f'{dungeon_no:g}'
-        
+
         field_rec_stats = await global_data.design_field_rec_stats(dung_x, True)
         embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
-        
+
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Recommended gear for all dungeons
@@ -1113,21 +1111,21 @@ async def embed_dungeon_rec_gear(rec_gear_data, prefix, page):
     elif page == 2:
         title_value = 'RECOMMENDED GEAR FOR DUNGEONS 10 TO 15'
         description_value = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
-    
+
     guides = (
         f'{emojis.bp} {guide_dungeon.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_check_all.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}'
     )
-                   
+
     embed = discord.Embed(
         color = global_data.color,
         title = title_value,
         description = description_value
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
-    
+
     for dung_x in rec_gear_data:
         dungeon_no = dung_x[6]
         if dungeon_no == 15:
@@ -1138,9 +1136,9 @@ async def embed_dungeon_rec_gear(rec_gear_data, prefix, page):
         if isinstance(dungeon_no, float):
             dungeon_no = f'{dungeon_no:g}'
         embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
-    
+
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Stats check (all dungeons)
@@ -1155,36 +1153,36 @@ async def embed_dungeon_check_stats(dungeon_check_data, user_stats, ctx):
         f'{emojis.bp} {emojis.checkwarn} : Stat is below rec. but with a lot of luck it _might_ work\n'
         f'{emojis.bp} {emojis.lifeboost} : LIFE boost you have to buy to reach recommendation'
     )
-    
+
     notes = (
         f'{emojis.bp} You can ignore this check for D1-D9 if you get carried\n'
         f'{emojis.bp} This only checks stats, you may still need certain gear for D10+!\n'
         f'{emojis.bp} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for individual checks with more details'
     )
-    
+
     guides = (
         f'{emojis.bp} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}'
-    ) 
-    
+    )
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'DUNGEON STATS CHECK',
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
-    
+
     for dung_x in dungeon_check_data:
         dungeon_no = dung_x[4]
-        
+
         field_check_stats = await function_design_field_check_stats(dung_x, user_stats, ctx.prefix, True)
         embed.add_field(name=f'DUNGEON {dungeon_no:g}', value=field_check_stats[0], inline=True)
-    
+
     embed.add_field(name='LEGEND', value=legend, inline=False)
     embed.add_field(name='NOTE', value=notes, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Stats check (dungeon specific)
@@ -1197,41 +1195,41 @@ async def embed_dungeon_check_stats_dungeon_specific(dungeon_check_data, user_st
                 f'{emojis.bp} {emojis.checkignore} : Stat is below rec. but you are above carry DEF\n'\
                 f'{emojis.bp} {emojis.checkwarn} : Stat is below rec. but with a lot of luck it _might_ work\n'\
                 f'{emojis.bp} {emojis.lifeboost} : LIFE boost you have to buy to reach recommendation'
-    
+
     notes =     f'{emojis.bp} You can ignore this check for D1-D9 if you get carried\n'\
                 f'{emojis.bp} This check does **not** take into account required gear for D10+!\n'\
                 f'{emojis.bp} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for a few more details'
-    
+
     guides = (
         f'{emojis.bp} {guide_check_all.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_stats.format(prefix=prefix)}'
-    ) 
-    
+    )
+
     dungeon_no = dungeon_check_data[4]
-    
+
     if dungeon_no == 15:
         dungeon_no = '15-1'
     elif dungeon_no == 15.2:
         dungeon_no = '15-2'
-    
+
     if isinstance(dungeon_no, float):
         dungeon_no = f'{dungeon_no:g}'
-    
+
     embed_title = f'DUNGEON {dungeon_no} STATS CHECK'
-    
+
     field_check_stats = await function_design_field_check_stats(dungeon_check_data, user_stats, prefix, False)
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = embed_title,
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(ctx.prefix))
     embed.add_field(name='CHECK RESULT', value=field_check_stats[0], inline=False)
     embed.add_field(name='DETAILS', value=field_check_stats[1], inline=False)
     #embed.add_field(name=f'LEGEND', value=legend, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed

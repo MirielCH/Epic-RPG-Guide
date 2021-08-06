@@ -1,43 +1,41 @@
 # crafting.py
 
-import os,sys,inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
+import asyncio
+
 import discord
+from discord.ext import commands
+
+import database
 import emojis
 import global_data
-import asyncio
-import database
 
-from discord.ext import commands
 
 # crafting commands (cog)
 class craftingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-  
+
     # Command "enchants"
     @commands.command(aliases=('enchant','e','enchanting',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def enchants(self, ctx):
         embed = await embed_enchants(ctx.prefix)
         await ctx.send(embed=embed)
-        
+
     # Command "drops" - Returns all monster drops and where to get them
     @commands.command(aliases=('drop','mobdrop','mobdrops','mobsdrop','mobsdrops','monsterdrop','monsterdrops',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def drops(self, ctx):
         embed = await embed_drops(ctx.prefix)
         await ctx.send(embed=embed)
-        
+
     # Command "dropchance" - Calculate current drop chance
     @commands.command(aliases=('dropcalc','droprate',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def dropchance(self, ctx, *args):
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-    
+
         def epic_rpg_check(m):
             correct_embed = False
             try:
@@ -49,16 +47,16 @@ class craftingCog(commands.Cog):
                     correct_embed = False
             except:
                 correct_embed = False
-            
+
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-        
+
         if args:
             if len(args) == 2:
                 tt_no = args[0]
                 tt_no = tt_no.lower().replace('tt','')
                 horse_tier = args[1]
                 horse_tier = horse_tier.lower().replace('t','')
-                
+
                 if tt_no.isnumeric():
                     tt_no = int(tt_no)
                     if horse_tier.isnumeric():
@@ -75,9 +73,9 @@ class craftingCog(commands.Cog):
                 else:
                     await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
                     return
-                
+
                 tt_chance = (49+tt_no)*tt_no/2/100
-                
+
                 if 1 <= horse_tier <= 6:
                     horse_chance = 1
                 elif horse_tier == 7:
@@ -85,8 +83,8 @@ class craftingCog(commands.Cog):
                 elif horse_tier == 8:
                     horse_chance = 1.5
                 elif horse_tier == 9:
-                    horse_chance = 2  
-                
+                    horse_chance = 2
+
                 drop_chance = 4*(1+tt_chance)*horse_chance
                 drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
                 drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
@@ -95,7 +93,7 @@ class craftingCog(commands.Cog):
                 drop_chance_worldbuff = round(drop_chance_worldbuff,1)
                 drop_chance_daily = round(drop_chance_daily,1)
                 drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-                        
+
                 if drop_chance >= 100:
                     drop_chance = 100
                 if drop_chance_worldbuff >= 100:
@@ -104,16 +102,16 @@ class craftingCog(commands.Cog):
                     drop_chance_daily = 100
                 if drop_chance_worldbuff_daily >= 100:
                         drop_chance_worldbuff_daily = 100
-                        
+
                 hunt_drop_chance = drop_chance/2
                 hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
                 hunt_drop_chance_daily = drop_chance_daily/2
                 hunt_drop_chance_worldbuff_daily = drop_chance_worldbuff_daily/2
                 hunt_drop_chance = round(hunt_drop_chance,2)
                 hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-                        
+
                 horse_emoji = getattr(emojis, f'horset{horse_tier}')
-                
+
                 await ctx.send(
                     f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
@@ -126,7 +124,7 @@ class craftingCog(commands.Cog):
                     f'**Drop chance in hardmode**\n'
                     f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
                 )
-                
+
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
         else:
@@ -137,7 +135,7 @@ class craftingCog(commands.Cog):
                     return
                 tt_no = int(user_settings[0])
                 tt_chance = (49+tt_no)*tt_no/2/100
-                
+
                 await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
                 answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_merchant.content
@@ -177,7 +175,7 @@ class craftingCog(commands.Cog):
                         horse_chance = 2
                         horse_tier = 9
                     elif horse_stats.find('Tier - I') > 1:
-                        horse_chance = 1    
+                        horse_chance = 1
                         horse_tier = 1
                     else:
                         await ctx.send(f'Whelp, something went wrong here, sorry.')
@@ -188,7 +186,7 @@ class craftingCog(commands.Cog):
                 else:
                     await ctx.send(f'Wrong input. Aborting.')
                     return
-                
+
                 if not (horse_chance == 0) and not (horse_tier == 0):
                     drop_chance = 4*(1+tt_chance)*horse_chance
                     drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
@@ -198,7 +196,7 @@ class craftingCog(commands.Cog):
                     drop_chance_worldbuff = round(drop_chance_worldbuff,1)
                     drop_chance_daily = round(drop_chance_daily,1)
                     drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-                    
+
                     if drop_chance >= 100:
                         drop_chance = 100
                     if drop_chance_worldbuff >= 100:
@@ -207,20 +205,20 @@ class craftingCog(commands.Cog):
                         drop_chance_daily = 100
                     if drop_chance_worldbuff_daily >= 100:
                             drop_chance_worldbuff_daily = 100
-                    
+
                     hunt_drop_chance = drop_chance/2
                     hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
                     hunt_drop_chance_daily = drop_chance_daily/2
                     hunt_drop_chance_worldbuff_daily = drop_chance_worldbuff_daily/2
                     hunt_drop_chance = round(hunt_drop_chance,2)
                     hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-                    
+
                     horse_emoji = getattr(emojis, f'horset{horse_tier}')
-                    
+
                 else:
                     await ctx.send(f'Whelp, something went wrong here, sorry.')
                     return
-                
+
                 await ctx.send(
                     f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
@@ -236,10 +234,10 @@ class craftingCog(commands.Cog):
                     f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
                     f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
                 )
-                
+
             except asyncio.TimeoutError as error:
                         await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
-                        
+
     # Command "craft" - Calculates mats you need for amount of items
     @commands.command(aliases=('cook','forge',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
@@ -247,7 +245,7 @@ class craftingCog(commands.Cog):
 
         invoked = ctx.message.content
         invoked = invoked.lower()
-        
+
         if args:
             itemname = ''
             amount = 1
@@ -272,16 +270,16 @@ class craftingCog(commands.Cog):
                     except:
                         await ctx.send(f'Are you trying to break me or something? :thinking:')
                         return
-                    
+
             if not itemname == '' and amount >= 1:
                 try:
                     itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('uo ','ultra-omega ')
                     itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
                     itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple').replace('oranges','orange')
-                    
+
                     if itemname_replaced in global_data.item_aliases:
-                        itemname_replaced = global_data.item_aliases[itemname_replaced]                
-                    
+                        itemname_replaced = global_data.item_aliases[itemname_replaced]
+
                     items_data = await database.get_item_data(ctx, itemname_replaced)
                     if items_data == '':
                         await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
@@ -289,14 +287,14 @@ class craftingCog(commands.Cog):
                 except:
                     await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
                     return
-                
+
                 items_values = items_data[1]
                 itemtype = items_values[1]
-                
+
                 if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
                     await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
                     return
-                
+
                 mats_data = await function_mats(items_data, amount, ctx.prefix)
                 await ctx.send(mats_data)
             else:
@@ -304,7 +302,7 @@ class craftingCog(commands.Cog):
         else:
             await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
-        
+
     # Command "dismantle" - Calculates mats you get by dismantling items
     @commands.command(aliases=('dm',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
@@ -312,7 +310,7 @@ class craftingCog(commands.Cog):
 
         invoked = ctx.message.content
         invoked = invoked.lower()
-        
+
         if args:
             itemname = ''
             amount = 1
@@ -337,16 +335,16 @@ class craftingCog(commands.Cog):
                     except:
                         await ctx.send(f'Are you trying to break me or something? :thinking:')
                         return
-                    
+
             if not itemname == '' and amount >= 1:
                 try:
                     if itemname == 'brandon':
                         await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
                         return
-                    
+
                     itemname_replaced = itemname.replace('logs','log')
-                    
-                    shortcuts = {   
+
+                    shortcuts = {
                         'brandon': 'epic fish',
                         'bananas': 'banana',
                         'ultralog': 'ultra log',
@@ -368,14 +366,14 @@ class craftingCog(commands.Cog):
                         'ul': 'ultra log',
                         'ultra': 'ultra log',
                     }
-                    
+
                     if itemname_replaced in shortcuts:
-                        itemname_replaced = shortcuts[itemname_replaced]                
-                    
+                        itemname_replaced = shortcuts[itemname_replaced]
+
                     if not itemname_replaced in ('epic log', 'super log', 'mega log', 'hyper log', 'ultra log', 'golden fish', 'epic fish', 'banana'):
                         await ctx.send(f'Uhm, I don\'t know how to dismantle `{itemname}`, sorry.')
                         return
-                    
+
                     items_data = await database.get_item_data(ctx, itemname_replaced)
                     if items_data == '':
                         await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
@@ -383,25 +381,25 @@ class craftingCog(commands.Cog):
                 except:
                     await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
                     return
-                
+
                 items_values = items_data[1]
                 itemtype = items_values[1]
-                
+
                 mats = await function_dismantle_mats(items_data, amount, ctx.prefix)
                 await ctx.send(mats)
             else:
                 await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
         else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')        
+            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
 
     # Command "invcalc" - Calculates amount of items craftable with current inventory
     @commands.command(aliases=('ic','invc','icalc','inventoryc','inventorycalc',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
     async def invcalc(self, ctx, *args):
-        
+
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
-        
+
         def epic_rpg_check(m):
             correct_embed = False
             try:
@@ -413,16 +411,16 @@ class craftingCog(commands.Cog):
                     correct_embed = False
             except:
                 correct_embed = False
-            
+
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-        
+
         prefix = ctx.prefix
-        
+
         error_syntax = (
             f'The command syntax is `{ctx.prefix}invcalc [current max area] [material]`\n'
             f'Example: `{ctx.prefix}invcalc a5 apple`'
         )
-        
+
         items = [
             'log',
             'epic log',
@@ -437,7 +435,7 @@ class craftingCog(commands.Cog):
             'golden fish',
             'epic fish'
         ]
-        
+
         if args:
             if len(args) >= 2:
                 area = args[0].lower()
@@ -462,7 +460,7 @@ class craftingCog(commands.Cog):
                 original_item = item
                 if item in global_data.item_aliases:
                     item = global_data.item_aliases[item]
-                    
+
                 if not item in items:
                     await ctx.send(f'This command does not support an item called `{original_item}`, sorry.')
                     return
@@ -475,7 +473,7 @@ class craftingCog(commands.Cog):
                 f'{error_syntax}'
             )
             return
-        
+
         try:
             await ctx.send(f'**{ctx.author.name}**, please type `rpg i` (or `abort` to abort)')
             answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
@@ -519,12 +517,12 @@ class craftingCog(commands.Cog):
         except asyncio.TimeoutError as error:
             await ctx.send(f'**{ctx.author.name}**, couldn\'t find your inventory, RIP.')
             return
-        
+
         traderate_data = await database.get_traderate_data(ctx, area)
         fish_rate = traderate_data[1]
         apple_rate = traderate_data[2]
         ruby_rate = traderate_data[3]
-        
+
         # Calculate logs
         if item == 'log':
             loghyper_calc = loghyper + (logultra * 8)
@@ -536,7 +534,7 @@ class craftingCog(commands.Cog):
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log_calc + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -546,10 +544,10 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             result_value = log_calc
             result_item = f'{emojis.log} wooden logs'
-            
+
         # Calculate epic logs
         if item == 'epic log':
             loghyper_calc = loghyper + (logultra * 8)
@@ -559,7 +557,7 @@ class craftingCog(commands.Cog):
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -569,12 +567,12 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             logepic_calc = logepic + (logsuper_calc * 8) + log_calc // 25
-            
+
             result_value = logepic_calc
             result_item = f'{emojis.logepic} EPIC logs'
-            
+
         # Calculate super logs
         if item == 'super log':
             loghyper_calc = loghyper + (logultra * 8)
@@ -583,7 +581,7 @@ class craftingCog(commands.Cog):
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -593,13 +591,13 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             logepic_calc = logepic + log_calc // 25
             logsuper_calc = logsuper + (logmega_calc * 8) + (logepic_calc // 10)
-            
+
             result_value = logsuper_calc
             result_item = f'{emojis.logsuper} SUPER logs'
-            
+
         # Calculate mega logs
         if item == 'mega log':
             loghyper_calc = loghyper + (logultra * 8)
@@ -607,7 +605,7 @@ class craftingCog(commands.Cog):
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -617,21 +615,21 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             logepic_calc = logepic + log_calc // 25
             logsuper_calc = logsuper + (logepic_calc // 10)
             logmega_calc = logmega + (loghyper_calc * 8) + (logsuper_calc // 10)
-            
+
             result_value = logmega_calc
             result_item = f'{emojis.logmega} MEGA logs'
-            
+
         # Calculate hyper logs
         if item == 'hyper log':
             fishgolden_calc = fishgolden + (fishepic * 80)
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -641,22 +639,22 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             logepic_calc = logepic + log_calc // 25
             logsuper_calc = logsuper + (logepic_calc // 10)
             logmega_calc = logmega + (logsuper_calc // 10)
             loghyper_calc = loghyper + (logultra * 8) + (logmega_calc // 10)
-            
+
             result_value = loghyper_calc
             result_item = f'{emojis.loghyper} HYPER logs'
-            
+
         # Calculate ultra logs
         if item == 'ultra log':
             fishgolden_calc = fishgolden + (fishepic * 80)
             fish_calc = fish + (fishgolden_calc * 12)
             apple_calc = apple + (banana * 12)
             log_calc = log + (fish_calc * fish_rate)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 log_calc = log_calc + (ruby * 450)
@@ -666,16 +664,16 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             logepic_calc = logepic + log_calc // 25
             logsuper_calc = logsuper + (logepic_calc // 10)
             logmega_calc = logmega + (logsuper_calc // 10)
             loghyper_calc = loghyper + (logmega_calc // 10)
             logultra_calc = logultra + (loghyper_calc // 10)
-            
+
             result_value = logultra_calc
             result_item = f'{emojis.logultra} ULTRA logs'
-            
+
         # Calculate normie fish
         if item == 'fish':
             fishgolden_calc = fishgolden + (fishepic * 80)
@@ -686,7 +684,7 @@ class craftingCog(commands.Cog):
             logepic_calc = logepic + (logsuper_calc * 8)
             log_calc = log + (logepic_calc * 20)
             apple_calc = apple + (banana * 12)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 fish_calc = fish_calc + (ruby * 225)
@@ -696,12 +694,12 @@ class craftingCog(commands.Cog):
             else:
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             fish_calc = fish_calc + (log_calc // fish_rate)
-            
+
             result_value = fish_calc
             result_item = f'{emojis.fish} normie fish'
-            
+
         # Calculate golden fish
         if item == 'golden fish':
             loghyper_calc = loghyper + (logultra * 8)
@@ -710,7 +708,7 @@ class craftingCog(commands.Cog):
             logepic_calc = logepic + (logsuper_calc * 8)
             log_calc = log + (logepic_calc * 20)
             apple_calc = apple + (banana * 12)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 fish_calc = fish + (ruby * 225)
@@ -721,13 +719,13 @@ class craftingCog(commands.Cog):
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
                 fish_calc = fish
-            
+
             fish_calc = fish_calc + (log_calc // fish_rate)
             fishgolden_calc = fishgolden + (fishepic * 80) + (fish_calc // 15)
-            
+
             result_value = fishgolden_calc
             result_item = f'{emojis.fishgolden} golden fish'
-        
+
         # Calculate epic fish
         if item == 'epic fish':
             loghyper_calc = loghyper + (logultra * 8)
@@ -736,7 +734,7 @@ class craftingCog(commands.Cog):
             logepic_calc = logepic + (logsuper_calc * 8)
             log_calc = log + (logepic_calc * 20)
             apple_calc = apple + (banana * 12)
-            
+
             if area in (1,2):
                 log_calc = log_calc + (apple_calc * 3)
                 fish_calc = fish + (ruby * 225)
@@ -747,14 +745,14 @@ class craftingCog(commands.Cog):
                 fish_calc = fish
                 log_calc = log_calc + (apple_calc * apple_rate)
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             fish_calc = fish_calc + (log_calc // fish_rate)
             fishgolden_calc = fishgolden + (fish_calc // 15)
             fishepic_calc = fishepic + (fishgolden_calc // 100)
-            
+
             result_value = fishepic_calc
             result_item = f'{emojis.fishepic} EPIC fish'
-            
+
         # Calculate apples
         if item == 'apple':
             loghyper_calc = loghyper + (logultra * 8)
@@ -766,20 +764,20 @@ class craftingCog(commands.Cog):
             fishgolden_calc = fishgolden + (fishepic * 80)
             fish_calc = fish + (fishgolden_calc * 12)
             log_calc = log_calc + (fish_calc * fish_rate)
-            
+
             if area in (1,2,3,4):
                 log_calc = log_calc + (ruby * 225)
             else:
                 log_calc = log_calc + (ruby * ruby_rate)
-            
+
             if area in (1,2):
                 apple_calc = apple_calc + (log_calc // 3)
             else:
                 apple_calc = apple_calc + (log_calc // apple_rate)
-            
+
             result_value = apple_calc
             result_item = f'{emojis.apple} apples'
-            
+
         # Calculate bananas
         if item == 'banana':
             loghyper_calc = loghyper + (logultra * 8)
@@ -790,22 +788,22 @@ class craftingCog(commands.Cog):
             fishgolden_calc = fishgolden + (fishepic * 80)
             fish_calc = fish + (fishgolden_calc * 12)
             log_calc = log_calc + (fish_calc * fish_rate)
-            
+
             if area in (1,2,3,4):
                 log_calc = log_calc + (ruby * 225)
             else:
                 log_calc = log_calc + (ruby * ruby_rate)
-                
+
             if area in (1,2):
                 apple_calc = apple + (log_calc // 3)
             else:
                 apple_calc = apple + (log_calc // apple_rate)
-                
+
             banana_calc = banana + (apple_calc // 15)
-            
+
             result_value = banana_calc
             result_item = f'{emojis.fruitbanana} bananas'
-            
+
         # Calculate rubies
         if item == 'ruby':
             loghyper_calc = loghyper + (logultra * 8)
@@ -827,12 +825,12 @@ class craftingCog(commands.Cog):
                 ruby_calc = ruby + (log_calc // 450)
             else:
                 ruby_calc = ruby + (log_calc // ruby_rate)
-            
+
             result_value = ruby_calc
             result_item = f'{emojis.ruby} rubies'
-            
-            
-        
+
+
+
         if area in (1,2):
             await ctx.send(
                 f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.\n\n'
@@ -849,24 +847,24 @@ class craftingCog(commands.Cog):
 # Initialization
 def setup(bot):
     bot.add_cog(craftingCog(bot))
-                  
+
 
 
 # --- Functions ---
 # List needed items for recipe
 async def function_mats(items_data, amount, prefix):
-    
+
     items_headers = items_data[0]
-    
+
     item_crafted = items_data[1]
     item_crafted_name = item_crafted[2]
     item_crafted_emoji = getattr(emojis, item_crafted[3])
-    
+
     ingredients = []
 
     for item_index, value in enumerate(item_crafted[6:]):
         header_index = item_index+6
-        if not value == 0:               
+        if not value == 0:
             if items_headers[header_index] == 'log':
                 ingredients.append([value, emojis.log, 'wooden log'])
             elif items_headers[header_index] == 'epiclog':
@@ -941,14 +939,14 @@ async def function_mats(items_data, amount, prefix):
                 ingredients.append([value, emojis.armorultraomega, 'ULTRA-OMEGA Armor'])
             elif items_headers[header_index] == 'swordultraomega':
                 ingredients.append([value, emojis.swordultraomega, 'ULTRA-OMEGA Sword'])
-        
+
     breakdown_logs = ''
     breakdown_fish = ''
     breakdown_banana = ''
-    
+
     breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
     breakdown_list_fish = ['EPIC fish', 'golden fish',]
-    
+
     ingredient_submats_logs = ['',0]
     ingredient_submats_fish = ['',0]
     ingredient_submats_banana = ['',0]
@@ -960,20 +958,20 @@ async def function_mats(items_data, amount, prefix):
     mats_total_logs = ''
     mats_total_fish = ''
     mats_total_apple = ''
-    
+
     if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
         ingredient = ingredients[0]
         ingredient_amount = ingredient[0]*amount
         ingredient_emoji = ingredient[1]
         ingredient_name = ingredient[2]
-        
+
         if ingredient_name == 'wooden log':
             total_logs = total_logs+ingredient_amount
         elif ingredient_name == 'normie fish':
             total_fish = total_fish+ingredient_amount
         elif ingredient_name == 'apple':
             total_apple = total_apple+ingredient_amount
-        
+
         if ingredient_name in breakdown_list_logs:
             ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
             total_logs = total_logs+ingredient_submats_logs[1]
@@ -983,34 +981,34 @@ async def function_mats(items_data, amount, prefix):
         elif ingredient_name == 'banana':
             ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
             total_apple = total_apple+ingredient_submats_banana[1]
-        
+
         ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
-        
+
         if amount == 1:
             mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
         else:
             mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-            
+
     else:
         if amount == 1:
             mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need:'
         else:
             mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need:'
-        
+
         for ingredient in ingredients:
             ingredient_amount = ingredient[0]*amount
             ingredient_emoji = ingredient[1]
             ingredient_name = ingredient[2]
-            
+
             if ingredient_name == 'wooden log':
                 total_logs = total_logs+ingredient_amount
             elif ingredient_name == 'normie fish':
                 total_fish = total_fish+ingredient_amount
             elif ingredient_name == 'apple':
                 total_apple = total_apple+ingredient_amount
-            
+
             mats = f'{mats}\n> {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`'
-    
+
             if ingredient_name in breakdown_list_logs:
                 ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
                 total_logs = total_logs+ingredient_submats_logs[1]
@@ -1023,18 +1021,18 @@ async def function_mats(items_data, amount, prefix):
                 ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
                 total_apple = total_apple+ingredient_submats_banana[1]
                 ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_banana[0]}'
-        
-    if not total_logs == 0:    
+
+    if not total_logs == 0:
         mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
-    if not total_fish == 0:    
-        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'    
-    if not total_apple == 0:    
+    if not total_fish == 0:
+        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'
+    if not total_apple == 0:
         mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
-    
+
     if not ingredient_submats == '':
         ingredient_submats = ingredient_submats.strip()
         mats = f'{mats}\n\n**Ingredients breakdown**\n{ingredient_submats}'
-    
+
     if not (total_logs == 0) or not (total_fish == 0) or not (total_apple == 0):
         mats = f'{mats}\n\n**Base materials total**{mats_total_logs}{mats_total_fish}{mats_total_apple}'
 
@@ -1042,7 +1040,7 @@ async def function_mats(items_data, amount, prefix):
 
 # Aufschlüsseln von Subamounts
 async def function_get_submats(items_data, amount, ingredient, dismantle=False):
-        
+
     item1 = ''
     item2 = ''
     item3 = ''
@@ -1051,9 +1049,9 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
     breakdown = ''
     ingredient_name = ingredient[0]
     ingredient_emoji = ingredient[1]
-    
-    breakdown = f'> {amount:,} {ingredient_emoji}'                
-    
+
+    breakdown = f'> {amount:,} {ingredient_emoji}'
+
     mats_ultralog = ['ULTRA log','HYPER log', 'MEGA log', 'SUPER log', 'EPIC log',]
     mats_hyperlog = ['HYPER log','MEGA log', 'SUPER log', 'EPIC log',]
     mats_megalog = ['MEGA log','SUPER log', 'EPIC log',]
@@ -1063,7 +1061,7 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
     mats_goldenfish = ['golden fish',]
     mats_banana = ['banana',]
     mats_all = [mats_ultralog, mats_hyperlog, mats_megalog, mats_superlog, mats_epiclog, mats_epicfish, mats_goldenfish, mats_banana,]
-    
+
     items_subitems = {
         'ULTRA log': 'HYPER log',
         'HYPER log': 'MEGA log',
@@ -1074,7 +1072,7 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
         'golden fish': 'normie fish',
         'banana': 'apple'
     }
-    
+
     subitems_emojis = {
         'HYPER log': emojis.loghyper,
         'MEGA log': emojis.logmega,
@@ -1085,9 +1083,9 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
         'normie fish': emojis.fish,
         'apple': emojis.apple
     }
-    
+
     last_item_amount = 0
-    
+
     for mats_item in mats_all:
         if ingredient_name == mats_item[0]:
             last_item_amount = amount
@@ -1109,23 +1107,23 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
                         subitem_amount = item_amount*last_item_amount
                     last_item_amount = subitem_amount
                     breakdown = f'{breakdown} ➜ {subitem_amount:,} {subitem_emoji}'
-    
+
     return (breakdown, last_item_amount)
 
 # Dismantle items
 async def function_dismantle_mats(items_data, amount, prefix):
-    
+
     items_headers = items_data[0]
-    
+
     item_crafted = items_data[1]
     item_crafted_name = item_crafted[2]
     item_crafted_emoji = getattr(emojis, item_crafted[3])
-    
+
     ingredients = []
 
     for item_index, value in enumerate(item_crafted[6:]):
         header_index = item_index+6
-        if not value == 0:               
+        if not value == 0:
             if items_headers[header_index] == 'log':
                 ingredients.append([value, emojis.log, 'wooden log'])
             elif items_headers[header_index] == 'epiclog':
@@ -1142,14 +1140,14 @@ async def function_dismantle_mats(items_data, amount, prefix):
                 ingredients.append([value, emojis.fishgolden, 'golden fish'])
             elif items_headers[header_index] == 'apple':
                 ingredients.append([value, emojis.apple, 'apple'])
-        
+
     breakdown_logs = ''
     breakdown_fish = ''
     breakdown_banana = ''
-    
+
     breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
     breakdown_list_fish = ['EPIC fish', 'golden fish',]
-    
+
     ingredient_submats_logs = ['',0]
     ingredient_submats_fish = ['',0]
     ingredient_submats_banana = ['',0]
@@ -1161,7 +1159,7 @@ async def function_dismantle_mats(items_data, amount, prefix):
     mats_total_logs = ''
     mats_total_fish = ''
     mats_total_apple = ''
-    
+
     if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
         ingredient = ingredients[0]
         ingredient_amount = ingredient[0]*amount*0.8
@@ -1171,7 +1169,7 @@ async def function_dismantle_mats(items_data, amount, prefix):
             pass
         ingredient_emoji = ingredient[1]
         ingredient_name = ingredient[2]
-        
+
         if ingredient_name in breakdown_list_logs:
             ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
             total_logs = total_logs+ingredient_submats_logs[1]
@@ -1181,21 +1179,21 @@ async def function_dismantle_mats(items_data, amount, prefix):
         elif ingredient_name == 'banana':
             ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
             total_apple = total_apple+ingredient_submats_banana[1]
-        
+
         ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
-        
+
         if amount == 1:
             mats = f'By dismantling {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
         else:
             mats = f'By dismantling {amount:,} {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-        
-    if not total_logs == 0:    
+
+    if not total_logs == 0:
         mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
-    if not total_fish == 0:    
-        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'    
-    if not total_apple == 0:    
+    if not total_fish == 0:
+        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'
+    if not total_apple == 0:
         mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
-    
+
     if not ingredient_submats == '':
         ingredient_submats = ingredient_submats.strip()
         mats = f'{mats}\n\n**Full breakdown**\n{ingredient_submats}'
@@ -1223,7 +1221,7 @@ async def embed_enchants(prefix):
         f'{emojis.bp} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.timetravel} TT 3\n'
         f'{emojis.bp} **GODLY** - 200% buff, unlocked in {emojis.timetravel} TT 5'
     )
-            
+
     commands = (
         f'{emojis.bp} `enchant` - unlocked in area 2, costs 1k * area\n'
         f'{emojis.bp} `refine` - unlocked in area 7, costs 10k * area\n'
@@ -1239,12 +1237,12 @@ async def embed_enchants(prefix):
             f'The chance to get better enchants can be increased by leveling up the enchanter profession and having a {emojis.horset8} T8+ horse.\n'
             f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
         )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='POSSIBLE ENCHANTS', value=buffs, inline=False)
     embed.add_field(name='COMMAND TIERS', value=commands, inline=False)
-            
+
     return embed
 
 # Monster drops
@@ -1256,35 +1254,35 @@ async def embed_drops(prefix):
         f'{emojis.bp} Value: 500\n'
         f'{emojis.blank}'
     )
-    
+
     zombieeye = (
         f'{emojis.bp} Areas: 3~4\n'
         f'{emojis.bp} Source: {emojis.mobzombie}\n'
         f'{emojis.bp} Value: 2\'000\n'
         f'{emojis.blank}'
     )
-    
+
     unicornhorn = (
         f'{emojis.bp} Areas: 5~6\n'
         f'{emojis.bp} Source: {emojis.mobunicorn}\n'
         f'{emojis.bp} Value: 7\'500\n'
         f'{emojis.blank}'
     )
-    
+
     mermaidhair = (
         f'{emojis.bp} Areas: 7~8\n'
         f'{emojis.bp} Source: {emojis.mobmermaid}\n'
         f'{emojis.bp} Value: 30\'000\n'
         f'{emojis.blank}'
     )
-    
+
     chip = (
         f'{emojis.bp} Areas: 9~10\n'
         f'{emojis.bp} Source: {emojis.mobkillerrobot}\n'
         f'{emojis.bp} Value: 100\'000\n'
         f'{emojis.blank}'
     )
-    
+
     dragonscale = (
         f'{emojis.bp} Areas: 11~15\n'
         f'{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}{emojis.mobolddragon}\n'
@@ -1311,8 +1309,8 @@ async def embed_drops(prefix):
             f'You can go back to previous areas with `rpg area`.\n'
             f'{emojis.blank}'
         )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=wolfskin, inline=True)
     embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=zombieeye, inline=True)
@@ -1320,7 +1318,7 @@ async def embed_drops(prefix):
     embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=mermaidhair, inline=True)
     embed.add_field(name=f'CHIP {emojis.chip}', value=chip, inline=True)
     embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=dragonscale, inline=True)
-    embed.add_field(name='DROP CHANCE', value=chance, inline=False)    
-            
+    embed.add_field(name='DROP CHANCE', value=chance, inline=False)
+
     return embed
 

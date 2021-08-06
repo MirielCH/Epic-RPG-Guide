@@ -1,17 +1,15 @@
 # misc.py
 
-import os,sys,inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
-import discord
-import emojis
-import global_data
-import database
 import asyncio
 from decimal import Decimal, ROUND_HALF_UP
 
+import discord
 from discord.ext import commands
+
+import database
+import emojis
+import global_data
+
 
 # Miscellaneous commands (cog)
 class miscCog(commands.Cog):

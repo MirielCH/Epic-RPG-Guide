@@ -1,10 +1,11 @@
 # xmas.py
 
 import discord
+from discord.ext import commands
+
 import emojis
 import global_data
 
-from discord.ext import commands
 
 # XMAS commands (cog)
 class xmasCog(commands.Cog):
@@ -19,13 +20,13 @@ class xmasCog(commands.Cog):
         'a0',
         'area0'
     )
-    
+
     # Command "xmas"
     @commands.command(aliases=xmas_aliases)
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def xmasguide(self, ctx, *args):
         items = ['candycane','xmashat','xmasstar','xmasstarparts','gingerbread','ornament','ornamentpart','present','pineneedle','sleepypotion','snow','snowbox','all']
-    
+
         item_name_replacements = {
             'candycanes': 'candycane',
             'candy': 'candycane',
@@ -64,7 +65,7 @@ class xmasCog(commands.Cog):
             for arg in args:
                 arg = arg.lower()
                 arg_full = f'{arg_full}{arg}'
-            
+
             if arg_full.find('item') > -1:
                 embed = await embed_xmas_item_overview(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -73,13 +74,13 @@ class xmasCog(commands.Cog):
                 embed = await embed_xmas_area(ctx.prefix)
                 await ctx.send(embed=embed)
                 return
-            
+
             if arg_full in item_name_replacements:
                 arg_full = item_name_replacements[arg_full]
-            
+
             if arg_full in items:
                 embed = await embed_xmas_item(ctx.prefix, arg_full)
-                await ctx.send(embed=embed)    
+                await ctx.send(embed=embed)
                 return
             else:
                 embed = await embed_xmas_overview(ctx.prefix)
@@ -115,7 +116,7 @@ xmas_footer =       'Use {prefix}xmas to see all available christmas guides'
 # --- Functions ---
 # All christmas items
 async def function_xmas_get_item(prefix,item):
-    
+
     xmas_items = {
         'candycane': (
             f'CANDY CANE {emojis.candycane}',
@@ -200,7 +201,7 @@ async def function_xmas_get_item(prefix,item):
         )
     }
 
-        
+
     if item == 'all':
         items = []
         for item in xmas_items:
@@ -209,9 +210,9 @@ async def function_xmas_get_item(prefix,item):
         items = []
         if item in xmas_items:
             items.append(xmas_items[item])
-            
+
     return items
-                    
+
 
 # --- Embeds ---
 # Christmas overview
@@ -234,7 +235,7 @@ async def embed_xmas_overview(prefix):
         f'{emojis.bp} 2x XP when eating {emojis.arenacookie} arena cookies\n'
         f'{emojis.bp} Arena cooldown is lowered to 12h'
     )
-    
+
     present = (
         f'{emojis.bp} {emojis.present} Common present: Use in the shop or craft into EPIC\n'
         f'{emojis.bp} {emojis.presentepic} EPIC present: Craft into MEGA\n'
@@ -249,7 +250,7 @@ async def embed_xmas_overview(prefix):
         f'{emojis.bp} You stop getting items on January 4, 2021, 20:00 UTC\n'
         f'{emojis.bp} All leftover items will be deleted on January 11, 2021'
     )
-                
+
     guides = (
         f'{emojis.bp} {guide_items.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_area.format(prefix=prefix)}\n'
@@ -261,28 +262,28 @@ async def embed_xmas_overview(prefix):
     embed = discord.Embed(
         color = global_data.color,
         title = f'CHRISTMAS EVENT 2020',
-        description =   f'Time to decorate.'                    
-    )    
-    
+        description =   f'Time to decorate.'
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'ACTIVITIES', value=whattodo, inline=False)
     embed.add_field(name=f'BONUSES', value=bonuses, inline=False)
     embed.add_field(name=f'WHAT TO DO WITH PRESENTS', value=present, inline=False)
     embed.add_field(name=f'GUIDES', value=guides, inline=False)
     embed.add_field(name=f'EVENT SCHEDULE', value=schedule, inline=False)
-            
+
     return embed
 
 # Look up christmas items
 async def embed_xmas_item(prefix, item):
-    
+
     items = await function_xmas_get_item(prefix,item)
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'CHRISTMAS ITEMS',
-    )    
-    
+    )
+
     embed.set_footer(text=f'{xmas_footer.format(prefix=prefix)}')
 
     present_extra = (
@@ -298,21 +299,21 @@ async def embed_xmas_item(prefix, item):
         embed.add_field(name=item[0], value=item[1], inline=False)
         if item[0].find('present') > -1:
             embed.add_field(name='WHAT TO DO WITH PRESENTS', value=present_extra, inline=False)
-    
+
     return embed
 
 # Christmas items overview
 async def embed_xmas_item_overview(prefix):
-    
+
     items = ['candy cane','hat','star','star parts','gingerbread','ornament','ornament part','present','pine needle','sleepy potion','snow','snow box']
     items = sorted(items)
-    
+
     items_value = ''
-    
+
     for item in items:
         items_value = f'{items_value}\n{emojis.bp} `{item}`'
     items_value.strip()
-    
+
     embed = discord.Embed(
         color = global_data.color,
         title = 'CHRISTMAS ITEMS OVERVIEW',
@@ -321,24 +322,24 @@ async def embed_xmas_item_overview(prefix):
             f'Use `{prefix}xmas [item name]` to see details about an item.\n'
             f'Tip: You can use `{prefix}xmas all` to see all items at once.'
         )
-                      
-    )    
-    
+
+    )
+
     embed.set_footer(text=f'{xmas_footer.format(prefix=prefix)}')
-    
+
     embed.add_field(name='ITEM NAMES', value=items_value, inline=False)
-            
+
     return embed
 
 # Christmas area
 async def embed_xmas_area(prefix):
-    
+
     requirements = (
         f'{emojis.bp} Can only be reached by eating a {emojis.gingerbread} gingerbread\n'
         f'{emojis.bp} {emojis.gingerbread} Gingerbread is a mythic drop from presents (see `rpg xmas presents`)\n'
         f'{emojis.bp} Can be left anytime but accessing it again requires another {emojis.gingerbread} gingerbread'
     )
-                        
+
     differences = (
         f'{emojis.bp} You get 2 christmas items ({emojis.snow} or {emojis.present}) when using `hunt` or `adventure`\n'
         f'{emojis.bp} You get normal mob drops in `hunt` according to your **max** area\n'
@@ -347,7 +348,7 @@ async def embed_xmas_area(prefix):
         f'{emojis.bp} You do not get any items from `fish` commands\n'
         f'{emojis.bp} You get double the worker XP from `chop` commands'
     )
-                        
+
     xmas_drops = (
         f'{emojis.bp} `hunt`: {emojis.present} presents, ???\n'
         f'{emojis.bp} `adventure`: {emojis.present} presents, {emojis.pineneedle} pine needle, ???'
@@ -357,11 +358,11 @@ async def embed_xmas_area(prefix):
         color = global_data.color,
         title = 'CHRISTMAS AREA (AREA 0)',
         description = 'This is a special christmas themed area that will only be accessible during the christmas event.'
-                      
-    )    
-    
+
+    )
+
     embed.set_footer(text=f'{xmas_footer.format(prefix=prefix)}')
     embed.add_field(name='HOW TO ACCESS', value=requirements, inline=False)
     embed.add_field(name='DIFFERENCES TO NORMAL AREAS', value=differences, inline=False)
-            
+
     return embed

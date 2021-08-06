@@ -1,16 +1,14 @@
 # areas.py
 
-import os,sys,inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+from math import ceil
+
 import discord
+from discord.ext import commands
+
+import database
 import emojis
 import global_data
-import database
 
-from discord.ext import commands
-from math import ceil
 
 # area commands (cog)
 class areasCog(commands.Cog):

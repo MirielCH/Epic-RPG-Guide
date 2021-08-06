@@ -27,11 +27,7 @@ DBL_TOKEN = os.getenv('DBL_TOKEN')
 
 @tasks.loop(minutes=30.0)
 async def update_stats(bot: commands.Bot):
-    """Updates top.gg guild count
-
-    Args:
-        bot (commands.Bot)
-    """
+    """Updates top.gg guild count"""
     try:
         if DBL_TOKEN != 'none':
             guilds = len(list(bot.guilds))
@@ -87,11 +83,7 @@ async def on_ready():
 
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    """Sends welcome message on guild join
-
-    Args:
-        guild (discord.Guild)
-    """
+    """Sends welcome message on guild join"""
     try:
         prefix = await database.get_prefix(bot, guild, True)
         welcome_message = (
@@ -110,10 +102,6 @@ async def on_guild_join(guild: discord.Guild):
 async def on_command_error(ctx: commands.Context, error: Exception):
     """Runs when an error occurs and handles them accordingly.
     Interesting errors get written to the database for further review.
-
-    Args:
-        ctx (commands.Context)
-        error (Exception)
     """
     async def send_error(ctx: commands.Context, error: Union[Exception, str]):
         """Sends error message as embed"""
@@ -144,11 +132,7 @@ async def on_command_error(ctx: commands.Context, error: Exception):
 @bot.command(name='guide',aliases=('help','g','h',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def helpguide(ctx: commands.Context):
-    """Main help command
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Main help command"""
     prefix = await database.get_prefix(bot, ctx)
     progress = (
         f'{emojis.bp} `{prefix}start` : Starter guide for new players\n'
@@ -220,11 +204,7 @@ async def helpguide(ctx: commands.Context):
 @commands.has_permissions(manage_guild=True)
 @commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx: commands.Context, *args: str):
-    """Sets new server prefix
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Sets new server prefix"""
     if args:
         if len(args)>1:
             await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
@@ -239,11 +219,7 @@ async def setprefix(ctx: commands.Context, *args: str):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def prefix(ctx: commands.Context):
-    """Returns current prefix
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Returns current prefix"""
     current_prefix = await database.get_prefix(bot, ctx)
     await ctx.send(
         f'The prefix for this server is `{current_prefix}`\nTo change the prefix use '
@@ -255,11 +231,7 @@ async def prefix(ctx: commands.Context):
 @bot.command(aliases=('me',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def settings(ctx: commands.Context):
-    """Returns current user progress settings
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Returns current user progress settings"""
     current_settings = await database.get_settings(ctx)
     if current_settings is None:
         await database.first_time_user(bot, ctx)
@@ -288,11 +260,7 @@ async def settings(ctx: commands.Context):
 @bot.command(aliases=('sp','setpr','setp',))
 @commands.bot_has_permissions(send_messages=True)
 async def setprogress(ctx: commands.Context, *args: str):
-    """Sets user progress settings
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Sets user progress settings"""
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
 
@@ -404,11 +372,7 @@ async def setprogress(ctx: commands.Context, *args: str):
 @bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def devstats(ctx: commands.Context):
-    """Shows some bot info
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Shows some bot info"""
     user_count, *_ = await database.get_user_number(ctx)
     closed_shards = 0
     for shard_id in bot.shards:
@@ -447,11 +411,7 @@ async def devstats(ctx: commands.Context):
 @bot.command(aliases=('inv',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def invite(ctx: commands.Context):
-    """Shows the invite link
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Shows the invite link"""
     embed = discord.Embed(
         color = global_data.color,
         title = 'NEED A GUIDE?',
@@ -468,11 +428,7 @@ async def invite(ctx: commands.Context):
 @bot.command(aliases=('supportserver','server',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def support(ctx: commands.Context):
-    """Link to the support server
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Link to the support server"""
     embed = discord.Embed(
         color = global_data.color,
         title = 'NEED BOT SUPPORT?',
@@ -485,11 +441,7 @@ async def support(ctx: commands.Context):
 @bot.command(aliases=('link','wiki',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def links(ctx: commands.Context):
-    """Links to wiki, servers, top.gg and invite
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Links to wiki, servers, top.gg and invite"""
     epicrpgguide = (
         f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
         f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=applications.commands%20bot)\n'
@@ -513,11 +465,7 @@ async def links(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def vote(ctx: commands.Context):
-    """Link to the top.gg voting page
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Link to the top.gg voting page"""
     embed = discord.Embed(
         color = global_data.color,
         title = 'FEEL LIKE VOTING?',
@@ -533,11 +481,7 @@ async def vote(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def donate(ctx: commands.Context):
-    """Much love
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Much love"""
     await ctx.send(
         f'Aw that\'s nice of you but this is a free bot, you know.\n'
         f'Thanks though :heart:'
@@ -548,23 +492,14 @@ async def donate(ctx: commands.Context):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True)
 async def panda(ctx: commands.Context):
-    """Because Panda is awesome
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Because Panda is awesome"""
     await ctx.send('All hail Panda! :panda_face:')
 
 
 @bot.command(aliases=('shutup','shutit','shutup!','shutit!'))
 @commands.bot_has_permissions(send_messages=True)
 async def shut(ctx: commands.Context, *args: str):
-    """Sometimes you just have to say it
-
-    Args:
-        ctx (commands.Context)
-        *args (str)
-    """
+    """Sometimes you just have to say it"""
     invoked = ctx.invoked_with.lower()
     if invoked == 'shut':
         if args:
@@ -579,12 +514,7 @@ async def shut(ctx: commands.Context, *args: str):
 @bot.command(aliases=('bad!','trash','trash!','badbot','trashbot','badbot!','trashbot!','delete',))
 @commands.bot_has_permissions(send_messages=True)
 async def bad(ctx: commands.Context, *args: str):
-    """Sad
-
-    Args:
-        ctx (commands.Context)
-        *args (str)
-    """
+    """Sad"""
     invoked = ctx.invoked_with.lower()
     if invoked in ('bad','trash',):
         if args:
@@ -600,12 +530,7 @@ async def bad(ctx: commands.Context, *args: str):
                       'greatbot','nicebot',))
 @commands.bot_has_permissions(send_messages=True)
 async def good(ctx: commands.Context, *args: str):
-    """Yay!
-
-    Args:
-        ctx (commands.Context)
-        *args (str)
-    """
+    """Yay!"""
     invoked = ctx.invoked_with.lower()
     if invoked in ('good','great','nice','best','useful','amazing'):
         if args:
@@ -620,12 +545,7 @@ async def good(ctx: commands.Context, *args: str):
 @bot.command(aliases=('thank','thanks!'))
 @commands.bot_has_permissions(send_messages=True)
 async def thanks(ctx: commands.Context, *args: str):
-    """You're very welcome
-
-    Args:
-        ctx (commands.Context)
-        *args (str)
-    """
+    """You're very welcome"""
     invoked = ctx.invoked_with.lower()
     if invoked == 'thank':
         if args:
@@ -640,11 +560,7 @@ async def thanks(ctx: commands.Context, *args: str):
 @bot.command()
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
 async def brandon(ctx: commands.Context):
-    """Only three people will get this
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Only three people will get this"""
     embed = discord.Embed(
         color = global_data.color,
         title = 'WHAT TO DO WITH BRANDON',
@@ -658,11 +574,7 @@ async def brandon(ctx: commands.Context):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def test(ctx: commands.Context):
-    """Hey ho
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Hey ho"""
     await ctx.send('Hey hey. Oh it\'s you, Miri! Yes I\'m online, thanks for asking.')
 
 
@@ -670,12 +582,7 @@ async def test(ctx: commands.Context):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def reload(ctx: commands.Context, *args: str):
-    """Reloads modules and cogs
-
-    Args:
-        ctx (commands.Context)
-        *args (str)
-    """
+    """Reloads modules and cogs"""
     if args:
         args = [arg.lower() for arg in args]
         arg, *_ = args
@@ -708,11 +615,7 @@ async def reload(ctx: commands.Context, *args: str):
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def shutdown(ctx: commands.Context):
-    """Shuts down the bot (noisily)
-
-    Args:
-        ctx (commands.Context)
-    """
+    """Shuts down the bot (noisily)"""
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
 

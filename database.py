@@ -1,10 +1,12 @@
 # database.py
 
+from datetime import datetime
 import sqlite3
-import global_data
 
 from discord.ext import commands
-from datetime import datetime
+
+import global_data
+
 
 # Set name of database file
 dbfile = global_data.dbfile

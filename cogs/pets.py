@@ -1,21 +1,18 @@
 # pets.py
 
-import os,sys,inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
 import discord
+from discord.ext import commands
+
+import database
 import emojis
 import global_data
-import database
 
-from discord.ext import commands
 
 # pets commands (cog)
 class petsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     pets_aliases = (
         'pet',
         'petcatch','petscatch','petscatching','petcatching','catchpet','catchpets','catchingpet','catchingpets',
@@ -25,14 +22,14 @@ class petsCog(commands.Cog):
         'petsspecial','petsspecialskill','petsspecialskills','petspecial','petspecialskill','petspecialskills','petskillspecial','petskillsspecial','petsskillspecial','petsskillsspecial',
         'petsadv','petsadventures','petadv','petadventure','petadventures'
     )
-    
+
     # Command "pets"
     @commands.command(aliases=pets_aliases)
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def pets(self, ctx, *args):
         invoked = ctx.invoked_with
         invoked = invoked.lower()
-        
+
         if args:
             arg = args[0]
             if (arg.find('catch') > -1) or (arg.find('find') > -1):
@@ -87,16 +84,16 @@ class petsCog(commands.Cog):
     @commands.command(aliases=('petfuse',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
     async def fuse(self, ctx, *args):
-    
+
         prefix = ctx.prefix
-    
+
         syntax = (
             f'The syntax is:\n'
             f'{emojis.bp} `{prefix}fuse [tier]` to get recommendations for your current TT.\n'
             f'{emojis.bp} `{prefix}fuse [tier] [tt]` to get recommendations for another TT.\n\n'
             f'Examples: `{prefix}fuse t5` / `{prefix}fuse 6 25`'
         )
-    
+
         if args:
             if len(args) in (1,2):
                 pet_tier = args[0]
@@ -135,7 +132,7 @@ class petsCog(commands.Cog):
                 else:
                     current_settings = await database.get_settings(ctx)
                     user_tt = current_settings[0]
-                
+
                 embed = await embed_fuse(ctx.prefix, pet_tier, user_tt)
                 await ctx.send(embed=embed)
             else:
@@ -148,7 +145,7 @@ class petsCog(commands.Cog):
                 f'{emojis.bp} What you can fuse if you **have** that tier\n\n'
                 f'{syntax}'
             )
-        
+
 
 # Initialization
 def setup(bot):
@@ -166,7 +163,7 @@ guide_skills = '`{prefix}pet skills` : Details about pet skills'
 guide_skills_special = '`{prefix}pet skills special` : Details about special pet skills'
 guide_adv = '`{prefix}pet adv` : Details about pet adventures'
 
-                    
+
 
 # --- Embeds ---
 # Pets overview
@@ -176,10 +173,10 @@ async def embed_pets_overview(prefix):
         f'{emojis.bp} {emojis.timetravel} TT 2+\n'
         f'{emojis.bp} Exception: Event and giveaway pets are not TT locked'
     )
-            
+
     whattodo = f'{emojis.bp} Send them on adventures (see `{prefix}pet adv`)'
 
-                     
+
     tier = (
         f'{emojis.bp} Tiers range from I to XII (1 to 12)\n'
         f'{emojis.bp} Increases the number of items you get in adventures\n'
@@ -194,28 +191,28 @@ async def embed_pets_overview(prefix):
         f'{emojis.bp} Mainly found by fusing pets (see `{prefix}pet fusion`)\n'
         f'{emojis.bp} Small chance of getting a skill when catching pets'
     )
-    
+
     specialskills = (
         f'{emojis.bp} There are 6 special skills (see `{prefix}pet skills special`)\n'
         f'{emojis.bp} Special skills don\'t have a rank and can **not** be lost\n'
         f'{emojis.bp} Only available on special event reward pets\n'
         f'{emojis.bp} Each special skill is unique to a certain special pet'
     )
-                    
+
     type = (
         f'{emojis.bp} The basic types are {emojis.petcat} cat, {emojis.petdog} dog and {emojis.petdragon} dragon\n'
         f'{emojis.bp} Event pets can have unique types\n'
         f'{emojis.bp} The type you get when catching pets is random\n'
         f'{emojis.bp} All types are purely cosmetic'
     )
-                    
+
     score = (
         f'{emojis.bp} The pet score increases your chance to win pet tournaments\n'
         f'{emojis.bp} See `{prefix}event pet tournament` for details about tournaments\n'
         f'{emojis.bp} The pet score is influenced by tier, skills and skill ranks\n'
         f'{emojis.bp} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Pets#Pet_Score)'
     )
-                    
+
     guides = (
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
@@ -232,8 +229,8 @@ async def embed_pets_overview(prefix):
             f'Pets have tiers, types and skills and can be sent on adventures to find stuff for you.\n'
             f'You can have up to (5 + TT) pets (= 7 pets at {emojis.timetravel} TT 2).'
         )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='WHAT TO DO WITH PETS', value=whattodo, inline=False)
@@ -243,12 +240,12 @@ async def embed_pets_overview(prefix):
     embed.add_field(name='TYPE', value=type, inline=False)
     embed.add_field(name='SCORE', value=score, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Catching pets
 async def embed_pets_catch(prefix):
-          
+
     source = (
         f'{emojis.bp} After using `training` (4% chance, 10% with {emojis.horset9} T9 horse)\n'
         f'{emojis.bp} By ranking at least 3rd in {emojis.horset9} T9 horse races\n'
@@ -280,18 +277,18 @@ async def embed_pets_catch(prefix):
         color = global_data.color,
         title = 'CATCHING PETS',
         description = f'With the exception of event and giveaway pets you can only find and catch pets in {emojis.timetravel} TT 2+'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name='HOW TO CATCH PETS', value=catch, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Pet fusion
 async def embed_pets_fusion(prefix):
-          
+
     general = (
         f'{emojis.bp} Use `pets fusion [petID1] [petID2]`\n'
         f'{emojis.bp} You can fuse more than 2 pets but you should only do that if you want to maximize the chance to keep certain skills or want to control the type you get\n'
@@ -331,7 +328,7 @@ async def embed_pets_fusion(prefix):
         f'{emojis.bp} Try to tier up to T4+ before you start fusing for skills\n'
         f'{emojis.bp} The best normal skill to keep first is {emojis.skillhappy} happy'
     )
-                    
+
     skillsimpact = f'{emojis.bp} {emojis.skillhappy} **Happy**: Increases the chance to tier up'
 
     guides = (
@@ -347,8 +344,8 @@ async def embed_pets_fusion(prefix):
         color = global_data.color,
         title = 'PET FUSION',
         description = 'You can fuse pets to tier them up and/or find or transfer normal skills.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='HOW TO FUSE', value=general, inline=False)
     embed.add_field(name='TIERING UP', value=tiers, inline=False)
@@ -357,12 +354,12 @@ async def embed_pets_fusion(prefix):
     embed.add_field(name='WHAT TO DO FIRST', value=whatfirst, inline=False)
     embed.add_field(name='SKILLS THAT AFFECT FUSION', value=skillsimpact, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Pet normal skills
 async def embed_pets_skills(prefix):
-          
+
     normie = f'{emojis.bp} This is not a skill, it simply means the pet has no skills'
 
     fast = (
@@ -373,21 +370,21 @@ async def embed_pets_skills(prefix):
     happy = f'{emojis.bp} Increases the chance to tier up when fusing'
 
     clever = f'{emojis.bp} Increases the chance to rank up skills in adventures'
-    
+
     digger = f'{emojis.bp} Increases the amount of coins you get in adventures'
-    
+
     lucky = f'{emojis.bp} Increases the chance to find better items in adventures'
-    
+
     timetraveler = (
         f'{emojis.bp} Has a chance of finishing an adventure instantly\n'
         f'{emojis.bp} Note: You can not cancel an adventure if the pet has this skill\n'
     )
-    
+
     epic = (
         f'{emojis.bp} If you send this pet on an adventure, you can send another\n'
         f'{emojis.bp} Note: You have to send the pet with this skill **first**'
     )
-    
+
     ascended = (
         f'{emojis.bp} Has a chance to find another pet in adventures\n'
         f'{emojis.bp} This skill has to be unlocked with `pets ascend`\n'
@@ -398,7 +395,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.bp} You can **not** rank up this skill with adventures\n'
         f'{emojis.bp} To rank up the skill, get all other skills to SS+ and ascend again'
     )
-                    
+
     fighter = (
         f'{emojis.bp} Pet can be used to acquire {emojis.dragonessence} dragon essence in D1-D9\n'
         f'{emojis.bp} You have a 20% base chance to get an essence after the dungeon\n'
@@ -408,7 +405,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.bp} To rank up the skill, you have to tier up further (1 rank per tier)\n'
         f'{emojis.bp} Note: You need to be in {emojis.timetravel} TT 25+ to be able to use the skill'
     )
-    
+
     skillranks = (
         f'{emojis.bp} Every skill has 9 possible ranks\n'
         f'{emojis.bp} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
@@ -416,7 +413,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.bp} Higher ranks increase the skill bonus\n'
         f'{emojis.bp} Higher ranks increase the chance to keep a skill when fusing'
     )
-    
+
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills_special.format(prefix=prefix)}\n'
@@ -433,8 +430,8 @@ async def embed_pets_skills(prefix):
             f'To see an overview of the **special** pet skills, see `{prefix}pet skills special`.\n'
             f'Purple and yellow skills are rarer than blue ones.'
         )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'NORMIE {emojis.skillnormie}', value=normie, inline=False)
     embed.add_field(name=f'FAST {emojis.skillfast}', value=fast, inline=False)
@@ -448,12 +445,12 @@ async def embed_pets_skills(prefix):
     embed.add_field(name=f'FIGHTER {emojis.skillfighter}', value=fighter, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Pet special skills
 async def embed_pets_skills_special(prefix):
-          
+
     competitive = (
         f'{emojis.bp} The pet has 1 more score point\n'
         f'{emojis.bp} This skill is unique to the {emojis.petpanda} epic panda pet\n'
@@ -477,21 +474,21 @@ async def embed_pets_skills_special(prefix):
         f'{emojis.bp} This skill is unique to the {emojis.petpumpkinbat} pumpkin bat pet\n'
         f'{emojis.bp} This pet is a reward in the halloween event'
     )
-    
+
     gifter = (
         f'{emojis.bp} Has a chance to find a random lootbox in a pet adventure\n'
         f'{emojis.bp} This skill is unique to the {emojis.petsnowball} snowball pet\n'
         f'{emojis.bp} This pet is a reward in the christmas event'
     )
-    
+
     booster = (
         f'{emojis.bp} **All** pets have a chance to advance skills twice in a pet adventure\n'
         f'{emojis.bp} This skill is unique to the {emojis.pethamster} hamster pet\n'
         f'{emojis.bp} This pet is a reward in the anniversary event'
     )
-    
+
     skillranks = f'{emojis.bp} Special skills can not be ranked up'
-    
+
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_skills.format(prefix=prefix)}\n'
@@ -507,8 +504,8 @@ async def embed_pets_skills_special(prefix):
             f'Overview of all **special** pet skills. Each special skill is unique to a certain special pet and can **not** be lost.\n'
             f'To see an overview of the **normal** pet skills, see `{prefix}pet skills`.'
         )
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'COMPETITIVE {emojis.skillcompetitive}', value=competitive, inline=False)
     embed.add_field(name=f'FISHERFISH {emojis.skillfisherfish}', value=fisherfish, inline=False)
@@ -518,12 +515,12 @@ async def embed_pets_skills_special(prefix):
     embed.add_field(name=f'BOOSTER {emojis.skillbooster}', value=booster, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Pet adventures
 async def embed_pets_adventures(prefix):
-          
+
     usage = (
         f'{emojis.bp} Command: `pets adv [type] [petIDs]`\n'
         f'{emojis.bp} Use `pets adv cancel [petID]` to cancel an adventure\n'
@@ -556,7 +553,7 @@ async def embed_pets_adventures(prefix):
         f'{emojis.bp} {emojis.skillepic} **EPIC**: If you send this pet **first**, you can send another\n'
         f'{emojis.bp} {emojis.skillascended} **Ascended**: Has a chance to find a pet'
     )
-    
+
     specialskillsimpact = (
         f'{emojis.bp} {emojis.skillfisherfish} **Fisherfish**: Increases the amount of fish you get by 300%\n'
         f'{emojis.bp} {emojis.skillfaster} **Faster**: Doubles time reduction from {emojis.skillfast} fast skill\n'
@@ -564,7 +561,7 @@ async def embed_pets_adventures(prefix):
         f'{emojis.bp} {emojis.skillgifter} **Gifter**: Has a chance to find a lootbox\n'
         f'{emojis.bp} {emojis.skillbooster} **BOOSTER**: All pets have a chance to advance skills twice'
     )
-    
+
     guides = (
         f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
         f'{emojis.bp} {guide_catch.format(prefix=prefix)}\n'
@@ -577,8 +574,8 @@ async def embed_pets_adventures(prefix):
         color = global_data.color,
         title = 'PET ADVENTURES',
         description = 'You can send pets on adventures to find items or coins or to rank up their skills.'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name='ADVENTURE TYPES', value=types, inline=False)
@@ -586,12 +583,12 @@ async def embed_pets_adventures(prefix):
     embed.add_field(name='NORMAL SKILLS THAT AFFECT ADVENTURES', value=normalskillsimpact, inline=False)
     embed.add_field(name='SPECIAL SKILLS THAT AFFECT ADVENTURES', value=specialskillsimpact, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-            
+
     return embed
 
 # Pet fusion recommendations
 async def embed_fuse(prefix, pet_tier, user_tt):
-          
+
     if pet_tier == 1:
         how_to_get_tier = f'{emojis.bp} There are no lower tier fusions'
         what_to_fuse_with_tier = f'{emojis.bp} **T1** + **T1** ➜ **T2**'
@@ -782,14 +779,14 @@ async def embed_fuse(prefix, pet_tier, user_tt):
         else:
             how_to_get_tier = f'{emojis.bp} **T10** + **T10**'
             what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
-    
+
     note = (
         f'{emojis.bp} Tier up is **not** guaranteed!\n'
         f'{emojis.bp} If you want the maximum chance, do same-tier fusions.\n'
         f'{emojis.bp} You can lose skills in fusions!\n'
         f'{emojis.bp} If you are unsure about fusions, see `{prefix}pet fusion`'
     )
-    
+
     guides = (
         f'{emojis.bp} {guide_fusion.format(prefix=prefix)}\n'
     )
@@ -797,11 +794,11 @@ async def embed_fuse(prefix, pet_tier, user_tt):
     embed = discord.Embed(
         color = global_data.color,
         title = f'TIER {pet_tier} PET FUSIONS • TT {user_tt}'
-    )    
-    
+    )
+
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'MINIMUM FUSION TO GET A T{pet_tier} PET', value=how_to_get_tier, inline=False)
     embed.add_field(name=f'MINIMUM FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-            
+
     return embed
