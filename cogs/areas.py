@@ -281,7 +281,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     # Description
     description = f'{area_description}'
 
-    # Area locked --> Quick fix, would be nice to have the "unlocks in TT" with actual database data when rewritinggi
+    # Area locked --> Quick fix, would be nice to have the "unlocks in TT" with actual database data when rewriting
     area_locked = ''
     if time_traveller_area_locked == True:
         unlock_area = {

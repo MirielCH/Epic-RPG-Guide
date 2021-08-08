@@ -120,7 +120,7 @@ async def on_command_error(ctx: commands.Context, error: Exception):
     elif isinstance(error, commands.BotMissingPermissions):
         if 'send_messages' in error.missing_perms:
             return
-        elif 'embed_links' in error.missing_perms:
+        if 'embed_links' in error.missing_perms:
             await ctx.send(error)
         else:
             await send_error(ctx, error)
@@ -129,9 +129,9 @@ async def on_command_error(ctx: commands.Context, error: Exception):
 
 
 # --- Main menu ---
-@bot.command(name='guide',aliases=('help','g','h',))
+@bot.command(name='help',aliases=('guide','g','h',))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def helpguide(ctx: commands.Context):
+async def main_help(ctx: commands.Context):
     """Main help command"""
     prefix = await database.get_prefix(bot, ctx)
     progress = (
@@ -205,15 +205,21 @@ async def helpguide(ctx: commands.Context):
 @commands.bot_has_permissions(send_messages=True)
 async def setprefix(ctx: commands.Context, *args: str):
     """Sets new server prefix"""
+    syntax_error = (
+        f'The command syntax is `{ctx.prefix}setprefix [prefix]`\n\n'
+        f'Tip: If you want to include a space, use "".\n'
+        f'Example: `{ctx.prefix}setprefix "guide "`'
+    )
+
     if args:
-        if len(args)>1:
-            await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
-        else:
-            (new_prefix,) = args
-            await database.set_prefix(bot, ctx, new_prefix)
-            await ctx.send(f'Prefix changed to `{await database.get_prefix(bot, ctx)}`')
+        if len(args) > 1:
+            await ctx.send(syntax_error)
+            return
+        (new_prefix,) = args
+        await database.set_prefix(bot, ctx, new_prefix)
+        await ctx.send(f'Prefix changed to `{await database.get_prefix(bot, ctx)}`')
     else:
-        await ctx.send(f'The command syntax is `{ctx.prefix}setprefix [prefix]`')
+        await ctx.send(syntax_error)
 
 
 @bot.command()
@@ -276,6 +282,9 @@ async def setprogress(ctx: commands.Context, *args: str):
             f'**{current_ascended}**.'
             )
 
+    prefix = ctx.prefix
+    invoked = ctx.invoked_with
+
     ascension = {
                 'ascended': 'ascended',
                 'asc': 'ascended',
@@ -293,8 +302,6 @@ async def setprogress(ctx: commands.Context, *args: str):
         f'Examples: `{prefix}{invoked} tt5`, `{prefix}{invoked} 8 asc`'
         )
 
-    prefix = ctx.prefix
-    invoked = ctx.invoked_with
     if args:
         args = [arg.lower() for arg in args]
         arg_tt, *arg_ascended = args
@@ -369,9 +376,9 @@ async def setprogress(ctx: commands.Context, *args: str):
         return
 
 
-@bot.command(aliases=('statistic','statistics,','devstat','ping','about','info','stats'))
+@bot.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats'))
 @commands.bot_has_permissions(send_messages=True, embed_links=True)
-async def devstats(ctx: commands.Context):
+async def about(ctx: commands.Context):
     """Shows some bot info"""
     user_count, *_ = await database.get_user_number(ctx)
     closed_shards = 0
@@ -570,15 +577,15 @@ async def brandon(ctx: commands.Context):
 
 
 # --- Owner Commands ---
-@bot.command(aliases=('hey','yo'))
+@bot.command()
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
-async def test(ctx: commands.Context):
+async def hey(ctx: commands.Context):
     """Hey ho"""
     await ctx.send('Hey hey. Oh it\'s you, Miri! Yes I\'m online, thanks for asking.')
 
 
-@bot.command(aliases=('reload_cog',))
+@bot.command()
 @commands.is_owner()
 @commands.bot_has_permissions(send_messages=True)
 async def reload(ctx: commands.Context, *args: str):
