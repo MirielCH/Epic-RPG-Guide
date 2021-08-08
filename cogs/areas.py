@@ -281,12 +281,20 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     # Description
     description = f'{area_description}'
 
-    # Area locked
+    # Area locked --> Quick fix, would be nice to have the "unlocks in TT" with actual database data when rewritinggi
+    area_locked = ''
     if time_traveller_area_locked == True:
-        area_locked = f'{emojis.bp} **You can not reach this area in your current TT**'
+        unlock_area = {
+            12: 1,
+            13: 3,
+            14: 5,
+            15: 10
+        }
+        area_locked = (
+            f'{emojis.bp} **You can not reach this area in your current TT**\n'
+            f'{emojis.bp} This area is unlocked in {emojis.timetravel} TT {unlock_area[area_no]}'
+            )
         footer = f'Tip: See {prefix}tt for details about time traveling'
-    else:
-        area_locked = ''
 
     # Quick Guide
     quick_guide_sword = ''
@@ -498,7 +506,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     elif area_no == 11:
             if user_tt == 0:
                 work_cmd = (
-                    f'{emojis.bp} `drill` if you need coins'
+                    f'{emojis.bp} `drill` if you need coins\n'
                     f'{emojis.bp} `chainsaw` otherwise'
                 )
             else:
