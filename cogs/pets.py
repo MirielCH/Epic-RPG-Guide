@@ -104,13 +104,7 @@ class petsCog(commands.Cog):
                 if pet_tier.isnumeric():
                     pet_tier = int(pet_tier)
                     if not 1 <= pet_tier <= 12:
-                        await ctx.send(f'Please enter a pet tier between 1 and 12.')
-                        return
-                    if pet_tier == 12:
-                        await ctx.send(
-                            f'There is no fusion data for T12 pets yet.\n'
-                            f'However, do not try this before TT 25 at the absolute earliest and only use **T11** + **T11**.'
-                        )
+                        await ctx.send('Please enter a pet tier between 1 and 12.')
                         return
                 else:
                     await ctx.send(syntax)
@@ -656,8 +650,7 @@ async def embed_fuse(prefix, pet_tier, user_tt):
         else:
             how_to_get_tier = f'{emojis.bp} **T1** + **T4**'
             what_to_fuse_with_tier = (
-                f'{emojis.bp} **T1** + **T5** ➜ **T6**\n'
-                f'{emojis.bp} **T5** + **T8** ➜ **T9**'
+                f'{emojis.bp} **T1** + **T5** ➜ **T6**'
             )
     elif pet_tier == 6:
         if 0 <= user_tt <= 9:
@@ -686,7 +679,10 @@ async def embed_fuse(prefix, pet_tier, user_tt):
             )
         else:
             how_to_get_tier = f'{emojis.bp} **T1** + **T5**'
-            what_to_fuse_with_tier = f'{emojis.bp} **T2** + **T6** ➜ **T7**'
+            what_to_fuse_with_tier = (
+                f'{emojis.bp} **T2** + **T6** ➜ **T7**\n'
+                f'{emojis.bp} **T6** + **T8** ➜ **T9**'
+                )
     elif pet_tier == 7:
         if 0 <= user_tt <= 9:
             how_to_get_tier = f'{emojis.bp} **T6** + **T6**'
@@ -754,7 +750,7 @@ async def embed_fuse(prefix, pet_tier, user_tt):
             how_to_get_tier = f'{emojis.bp} **T6** + **T8**'
             what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T9** ➜ **T10**'
         else:
-            how_to_get_tier = f'{emojis.bp} **T5** + **T8**'
+            how_to_get_tier = f'{emojis.bp} **T6** + **T8**'
             what_to_fuse_with_tier = f'{emojis.bp} **T8** + **T9** ➜ **T10**'
     elif pet_tier == 10:
         if 0 <= user_tt <= 9:
@@ -770,14 +766,18 @@ async def embed_fuse(prefix, pet_tier, user_tt):
             how_to_get_tier = f'{emojis.bp} **T8** + **T9**'
             what_to_fuse_with_tier = f'{emojis.bp} **T10** + **T10** ➜ **T11**'
     elif pet_tier == 11:
-        if 0 <= user_tt <= 9:
+        if 0 <= user_tt <= 24:
             how_to_get_tier = f'{emojis.bp} None. A T11 is unlikely to get in this TT.'
-            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
-        elif 10 <= user_tt <= 24:
-            how_to_get_tier = f'{emojis.bp} None. A T11 is unlikely to get in this TT.'
-            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
+            what_to_fuse_with_tier = f'{emojis.bp} None. A T12 is unlikely to get in this TT.'
         else:
             how_to_get_tier = f'{emojis.bp} **T10** + **T10**'
+            what_to_fuse_with_tier = f'{emojis.bp} **T11** + **T11** ➜ **T12**'
+    elif pet_tier == 12:
+        if 0 <= user_tt <= 24:
+            how_to_get_tier = f'{emojis.bp} None. A T12 is unlikely to get in this TT.'
+            what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
+        else:
+            how_to_get_tier = f'{emojis.bp} **T11** + **T11**'
             what_to_fuse_with_tier = f'{emojis.bp} None. This is the maximum tier.'
 
     note = (

@@ -1610,7 +1610,7 @@ async def embed_professions_leveling(prefix):
         f'{emojis.bp} Level **before time traveling** with leftover materials\n'
         f'{emojis.bp} Trade everything to {emojis.log} logs and craft/dismantle {emojis.logepic} EPIC logs\n'
         f'{emojis.bp} Craft in batches of 500 or 1000 (you can dismantle all at once)\n'
-        f'{emojis.bp} Once you reach level 90, switch to leveling merchant'
+        f'{emojis.bp} Once you reach level 100, switch to leveling merchant'
     )
 
     merchant = (
@@ -1620,13 +1620,13 @@ async def embed_professions_leveling(prefix):
         f'{emojis.bp} For each level look up `rpg pr merchant` and calculate the XP you need for the next level\n'
         f'{emojis.bp} Take 5x the XP amount and sell as many {emojis.log} logs\n'
         f'{emojis.bp} Tip: You can quickly calculate logs to sell with `{prefix}prm`\n'
-        f'{emojis.bp} Once you reach level 90, focus on lootboxer and worker'
+        f'{emojis.bp} Once you reach level 100, focus on lootboxer and worker'
     )
 
     lootboxer = (
         f'{emojis.bp} Level up by opening lootboxes\n'
         f'{emojis.bp} Better lootboxes give more XP (see `{prefix}pr lootboxer`)\n'
-        f'{emojis.bp} It should not be necessary to cook {emojis.foodfilledlootbox} filled lootboxes anymore\n'
+        f'{emojis.bp} It should not be necessary to cook {emojis.foodfilledlootbox} filled lootboxes\n'
         f'{emojis.bp} Use `hunt hardmode` whenever you have access (unlocks in A13)'
     )
 
@@ -1639,7 +1639,7 @@ async def embed_professions_leveling(prefix):
     )
 
     enchanter = (
-        f'{emojis.bp} This is the last profession you should level up because of costs\n'
+        f'{emojis.bp} This is the last profession you should level up (it\'s expensive and you need access to at least `transmute`)\n'
         f'{emojis.bp} Level before time traveling using `transmute` or `transcend`\n'
         f'{emojis.bp} XP gain is based on the quality of the enchant you get (see `{prefix}pr enchanter`)\n'
         f'{emojis.bp} Costs around 3 billion coins without {emojis.horset8} T8+ horse\n'
