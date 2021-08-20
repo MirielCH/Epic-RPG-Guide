@@ -7,22 +7,33 @@ import os
 import emojis
 
 # Get bot directory
-bot_dir = os.path.dirname(__file__)
+BOT_DIR = os.path.dirname(__file__)
 
 # Databases
-dbfile = os.path.join(bot_dir, 'database/erg_db.db')
-default_dbfile = os.path.join(bot_dir, 'database/erg_db_default.db')
+DB_FILE = os.path.join(BOT_DIR, 'database/erg_db.db')
+DEFAULT_DB_FILE = os.path.join(BOT_DIR, 'database/erg_db_default.db')
 
 # Pictures
-thumbnail = os.path.join(bot_dir, 'images/erg.png')
-dungeon11 = os.path.join(bot_dir, 'images/dungeon11.png')
-dungeon13 = os.path.join(bot_dir, 'images/dungeon13.png')
+IMG_THUMBNAIL = os.path.join(BOT_DIR, 'images/erg.png')
+IMG_DUNGEON_11 = os.path.join(BOT_DIR, 'images/dungeon11.png')
+IMG_DUNGEON_13 = os.path.join(BOT_DIR, 'images/dungeon13.png')
 
 # Prefix
-default_prefix = '$'
+DEFAULT_PREFIX = '$'
+
+# EPIC RPG user id
+EPIC_RPG_ID = 555955826880413696
+
+# Default responses
+MSG_ABORTING = 'Aborting.'
+MSG_BOT_MESSAGE_NOT_FOUND = '**{user}**, couldn\'t find your {information} information, RIP.'
+MSG_ERROR = 'Whelp, something went wrong here, sorry.'
+MSG_SYNTAX = 'The command syntax is `{syntax}`'
+MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}` (or `abort` to abort)'
+MSG_WRONG_INPUT = 'Wrong input. Aborting.'
 
 # Embed color
-color = 0x8914FF
+EMBED_COLOR = 0x8914FF
 
 # Set default footer
 async def default_footer(prefix):
@@ -31,7 +42,7 @@ async def default_footer(prefix):
     return footer
 
 # Open error log file, create if it not exists
-logfile = os.path.join(bot_dir, 'logs/discord.log')
+logfile = os.path.join(BOT_DIR, 'logs/discord.log')
 if not os.path.isfile(logfile):
     open(logfile, 'a').close()
 
@@ -187,11 +198,11 @@ item_aliases = {
 # Create field "trade rates" for area & trading
 async def design_field_traderate(traderate_data):
 
-    field_value = f'{emojis.bp} 1 {emojis.fish} ⇄ {emojis.log} {traderate_data[1]}'
+    field_value = f'{emojis.BP} 1 {emojis.FISH} ⇄ {emojis.LOG} {traderate_data[1]}'
     if not traderate_data[2] == 0:
-        field_value = f'{field_value}\n{emojis.bp} 1 {emojis.apple} ⇄ {emojis.log} {traderate_data[2]}'
+        field_value = f'{field_value}\n{emojis.BP} 1 {emojis.APPLE} ⇄ {emojis.LOG} {traderate_data[2]}'
         if not traderate_data[3] == 0:
-            field_value = f'{field_value}\n{emojis.bp} 1 {emojis.ruby} ⇄ {emojis.log} {traderate_data[3]}'
+            field_value = f'{field_value}\n{emojis.BP} 1 {emojis.RUBY} ⇄ {emojis.LOG} {traderate_data[3]}'
 
     return (field_value)
 
@@ -199,80 +210,80 @@ async def design_field_traderate(traderate_data):
 async def design_field_trades(area_no, ascended='not ascended'):
 
     if int(area_no) in (1,2,4,6,12,13,14):
-        field_value = f'{emojis.bp} None'
+        field_value = f'{emojis.BP} None'
     elif int(area_no) == 3:
         field_value = (
-            f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-            f'{emojis.bp} Dismantle {emojis.logultra} ULTRA logs and below\n'
-            f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'
-            f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
+            f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+            f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
         )
     elif int(area_no) == 5:
         field_value = (
-            f'{emojis.bp} Dismantle {emojis.logultra} ULTRA logs and below\n'
-            f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'
-            f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-            f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'
-            f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
+            f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
+            f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
         )
     elif int(area_no) == 7:
         field_value = (
-            f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-            f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
+            f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs'
         )
     elif int(area_no) == 8:
         if ascended == 'ascended':
             field_value = (
-                f'{emojis.bp} Dismantle {emojis.loghyper} HYPER logs and below\n'
-                f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'
-                f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
+                f'{emojis.BP} Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
+                f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
             )
         else:
             field_value = (
-                f'{emojis.bp} If crafter <90: Dismantle {emojis.logmega} MEGA logs and below\n'
-                f'{emojis.bp} If crafter 90+: Dismantle {emojis.loghyper} HYPER logs and below\n'
-                f'{emojis.bp} Dismantle {emojis.fishepic} EPIC fish and below\n'
-                f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.log} logs to {emojis.apple} apples'
+                f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_MEGA} MEGA logs and below\n'
+                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
+                f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
             )
     elif int(area_no) == 9:
         if ascended == 'ascended':
             field_value = (
-                f'{emojis.bp} Dismantle {emojis.logsuper} SUPER logs and below\n'
-                f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-                f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
+                f'{emojis.BP} Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
+                f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
             )
         else:
             field_value = (
-                f'{emojis.bp} If crafter <90: Dismantle {emojis.logepic} EPIC logs\n'
-                f'{emojis.bp} If crafter 90+: Dismantle {emojis.logsuper} SUPER logs and below\n'
-                f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-                f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs\n'
-                f'{emojis.bp} Trade {emojis.log} logs to {emojis.fish} fish'
+                f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_EPIC} EPIC logs\n'
+                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
+                f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
             )
     elif int(area_no) == 10:
         field_value = (
-            f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-            f'{emojis.bp} Trade {emojis.apple} apples to {emojis.log} logs'
+            f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs'
         )
     elif int(area_no) == 11:
-        field_value = f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs'
+        field_value = f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs'
     elif int(area_no) == 15:
         field_value = (
-            f'{emojis.bp} Dismantle {emojis.fishgolden} golden fish and below\n'
-            f'{emojis.bp} Dismantle {emojis.fruitbanana} bananas\n'
-            f'{emojis.bp} Trade {emojis.ruby} rubies to {emojis.log} logs\n'
-            f'{emojis.bp} Trade {emojis.fish} fish to {emojis.log} logs\n'
-            f'{emojis.bp} Trade {emojis.apple} apple to {emojis.log} logs'
+            f'{emojis.BP} Dismantle {emojis.FISH_GOLDEN} golden fish and below\n'
+            f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
+            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apple to {emojis.LOG} logs'
         )
     else:
-        field_value = f'{emojis.bp} N/A'
+        field_value = f'{emojis.BP} N/A'
 
     return (field_value)
 
@@ -327,17 +338,17 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
 
     if short_version == False:
         field_value = (
-            f'{emojis.bp} {emojis.statat} **AT**: {player_at}\n'
-            f'{emojis.bp} {emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.bp} {emojis.statlife} **LIFE**: {player_life} {life_boost}\n'
-            f'{emojis.bp} {emojis.statlevel} **LEVEL**: {player_level}'
+            f'{emojis.BP} {emojis.STAT_AT} **AT**: {player_at}\n'
+            f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
+            f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life} {life_boost}\n'
+            f'{emojis.BP} {emojis.STAT_LEVEL} **LEVEL**: {player_level}'
         )
     else:
         field_value = (
-            f'{emojis.statat} **AT**: {player_at}\n'
-            f'{emojis.statdef} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.statlife} **LIFE**: {player_life} {life_boost}\n'
-            f'{emojis.statlevel} **LEVEL**: {player_level}\n{emojis.blank}'
+            f'{emojis.STAT_AT} **AT**: {player_at}\n'
+            f'{emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
+            f'{emojis.STAT_LIFE} **LIFE**: {player_life} {life_boost}\n'
+            f'{emojis.STAT_LEVEL} **LEVEL**: {player_level}\n{emojis.BLANK}'
         )
 
     return field_value
@@ -361,3 +372,14 @@ async def inventory_get(inventory, material):
         mat = 0
 
     return mat
+
+
+def format_string(string: str) -> str:
+    """Format string to ASCII"""
+    string = (
+        string
+        .encode('unicode-escape',errors='ignore')
+        .decode('ASCII')
+        .replace('\\','')
+    )
+    return string

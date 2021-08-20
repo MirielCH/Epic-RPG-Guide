@@ -114,17 +114,17 @@ async def embed_gambling_menu(ctx):
     prefix = ctx.prefix
 
     trading = (
-        f'{emojis.bp} `{prefix}blackjack` / `{prefix}bj` : Blackjack guide\n'
-        f'{emojis.bp} `{prefix}coinflip` / `{prefix}cf` : Coinflip guide\n'
-        f'{emojis.bp} `{prefix}cups` : Cups guide\n'
-        f'{emojis.bp} `{prefix}dice` : Dice guide\n'
-        f'{emojis.bp} `{prefix}multidice` : Multidice guide\n'
-        f'{emojis.bp} `{prefix}slots` : Slots guide\n'
-        f'{emojis.bp} `{prefix}wheel` : Wheel guide'
+        f'{emojis.BP} `{prefix}blackjack` / `{prefix}bj` : Blackjack guide\n'
+        f'{emojis.BP} `{prefix}coinflip` / `{prefix}cf` : Coinflip guide\n'
+        f'{emojis.BP} `{prefix}cups` : Cups guide\n'
+        f'{emojis.BP} `{prefix}dice` : Dice guide\n'
+        f'{emojis.BP} `{prefix}multidice` : Multidice guide\n'
+        f'{emojis.BP} `{prefix}slots` : Slots guide\n'
+        f'{emojis.BP} `{prefix}wheel` : Wheel guide'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'GAMBLING GUIDES',
         description = f'Hey **{ctx.author.name}**, stop gambling.'
     )
@@ -138,44 +138,44 @@ async def embed_gambling_menu(ctx):
 async def embed_blackjack(prefix):
 
     syntax = (
-        f'{emojis.bp} `rpg blackjack [$]`\n'
-        f'{emojis.bp} `rpg bj [$]`\n'
+        f'{emojis.BP} `rpg blackjack [$]`\n'
+        f'{emojis.BP} `rpg bj [$]`\n'
     )
 
     rules = (
-        f'{emojis.bp} Both the dealer (the bot) and you have 2 cards on hand\n'
-        f'{emojis.bp} The goal is go get 21 or a number close to it (but not exceed it)\n'
-        f'{emojis.bp} Each round you must choose to either `hit` or `stay`\n'
-        f'{emojis.bp} `Hit` will give you another card, `stay` will end the game and count the cards\n'
-        f'{emojis.bp} If your total value is higher than the leader\'s and you are below or at 21, you win\n'
-        f'{emojis.bp} If you get 21 on the first hand, you win\n'
-        f'{emojis.bp} If you exceed 21 at any point (bust), you lose. The dealer can bust too.\n'
-        f'{emojis.bp} If you manage to hold 7 cards without busting, you win'
+        f'{emojis.BP} Both the dealer (the bot) and you have 2 cards on hand\n'
+        f'{emojis.BP} The goal is go get 21 or a number close to it (but not exceed it)\n'
+        f'{emojis.BP} Each round you must choose to either `hit` or `stay`\n'
+        f'{emojis.BP} `Hit` will give you another card, `stay` will end the game and count the cards\n'
+        f'{emojis.BP} If your total value is higher than the leader\'s and you are below or at 21, you win\n'
+        f'{emojis.BP} If you get 21 on the first hand, you win\n'
+        f'{emojis.BP} If you exceed 21 at any point (bust), you lose. The dealer can bust too.\n'
+        f'{emojis.BP} If you manage to hold 7 cards without busting, you win'
     )
 
     card_values = (
-        f'{emojis.bp} All numbered cards (2-10) are worth that number in points\n'
-        f'{emojis.bp} Jack, Queen and King are worth 10 points\n'
-        f'{emojis.bp} The Ace is worth 11 points if it does not push you over 21\n'
-        f'{emojis.bp} The Ace is worth 1 point if its full value of 11 points would push you over 21'
+        f'{emojis.BP} All numbered cards (2-10) are worth that number in points\n'
+        f'{emojis.BP} Jack, Queen and King are worth 10 points\n'
+        f'{emojis.BP} The Ace is worth 11 points if it does not push you over 21\n'
+        f'{emojis.BP} The Ace is worth 1 point if its full value of 11 points would push you over 21'
     )
 
     outcomes = (
-        f'{emojis.bp} **Win** • You win 100% of your bet\n'
-        f'{emojis.bp} **Lose** • You lose your bet'
+        f'{emojis.BP} **Win** • You win 100% of your bet\n'
+        f'{emojis.BP} **Lose** • You lose your bet'
     )
 
     chances = (
-        f'{emojis.bp} The chance to win depends on luck _and_ your skill\n'
-        f'{emojis.bp} Therefore exact chances are unknown'
+        f'{emojis.BP} The chance to win depends on luck _and_ your skill\n'
+        f'{emojis.BP} Therefore exact chances are unknown'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'BLACKJACK',
         description = f'\"Blackjack is very scientific. There\'s always a right answer and wrong answer.\"'
     )
@@ -194,38 +194,38 @@ async def embed_blackjack(prefix):
 async def embed_coinflip(prefix):
 
     syntax = (
-        f'{emojis.bp} `rpg coinflip head|tail [$]`\n'
-        f'{emojis.bp} `rpg cf h|t [$]`'
+        f'{emojis.BP} `rpg coinflip head|tail [$]`\n'
+        f'{emojis.BP} `rpg cf h|t [$]`'
     )
 
     rules = (
-        f'{emojis.bp} You flip a coin and bet on heads or tails\n'
-        f'{emojis.bp} The coin can either be heads, tails or land on the side'
+        f'{emojis.BP} You flip a coin and bet on heads or tails\n'
+        f'{emojis.BP} The coin can either be heads, tails or land on the side'
     )
 
     outcomes = (
-        f'{emojis.bp} **Correct bet** • You win 100% of your bet\n'
-        f'{emojis.bp} **Wrong bet** • You lose your bet\n'
-        f'{emojis.bp} **Side** • You win 5x your bet'
+        f'{emojis.BP} **Correct bet** • You win 100% of your bet\n'
+        f'{emojis.BP} **Wrong bet** • You lose your bet\n'
+        f'{emojis.BP} **Side** • You win 5x your bet'
     )
 
     chances = (
-        f'{emojis.bp} 45% to win\n'
-        f'{emojis.bp} 54% to lose\n'
-        f'{emojis.bp} 1% to land on the side'
+        f'{emojis.BP} 45% to win\n'
+        f'{emojis.BP} 54% to lose\n'
+        f'{emojis.BP} 1% to land on the side'
     )
 
     note = (
-        f'{emojis.bp} There is an extremely low chance that the event fails\n'
-        f'{emojis.bp} If this happens, your coin will land in another area, and you will lose 1 coin'
+        f'{emojis.BP} There is an extremely low chance that the event fails\n'
+        f'{emojis.BP} If this happens, your coin will land in another area, and you will lose 1 coin'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'COINFLIP',
         description = f'\"Ah. Fortune smiles. Another day of wine and roses. Or, in your case, beer and pizza!\"'
     )
@@ -243,31 +243,31 @@ async def embed_coinflip(prefix):
 # Cups
 async def embed_cups(prefix):
 
-    syntax = f'{emojis.bp} `rpg cups [$]`'
+    syntax = f'{emojis.BP} `rpg cups [$]`'
 
     rules = (
-        f'{emojis.bp} You are presented with three {emojis.cups} cups\n'
-        f'{emojis.bp} You have to enter either `1`, `2` or `3` to pick one of the cups\n'
-        f'{emojis.bp} If you pick the correct cup, you win'
+        f'{emojis.BP} You are presented with three {emojis.CUPS} cups\n'
+        f'{emojis.BP} You have to enter either `1`, `2` or `3` to pick one of the cups\n'
+        f'{emojis.BP} If you pick the correct cup, you win'
     )
 
     outcomes = (
-        f'{emojis.bp} **Correct cup** • You win 1.75x your bet\n'
-        f'{emojis.bp} **Wrong cup** • You lose your bet'
+        f'{emojis.BP} **Correct cup** • You win 1.75x your bet\n'
+        f'{emojis.BP} **Wrong cup** • You lose your bet'
     )
 
     chances = (
-        f'{emojis.bp} 33.33% chance to pick the correct cup'
+        f'{emojis.BP} 33.33% chance to pick the correct cup'
     )
 
-    note = f'{emojis.bp} The cups don\'t move, so don\'t bother waiting for a hint, there is none'
+    note = f'{emojis.BP} The cups don\'t move, so don\'t bother waiting for a hint, there is none'
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'CUPS',
         description = 'These ain\'t coffee cups.'
     )
@@ -285,37 +285,37 @@ async def embed_cups(prefix):
 # Dice
 async def embed_dice(prefix):
 
-    syntax = f'{emojis.bp} `rpg dice [$]`'
+    syntax = f'{emojis.BP} `rpg dice [$]`'
 
     rules = (
-        f'{emojis.bp} You roll a die that can go from 1 to 7\n'
-        f'{emojis.bp} If you get a 1, 2 or 3, you lose\n'
-        f'{emojis.bp} If you get a 4, 5, 6 or 7, you win'
+        f'{emojis.BP} You roll a die that can go from 1 to 7\n'
+        f'{emojis.BP} If you get a 1, 2 or 3, you lose\n'
+        f'{emojis.BP} If you get a 4, 5, 6 or 7, you win'
     )
 
     outcomes = (
-        f'{emojis.bp} {emojis.game_die}**- 1** • You  lose your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 2** • You  lose half your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 3** • You  lose a quarter of your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 4** • You win a quarter of your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 5** • You win half your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 6** • You win 100% of your bet\n'
-        f'{emojis.bp} {emojis.game_die}**- 7** • You win 10x your bet'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 1** • You  lose your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 2** • You  lose half your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 3** • You  lose a quarter of your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 4** • You win a quarter of your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 5** • You win half your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 6** • You win 100% of your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 7** • You win 10x your bet'
     )
 
     chances = (
-        f'{emojis.bp} 1 to 6: ~16.7% each\n'
-        f'{emojis.bp} 7: Unknown (but very rare)\n'
-        f'{emojis.bp} Total winning chance: ~50%\n'
-        f'{emojis.bp} Total chance to lose: ~50%'
+        f'{emojis.BP} 1 to 6: ~16.7% each\n'
+        f'{emojis.BP} 7: Unknown (but very rare)\n'
+        f'{emojis.BP} Total winning chance: ~50%\n'
+        f'{emojis.BP} Total chance to lose: ~50%'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'DICE',
         description = 'Dice, dice, baby.'
     )
@@ -332,35 +332,35 @@ async def embed_dice(prefix):
 # Multidice
 async def embed_multidice(prefix):
 
-    syntax = f'{emojis.bp} `rpg multidice [@player] [$]`'
+    syntax = f'{emojis.BP} `rpg multidice [@player] [$]`'
 
     rules = (
-        f'{emojis.bp} You roll a die against another player\n'
-        f'{emojis.bp} Whoever gets the higher roll, wins'
+        f'{emojis.BP} You roll a die against another player\n'
+        f'{emojis.BP} Whoever gets the higher roll, wins'
     )
 
     outcomes = (
-        f'{emojis.bp} **You roll lower** • The other player wins the bet, you lose the bet\n'
-        f'{emojis.bp} **You roll higher** • You win the bet, the other player loses the bet'
+        f'{emojis.BP} **You roll lower** • The other player wins the bet, you lose the bet\n'
+        f'{emojis.BP} **You roll higher** • You win the bet, the other player loses the bet'
     )
 
     chances = (
-        f'{emojis.bp} 50% to win\n'
-        f'{emojis.bp} 50% lose'
+        f'{emojis.BP} 50% to win\n'
+        f'{emojis.BP} 50% lose'
     )
 
     note = (
-        f'{emojis.bp} This command is unlocked in area 5\n'
-        f'{emojis.bp} This is basically a gambling version of `give`\n'
-        f'{emojis.bp} The amount you can bet is limited by your coin cap (see `{prefix}coincap`)'
+        f'{emojis.BP} This command is unlocked in area 5\n'
+        f'{emojis.BP} This is basically a gambling version of `give`\n'
+        f'{emojis.BP} The amount you can bet is limited by your coin cap (see `{prefix}coincap`)'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'MULTIDICE',
         description = 'Someone wins. Someone loses. Such is life.'
     )
@@ -378,49 +378,49 @@ async def embed_multidice(prefix):
 # Slots
 async def embed_slots(prefix):
 
-    syntax = f'{emojis.bp} `rpg slots [$]`'
+    syntax = f'{emojis.BP} `rpg slots [$]`'
 
     rules = (
-        f'{emojis.bp} The slot machine gives you a row of 5 emojis\n'
-        f'{emojis.bp} If you get **3 or more** of the same emoji, you win (see below)\n'
-        f'{emojis.bp} If you get 2 or less of the same emoji, you lose 100% of your bet\n'
-        f'{emojis.bp} There are five possible emojis: {emojis.slots_diamond}{emojis.slots_100}{emojis.slots_clover}{emojis.slots_gift}{emojis.slots_sparkles}'
+        f'{emojis.BP} The slot machine gives you a row of 5 emojis\n'
+        f'{emojis.BP} If you get **3 or more** of the same emoji, you win (see below)\n'
+        f'{emojis.BP} If you get 2 or less of the same emoji, you lose 100% of your bet\n'
+        f'{emojis.BP} There are five possible emojis: {emojis.SLOTS_DIAMOND}{emojis.SLOTS_100}{emojis.SLOTS_CLOVER}{emojis.SLOTS_GIFT}{emojis.SLOTS_SPARKLES}'
     )
 
     rewards_five = (
-        f'{emojis.bp}{emojis.slots_diamond} • **20x** your bet\n'
-        f'{emojis.bp}{emojis.slots_100} • **17.5x** your bet\n'
-        f'{emojis.bp}{emojis.slots_clover} • **15x** your bet\n'
-        f'{emojis.bp}{emojis.slots_gift} • **12.5x** your bet\n'
-        f'{emojis.bp}{emojis.slots_sparkles} • **10x** your bet'
+        f'{emojis.BP}{emojis.SLOTS_DIAMOND} • **20x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_100} • **17.5x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_CLOVER} • **15x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_GIFT} • **12.5x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_SPARKLES} • **10x** your bet'
     )
 
     rewards_four = (
-        f'{emojis.bp}{emojis.slots_diamond} • **5.5x** your bet\n'
-        f'{emojis.bp}{emojis.slots_100} • **4.8125x** your bet\n'
-        f'{emojis.bp}{emojis.slots_clover} • **4.125x** your bet\n'
-        f'{emojis.bp}{emojis.slots_gift} • **3.4375x** your bet\n'
-        f'{emojis.bp}{emojis.slots_sparkles} • **2.75x** your bet'
+        f'{emojis.BP}{emojis.SLOTS_DIAMOND} • **5.5x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_100} • **4.8125x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_CLOVER} • **4.125x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_GIFT} • **3.4375x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_SPARKLES} • **2.75x** your bet'
     )
 
     rewards_three = (
-        f'{emojis.bp}{emojis.slots_diamond} • **2x** your bet\n'
-        f'{emojis.bp}{emojis.slots_100} • **1.75x** your bet\n'
-        f'{emojis.bp}{emojis.slots_clover} • **1.5x** your bet\n'
-        f'{emojis.bp}{emojis.slots_gift} • **1.25x** your bet\n'
-        f'{emojis.bp}{emojis.slots_sparkles} • **1x** your bet'
+        f'{emojis.BP}{emojis.SLOTS_DIAMOND} • **2x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_100} • **1.75x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_CLOVER} • **1.5x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_GIFT} • **1.25x** your bet\n'
+        f'{emojis.BP}{emojis.SLOTS_SPARKLES} • **1x** your bet'
     )
 
     chances = (
-        f'{emojis.bp} Unknown'
+        f'{emojis.BP} Unknown'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SLOTS',
         description = 'Keep rollin\', rollin\', rollin\', rollin\'.'
     )
@@ -439,43 +439,43 @@ async def embed_slots(prefix):
 # Wheel
 async def embed_wheel(prefix):
 
-    syntax = f'{emojis.bp} `rpg wheel [$]`'
+    syntax = f'{emojis.BP} `rpg wheel [$]`'
 
     rules = (
-        f'{emojis.bp} This is a simple wheel of fortune\n'
-        f'{emojis.bp} The wheel lands on one of 7 possible colors\n'
-        f'{emojis.bp} The outcome is shown at the top of the wheel'
+        f'{emojis.BP} This is a simple wheel of fortune\n'
+        f'{emojis.BP} The wheel lands on one of 7 possible colors\n'
+        f'{emojis.BP} The outcome is shown at the top of the wheel'
     )
 
     outcomes = (
-        f'{emojis.bp}{emojis.wheel_blue} • You lose your bet\n'
-        f'{emojis.bp}{emojis.wheel_red} • You lose your bet and win a {emojis.lifepotion} life potion\n'
-        f'{emojis.bp}{emojis.wheel_yellow} • You lose your bet and win a {emojis.ticketlottery} lottery ticket\n'
-        f'{emojis.bp}{emojis.wheel_brown} • You lose 90% of your bet\n'
-        f'{emojis.bp}{emojis.wheel_orange} • You lose 75% of your bet\n'
-        f'{emojis.bp}{emojis.wheel_green} • You win 100% of your bet\n'
-        f'{emojis.bp}{emojis.wheel_purple} • You win 10x your bet'
+        f'{emojis.BP}{emojis.WHEEL_BLUE} • You lose your bet\n'
+        f'{emojis.BP}{emojis.WHEEL_RED} • You lose your bet and win a {emojis.LIFE_POTION} life potion\n'
+        f'{emojis.BP}{emojis.WHEEL_YELLOW} • You lose your bet and win a {emojis.LOTTERY_TICKET} lottery ticket\n'
+        f'{emojis.BP}{emojis.WHEEL_BROWN} • You lose 90% of your bet\n'
+        f'{emojis.BP}{emojis.WHEEL_ORANGE} • You lose 75% of your bet\n'
+        f'{emojis.BP}{emojis.WHEEL_GREEN} • You win 100% of your bet\n'
+        f'{emojis.BP}{emojis.WHEEL_PURPLE} • You win 10x your bet'
     )
 
     chances = (
-        f'{emojis.bp} {emojis.wheel_green}{emojis.wheel_purple}{emojis.wheel_yellow}{emojis.wheel_red} • 6.25% each\n'
-        f'{emojis.bp} {emojis.wheel_blue}{emojis.wheel_brown}{emojis.wheel_orange} • 25% each\n'
-        f'{emojis.bp} Total winning chance: 12.5%\n'
-        f'{emojis.bp} Total chance to lose: 87.5%'
+        f'{emojis.BP} {emojis.WHEEL_GREEN}{emojis.WHEEL_PURPLE}{emojis.WHEEL_YELLOW}{emojis.WHEEL_RED} • 6.25% each\n'
+        f'{emojis.BP} {emojis.WHEEL_BLUE}{emojis.WHEEL_BROWN}{emojis.WHEEL_ORANGE} • 25% each\n'
+        f'{emojis.BP} Total winning chance: 12.5%\n'
+        f'{emojis.BP} Total chance to lose: 87.5%'
     )
 
     note = (
-        f'{emojis.bp} This command is unlocked in area 8\n'
-        f'{emojis.bp} You need to bet at least 25,000 coins\n'
-        f'{emojis.bp} If the wheel lands on {emojis.wheel_yellow}, you only get a {emojis.ticketlottery} lottery ticket if you have less than 10'
+        f'{emojis.BP} This command is unlocked in area 8\n'
+        f'{emojis.BP} You need to bet at least 25,000 coins\n'
+        f'{emojis.BP} If the wheel lands on {emojis.WHEEL_YELLOW}, you only get a {emojis.LOTTERY_TICKET} lottery ticket if you have less than 10'
     )
 
     guides = (
-        f'{emojis.bp} {guide_gambling.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'WHEEL',
         description = 'What you gonna tell your dad?'
     )

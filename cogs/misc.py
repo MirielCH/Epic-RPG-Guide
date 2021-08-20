@@ -202,7 +202,7 @@ class miscCog(commands.Cog):
             tip = await database.get_tip(ctx)
 
         embed = discord.Embed(
-            color = global_data.color,
+            color = global_data.EMBED_COLOR,
             title = 'TIP',
             description = tip[0]
         )
@@ -338,7 +338,7 @@ class miscCog(commands.Cog):
 
         coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.coin} coins.\n'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.COIN} coins.\n'
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
             f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
@@ -354,22 +354,22 @@ def setup(bot):
 async def embed_duels(prefix):
 
     weapons = (
-        f'{emojis.bp} {emojis.duelat}{emojis.duelat} - **AT**\n'
-        f'{emojis.bp} {emojis.dueldef}{emojis.dueldef} - **DEF**\n'
-        f'{emojis.bp} {emojis.duellife}{emojis.duellife} - **LIFE**\n'
-        f'{emojis.bp} {emojis.duellevel}{emojis.duellevel} - **LEVEL**\n'
-        f'{emojis.bp} {emojis.duelcoins}{emojis.duelcoins} - **Coins** (incl. bank account)\n'
-        f'{emojis.bp} {emojis.duelgear}{emojis.duelgear} - **Gear** (both sword and armor)\n'
-        f'{emojis.bp} {emojis.duelenchants}{emojis.duelenchants} - **Enchants** (both sword and armor)'
+        f'{emojis.BP} {emojis.DUEL_AT}{emojis.DUEL_AT} - **AT**\n'
+        f'{emojis.BP} {emojis.DUEL_DEF}{emojis.DUEL_DEF} - **DEF**\n'
+        f'{emojis.BP} {emojis.DUEL_LIFE}{emojis.DUEL_LIFE} - **LIFE**\n'
+        f'{emojis.BP} {emojis.DUEL_LEVEL}{emojis.DUEL_LEVEL} - **LEVEL**\n'
+        f'{emojis.BP} {emojis.DUEL_COINS}{emojis.DUEL_COINS} - **Coins** (incl. bank account)\n'
+        f'{emojis.BP} {emojis.DUEL_GEAR}{emojis.DUEL_GEAR} - **Gear** (both sword and armor)\n'
+        f'{emojis.BP} {emojis.DUEL_ENCHANTS}{emojis.DUEL_ENCHANTS} - **Enchants** (both sword and armor)'
     )
 
     randomness = (
-        f'{emojis.bp} Every duel score gets multiplied by 0.75 ~ 1.25\n'
-        f'{emojis.bp} Thus the duel outcome can be highly unexpected'
+        f'{emojis.BP} Every duel score gets multiplied by 0.75 ~ 1.25\n'
+        f'{emojis.BP} Thus the duel outcome can be highly unexpected'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'DUELS',
         description = 'Winning a duel depends on the chosen weapon and some luck.'
     )
@@ -377,7 +377,7 @@ async def embed_duels(prefix):
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
-    embed.add_field(name='TIP', value=f'{emojis.bp} Unless you are __very__ rich, don\'t choose coins.', inline=False)
+    embed.add_field(name='TIP', value=f'{emojis.BP} Unless you are __very__ rich, don\'t choose coins.', inline=False)
 
     return embed
 
@@ -390,12 +390,12 @@ async def embed_codes(prefix, codes):
     for code in codes:
         temporary_code = code[2]
         if temporary_code == 'True':
-            temporary_value = f'{temporary_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
+            temporary_value = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
         else:
-            permanent_value = f'{permanent_value}\n{emojis.bp} `{code[0]}`{emojis.blank}{code[1]}'
+            permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
         description = (
             f'Use these codes with `rpg code` to get some free goodies.\n'
@@ -415,31 +415,31 @@ async def embed_codes(prefix, codes):
 async def embed_coolness(prefix):
 
     usage = (
-        f'{emojis.bp} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'
-        f'{emojis.bp} You need at least 2,000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
+        f'{emojis.BP} Unlocks cosmetic only profile badges (see `{prefix}badges`)\n'
+        f'{emojis.BP} You need at least 2,000 coolness for dungeon 15-2 (see `{prefix}d15-2`)'
     )
 
-    req = f'{emojis.bp} Unlocks when you reach area 12 in {emojis.timetravel}TT 1'
+    req = f'{emojis.BP} Unlocks when you reach area 12 in {emojis.TIME_TRAVEL}TT 1'
 
     howtoget = (
-        f'{emojis.bp} `ultraining` awards 2 coolness per stage (unlocked in A12)\n'
-        f'{emojis.bp} Do an adventure with full HP and survive with 1 HP\n'
-        f'{emojis.bp} Open {emojis.lbomega} OMEGA and {emojis.lbgodly} GODLY lootboxes\n'
-        f'{emojis.bp} Get {emojis.loghyper} HYPER or {emojis.logultra} ULTRA logs from work commands\n'
-        f'{emojis.bp} Forge ULTRA-EDGY or higher gear\n'
-        f'{emojis.bp} Ascend a pet\n'
-        f'{emojis.bp} Do other \'cool\' actions that are currently unknown'
+        f'{emojis.BP} `ultraining` awards 2 coolness per stage (unlocked in A12)\n'
+        f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
+        f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
+        f'{emojis.BP} Get {emojis.LOG_HYPER} HYPER or {emojis.LOG_ULTRA} ULTRA logs from work commands\n'
+        f'{emojis.BP} Forge ULTRA-EDGY or higher gear\n'
+        f'{emojis.BP} Ascend a pet\n'
+        f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
     )
 
     note = (
-        f'{emojis.bp} You don\'t lose coolness when you time travel\n'
-        f'{emojis.bp} You can get coolness in every area once it\'s unlocked\n'
-        f'{emojis.bp} If you have 100+, you get less (except from `ultraining`)\n'
-        f'{emojis.bp} You can check your coolness by using `ultraining p`\n'
+        f'{emojis.BP} You don\'t lose coolness when you time travel\n'
+        f'{emojis.BP} You can get coolness in every area once it\'s unlocked\n'
+        f'{emojis.BP} If you have 100+, you get less (except from `ultraining`)\n'
+        f'{emojis.BP} You can check your coolness by using `ultraining p`\n'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'COOLNESS',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
     )
@@ -456,30 +456,30 @@ async def embed_coolness(prefix):
 async def embed_badges(prefix):
 
     badges = (
-        f'{emojis.bp} {emojis.badge1} : Unlocked with 1 coolness\n'
-        f'{emojis.bp} {emojis.badge100} : Unlocked with 100 coolness\n'
-        f'{emojis.bp} {emojis.badge200} : Unlocked with 200 coolness\n'
-        f'{emojis.bp} {emojis.badge500} : Unlocked with 500 coolness\n'
-        f'{emojis.bp} {emojis.badge1000} : Unlocked with 1000 coolness\n'
-        f'{emojis.bp} {emojis.badgea15} : Unlocked by reaching area 15 ({emojis.timetravel}TT 10)\n'
-        f'{emojis.bp} {emojis.badgetop} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.bp} {emojis.badgeomega} : Unlock requirements unknown'
+        f'{emojis.BP} {emojis.BADGE_1} : Unlocked with 1 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_100} : Unlocked with 100 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_200} : Unlocked with 200 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_500} : Unlocked with 500 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_1000} : Unlocked with 1000 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_A15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
+        f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown'
     )
 
     howtouse = (
-        f'{emojis.bp} Use `rpg badge list` to get the ID of the badges you want\n'
-        f'{emojis.bp} Use `rpg badge claim [ID]` to claim a badge\n'
-        f'{emojis.bp} Use `rpg badge [ID]` to activate or deactivate a badge'
+        f'{emojis.BP} Use `rpg badge list` to get the ID of the badges you want\n'
+        f'{emojis.BP} Use `rpg badge claim [ID]` to claim a badge\n'
+        f'{emojis.BP} Use `rpg badge [ID]` to activate or deactivate a badge'
     )
 
     note = (
-        f'{emojis.bp} You can have several badges active at the same time\n'
-        f'{emojis.bp} You can only claim badges you have unlocked\n'
-        f'{emojis.bp} If you don\'t know how to get coolness, see `{prefix}coolness`'
+        f'{emojis.BP} You can have several badges active at the same time\n'
+        f'{emojis.BP} You can only claim badges you have unlocked\n'
+        f'{emojis.BP} If you don\'t know how to get coolness, see `{prefix}coolness`'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'BADGES',
         description = 'Badges are cosmetic only profile decorations.'
     )
@@ -495,61 +495,61 @@ async def embed_badges(prefix):
 async def embed_farm(prefix):
 
     planting_normal = (
-        f'{emojis.bp} Use `rpg farm` to plant {emojis.seed} seeds. Buy seeds in the shop for 2,000 coins.\n'
-        f'{emojis.bp} This gives you XP and either {emojis.bread} bread, {emojis.carrot} carrots or {emojis.potato} potatoes\n'
-        f'{emojis.bp} You have a 4% chance to receive special seeds (see below)\n'
-        f'{emojis.bp} The cooldown of the command is 10m (donor reduction applies)'
+        f'{emojis.BP} Use `rpg farm` to plant {emojis.SEED} seeds. Buy seeds in the shop for 2,000 coins.\n'
+        f'{emojis.BP} This gives you XP and either {emojis.BREAD} bread, {emojis.CARROT} carrots or {emojis.POTATO} potatoes\n'
+        f'{emojis.BP} You have a 4% chance to receive special seeds (see below)\n'
+        f'{emojis.BP} The cooldown of the command is 10m (donor reduction applies)'
     )
 
     planting_special = (
-        f'{emojis.bp} There are three special seeds: {emojis.seedbread} bread, {emojis.seedcarrot} carrot and {emojis.seedpotato} potato seed\n'
-        f'{emojis.bp} You can plant them with `rpg farm [type]` (e.g. `rpg farm carrot`)\n'
-        f'{emojis.bp} The crop will be the same type (e.g. a {emojis.seedcarrot} carrot seed gives you {emojis.carrot} carrots)\n'
-        f'{emojis.bp} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
+        f'{emojis.BP} There are three special seeds: {emojis.SEED_BREAD} bread, {emojis.SEED_CARROT} carrot and {emojis.SEED_POTATO} potato seed\n'
+        f'{emojis.BP} You can plant them with `rpg farm [type]` (e.g. `rpg farm carrot`)\n'
+        f'{emojis.BP} The crop will be the same type (e.g. a {emojis.SEED_CARROT} carrot seed gives you {emojis.CARROT} carrots)\n'
+        f'{emojis.BP} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
     )
 
     usage_bread = (
-        f'{emojis.bp} {emojis.swordhair} `Hair Sword` ➜ 4 {emojis.mermaidhair} + **220** {emojis.bread}\n'
-        f'{emojis.bp} {emojis.armorelectronical} `Electronical Armor` ➜ 12 {emojis.chip} + 1 {emojis.loghyper} + **180** {emojis.bread}\n'
-        f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ **1** {emojis.bread} + 160 {emojis.carrot}\n'
-        f'{emojis.bp} 1 STT score per **20** {emojis.bread}\n'
-        f'{emojis.bp} Can be sold for 3,000 coins and 3 merchant XP\n'
-        f'{emojis.bp} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
+        f'{emojis.BP} {emojis.SWORD_HAIR} `Hair Sword` ➜ 4 {emojis.MERMAID_HAIR} + **220** {emojis.BREAD}\n'
+        f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} `Electronical Armor` ➜ 12 {emojis.CHIP} + 1 {emojis.LOG_HYPER} + **180** {emojis.BREAD}\n'
+        f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ **1** {emojis.BREAD} + 160 {emojis.CARROT}\n'
+        f'{emojis.BP} 1 STT score per **20** {emojis.BREAD}\n'
+        f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
+        f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
 
     usage_carrot = (
-        f'{emojis.bp} {emojis.foodcarrotbread} `Carrot Bread` (+1 Level) ➜ 1 {emojis.bread} + **160** {emojis.carrot}\n'
-        f'{emojis.bp} {emojis.foodorangejuice} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.carrot}\n'
-        f'{emojis.bp} {emojis.foodcarrotato} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.potato} + **80** {emojis.carrot}\n'
-        f'{emojis.bp} 1 STT score per **25** {emojis.carrot}\n'
-        f'{emojis.bp} Can be sold for 2,500 coins and 3 merchant XP\n'
-        f'{emojis.bp} Can be used to change the horse name with `rpg horse feed`'
+        f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** {emojis.CARROT}\n'
+        f'{emojis.BP} {emojis.FOOD_ORANGE_JUICE} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.CARROT}\n'
+        f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.POTATO} + **80** {emojis.CARROT}\n'
+        f'{emojis.BP} 1 STT score per **25** {emojis.CARROT}\n'
+        f'{emojis.BP} Can be sold for 2,500 coins and 3 merchant XP\n'
+        f'{emojis.BP} Can be used to change the horse name with `rpg horse feed`'
     )
 
     usage_potato = (
-        f'{emojis.bp} {emojis.swordruby} `Ruby Sword` ➜ 4 {emojis.ruby} + 1 {emojis.logmega} + **36** {emojis.potato}\n'
-        f'{emojis.bp} {emojis.armorruby} `Ruby Armor` ➜ 7 {emojis.ruby} + 4 {emojis.unicornhorn} + **120** {emojis.potato} + 2 {emojis.logmega}\n'
-        f'{emojis.bp} {emojis.swordelectronical} `Electronical Sword` ➜ 8 {emojis.chip} + 1 {emojis.logmega} + **140** {emojis.potato}\n'
-        f'{emojis.bp} {emojis.foodcarrotato} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.potato} + 80 {emojis.carrot}\n'
-        f'{emojis.bp} 1 STT score per **30** {emojis.potato}\n'
-        f'{emojis.bp} Can be sold for 2,000 coins and 3 merchant XP'
+        f'{emojis.BP} {emojis.SWORD_RUBY} `Ruby Sword` ➜ 4 {emojis.RUBY} + 1 {emojis.LOG_MEGA} + **36** {emojis.POTATO}\n'
+        f'{emojis.BP} {emojis.ARMOR_RUBY} `Ruby Armor` ➜ 7 {emojis.RUBY} + 4 {emojis.UNICORN_HORN} + **120** {emojis.POTATO} + 2 {emojis.LOG_MEGA}\n'
+        f'{emojis.BP} {emojis.SWORD_ELECTRONICAL} `Electronical Sword` ➜ 8 {emojis.CHIP} + 1 {emojis.LOG_MEGA} + **140** {emojis.POTATO}\n'
+        f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.POTATO} + 80 {emojis.CARROT}\n'
+        f'{emojis.BP} 1 STT score per **30** {emojis.POTATO}\n'
+        f'{emojis.BP} Can be sold for 2,000 coins and 3 merchant XP'
     )
 
     what_to_plant = (
-        f'{emojis.bp} If you want to cook food for levels or stats: {emojis.carrot} carrots\n'
-        f'{emojis.bp} If you want to get more coins or a higher STT score: {emojis.bread} bread\n'
-        f'{emojis.bp} If you want to flex potatoes for some reason: {emojis.potato} potatoes'
+        f'{emojis.BP} If you want to cook food for levels or stats: {emojis.CARROT} carrots\n'
+        f'{emojis.BP} If you want to get more coins or a higher STT score: {emojis.BREAD} bread\n'
+        f'{emojis.BP} If you want to flex potatoes for some reason: {emojis.POTATO} potatoes'
     )
 
     note = (
-        f'{emojis.bp} Farming is unlocked in area 4\n'
-        f'{emojis.bp} The command can be used in area 1+ when ascended\n'
-        f'{emojis.bp} The amount of items you gain increases with your TT\n'
-        f'{emojis.bp} You can not farm in the TOP'
+        f'{emojis.BP} Farming is unlocked in area 4\n'
+        f'{emojis.BP} The command can be used in area 1+ when ascended\n'
+        f'{emojis.BP} The amount of items you gain increases with your TT\n'
+        f'{emojis.BP} You can not farm in the TOP'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'FARMING',
         description = f'It ain\'t much, but it\'s honest work.'
     )
@@ -585,8 +585,8 @@ async def embed_start(prefix):
     first_run = (
         f'Your first run is called TT0 (time travel 0) because you haven\'t time traveled yet. In TT0 you need to reach area 11 which means you need to beat dungeon 10.\n'
         f'Now, as mentioned, D10 has gear requirements, so you can not cheese that dungeon, you **need** to craft the following gear:\n'
-        f'{emojis.swordedgy} EDGY Sword (requires 1 {emojis.logultra} ULTRA log)\n'
-        f'{emojis.armoredgy} EDGY Armor (requires a lot of mob drops)\n'
+        f'{emojis.SWORD_EDGY} EDGY Sword (requires 1 {emojis.LOG_ULTRA} ULTRA log)\n'
+        f'{emojis.ARMOR_EDGY} EDGY Armor (requires a lot of mob drops)\n'
         f'The ULTRA log needed for the sword equals 250,000 wooden logs and the mob drops for the armor are pretty rare (see `{prefix}drops`).\n'
         f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny EDGY gear.'
     )
@@ -600,12 +600,12 @@ async def embed_start(prefix):
     )
 
     tips = (
-        f'{emojis.bp} Yes, farming in area 5 is boring. But do not leave the area early, you **will** regret it.\n'
-        f'{emojis.bp} Do not craft the EDGY Sword before area 10. You will lose materials if you do.'
+        f'{emojis.BP} Yes, farming in area 5 is boring. But do not leave the area early, you **will** regret it.\n'
+        f'{emojis.BP} Do not craft the EDGY Sword before area 10. You will lose materials if you do.'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'STARTER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )

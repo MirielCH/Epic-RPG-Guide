@@ -51,6 +51,7 @@ intents.messages = True   # for the calculators that read the game
 prefixes = database.get_prefix_all
 bot = commands.AutoShardedBot(command_prefix=prefixes, help_command=None,
                               case_insensitive=True, intents=intents)
+
 cog_extensions = [
     'cogs.guilds',
     'cogs.events',
@@ -135,51 +136,51 @@ async def main_help(ctx: commands.Context):
     """Main help command"""
     prefix = await database.get_prefix(bot, ctx)
     progress = (
-        f'{emojis.bp} `{prefix}start` : Starter guide for new players\n'
-        f'{emojis.bp} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
-        f'{emojis.bp} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
-        f'{emojis.bp} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
-        f'{emojis.bp} `{prefix}coolness` : Everything known about coolness'
+        f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
+        f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
+        f'{emojis.BP} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
+        f'{emojis.BP} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
+        f'{emojis.BP} `{prefix}coolness` : Everything known about coolness'
         )
     crafting = (
-        f'{emojis.bp} `{prefix}craft` : Recipes mats calculator\n'
-        f'{emojis.bp} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
-        f'{emojis.bp} `{prefix}invcalc` / `{prefix}ic` : Inventory calculator\n'
-        f'{emojis.bp} `{prefix}drops` : Monster drops\n'
-        f'{emojis.bp} `{prefix}enchants` / `{prefix}e` : Enchants'
+        f'{emojis.BP} `{prefix}craft` : Recipes mats calculator\n'
+        f'{emojis.BP} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
+        f'{emojis.BP} `{prefix}invcalc` / `{prefix}ic` : Inventory calculator\n'
+        f'{emojis.BP} `{prefix}drops` : Monster drops\n'
+        f'{emojis.BP} `{prefix}enchants` / `{prefix}e` : Enchants'
         )
     animals = (
-        f'{emojis.bp} `{prefix}horse` : Horse guide\n'
-        f'{emojis.bp} `{prefix}pet` : Pets guide\n'
+        f'{emojis.BP} `{prefix}horse` : Horse guide\n'
+        f'{emojis.BP} `{prefix}pet` : Pets guide\n'
         )
-    trading = f'{emojis.bp} `{prefix}trading` : Trading guides overview'
-    professions_value = f'{emojis.bp} `{prefix}professions` / `{prefix}pr` : Professions guide'
-    guild_overview = f'{emojis.bp} `{prefix}guild` : Guild guide'
-    event_overview = f'{emojis.bp} `{prefix}events` : Event guides overview'
+    trading = f'{emojis.BP} `{prefix}trading` : Trading guides overview'
+    professions_value = f'{emojis.BP} `{prefix}professions` / `{prefix}pr` : Professions guide'
+    guild_overview = f'{emojis.BP} `{prefix}guild` : Guild guide'
+    event_overview = f'{emojis.BP} `{prefix}events` : Event guides overview'
     monsters = (
-        f'{emojis.bp} `{prefix}mobs [area]` : List of all monsters in area [area]\n'
-        f'{emojis.bp} `{prefix}dailymob` : Where to find the daily monster'
+        f'{emojis.BP} `{prefix}mobs [area]` : List of all monsters in area [area]\n'
+        f'{emojis.BP} `{prefix}dailymob` : Where to find the daily monster'
         )
-    gambling_overview = f'{emojis.bp} `{prefix}gambling` : Gambling guides overview'
+    gambling_overview = f'{emojis.BP} `{prefix}gambling` : Gambling guides overview'
     misc = (
-        f'{emojis.bp} `{prefix}calc` : A basic calculator\n'
-        f'{emojis.bp} `{prefix}codes` : Redeemable codes\n'
-        f'{emojis.bp} `{prefix}duel` : Duelling weapons\n'
-        f'{emojis.bp} `{prefix}farm` : Farming guide\n'
-        f'{emojis.bp} `{prefix}tip` : A handy dandy random tip'
+        f'{emojis.BP} `{prefix}calc` : A basic calculator\n'
+        f'{emojis.BP} `{prefix}codes` : Redeemable codes\n'
+        f'{emojis.BP} `{prefix}duel` : Duelling weapons\n'
+        f'{emojis.BP} `{prefix}farm` : Farming guide\n'
+        f'{emojis.BP} `{prefix}tip` : A handy dandy random tip'
         )
     botlinks = (
-        f'{emojis.bp} `{prefix}invite` : Invite me to your server\n'
-        f'{emojis.bp} `{prefix}support` : Visit the support server\n'
-        f'{emojis.bp} `{prefix}links` : EPIC RPG wiki & support'
+        f'{emojis.BP} `{prefix}invite` : Invite me to your server\n'
+        f'{emojis.BP} `{prefix}support` : Visit the support server\n'
+        f'{emojis.BP} `{prefix}links` : EPIC RPG wiki & support'
         )
     settings = (
-        f'{emojis.bp} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
-        f'{emojis.bp} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
-        f'{emojis.bp} `{prefix}prefix` : Check the current prefix'
+        f'{emojis.BP} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
+        f'{emojis.BP} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
+        f'{emojis.BP} `{prefix}prefix` : Check the current prefix'
         )
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'EPIC RPG GUIDE',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
         )
@@ -246,11 +247,11 @@ async def settings(ctx: commands.Context):
         username = ctx.author.name
         tt, ascension = current_settings
         settings = (
-            f'{emojis.bp} Current run: **TT {tt}**\n'
-            f'{emojis.bp} Ascension: **{ascension.capitalize()}**'
+            f'{emojis.BP} Current run: **TT {tt}**\n'
+            f'{emojis.BP} Ascension: **{ascension.capitalize()}**'
             )
         embed = discord.Embed(
-            color = global_data.color,
+            color = global_data.EMBED_COLOR,
             title = 'USER SETTINGS',
             description = (
                 f'Hey there, **{ctx.author.name}**.\n'
@@ -386,10 +387,10 @@ async def about(ctx: commands.Context):
         if bot.get_shard(shard_id).is_closed():
             closed_shards += 1
     general = (
-        f'{emojis.bp} {len(bot.guilds):,} servers\n'
-        f'{emojis.bp} {user_count:,} users\n'
-        f'{emojis.bp} {len(bot.shards):,} shards ({closed_shards:,} shards offline)\n'
-        f'{emojis.bp} {round(bot.latency*1000):,} ms average latency'
+        f'{emojis.BP} {len(bot.guilds):,} servers\n'
+        f'{emojis.BP} {user_count:,} users\n'
+        f'{emojis.BP} {len(bot.shards):,} shards ({closed_shards:,} shards offline)\n'
+        f'{emojis.BP} {round(bot.latency*1000):,} ms average latency'
         )
     current_shard = bot.get_shard(ctx.guild.shard_id)
     start_time = datetime.utcnow()
@@ -397,16 +398,16 @@ async def about(ctx: commands.Context):
     end_time = datetime.utcnow()
     elapsed_time = end_time - start_time
     current_shard_status = (
-        f'{emojis.bp} Shard: {current_shard.id+1} of {len(bot.shards):,}\n'
-        f'{emojis.bp} Bot latency: {round(current_shard.latency*1000):,} ms\n'
-        f'{emojis.bp} API latency: {round(elapsed_time.total_seconds()*1000):,} ms'
+        f'{emojis.BP} Shard: {current_shard.id+1} of {len(bot.shards):,}\n'
+        f'{emojis.BP} Bot latency: {round(current_shard.latency*1000):,} ms\n'
+        f'{emojis.BP} API latency: {round(elapsed_time.total_seconds()*1000):,} ms'
         )
-    creator = f'{emojis.bp} Miriel#0001'
+    creator = f'{emojis.BP} Miriel#0001'
     thanks = (
-        f'{emojis.bp} FlyingPanda#0328\n'
-        f'{emojis.bp} All the math geniuses in the support server'
+        f'{emojis.BP} FlyingPanda#0328\n'
+        f'{emojis.BP} All the math geniuses in the support server'
         )
-    embed = discord.Embed(color = global_data.color, title = 'ABOUT EPIC RPG GUIDE')
+    embed = discord.Embed(color = global_data.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
@@ -420,7 +421,7 @@ async def about(ctx: commands.Context):
 async def invite(ctx: commands.Context):
     """Shows the invite link"""
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'NEED A GUIDE?',
         description = (
             f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
@@ -437,7 +438,7 @@ async def invite(ctx: commands.Context):
 async def support(ctx: commands.Context):
     """Link to the support server"""
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'NEED BOT SUPPORT?',
         description = f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'
         )
@@ -450,16 +451,16 @@ async def support(ctx: commands.Context):
 async def links(ctx: commands.Context):
     """Links to wiki, servers, top.gg and invite"""
     epicrpgguide = (
-        f'{emojis.bp} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
-        f'{emojis.bp} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=applications.commands%20bot)\n'
-        f'{emojis.bp} [Vote](https://top.gg/bot/770199669141536768/vote)'
+        f'{emojis.BP} [Support Server](https://discord.gg/v7WbhnhbgN)\n'
+        f'{emojis.BP} [Bot Invite](https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope=applications.commands%20bot)\n'
+        f'{emojis.BP} [Vote](https://top.gg/bot/770199669141536768/vote)'
         )
     epicrpg = (
-        f'{emojis.bp} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'
-        f'{emojis.bp} [Official Server](https://discord.gg/w5dej5m)'
+        f'{emojis.BP} [Official Wiki](https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki)\n'
+        f'{emojis.BP} [Official Server](https://discord.gg/w5dej5m)'
         )
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SOME HELPFUL LINKS',
         description = 'There\'s a whole world out there.'
         )
@@ -474,7 +475,7 @@ async def links(ctx: commands.Context):
 async def vote(ctx: commands.Context):
     """Link to the top.gg voting page"""
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'FEEL LIKE VOTING?',
         description = (
             f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'
@@ -569,7 +570,7 @@ async def thanks(ctx: commands.Context, *args: str):
 async def brandon(ctx: commands.Context):
     """Only three people will get this"""
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'WHAT TO DO WITH BRANDON',
         description = 'Don\'t even _think_ about dismantling him. You monster.'
         )
@@ -649,6 +650,5 @@ async def shutdown(ctx: commands.Context):
     except asyncio.TimeoutError as error:
         await ctx.send('Oh thank god, he forgot to answer.')
         return
-
 
 bot.run(TOKEN)

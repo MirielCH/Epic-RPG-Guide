@@ -122,9 +122,9 @@ class tradingCog(commands.Cog):
                 else:
                     await ctx.send(
                         f'The command syntax is:\n'
-                        f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
-                        f'{emojis.blank} or\n'
-                        f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
+                        f'{emojis.BP} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
+                        f'{emojis.BLANK} or\n'
+                        f'{emojis.BP} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
                         f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
                     )
                     return
@@ -175,13 +175,13 @@ class tradingCog(commands.Cog):
                 return
 
             if mat == 'fish':
-                mat_output = f'{emojis.fish} fish'
+                mat_output = f'{emojis.FISH} fish'
             elif mat == 'log':
-                mat_output = f'{emojis.log} wooden logs'
+                mat_output = f'{emojis.LOG} wooden logs'
             elif mat == 'apple':
-                mat_output = f'{emojis.apple} apples'
+                mat_output = f'{emojis.APPLE} apples'
             elif mat == 'ruby':
-                mat_output = f'{emojis.ruby} rubies'
+                mat_output = f'{emojis.RUBY} rubies'
 
             traderate_data = await database.get_traderate_data(ctx, 'all')
             embed = await embed_tradecalc(traderate_data, (area,mat,amount), ctx.prefix)
@@ -190,9 +190,9 @@ class tradingCog(commands.Cog):
         else:
             await ctx.send(
                 f'The command syntax is:\n'
-                f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
-                f'{emojis.blank} or\n'
-                f'{emojis.bp} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
+                f'{emojis.BP} `{ctx.prefix}{ctx.invoked_with} [area] [amount] [material]`\n'
+                f'{emojis.BLANK} or\n'
+                f'{emojis.BP} `{ctx.prefix}{ctx.invoked_with} [area] [material] [amount]`.\n\n'
                 f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
             )
 
@@ -218,14 +218,14 @@ async def embed_trading_menu(ctx):
     prefix = ctx.prefix
 
     trading = (
-        f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
-        f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
-        f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'
-        f'{emojis.bp} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
+        f'{emojis.BP} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.BP} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
+        f'{emojis.BP} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'
+        f'{emojis.BP} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'TRADING GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
@@ -240,16 +240,16 @@ async def embed_trades_area_specific(user_settings, area_no, prefix):
 
     if area_no==11:
         if user_settings[0]==0:
-            description = f'{emojis.bp} No trades because of {emojis.timetravel} time travel'
+            description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
         else:
             description = await global_data.design_field_trades(area_no, user_settings[1])
     else:
         description = await global_data.design_field_trades(area_no, user_settings[1])
 
     guides = (
-        f'{emojis.bp} {guide_trades_all.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_traderates.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tradecalc.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_traderates.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tradecalc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
@@ -268,9 +268,9 @@ async def embed_trades_area_specific(user_settings, area_no, prefix):
 async def embed_trades_all_areas(user_settings, prefix):
 
     guides = (
-        f'{emojis.bp} {guide_trades_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_traderates.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tradecalc.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_trades_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_traderates.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tradecalc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
@@ -289,13 +289,13 @@ async def embed_trades_all_areas(user_settings, prefix):
         if x not in (1,2,4,6,12,13,14):
             if x==11:
                 if user_settings[0]==0:
-                    embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)
+                    embed.add_field(name=f'AREA {x}', value=f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel', inline=False)
                 else:
                     field_value = await global_data.design_field_trades(x, user_settings[1])
                     embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
             elif x==15:
                 if user_settings[0]<25:
-                    embed.add_field(name=f'AREA {x}', value=f'{emojis.bp} No trades because of {emojis.timetravel} time travel', inline=False)
+                    embed.add_field(name=f'AREA {x}', value=f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel', inline=False)
                 else:
                     field_value = await global_data.design_field_trades(x, user_settings[1])
                     embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
@@ -311,15 +311,15 @@ async def embed_trades_all_areas(user_settings, prefix):
 async def embed_traderates(traderate_data, prefix):
 
     guides = (
-        f'{emojis.bp} {guide_trades_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_trades_all.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tradecalc.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_trades_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tradecalc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'TRADE RATES',
-        description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.blank}'
+        description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.BLANK}'
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
@@ -339,19 +339,19 @@ async def embed_traderates(traderate_data, prefix):
         counter = area_x[0]
 
     for area_x in actual_areas:
-        area_value = f'1 {emojis.fish} ⇄ {emojis.log} {area_x[1]}'
+        area_value = f'1 {emojis.FISH} ⇄ {emojis.LOG} {area_x[1]}'
         if not area_x[2] == 0:
-            area_value = f'{area_value}\n1 {emojis.apple} ⇄ {emojis.log} {area_x[2]}'
+            area_value = f'{area_value}\n1 {emojis.APPLE} ⇄ {emojis.LOG} {area_x[2]}'
         if not area_x[3] == 0:
-            area_value = f'{area_value}\n1 {emojis.ruby} ⇄ {emojis.log} {area_x[3]}'
+            area_value = f'{area_value}\n1 {emojis.RUBY} ⇄ {emojis.LOG} {area_x[3]}'
 
         if area_x[0] == 16:
-            embed.add_field(name='THE TOP', value=f'{area_value}\n{emojis.blank}', inline=True)
+            embed.add_field(name='THE TOP', value=f'{area_value}\n{emojis.BLANK}', inline=True)
         else:
-            embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.blank}', inline=True)
+            embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.BLANK}', inline=True)
 
     if len(actual_areas) % 3 == 2:
-        embed.add_field(name=f'{emojis.blank}', value=f'{emojis.blank}', inline=True)
+        embed.add_field(name=f'{emojis.BLANK}', value=f'{emojis.BLANK}', inline=True)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -380,9 +380,9 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         current_amount = current_amount * current_fish_rate
         current_mat = 'log'
         original_mat = 'log'
-        original_emoji = emojis.fish
+        original_emoji = emojis.FISH
     elif current_mat == 'apple':
-        original_emoji = emojis.apple
+        original_emoji = emojis.APPLE
         if not current_apple_rate == 0:
             current_amount = current_amount * current_apple_rate
             current_mat = 'log'
@@ -390,7 +390,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         else:
             original_mat = 'apple'
     elif current_mat == 'ruby':
-        original_emoji = emojis.ruby
+        original_emoji = emojis.RUBY
         if not current_ruby_rate == 0:
             current_amount = current_amount * current_ruby_rate
             current_mat = 'log'
@@ -398,7 +398,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         else:
             original_mat = 'ruby'
     else:
-        original_emoji = emojis.log
+        original_emoji = emojis.LOG
 
 
     # Calculate the best trade rate for all areas
@@ -532,9 +532,9 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
     areas_log_amounts = sorted(areas_log_amounts, key=itemgetter(0))
 
     guides = (
-        f'{emojis.bp} {guide_trades_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_trades_all.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_traderates.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_trades_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_traderates.format(prefix=prefix)}'
     )
 
     if original_area == 16:
@@ -543,7 +543,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         area_name_description = f'Area {original_area}'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'TRADE CALCULATOR',
         description = f'If you have **{original_amount:,}** {original_emoji} in **{area_name_description}** and follow all the trades correctly, this amounts to the following:'
         )
@@ -593,31 +593,31 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
                 area_ruby = 0
 
             if area_no == 10:
-                area_mats = f'{emojis.bp} **{area_logs:,}** {emojis.log}'
+                area_mats = f'{emojis.BP} **{area_logs:,}** {emojis.LOG}'
             else:
-                area_mats = f'{emojis.bp} {area_logs:,} {emojis.log}'
+                area_mats = f'{emojis.BP} {area_logs:,} {emojis.LOG}'
 
             if area_no in (3, 9):
-                area_mats = f'{area_mats}\n{emojis.bp} **{area_fish:,}** {emojis.fish}'
+                area_mats = f'{area_mats}\n{emojis.BP} **{area_fish:,}** {emojis.FISH}'
             else:
-                area_mats = f'{area_mats}\n{emojis.bp} {area_fish:,} {emojis.fish}'
+                area_mats = f'{area_mats}\n{emojis.BP} {area_fish:,} {emojis.FISH}'
 
             if area_no in (5, 8):
-                area_mats = f'{area_mats}\n{emojis.bp} **{area_apple:,}** {emojis.apple}'
+                area_mats = f'{area_mats}\n{emojis.BP} **{area_apple:,}** {emojis.APPLE}'
             else:
                 if not area_apple == 0:
-                    area_mats = f'{area_mats}\n{emojis.bp} {area_apple:,} {emojis.apple}'
+                    area_mats = f'{area_mats}\n{emojis.BP} {area_apple:,} {emojis.APPLE}'
 
             if not area_ruby == 0:
-                area_mats = f'{area_mats}\n{emojis.bp} {area_ruby:,} {emojis.ruby}'
+                area_mats = f'{area_mats}\n{emojis.BP} {area_ruby:,} {emojis.RUBY}'
         else:
             if area_no >= original_area:
                 if area_mat == 'apple':
-                    area_mats = f'{emojis.bp} {area_logs:,} {emojis.apple}'
+                    area_mats = f'{emojis.BP} {area_logs:,} {emojis.APPLE}'
                 elif area_mat == 'ruby':
-                    area_mats = f'{emojis.bp} {area_logs:,} {emojis.ruby}'
+                    area_mats = f'{emojis.BP} {area_logs:,} {emojis.RUBY}'
             else:
-                area_mats = f'{emojis.bp} N/A'
+                area_mats = f'{emojis.BP} N/A'
 
         if area_name == '16':
             area_name = 'THE TOP'

@@ -9,32 +9,41 @@ import global_data
 
 
 # Set name of database file
-dbfile = global_data.dbfile
+DB_FILE = global_data.DB_FILE
 
 # Open connection to the local database
-erg_db = sqlite3.connect(dbfile, isolation_level=None)
+ERG_DB = sqlite3.connect(DB_FILE, isolation_level=None)
+
+# Internal errors
+INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunction: {function}\nSELECT: {select}'
 
 
-# Custom exception for first time users so they stop spamming my database
 class FirstTimeUser(commands.CommandError):
-        def __init__(self, argument):
-            self.argument = argument
+    """Custom exception for first time users so they stop spamming my database"""
+    def __init__(self, argument):
+        self.argument = argument
+
+
+class NoDataFound(Exception):
+    """Exception when no data is returned from the database"""
+    def __init__(self, argument):
+        self.argument = argument
+
 
 # --- Get Data ---
-
 # Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
 async def get_prefix_all(bot, ctx):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
         record = cur.fetchone()
 
         if record:
             prefix = record[1]
         else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.default_prefix,))
-            prefix = global_data.default_prefix
+            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.DEFAULT_PREFIX,))
+            prefix = global_data.DEFAULT_PREFIX
     except sqlite3.Error as error:
         global_data.logger.error(error)
         await log_error(ctx, error)
@@ -50,14 +59,14 @@ async def get_prefix(bot, ctx, guild_join=False):
         guild = ctx
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (guild.id,))
         record = cur.fetchone()
 
         if record:
             prefix = record[1]
         else:
-            prefix = global_data.default_prefix
+            prefix = global_data.DEFAULT_PREFIX
     except sqlite3.Error as error:
         global_data.logger.error(error)
         if guild_join == False:
@@ -76,7 +85,7 @@ async def get_dungeon_data(ctx, dungeon):
         dungeon = 15.2
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
         record = cur.fetchone()
 
@@ -94,7 +103,7 @@ async def get_dungeon_data(ctx, dungeon):
 async def get_rec_stats_data(ctx):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d WHERE dungeon BETWEEN 1 AND 16')
         record = cur.fetchall()
 
@@ -112,7 +121,7 @@ async def get_rec_stats_data(ctx):
 async def get_rec_gear_data(ctx, page):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         if page == 1:
             cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
         elif page == 2:
@@ -132,7 +141,7 @@ async def get_rec_gear_data(ctx, page):
 async def get_dungeon_check_data(ctx, dungeon_no=0):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         if dungeon_no == 0:
             cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 15')
             record = cur.fetchall()
@@ -155,7 +164,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
 async def get_area_data(ctx, area):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.money_tt1_t6horse, a.money_tt1_nohorse, a.money_tt3_t6horse, a.money_tt3_nohorse, a.money_tt5_t6horse, a.money_tt5_nohorse, a.money_tt10_t6horse, a.money_tt10_nohorse, '\
                          'a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.description, a.dungeon, i1.emoji, '\
                         'i2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
@@ -175,7 +184,7 @@ async def get_area_data(ctx, area):
 # Get mats data for the needed mats of area 3 and 5
 async def get_mats_data(ctx, user_tt):
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
 
@@ -192,7 +201,7 @@ async def get_mats_data(ctx, user_tt):
 # Get items
 async def get_item_data(ctx, itemname):
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
 
         items_data = []
 
@@ -292,7 +301,7 @@ async def get_item_data(ctx, itemname):
 # Get tt unlocks
 async def get_tt_unlocks(ctx, user_tt):
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT t.tt, t.unlock_dungeon, t.unlock_area, t.unlock_enchant, t.unlock_title, t.unlock_misc FROM timetravel t WHERE tt=?', (user_tt,))
         record = cur.fetchone()
 
@@ -310,7 +319,7 @@ async def get_tt_unlocks(ctx, user_tt):
 async def get_traderate_data(ctx, areas):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
 
         if (type(areas) == str) and (areas == 'all'):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
@@ -352,7 +361,7 @@ async def get_profession_levels(ctx, profession, levelrange):
         return
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute(query, (start_level, end_level,))
         record = cur.fetchall()
         if record:
@@ -369,7 +378,7 @@ async def get_profession_levels(ctx, profession, levelrange):
 async def get_tip(ctx, id=0):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         if id > 0:
             cur.execute('SELECT tip FROM tips WHERE id=?',(id,))
             record = cur.fetchone()
@@ -387,29 +396,40 @@ async def get_tip(ctx, id=0):
 
     return tip
 
-# Get horse data
-async def get_horse_data(ctx, tier):
 
+async def get_horse_data(ctx: commands.Context, tier: int) -> dict:
+    """Returns all level bonuses for a horse tier
+
+    Returns:
+        Dict with the column names and the values of the tier.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found. This also logs an error.
+    """
     try:
-        cur=erg_db.cursor()
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM horses WHERE tier=?',(tier,))
         record = cur.fetchone()
-
         if record:
-            horse_data = record
+            horse_data = dict(record)
         else:
-            await log_error(ctx, 'No horse data found in database.')
-    except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
-
+            await log_error(
+                ctx, INTERNAL_ERROR_NO_DATA_FOUND.format(table='horses',
+                                                         function='get_horse_data',
+                                                         select=f'Horse tier {tier}')
+            )
+            raise NoDataFound
+    except sqlite3.Error:
+        raise
     return horse_data
 
 # Get redeemable codes
 async def get_codes(ctx):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM codes ORDER BY code')
         record = cur.fetchall()
 
@@ -427,7 +447,7 @@ async def get_codes(ctx):
 async def get_user_number(ctx):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT COUNT(*) FROM settings_user')
         record = cur.fetchone()
 
@@ -445,7 +465,7 @@ async def get_user_number(ctx):
 async def get_settings(ctx):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
         record = cur.fetchone()
 
@@ -469,7 +489,7 @@ async def get_mob_data(ctx, areas):
     """
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE area_from >= ? and area_until <= ?', (areas[0],areas[1],))
         record = cur.fetchall()
 
@@ -488,7 +508,7 @@ async def get_mob_data(ctx, areas):
 async def get_mob_by_name(ctx, name):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE name = ? COLLATE NOCASE', (name,))
         record = cur.fetchone()
 
@@ -511,7 +531,7 @@ async def get_mob_by_name(ctx, name):
 async def set_prefix(bot, ctx, new_prefix):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
         record = cur.fetchone()
 
@@ -527,7 +547,7 @@ async def set_prefix(bot, ctx, new_prefix):
 async def set_progress(bot, ctx, new_tt, new_ascended):
 
     try:
-        cur=erg_db.cursor()
+        cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
         record = cur.fetchone()
 
@@ -553,13 +573,13 @@ async def log_error(ctx, error, guild_join=False):
                 settings = f'TT{user_settings[0]}, {user_settings[1]}'
             except:
                 settings = 'N/A'
-            cur=erg_db.cursor()
+            cur=ERG_DB.cursor()
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error), settings))
         except sqlite3.Error as db_error:
             print(f'Error inserting error (ha) into database.\n{db_error}')
     else:
         try:
-            cur=erg_db.cursor()
+            cur=ERG_DB.cursor()
             cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
         except sqlite3.Error as db_error:
             print(f'Error inserting error (ha) into database.\n{db_error}')

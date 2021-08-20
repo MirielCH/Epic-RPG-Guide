@@ -52,16 +52,15 @@ class craftingCog(commands.Cog):
 
         if args:
             if len(args) == 2:
-                tt_no = args[0]
+                tt_no, horse_tier = args
                 tt_no = tt_no.lower().replace('tt','')
-                horse_tier = args[1]
                 horse_tier = horse_tier.lower().replace('t','')
 
                 if tt_no.isnumeric():
                     tt_no = int(tt_no)
                     if horse_tier.isnumeric():
                         horse_tier = int(horse_tier)
-                        if not 1 <= horse_tier <= 9:
+                        if not 1 <= horse_tier <= 10:
                             await ctx.send(f'`{horse_tier}` is not a valid horse tier.\nPlease enter a tier between 1 and 9.')
                             return
                     else:
@@ -76,15 +75,20 @@ class craftingCog(commands.Cog):
 
                 tt_chance = (49+tt_no)*tt_no/2/100
 
-                if 1 <= horse_tier <= 6:
-                    horse_chance = 1
-                elif horse_tier == 7:
-                    horse_chance = 1.2
-                elif horse_tier == 8:
-                    horse_chance = 1.5
-                elif horse_tier == 9:
-                    horse_chance = 2
+                horse_tier_chance = {
+                    1: 1,
+                    2: 1,
+                    3: 1,
+                    4: 1,
+                    5: 1,
+                    6: 1,
+                    7: 1.2,
+                    8: 1.5,
+                    9: 2,
+                    10: 3
+                }
 
+                horse_chance = horse_tier_chance[horse_tier]
                 drop_chance = 4*(1+tt_chance)*horse_chance
                 drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
                 drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
@@ -94,14 +98,10 @@ class craftingCog(commands.Cog):
                 drop_chance_daily = round(drop_chance_daily,1)
                 drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
 
-                if drop_chance >= 100:
-                    drop_chance = 100
-                if drop_chance_worldbuff >= 100:
-                        drop_chance_worldbuff = 100
-                if drop_chance_daily >= 100:
-                    drop_chance_daily = 100
-                if drop_chance_worldbuff_daily >= 100:
-                        drop_chance_worldbuff_daily = 100
+                if drop_chance >= 100: drop_chance = 100
+                if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
+                if drop_chance_daily >= 100: drop_chance_daily = 100
+                if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
 
                 hunt_drop_chance = drop_chance/2
                 hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
@@ -113,16 +113,16 @@ class craftingCog(commands.Cog):
                 horse_emoji = getattr(emojis, f'horset{horse_tier}')
 
                 await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
+                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
-                    f'{emojis.bp} Base drop chance: **__{drop_chance:g} %__**.\n'
-                    f'{emojis.bp} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
-                    f'{emojis.bp} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
-                    f'{emojis.bp} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
+                    f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
+                    f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
+                    f'{emojis.BP} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
+                    f'{emojis.BP} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
                     f'**Total drop chance while hunting**\n'
-                    f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
+                    f'{emojis.BP} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
                     f'**Drop chance in hardmode**\n'
-                    f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
+                    f'{emojis.BP} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
                 )
 
             else:
@@ -130,7 +130,7 @@ class craftingCog(commands.Cog):
         else:
             try:
                 user_settings = await database.get_settings(ctx)
-                if user_settings == None:
+                if user_settings is None:
                     await database.first_time_user(self.bot, ctx)
                     return
                 tt_no = int(user_settings[0])
@@ -140,7 +140,7 @@ class craftingCog(commands.Cog):
                 answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_merchant.content
                 answer = answer.lower()
-                if (answer == 'rpg horse'):
+                if answer == 'rpg horse':
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
                     try:
                         horse_stats = str(answer_bot_at.embeds[0].fields[0])
@@ -150,44 +150,47 @@ class craftingCog(commands.Cog):
                     except:
                         await ctx.send(f'Whelp, something went wrong here, sorry.')
                         return
-                    if horse_stats.find('Tier - III') > 1:
+                    if '**Tier** - III' in horse_stats:
                         horse_chance = 1
                         horse_tier = 3
-                    elif horse_stats.find('Tier - II') > 1:
+                    elif '**Tier** - II' in horse_stats:
                         horse_chance = 1
                         horse_tier = 2
-                    elif horse_stats.find('Tier - VIII') > 1:
+                    elif '**Tier** - VIII' in horse_stats:
                         horse_chance = 1.5
                         horse_tier = 8
-                    elif horse_stats.find('Tier - VII') > 1:
+                    elif '**Tier** - VII' in horse_stats:
                         horse_chance = 1.2
                         horse_tier = 7
-                    elif horse_stats.find('Tier - VI') > 1:
+                    elif '**Tier** - VI' in horse_stats:
                         horse_chance = 1
                         horse_tier = 6
-                    elif horse_stats.find('Tier - V') > 1:
+                    elif '**Tier** - V' in horse_stats:
                         horse_chance = 1
                         horse_tier = 5
-                    elif horse_stats.find('Tier - IV') > 1:
+                    elif '**Tier** - IV' in horse_stats:
                         horse_chance = 1
                         horse_tier = 4
-                    elif horse_stats.find('Tier - IX') > 1:
+                    elif '**Tier** - IX' in horse_stats:
                         horse_chance = 2
                         horse_tier = 9
-                    elif horse_stats.find('Tier - I') > 1:
+                    elif '**Tier** - I' in horse_stats:
                         horse_chance = 1
                         horse_tier = 1
+                    elif '**Tier** - X' in horse_stats:
+                        horse_chance = 3
+                        horse_tier = 10
                     else:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        await ctx.send('Whelp, something went wrong here, sorry.')
                         return
-                elif (answer == 'abort') or (answer == 'cancel'):
-                    await ctx.send(f'Aborting.')
+                elif answer in ('abort','cancel'):
+                    await ctx.send('Aborting.')
                     return
                 else:
-                    await ctx.send(f'Wrong input. Aborting.')
+                    await ctx.send('Wrong input. Aborting.')
                     return
 
-                if not (horse_chance == 0) and not (horse_tier == 0):
+                if horse_chance != 0 and horse_tier != 0:
                     drop_chance = 4*(1+tt_chance)*horse_chance
                     drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
                     drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
@@ -197,14 +200,10 @@ class craftingCog(commands.Cog):
                     drop_chance_daily = round(drop_chance_daily,1)
                     drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
 
-                    if drop_chance >= 100:
-                        drop_chance = 100
-                    if drop_chance_worldbuff >= 100:
-                        drop_chance_worldbuff = 100
-                    if drop_chance_daily >= 100:
-                        drop_chance_daily = 100
-                    if drop_chance_worldbuff_daily >= 100:
-                            drop_chance_worldbuff_daily = 100
+                    if drop_chance >= 100: drop_chance = 100
+                    if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
+                    if drop_chance_daily >= 100: drop_chance_daily = 100
+                    if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
 
                     hunt_drop_chance = drop_chance/2
                     hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
@@ -216,27 +215,27 @@ class craftingCog(commands.Cog):
                     horse_emoji = getattr(emojis, f'horset{horse_tier}')
 
                 else:
-                    await ctx.send(f'Whelp, something went wrong here, sorry.')
+                    await ctx.send('Whelp, something went wrong here, sorry.')
                     return
 
                 await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.timetravel} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
+                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
-                    f'{emojis.bp} Base drop chance: **__{drop_chance:g} %__**.\n'
-                    f'{emojis.bp} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
-                    f'{emojis.bp} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
-                    f'{emojis.bp} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
+                    f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
+                    f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
+                    f'{emojis.BP} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
+                    f'{emojis.BP} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
                     f'**Total drop chance while hunting**\n'
-                    f'{emojis.bp} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
+                    f'{emojis.BP} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
                     f'**Drop chance in hardmode**\n'
-                    f'{emojis.bp} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.\n\n'
+                    f'{emojis.BP} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.\n\n'
                     f'**Note**\n'
                     f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
                     f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
                 )
 
             except asyncio.TimeoutError as error:
-                        await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
     # Command "craft" - Calculates mats you need for amount of items
     @commands.command(aliases=('cook','forge',))
@@ -546,7 +545,7 @@ class craftingCog(commands.Cog):
                 log_calc = log_calc + (ruby * ruby_rate)
 
             result_value = log_calc
-            result_item = f'{emojis.log} wooden logs'
+            result_item = f'{emojis.LOG} wooden logs'
 
         # Calculate epic logs
         if item == 'epic log':
@@ -571,7 +570,7 @@ class craftingCog(commands.Cog):
             logepic_calc = logepic + (logsuper_calc * 8) + log_calc // 25
 
             result_value = logepic_calc
-            result_item = f'{emojis.logepic} EPIC logs'
+            result_item = f'{emojis.LOG_EPIC} EPIC logs'
 
         # Calculate super logs
         if item == 'super log':
@@ -596,7 +595,7 @@ class craftingCog(commands.Cog):
             logsuper_calc = logsuper + (logmega_calc * 8) + (logepic_calc // 10)
 
             result_value = logsuper_calc
-            result_item = f'{emojis.logsuper} SUPER logs'
+            result_item = f'{emojis.LOG_SUPER} SUPER logs'
 
         # Calculate mega logs
         if item == 'mega log':
@@ -621,7 +620,7 @@ class craftingCog(commands.Cog):
             logmega_calc = logmega + (loghyper_calc * 8) + (logsuper_calc // 10)
 
             result_value = logmega_calc
-            result_item = f'{emojis.logmega} MEGA logs'
+            result_item = f'{emojis.LOG_MEGA} MEGA logs'
 
         # Calculate hyper logs
         if item == 'hyper log':
@@ -646,7 +645,7 @@ class craftingCog(commands.Cog):
             loghyper_calc = loghyper + (logultra * 8) + (logmega_calc // 10)
 
             result_value = loghyper_calc
-            result_item = f'{emojis.loghyper} HYPER logs'
+            result_item = f'{emojis.LOG_HYPER} HYPER logs'
 
         # Calculate ultra logs
         if item == 'ultra log':
@@ -672,7 +671,7 @@ class craftingCog(commands.Cog):
             logultra_calc = logultra + (loghyper_calc // 10)
 
             result_value = logultra_calc
-            result_item = f'{emojis.logultra} ULTRA logs'
+            result_item = f'{emojis.LOG_ULTRA} ULTRA logs'
 
         # Calculate normie fish
         if item == 'fish':
@@ -698,7 +697,7 @@ class craftingCog(commands.Cog):
             fish_calc = fish_calc + (log_calc // fish_rate)
 
             result_value = fish_calc
-            result_item = f'{emojis.fish} normie fish'
+            result_item = f'{emojis.FISH} normie fish'
 
         # Calculate golden fish
         if item == 'golden fish':
@@ -724,7 +723,7 @@ class craftingCog(commands.Cog):
             fishgolden_calc = fishgolden + (fishepic * 80) + (fish_calc // 15)
 
             result_value = fishgolden_calc
-            result_item = f'{emojis.fishgolden} golden fish'
+            result_item = f'{emojis.FISH_GOLDEN} golden fish'
 
         # Calculate epic fish
         if item == 'epic fish':
@@ -751,7 +750,7 @@ class craftingCog(commands.Cog):
             fishepic_calc = fishepic + (fishgolden_calc // 100)
 
             result_value = fishepic_calc
-            result_item = f'{emojis.fishepic} EPIC fish'
+            result_item = f'{emojis.FISH_EPIC} EPIC fish'
 
         # Calculate apples
         if item == 'apple':
@@ -776,7 +775,7 @@ class craftingCog(commands.Cog):
                 apple_calc = apple_calc + (log_calc // apple_rate)
 
             result_value = apple_calc
-            result_item = f'{emojis.apple} apples'
+            result_item = f'{emojis.APPLE} apples'
 
         # Calculate bananas
         if item == 'banana':
@@ -802,7 +801,7 @@ class craftingCog(commands.Cog):
             banana_calc = banana + (apple_calc // 15)
 
             result_value = banana_calc
-            result_item = f'{emojis.fruitbanana} bananas'
+            result_item = f'{emojis.BANANA} bananas'
 
         # Calculate rubies
         if item == 'ruby':
@@ -827,7 +826,7 @@ class craftingCog(commands.Cog):
                 ruby_calc = ruby + (log_calc // ruby_rate)
 
             result_value = ruby_calc
-            result_item = f'{emojis.ruby} rubies'
+            result_item = f'{emojis.RUBY} rubies'
 
 
 
@@ -866,79 +865,79 @@ async def function_mats(items_data, amount, prefix):
         header_index = item_index+6
         if not value == 0:
             if items_headers[header_index] == 'log':
-                ingredients.append([value, emojis.log, 'wooden log'])
+                ingredients.append([value, emojis.LOG, 'wooden log'])
             elif items_headers[header_index] == 'epiclog':
-                ingredients.append([value, emojis.logepic, 'EPIC log'])
+                ingredients.append([value, emojis.LOG_EPIC, 'EPIC log'])
             elif items_headers[header_index] == 'superlog':
-                ingredients.append([value, emojis.logsuper, 'SUPER log'])
+                ingredients.append([value, emojis.LOG_SUPER, 'SUPER log'])
             elif items_headers[header_index] == 'megalog':
-                ingredients.append([value, emojis.logmega, 'MEGA log'])
+                ingredients.append([value, emojis.LOG_MEGA, 'MEGA log'])
             elif items_headers[header_index] == 'hyperlog':
-                ingredients.append([value, emojis.loghyper, 'HYPER log'])
+                ingredients.append([value, emojis.LOG_HYPER, 'HYPER log'])
             elif items_headers[header_index] == 'ultralog':
-                ingredients.append([value, emojis.logultra, 'ULTRA log'])
+                ingredients.append([value, emojis.LOG_ULTRA, 'ULTRA log'])
             elif items_headers[header_index] == 'fish':
-                ingredients.append([value, emojis.fish, 'normie fish'])
+                ingredients.append([value, emojis.FISH, 'normie fish'])
             elif items_headers[header_index] == 'goldenfish':
-                ingredients.append([value, emojis.fishgolden, 'golden fish'])
+                ingredients.append([value, emojis.FISH_GOLDEN, 'golden fish'])
             elif items_headers[header_index] == 'epicfish':
-                ingredients.append([value, emojis.fishepic, 'EPIC fish'])
+                ingredients.append([value, emojis.FISH_EPIC, 'EPIC fish'])
             elif items_headers[header_index] == 'apple':
-                ingredients.append([value, emojis.apple, 'apple'])
+                ingredients.append([value, emojis.APPLE, 'apple'])
             elif items_headers[header_index] == 'banana':
-                ingredients.append([value, emojis.fruitbanana, 'banana'])
+                ingredients.append([value, emojis.BANANA, 'banana'])
             elif items_headers[header_index] == 'ruby':
-                ingredients.append([value, emojis.ruby, 'ruby'])
+                ingredients.append([value, emojis.RUBY, 'ruby'])
             elif items_headers[header_index] == 'wolfskin':
-                ingredients.append([value, emojis.wolfskin, 'wolf skin'])
+                ingredients.append([value, emojis.WOLF_SKIN, 'wolf skin'])
             elif items_headers[header_index] == 'zombieeye':
-                ingredients.append([value, emojis.zombieeye, 'zombie eye'])
+                ingredients.append([value, emojis.ZOMBIE_EYE, 'zombie eye'])
             elif items_headers[header_index] == 'unicornhorn':
-                ingredients.append([value, emojis.unicornhorn, 'unicorn horn'])
+                ingredients.append([value, emojis.UNICORN_HORN, 'unicorn horn'])
             elif items_headers[header_index] == 'mermaidhair':
-                ingredients.append([value, emojis.mermaidhair, 'mermaid hair'])
+                ingredients.append([value, emojis.MERMAID_HAIR, 'mermaid hair'])
             elif items_headers[header_index] == 'chip':
-                ingredients.append([value, emojis.chip, 'chip'])
+                ingredients.append([value, emojis.CHIP, 'chip'])
             elif items_headers[header_index] == 'dragonscale':
-                ingredients.append([value, emojis.dragonscale, 'dragon scale'])
+                ingredients.append([value, emojis.DRAGON_SCALE, 'dragon scale'])
             elif items_headers[header_index] == 'coin':
-                ingredients.append([value, emojis.coin, 'coin'])
+                ingredients.append([value, emojis.COIN, 'coin'])
             elif items_headers[header_index] == 'life':
-                ingredients.append([value, emojis.statlife, 'LIFE'])
+                ingredients.append([value, emojis.STAT_LIFE, 'LIFE'])
             elif items_headers[header_index] == 'lifepotion':
-                ingredients.append([value, emojis.lifepotion, 'life potion'])
+                ingredients.append([value, emojis.LIFE_POTION, 'life potion'])
             elif items_headers[header_index] == 'cookies':
-                ingredients.append([value, emojis.arenacookie, 'arena cookie'])
+                ingredients.append([value, emojis.ARENA_COOKIE, 'arena cookie'])
             elif items_headers[header_index] == 'dragonessence':
-                ingredients.append([value, emojis.dragonessence, 'dragon essence'])
+                ingredients.append([value, emojis.DRAGON_ESSENCE, 'dragon essence'])
             elif items_headers[header_index] == 'bread':
-                ingredients.append([value, emojis.bread, 'bread'])
+                ingredients.append([value, emojis.BREAD, 'bread'])
             elif items_headers[header_index] == 'carrot':
-                ingredients.append([value, emojis.carrot, 'carrot'])
+                ingredients.append([value, emojis.CARROT, 'carrot'])
             elif items_headers[header_index] == 'potato':
-                ingredients.append([value, emojis.potato, 'potato'])
+                ingredients.append([value, emojis.POTATO, 'potato'])
             elif items_headers[header_index] == 'lbrare':
-                ingredients.append([value, emojis.lbrare, 'rare lootbox'])
+                ingredients.append([value, emojis.LB_RARE, 'rare lootbox'])
             elif items_headers[header_index] == 'lbomega':
-                ingredients.append([value, emojis.lbomega, 'OMEGA lootbox'])
+                ingredients.append([value, emojis.LB_OMEGA, 'OMEGA lootbox'])
             elif items_headers[header_index] == 'lbgodly':
-                ingredients.append([value, emojis.lbgodly, 'GODLY lootbox'])
+                ingredients.append([value, emojis.LB_GODLY, 'GODLY lootbox'])
             elif items_headers[header_index] == 'armoredgy':
-                ingredients.append([value, emojis.armoredgy, 'EDGY Armor'])
+                ingredients.append([value, emojis.ARMOR_EDGY, 'EDGY Armor'])
             elif items_headers[header_index] == 'swordedgy':
-                ingredients.append([value, emojis.swordedgy, 'EDGY Sword'])
+                ingredients.append([value, emojis.SWORD_EDGY, 'EDGY Sword'])
             elif items_headers[header_index] == 'armorultraedgy':
-                ingredients.append([value, emojis.armorultraedgy, 'ULTRA-EDGY Armor'])
+                ingredients.append([value, emojis.ARMOR_ULTRAEDGY, 'ULTRA-EDGY Armor'])
             elif items_headers[header_index] == 'swordultraedgy':
-                ingredients.append([value, emojis.swordultraedgy, 'ULTRA-EDGY Sword'])
+                ingredients.append([value, emojis.SWORD_ULTRAEDGY, 'ULTRA-EDGY Sword'])
             elif items_headers[header_index] == 'armoromega':
-                ingredients.append([value, emojis.armoromega, 'OMEGA Armor'])
+                ingredients.append([value, emojis.ARMOR_OMEGA, 'OMEGA Armor'])
             elif items_headers[header_index] == 'swordomega':
-                ingredients.append([value, emojis.swordomega, 'OMEGA Sword'])
+                ingredients.append([value, emojis.SWORD_OMEGA, 'OMEGA Sword'])
             elif items_headers[header_index] == 'armorultraomega':
-                ingredients.append([value, emojis.armorultraomega, 'ULTRA-OMEGA Armor'])
+                ingredients.append([value, emojis.ARMOR_ULTRAOMEGA, 'ULTRA-OMEGA Armor'])
             elif items_headers[header_index] == 'swordultraomega':
-                ingredients.append([value, emojis.swordultraomega, 'ULTRA-OMEGA Sword'])
+                ingredients.append([value, emojis.SWORD_ULTRAOMEGA, 'ULTRA-OMEGA Sword'])
 
     breakdown_logs = ''
     breakdown_fish = ''
@@ -1023,11 +1022,11 @@ async def function_mats(items_data, amount, prefix):
                 ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_banana[0]}'
 
     if not total_logs == 0:
-        mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
+        mats_total_logs = f'\n> {total_logs:,} {emojis.LOG} `wooden log`'
     if not total_fish == 0:
-        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'
+        mats_total_fish = f'\n> {total_fish:,} {emojis.FISH} `normie fish`'
     if not total_apple == 0:
-        mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
+        mats_total_apple = f'\n> {total_apple:,} {emojis.APPLE} `apple`'
 
     if not ingredient_submats == '':
         ingredient_submats = ingredient_submats.strip()
@@ -1074,14 +1073,14 @@ async def function_get_submats(items_data, amount, ingredient, dismantle=False):
     }
 
     subitems_emojis = {
-        'HYPER log': emojis.loghyper,
-        'MEGA log': emojis.logmega,
-        'SUPER log': emojis.logsuper,
-        'EPIC log': emojis.logepic,
-        'wooden log': emojis.log,
-        'golden fish': emojis.fishgolden,
-        'normie fish': emojis.fish,
-        'apple': emojis.apple
+        'HYPER log': emojis.LOG_HYPER,
+        'MEGA log': emojis.LOG_MEGA,
+        'SUPER log': emojis.LOG_SUPER,
+        'EPIC log': emojis.LOG_EPIC,
+        'wooden log': emojis.LOG,
+        'golden fish': emojis.FISH_GOLDEN,
+        'normie fish': emojis.FISH,
+        'apple': emojis.APPLE
     }
 
     last_item_amount = 0
@@ -1125,21 +1124,21 @@ async def function_dismantle_mats(items_data, amount, prefix):
         header_index = item_index+6
         if not value == 0:
             if items_headers[header_index] == 'log':
-                ingredients.append([value, emojis.log, 'wooden log'])
+                ingredients.append([value, emojis.LOG, 'wooden log'])
             elif items_headers[header_index] == 'epiclog':
-                ingredients.append([value, emojis.logepic, 'EPIC log'])
+                ingredients.append([value, emojis.LOG_EPIC, 'EPIC log'])
             elif items_headers[header_index] == 'superlog':
-                ingredients.append([value, emojis.logsuper, 'SUPER log'])
+                ingredients.append([value, emojis.LOG_SUPER, 'SUPER log'])
             elif items_headers[header_index] == 'megalog':
-                ingredients.append([value, emojis.logmega, 'MEGA log'])
+                ingredients.append([value, emojis.LOG_MEGA, 'MEGA log'])
             elif items_headers[header_index] == 'hyperlog':
-                ingredients.append([value, emojis.loghyper, 'HYPER log'])
+                ingredients.append([value, emojis.LOG_HYPER, 'HYPER log'])
             elif items_headers[header_index] == 'fish':
-                ingredients.append([value, emojis.fish, 'normie fish'])
+                ingredients.append([value, emojis.FISH, 'normie fish'])
             elif items_headers[header_index] == 'goldenfish':
-                ingredients.append([value, emojis.fishgolden, 'golden fish'])
+                ingredients.append([value, emojis.FISH_GOLDEN, 'golden fish'])
             elif items_headers[header_index] == 'apple':
-                ingredients.append([value, emojis.apple, 'apple'])
+                ingredients.append([value, emojis.APPLE, 'apple'])
 
     breakdown_logs = ''
     breakdown_fish = ''
@@ -1188,11 +1187,11 @@ async def function_dismantle_mats(items_data, amount, prefix):
             mats = f'By dismantling {amount:,} {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
 
     if not total_logs == 0:
-        mats_total_logs = f'\n> {total_logs:,} {emojis.log} `wooden log`'
+        mats_total_logs = f'\n> {total_logs:,} {emojis.LOG} `wooden log`'
     if not total_fish == 0:
-        mats_total_fish = f'\n> {total_fish:,} {emojis.fish} `normie fish`'
+        mats_total_fish = f'\n> {total_fish:,} {emojis.FISH} `normie fish`'
     if not total_apple == 0:
-        mats_total_apple = f'\n> {total_apple:,} {emojis.apple} `apple`'
+        mats_total_apple = f'\n> {total_apple:,} {emojis.APPLE} `apple`'
 
     if not ingredient_submats == '':
         ingredient_submats = ingredient_submats.strip()
@@ -1207,34 +1206,34 @@ async def function_dismantle_mats(items_data, amount, prefix):
 async def embed_enchants(prefix):
 
     buffs = (
-        f'{emojis.bp} **Normie** - 5% buff\n'
-        f'{emojis.bp} **Good** - 15% buff\n'
-        f'{emojis.bp} **Great** - 25% buff\n'
-        f'{emojis.bp} **Mega** - 40% buff\n'
-        f'{emojis.bp} **Epic** - 60% buff\n'
-        f'{emojis.bp} **Hyper** - 70% buff\n'
-        f'{emojis.bp} **Ultimate** - 80% buff\n'
-        f'{emojis.bp} **Perfect** - 90% buff\n'
-        f'{emojis.bp} **EDGY** - 95% buff\n'
-        f'{emojis.bp} **ULTRA-EDGY** - 100% buff\n'
-        f'{emojis.bp} **OMEGA** - 125% buff, unlocked in {emojis.timetravel} TT 1\n'
-        f'{emojis.bp} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.timetravel} TT 3\n'
-        f'{emojis.bp} **GODLY** - 200% buff, unlocked in {emojis.timetravel} TT 5'
+        f'{emojis.BP} **Normie** - 5% buff\n'
+        f'{emojis.BP} **Good** - 15% buff\n'
+        f'{emojis.BP} **Great** - 25% buff\n'
+        f'{emojis.BP} **Mega** - 40% buff\n'
+        f'{emojis.BP} **Epic** - 60% buff\n'
+        f'{emojis.BP} **Hyper** - 70% buff\n'
+        f'{emojis.BP} **Ultimate** - 80% buff\n'
+        f'{emojis.BP} **Perfect** - 90% buff\n'
+        f'{emojis.BP} **EDGY** - 95% buff\n'
+        f'{emojis.BP} **ULTRA-EDGY** - 100% buff\n'
+        f'{emojis.BP} **OMEGA** - 125% buff, unlocked in {emojis.TIME_TRAVEL} TT 1\n'
+        f'{emojis.BP} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.TIME_TRAVEL} TT 3\n'
+        f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5'
     )
 
     commands = (
-        f'{emojis.bp} `enchant` - unlocked in area 2, costs 1k * area\n'
-        f'{emojis.bp} `refine` - unlocked in area 7, costs 10k * area\n'
-        f'{emojis.bp} `transmute` - unlocked in area 13, costs 100k * area\n'
-        f'{emojis.bp} `transcend` - unlocked in area 15, costs 1m * area'
+        f'{emojis.BP} `enchant` - unlocked in area 2, costs 1k * area\n'
+        f'{emojis.BP} `refine` - unlocked in area 7, costs 10k * area\n'
+        f'{emojis.BP} `transmute` - unlocked in area 13, costs 100k * area\n'
+        f'{emojis.BP} `transcend` - unlocked in area 15, costs 1m * area'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'ENCHANTS',
         description = (
             f'Enchants buff either AT or DEF (sword enchants buff AT, armor enchants buff DEF). Enchants buff your **overall** stats.\n'
-            f'The chance to get better enchants can be increased by leveling up the enchanter profession and having a {emojis.horset8} T8+ horse.\n'
+            f'The chance to get better enchants can be increased by leveling up the enchanter profession and having a {emojis.HORSE_T8} T8+ horse.\n'
             f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
         )
     )
@@ -1249,75 +1248,76 @@ async def embed_enchants(prefix):
 async def embed_drops(prefix):
 
     wolfskin = (
-        f'{emojis.bp} Areas: 1~2\n'
-        f'{emojis.bp} Source: {emojis.mobwolf}\n'
-        f'{emojis.bp} Value: 500\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 1~2\n'
+        f'{emojis.BP} Source: {emojis.MOB_WOLF}\n'
+        f'{emojis.BP} Value: 500\n'
+        f'{emojis.BLANK}'
     )
 
     zombieeye = (
-        f'{emojis.bp} Areas: 3~4\n'
-        f'{emojis.bp} Source: {emojis.mobzombie}\n'
-        f'{emojis.bp} Value: 2\'000\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 3~4\n'
+        f'{emojis.BP} Source: {emojis.MOB_ZOMBIE}\n'
+        f'{emojis.BP} Value: 2\'000\n'
+        f'{emojis.BLANK}'
     )
 
     unicornhorn = (
-        f'{emojis.bp} Areas: 5~6\n'
-        f'{emojis.bp} Source: {emojis.mobunicorn}\n'
-        f'{emojis.bp} Value: 7\'500\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 5~6\n'
+        f'{emojis.BP} Source: {emojis.MOB_UNICORN}\n'
+        f'{emojis.BP} Value: 7\'500\n'
+        f'{emojis.BLANK}'
     )
 
     mermaidhair = (
-        f'{emojis.bp} Areas: 7~8\n'
-        f'{emojis.bp} Source: {emojis.mobmermaid}\n'
-        f'{emojis.bp} Value: 30\'000\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 7~8\n'
+        f'{emojis.BP} Source: {emojis.MOB_MERMAID}\n'
+        f'{emojis.BP} Value: 30\'000\n'
+        f'{emojis.BLANK}'
     )
 
     chip = (
-        f'{emojis.bp} Areas: 9~10\n'
-        f'{emojis.bp} Source: {emojis.mobkillerrobot}\n'
-        f'{emojis.bp} Value: 100\'000\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 9~10\n'
+        f'{emojis.BP} Source: {emojis.MOB_KILLER_ROBOT}\n'
+        f'{emojis.BP} Value: 100\'000\n'
+        f'{emojis.BLANK}'
     )
 
     dragonscale = (
-        f'{emojis.bp} Areas: 11~15\n'
-        f'{emojis.bp} Source: {emojis.mobbabydragon}{emojis.mobteendragon}{emojis.mobadultdragon}{emojis.mobolddragon}\n'
-        f'{emojis.bp} Value: 250\'000\n'
-        f'{emojis.blank}'
+        f'{emojis.BP} Areas: 11~15\n'
+        f'{emojis.BP} Source: {emojis.MOB_BABY_DRAGON}{emojis.MOB_TEEN_DRAGON}{emojis.MOB_ADULT_DRAGON}{emojis.MOB_OLD_DRAGON}\n'
+        f'{emojis.BP} Value: 250\'000\n'
+        f'{emojis.BLANK}'
     )
 
     chance = (
-        f'{emojis.bp} The chance to encounter a mob that drops items is 50 %\n'
-        f'{emojis.bp} These mobs have a base chance of 4 % to drop an item\n'
-        f'{emojis.bp} Thus you have a total base drop chance of 2 % when hunting\n'
-        f'{emojis.bp} Every {emojis.timetravel} time travel increases the drop chance by ~25%\n'
-        f'{emojis.bp} A {emojis.horset7} T7 horse increases the drop chance by 20%\n'
-        f'{emojis.bp} A {emojis.horset8} T8 horse increases the drop chance by 50%\n'
-        f'{emojis.bp} A {emojis.horset9} T9 horse increases the drop chance by 100%\n'
-        f'{emojis.bp} To calculate your current drop chance, use `{prefix}dropchance`\n{emojis.blank}'
+        f'{emojis.BP} The chance to encounter a mob that drops items is 50 %\n'
+        f'{emojis.BP} These mobs have a base chance of 4 % to drop an item\n'
+        f'{emojis.BP} Thus you have a total base drop chance of 2 % when hunting\n'
+        f'{emojis.BP} Every {emojis.TIME_TRAVEL} time travel increases the drop chance by ~25%\n'
+        f'{emojis.BP} A {emojis.HORSE_T7} T7 horse increases the drop chance by 20%\n'
+        f'{emojis.BP} A {emojis.HORSE_T8} T8 horse increases the drop chance by 50%\n'
+        f'{emojis.BP} A {emojis.HORSE_T9} T9 horse increases the drop chance by 100%\n'
+        f'{emojis.BP} A {emojis.HORSE_T10} T10 horse increases the drop chance by 200%\n'
+        f'{emojis.BP} To calculate your current drop chance, use `{prefix}dropchance`\n{emojis.BLANK}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
             f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'
             f'You can go back to previous areas with `rpg area`.\n'
-            f'{emojis.blank}'
+            f'{emojis.BLANK}'
         )
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'WOLF SKIN {emojis.wolfskin}', value=wolfskin, inline=True)
-    embed.add_field(name=f'ZOMBIE EYE {emojis.zombieeye}', value=zombieeye, inline=True)
-    embed.add_field(name=f'UNICORN HORN {emojis.unicornhorn}', value=unicornhorn, inline=True)
-    embed.add_field(name=f'MERMAID HAIR {emojis.mermaidhair}', value=mermaidhair, inline=True)
-    embed.add_field(name=f'CHIP {emojis.chip}', value=chip, inline=True)
-    embed.add_field(name=f'DRAGON SCALE {emojis.dragonscale}', value=dragonscale, inline=True)
+    embed.add_field(name=f'WOLF SKIN {emojis.WOLF_SKIN}', value=wolfskin, inline=True)
+    embed.add_field(name=f'ZOMBIE EYE {emojis.ZOMBIE_EYE}', value=zombieeye, inline=True)
+    embed.add_field(name=f'UNICORN HORN {emojis.UNICORN_HORN}', value=unicornhorn, inline=True)
+    embed.add_field(name=f'MERMAID HAIR {emojis.MERMAID_HAIR}', value=mermaidhair, inline=True)
+    embed.add_field(name=f'CHIP {emojis.CHIP}', value=chip, inline=True)
+    embed.add_field(name=f'DRAGON SCALE {emojis.DRAGON_SCALE}', value=dragonscale, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
 
     return embed

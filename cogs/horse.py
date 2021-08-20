@@ -11,976 +11,907 @@ import emojis
 import global_data
 
 
-# horse commands (cog)
-class horseCog(commands.Cog):
-    def __init__(self, bot):
+# Error messages
+MSG_INVALID_HORSE_TIER = '**{user}**, this is not a valid horse tier.'
+MSG_INVALID_HORSE_LEVEL = '**{user}**, this is not a valid horse level.'
+MSG_INVALID_HORSE_TARGET_LEVEL = '**{user}**, this is not a valid horse target level.'
+MSG_INVALID_LOOTBOXER_LEVEL = '**{user}**, this is not a valid lootboxer level.'
+MSG_HORSE_TIER_RANGE = '**{user}**, the horse tier needs to be between 1 and 10.'
+MSG_HORSE_LEVEL_RANGE_1 = '**{user}**, the horse level needs to be between 1 and 140.'
+MSG_HORSE_LEVEL_RANGE_2 = '**{user}**, the horse level needs to be between 2 and 140.'
+MSG_LOOTBOXER_LEVEL_RANGE = '**{user}**, the lootboxer level needs to be between 1 and 150.'
+MSG_HORSE_LEVEL_MIN_1 = '**{user}**, the horse level needs to be 1 or higher.'
+MSG_HORSE_LEVEL_ALREADY_MAX = (
+    '**{user}**, your horse is already at max level. You can\'t level up any further until you increase your '
+    'lootboxer profession.'
+)
+MSG_HORSE_LEVEL_ALREADY_TARGET = '**{user}**, your horse is already at the target level.'
+MSG_HORSE_LEVEL_OVER_TARGET = (
+    '**{user}**, sorry mate, but training your horse to level **down** is not exactly an option right now.'
+)
+MSG_HORSE_LEVEL_MAX_POSSIBLE = (
+    'With a {horse_emoji} **T{horse_tier}** horse and lootboxer **L{lootboxer_level}**, your max horse '
+    'level is **L{horse_max_level}**.'
+)
+
+
+# Additional guides
+GUIDE_OVERVIEW = '`{prefix}horse` : Horse overview'
+GUIDE_BREED = '`{prefix}horse breed` : Details about horse breeding'
+GUIDE_TIER = '`{prefix}horse tier` : Details about horse tiers'
+GUIDE_TYPE = '`{prefix}horse type` : Details about horse types'
+GUIDE_CALC = '`{prefix}horse calc` : Horse stats bonus calculator'
+CALC_HTC = '`{prefix}htc` : Coins you need for your next horse levels'
+CALC_HTCTOTAL = '`{prefix}htctotal [level]` : Total coins you need to reach `[level]`'
+
+
+class HorseCog(commands.Cog):
+    """Cog with horse commands"""
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     horse_aliases = (
         'horses',
-        'htier','horsestier','horsetiers','horsestiers',
-        'htype','horsestype','horsetypes','horsestypes',
-        'hbreed','hbreeding','breed','breeding','horsebreeding','horsesbreed','horsesbreeding','breedhorse','breedhorses','breedinghorse','breedingshorses'
+        'htier',
+        'horsestier',
+        'horsetiers',
+        'horsestiers',
+        'htype',
+        'horsestype',
+        'horsetypes',
+        'horsestypes',
+        'hbreed',
+        'hbreeding',
+        'breed',
+        'breeding',
+        'horsebreeding',
+        'horsesbreed',
+        'horsesbreeding',
+        'breedhorse',
+        'breedhorses',
+        'breedinghorse',
+        'breedingshorses'
     )
 
-    # Command "horse"
     @commands.command(aliases=horse_aliases)
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
-    async def horse(self, ctx, *args):
-        invoked = ctx.invoked_with
-        invoked = invoked.lower()
+    async def horse(self, ctx: commands.Context, *args: str) -> None:
+        """Horse main command"""
+        prefix = ctx.prefix
         if args:
-            if len(args)>1:
-                return
-            elif len(args)==1:
-                arg = args[0]
-                if arg.find('tier') > -1:
-                    embed = await embed_horses_tiers(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif arg.find('type') > -1:
-                    embed = await embed_horses_types(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif arg.find('breed') > -1:
-                    embed = await embed_horses_breeding(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif arg.find('calc') > -1:
-                    x = await self.horsecalc(ctx)
-                    return
-                else:
-                    embed = await embed_horses_overview(ctx.prefix)
-                    await ctx.send(embed=embed)
-            else:
-                embed = await embed_horses_overview(ctx.prefix)
-                await ctx.send(embed=embed)
+            args = [arg.lower() for arg in args]
+            command, *_ = args
         else:
-            if invoked.find('tier') > -1:
-                embed = await embed_horses_tiers(ctx.prefix)
-                await ctx.send(embed=embed)
-            elif invoked.find('type') > -1:
-                embed = await embed_horses_types(ctx.prefix)
-                await ctx.send(embed=embed)
-            elif invoked.find('breed') > -1:
-                embed = await embed_horses_breeding(ctx.prefix)
-                await ctx.send(embed=embed)
-            else:
-                embed = await embed_horses_overview(ctx.prefix)
-                await ctx.send(embed=embed)
+            command = ctx.invoked_with.lower()
+        if 'tier' in command:
+            embed = await embed_horses_tiers(prefix)
+        elif 'type' in command:
+            embed = await embed_horses_types(prefix)
+        elif 'breed' in command:
+            embed = await embed_horses_breeding(prefix)
+        elif 'calc' in command:
+            if args: del args[0]
+            await self.horsecalc(ctx, *args)
+            return
+        else:
+            embed = await embed_horses_overview(prefix)
+        await ctx.send(embed=embed)
 
-    # Command "horsecalc" - Calculates the horse stats bonuses
     @commands.command(aliases=('hcalc',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def horsecalc(self, ctx, *args):
-
+    async def horsecalc(self, ctx: commands.Context, *args: str) -> None:
+        """Calculates the horse stat bonuses"""
+        user_name = ctx.author.name
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return (m.author == ctx.author) and (m.channel == ctx.channel)
 
         def epic_rpg_check(m):
             correct_embed = False
             try:
-                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                ctx_author = global_data.format_string(str(user_name))
+                embed_author = global_data.format_string(str(m.embeds[0].author))
+                if f'{ctx_author}\'s horse' in embed_author:
                     correct_embed = True
-                else:
-                    correct_embed = False
             except:
-                correct_embed = False
+                pass
+            return (m.author.id == global_data.EPIC_RPG_ID) and (m.channel == ctx.channel) and correct_embed
 
-            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
-
+        prefix = ctx.prefix
+        message_syntax = (
+            f'{global_data.MSG_SYNTAX.format(syntax=f"{prefix}horsecalc [tier] [level]")}\n\n'
+            'You can also omit all parameters to use your horse tier and level for the calculation.\n'
+            f'Examples: `{prefix}horsecalc 6 25` or `{prefix}horsecalc t7 l30` or `{prefix}horsecalc 6 25`'
+        )
         if args:
-            if len(args) == 2:
-                horse_tier = args[0]
-                horse_tier = horse_tier.lower().replace('t','')
-                horse_level = args[1]
-                horse_level = horse_level.lower().replace('l','')
-
-                if horse_tier.isnumeric():
-                    horse_tier = int(horse_tier)
-                    if horse_level.isnumeric():
-                        horse_level = int(horse_level)
-                        if not horse_level >= 1:
-                            await ctx.send(f'`{horse_level}` is not a valid horse level for a T{horse_tier} horse.\nThe level needs to be 1 or higher.')
-                            return
-                    else:
-                        await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse level to me :thinking:')
-                        return
-                    if not 1 <= horse_tier <= 9:
-                            await ctx.send(f'`{horse_tier}` is not a valid horse tier.')
-                            return
-                else:
-                    await ctx.send(f'`{args[0]}` doesn\'t look like a valid horse tier to me :thinking:')
-                    return
-
-                horse_emoji = getattr(emojis, f'horset{horse_tier}')
-
-                horse_data = await database.get_horse_data(ctx, horse_tier)
-
-                def_bonus = float(horse_data[1])
-                strong_bonus = float(horse_data[2])
-                tank_bonus = float(horse_data[3])
-                special_bonus = float(horse_data[4])
-                golden_bonus = float(horse_data[5])
-
-                await ctx.send(
-                    f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
-                    f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
-                    f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
-                    f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
-                    f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
-                    f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n'
-                )
-            else:
-                await ctx.send(
-                    f'The command syntax is `{ctx.prefix}horsecalc [tier] [level]`\n'
-                    f'You can also omit all parameters to use your horse tier and level for the calculation.\n\n'
-                    f'Examples: `{ctx.prefix}horsecalc 6 25` or `{ctx.prefix}horsecalc t7 l30` or `{ctx.prefix}horsecalc 6 25`'
-                )
+            if len(args) != 2:
+                await ctx.send(message_syntax)
+                return
+            args = [arg.lower() for arg in args]
+            horse_tier, horse_level = args
+            try:
+                horse_tier = int(horse_tier.replace('t',''))
+            except:
+                await ctx.send(f'{MSG_INVALID_HORSE_TIER.format(user=user_name)}\n\n{message_syntax}')
+                return
+            try:
+                horse_level = int(horse_level.replace('l',''))
+            except:
+                await ctx.send(f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+                return
+            if horse_level < 1:
+                await ctx.send(f'{MSG_HORSE_LEVEL_MIN_1.format(user=user_name)}\n\n{message_syntax}')
+                return
+            if not 1 <= horse_tier <= 10:
+                await ctx.send(f'{MSG_HORSE_TIER_RANGE.format(user=user_name)}\n\n{message_syntax}')
+                return
         else:
             try:
-                await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
-                answer_user_horse = await self.bot.wait_for('message', check=check, timeout = 30)
-                answer = answer_user_horse.content
-                answer = answer.lower()
-                if (answer == 'rpg horse'):
+                await ctx.send(global_data.MSG_WAIT_FOR_INPUT.format(user=user_name, command='rpg horse'))
+                answer_user_horse = await self.bot.wait_for('message', check=check, timeout=30)
+                answer = answer_user_horse.content.lower()
+                if answer == 'rpg horse':
                     answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                    try:
-                        horse_stats = str(answer_bot_at.embeds[0].fields[0])
-
-                        start_level = horse_stats.find('Horse Level -') + 14
-                        end_level = start_level + 2
-                        horse_level = horse_stats[start_level:end_level]
-                        horse_level = horse_level.strip()
-                        horse_level = int(horse_level)
-
-                        horse_chance = 0
-                        horse_tier = 0
-                        horse_emoji = ''
-                    except:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
-                        return
-
-                    if horse_stats.find('Tier - III') > 1:
-                        horse_chance = 1
-                        horse_tier = 3
-                    elif horse_stats.find('Tier - II') > 1:
-                        horse_chance = 1
-                        horse_tier = 2
-                    elif horse_stats.find('Tier - VIII') > 1:
-                        horse_chance = 1.5
-                        horse_tier = 8
-                    elif horse_stats.find('Tier - VII') > 1:
-                        horse_chance = 1.2
-                        horse_tier = 7
-                    elif horse_stats.find('Tier - VI') > 1:
-                        horse_chance = 1
-                        horse_tier = 6
-                    elif horse_stats.find('Tier - V') > 1:
-                        horse_chance = 1
-                        horse_tier = 5
-                    elif horse_stats.find('Tier - IV') > 1:
-                        horse_chance = 1
-                        horse_tier = 4
-                    elif horse_stats.find('Tier - IX') > 1:
-                        horse_chance = 2
-                        horse_tier = 9
-                    elif horse_stats.find('Tier - I') > 1:
-                        horse_chance = 1
-                        horse_tier = 1
-                    else:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
-                        return
-                elif (answer == 'abort') or (answer == 'cancel'):
-                    await ctx.send(f'Aborting.')
+                elif answer in ('abort', 'cancel'):
+                    await ctx.send(global_data.MSG_ABORTING)
                     return
                 else:
-                    await ctx.send(f'Wrong input. Aborting.')
+                    await ctx.send(global_data.MSG_WRONG_INPUT)
                     return
-
-                horse_emoji = getattr(emojis, f'horset{horse_tier}')
-
-                horse_data = await database.get_horse_data(ctx, horse_tier)
-
-                def_bonus = float(horse_data[1])
-                strong_bonus = float(horse_data[2])
-                tank_bonus = float(horse_data[3])
-                special_bonus = float(horse_data[4])
-                golden_bonus = float(horse_data[5])
-
-                await ctx.send(
-                    f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
-                    f'{emojis.bp} DEFENDER: {def_bonus*horse_level:,g} % extra DEF\n'
-                    f'{emojis.bp} STRONG: {strong_bonus*horse_level:,g} % extra AT\n'
-                    f'{emojis.bp} TANK: {tank_bonus*horse_level:,g} % extra LIFE\n'
-                    f'{emojis.bp} SPECIAL: {special_bonus*horse_level:,g} % extra coins and XP from the epic quest\n'
-                    f'{emojis.bp} GOLDEN: {golden_bonus*horse_level:,g} % extra coins from `rpg hunt` and `rpg adventure`\n\n'
-                    f'Tip: You can use `{ctx.prefix}horsecalc [tier] [level]` to check the stats bonuses for any horse tier and level.'
-                )
             except asyncio.TimeoutError as error:
-                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                await ctx.send(global_data.MSG_BOT_MESSAGE_NOT_FOUND.format(user=user_name, information='horse'))
+                return
+            try:
+                horse_stats = str(answer_bot_at.embeds[0].fields[0])
+                start_level = horse_stats.find('Horse Level -') + 14
+                end_level = start_level + 2
+                horse_level = int(horse_stats[start_level:end_level].strip())
+            except:
+                await ctx.send(global_data.MSG_ERROR)
+                return
+            if '**Tier** - III' in horse_stats:
+                horse_chance = 1
+                horse_tier = 3
+            elif '**Tier** - II' in horse_stats:
+                horse_chance = 1
+                horse_tier = 2
+            elif '**Tier** - VIII' in horse_stats:
+                horse_chance = 1.5
+                horse_tier = 8
+            elif '**Tier** - VII' in horse_stats:
+                horse_chance = 1.2
+                horse_tier = 7
+            elif '**Tier** - VI' in horse_stats:
+                horse_chance = 1
+                horse_tier = 6
+            elif '**Tier** - V' in horse_stats:
+                horse_chance = 1
+                horse_tier = 5
+            elif '**Tier** - IV' in horse_stats:
+                horse_chance = 1
+                horse_tier = 4
+            elif '**Tier** - IX' in horse_stats:
+                horse_chance = 2
+                horse_tier = 9
+            elif '**Tier** - I' in horse_stats:
+                horse_chance = 1
+                horse_tier = 1
+            elif '**Tier** - X' in horse_stats:
+                horse_chance = 3
+                horse_tier = 10
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
+        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+        try:
+            horse_data = await database.get_horse_data(ctx, horse_tier)
+        except Exception as error:
+            await ctx.send(global_data.MSG_ERROR)
+            return
+        def_bonus = horse_data['def_level_bonus']
+        golden_bonus = horse_data['golden_level_bonus']
+        special_bonus = horse_data['special_level_bonus']
+        strong_bonus = horse_data['strong_level_bonus']
+        super_special_bonus = horse_data['super_special_level_bonus']
+        tank_bonus = horse_data['tank_level_bonus']
+        await ctx.send(
+            f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
+            f'{emojis.BP} **DEFENDER**: {def_bonus * horse_level:,g}% extra DEF\n'
+            f'{emojis.BP} **GOLDEN**: {golden_bonus * horse_level:,g}% extra coins from `rpg hunt` and `rpg adventure`\n'
+            f'{emojis.BP} **SPECIAL**: {special_bonus * horse_level:,g}% extra coins and XP from the epic quest\n'
+            f'{emojis.BP} **STRONG**: {strong_bonus * horse_level:,g}% extra AT\n'
+            f'{emojis.BP} **SUPER SPECIAL**: {super_special_bonus * horse_level:,g}% extra coins and XP from the epic '
+            f'quest\n'
+            f'{emojis.BP} **TANK**: {tank_bonus * horse_level:,g}% extra LIFE\n'
+        )
 
-    # Command "htc" - Horse training calculator
-    @commands.command(aliases=('horsetraincalc','horsetrainingcalc','horsetraining','htraincalc','htrainingcalc','htcalc'))
+    @commands.command(aliases=('horsetraincalc','horsetrainingcalc','horsetraining','htraincalc',
+                               'htrainingcalc','htcalc'))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def htc(self, ctx, *args):
-
+    async def htc(self, ctx: commands.Context, *args: str) -> None:
+        """Horse training cost calculator"""
+        user_name = ctx.author.name
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return (m.author == ctx.author) and (m.channel == ctx.channel)
 
         def epic_rpg_check_horse(m):
             correct_embed = False
             try:
-                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                ctx_author = global_data.format_string(str(user_name))
+                embed_author = global_data.format_string(str(m.embeds[0].author))
+                if f'{ctx_author}\'s horse' in embed_author:
                     correct_embed = True
-                else:
-                    correct_embed = False
             except:
-                correct_embed = False
-
-            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+                pass
+            return (m.author.id == global_data.EPIC_RPG_ID) and (m.channel == ctx.channel) and correct_embed
 
         def epic_rpg_check_professions(m):
             correct_embed = False
             try:
-                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1):
+                ctx_author = global_data.format_string(str(user_name))
+                embed_author = global_data.format_string(str(m.embeds[0].author))
+                if f'{ctx_author}\'s professions' in embed_author:
                     correct_embed = True
-                else:
-                    correct_embed = False
             except:
-                correct_embed = False
-
-            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+                pass
+            return (m.author.id == global_data.EPIC_RPG_ID) and (m.channel == ctx.channel) and correct_embed
 
         prefix = ctx.prefix
-        syntax = (
-            f'The command syntax is `{prefix}htc [horse tier] [horse level] [lootboxer level]`.\n'
-            f'Or just use `{prefix}htc` and let me ask you.\n\n'
+        message_syntax = (
+            f'{global_data.MSG_SYNTAX.format(syntax=f"{prefix}htc [horse tier] [horse level] [lootboxer level]")}\n\n'
+            f'Or just use `{prefix}htc` and let me ask you.\n'
             f'Examples: `{prefix}htc t5 l35 l75` or `{prefix}htc 4 18 48`'
         )
         horse_tier = 0
         horse_level = 0
         lootboxer_level = 0
-
         if args:
-            arg = args[0].lower()
+            args = [arg.lower() for arg in args]
+            arg, *_ = args
             if arg == 'total':
-                if len(args) >= 2:
-                    arg2 = args[1].lower()
-                    if len(args) >= 3:
-                        arg3 = args[2].lower()
-                        if len(args) >= 4:
-                            arg4 = args[3].lower()
-                            await self.htctotal(ctx, arg2, arg3, arg4)
-                        else:
-                            await self.htctotal(ctx, arg2, arg3)
-                    else:
-                        await self.htctotal(ctx, arg2)
+                del args[0]
+                await self.htctotal(ctx, *args)
+                return
+            if len(args) < 2:
+                await ctx.send(message_syntax)
+                return
+            horse_tier, horse_level, *args_rest = args
+            try:
+                horse_tier = int(horse_tier.replace('t',''))
+            except:
+                await ctx.send(f'{MSG_INVALID_HORSE_TIER.format(user=user_name)}\n\n{message_syntax}')
+                return
+            try:
+                horse_level = int(horse_level.replace('l',''))
+            except:
+                await ctx.send(f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+                return
+            if not 1 <= horse_tier <= 10:
+                await ctx.send(
+                    f'{MSG_HORSE_TIER_RANGE.format(user=user_name)}\n\n{message_syntax}'
+                )
+                return
+            if not 1 <= horse_level <= 140:
+                await ctx.send(
+                    f'{MSG_HORSE_LEVEL_RANGE_1.format(user=user_name)}\n\n{message_syntax}'
+                )
+                return
+            if len(args) > 2:
+                lootboxer_level, *_ = args_rest
+                try:
+                    lootboxer_level = int(lootboxer_level.replace('l',''))
+                except:
+                    await ctx.send(f'{MSG_INVALID_LOOTBOXER_LEVEL.format(user=user_name)}\n\n{message_syntax}')
                     return
-                else:
-                    await self.htctotal(ctx)
+                if not 1 <= lootboxer_level <= 150:
+                    await ctx.send(f'{MSG_LOOTBOXER_LEVEL_RANGE.format(user=user_name)}\n\n{message_syntax}')
                     return
-            else:
-                arg_horse_tier = arg.replace('t','')
-                if arg_horse_tier.isnumeric():
-                    try:
-                        arg_horse_tier = int(arg_horse_tier)
-                        if 1 <= arg_horse_tier <= 9:
-                            horse_tier = arg_horse_tier
-                        else:
-                            await ctx.send(f'**{ctx.author.name}**, the horse tier has to be between 1 and 9.\n\n{syntax}')
-                            return
-                    except:
-                        await ctx.send(f'**{ctx.author.name}**, this is not a valid horse tier\n\n{syntax}')
-                        return
-                else:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse tier\n\n{syntax}')
-                    return
-                if len(args) > 1:
-                    arg_horse_level = args[1].lower()
-                    arg_horse_level = arg_horse_level.replace('l','')
-                    if arg_horse_level.isnumeric():
-                        try:
-                            arg_horse_level = int(arg_horse_level)
-                            if 1 <= arg_horse_level <= 140:
-                                horse_level = arg_horse_level
-                            else:
-                                await ctx.send(f'**{ctx.author.name}**, the horse level has to be between 1 and 140.\n\n{syntax}')
-                                return
-                        except:
-                            await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level\n\n{syntax}')
-                            return
-                    else:
-                        await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level\n\n{syntax}')
-                        return
-                else:
-                    await ctx.send(f'**{ctx.author.name}**, if you specify the horse tier, you also have to specify the horse level\n\n{syntax}')
-                    return
-
-                if len(args) > 2:
-                    arg_lootboxer = args[2].lower()
-                    arg_lootboxer = arg_lootboxer.replace('l','')
-                    if arg_lootboxer.isnumeric():
-                        try:
-                            arg_lootboxer = int(arg_lootboxer)
-                            if 1 <= arg_lootboxer <= 150:
-                                lootboxer_level = arg_lootboxer
-                            else:
-                                await ctx.send(f'**{ctx.author.name}**, the lootboxer level has to be between 1 and 150.\n\n{syntax}')
-                                return
-                        except:
-                            await ctx.send(f'**{ctx.author.name}**, this is not a valid lootboxer level\n\n{syntax}')
-                            return
-                    else:
-                        await ctx.send(f'**{ctx.author.name}**, this is not a valid lootboxer level\n\n{syntax}')
-                        return
 
         if (horse_tier == 0) or (horse_level == 0):
             try:
-                await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
-                answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
-                answer = answer_user_merchant.content
-                answer = answer.lower()
+                await ctx.send(global_data.MSG_WAIT_FOR_INPUT.format(user=user_name, command='rpg horse'))
+                answer_horse = await self.bot.wait_for('message', check=check, timeout=30)
+                answer = answer_horse.content.lower()
                 if answer == 'rpg horse':
-                    answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check_horse, timeout = 5)
-                    try:
-                        horse_stats = str(answer_bot_at.embeds[0].fields[0])
-                        start_level = horse_stats.find('Horse Level -') + 14
-                        end_level = start_level + 2
-                        horse_level = horse_stats[start_level:end_level]
-                        horse_level = horse_level.strip()
-                        horse_level = int(horse_level)
-                        horse_tier = 0
-                        horse_emoji = ''
-                    except:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
-                        return
-
-                    if horse_stats.find('Tier - III') > 1:
-                        horse_tier = 3
-                    elif horse_stats.find('Tier - II') > 1:
-                        horse_tier = 2
-                    elif horse_stats.find('Tier - VIII') > 1:
-                        horse_tier = 8
-                    elif horse_stats.find('Tier - VII') > 1:
-                        horse_tier = 7
-                    elif horse_stats.find('Tier - VI') > 1:
-                        horse_tier = 6
-                    elif horse_stats.find('Tier - V') > 1:
-                        horse_tier = 5
-                    elif horse_stats.find('Tier - IV') > 1:
-                        horse_tier = 4
-                    elif horse_stats.find('Tier - IX') > 1:
-                        horse_tier = 9
-                    elif horse_stats.find('Tier - I') > 1:
-                        horse_tier = 1
-                    else:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
-                        return
-                elif (answer == 'abort') or (answer == 'cancel'):
-                    await ctx.send(f'Aborting.')
+                    answer_bot_horse = await self.bot.wait_for('message', check=epic_rpg_check_horse, timeout=5)
+                elif answer in ('abort', 'cancel'):
+                    await ctx.send(global_data.MSG_ABORTING)
                     return
                 else:
-                    await ctx.send(f'Wrong input. Aborting.')
+                    await ctx.send(global_data.MSG_WRONG_INPUT)
                     return
-
             except asyncio.TimeoutError as error:
-                    await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
-                    return
+                await ctx.send(global_data.MSG_BOT_MESSAGE_NOT_FOUND.format(user=user_name, information='horse'))
+                return
+            try:
+                horse_stats = str(answer_bot_horse.embeds[0].fields[0])
+                start_level = horse_stats.find('Horse Level -') + 14
+                end_level = start_level + 2
+                horse_level = int(horse_stats[start_level:end_level].strip())
+            except:
+                await ctx.send(global_data.MSG_ERROR)
+                return
+            if '**Tier** - III' in horse_stats:
+                horse_tier = 3
+            elif '**Tier** - II' in horse_stats:
+                horse_tier = 2
+            elif '**Tier** - VIII' in horse_stats:
+                horse_tier = 8
+            elif '**Tier** - VII' in horse_stats:
+                horse_tier = 7
+            elif '**Tier** - VI' in horse_stats:
+                horse_tier = 6
+            elif '**Tier** - V' in horse_stats:
+                horse_tier = 5
+            elif '**Tier** - IV' in horse_stats:
+                horse_tier = 4
+            elif '**Tier** - IX' in horse_stats:
+                horse_tier = 9
+            elif '**Tier** - I' in horse_stats:
+                horse_tier = 1
+            elif '**Tier** - X' in horse_stats:
+                horse_tier = 10
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
 
         if lootboxer_level == 0:
             try:
-                await ctx.send(f'**{ctx.author.name}**, please type `rpg pr` (or `abort` to abort)')
-                answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
-                answer = answer_user_merchant.content
-                answer = answer.lower()
-                if answer in ('rpg pr','rpg profession', 'rpg professions'):
-                    answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check_professions, timeout = 5)
-                    try:
-                        professions = str(answer_bot_at.embeds[0].fields[2])
-                    except:
-                        await ctx.send('Whelp, something went wrong here, sorry.')
-                        return
-                    start_level = professions.find('Lootboxer Lv ') + 13
-                    end_level = professions.find(' |', start_level)
-                    lootboxer_level = professions[start_level:end_level]
-                elif (answer == 'abort') or (answer == 'cancel'):
-                    await ctx.send('Aborting.')
+                await ctx.send(global_data.MSG_WAIT_FOR_INPUT.format(user=user_name, command='rpg pr'))
+                answer_user_pr = await self.bot.wait_for('message', check=check, timeout=30)
+                answer = answer_user_pr.content.lower()
+                if answer in ('rpg pr', 'rpg profession', 'rpg professions'):
+                    answer_bot_pr = await self.bot.wait_for('message', check=epic_rpg_check_professions, timeout=5)
+                elif answer in ('abort', 'cancel'):
+                    await ctx.send(global_data.MSG_ABORTING)
                     return
                 else:
-                    await ctx.send('Wrong input. Aborting.')
-                    return
-                if lootboxer_level.isnumeric():
-                    lootboxer_level = int(lootboxer_level)
-                else:
-                    await ctx.send('Whelp, something went wrong here, sorry.')
+                    await ctx.send(global_data.MSG_WRONG_INPUT)
                     return
             except asyncio.TimeoutError as error:
-                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+                await ctx.send(global_data.MSG_BOT_MESSAGE_NOT_FOUND.format(user=user_name, information='profession'))
+                return
+            try:
+                professions = str(answer_bot_pr.embeds[0].fields[2])
+                start_level = professions.find('Lootboxer Lv ') + 13
+                end_level = professions.find(' |', start_level)
+                lootboxer_level = int(professions[start_level:end_level])
+            except:
+                await ctx.send(global_data.MSG_ERROR)
                 return
 
         horse_emoji = getattr(emojis, f'horset{horse_tier}')
-
         if lootboxer_level > 100:
-            horse_max_level = 10*horse_tier+(lootboxer_level-100)
+            horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:
-            horse_max_level = 10*horse_tier
-
+            horse_max_level = 10 * horse_tier
         if horse_max_level < horse_level:
-            await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level. With a {horse_emoji} **T{horse_tier}** horse and lootboxer **L{lootboxer_level}**, your max horse level is **L{horse_max_level}**.')
+            horse_level_max_possible = MSG_HORSE_LEVEL_MAX_POSSIBLE.format(
+                horse_emoji=horse_emoji, horse_tier=horse_tier, lootboxer_level=lootboxer_level,
+                horse_max_level=horse_max_level
+            )
+            await ctx.send(
+                f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n'
+                f'{horse_level_max_possible}'
+            )
             return
-
-        if (horse_max_level-horse_level) >= 11:
+        if (horse_max_level - horse_level) >= 11:
             horse_level_range = horse_level + 11
         else:
             horse_level_range = horse_level + (horse_max_level-horse_level)
-
-        if not horse_level == horse_max_level:
-            output = f'For a {horse_emoji} **T{horse_tier} L{horse_level}** horse with lootboxer level **{lootboxer_level}** the horse training costs for your next levels are as follows:'
-        else:
-            await ctx.send(f'**{ctx.author.name}**, your horse is already at max level. You can\'t level up any further until you increase your lootboxer profession.')
+        if horse_level == horse_max_level:
+            await ctx.send(MSG_HORSE_LEVEL_ALREADY_MAX.format(user=user_name))
             return
-
+        output = (
+                f'For a {horse_emoji} **T{horse_tier} L{horse_level}** horse with lootboxer level **{lootboxer_level}** '
+                f'the horse training costs for your next levels are as follows:'
+            )
         for level in range(horse_level, horse_level_range):
-            level_cost = floor((level**4) * ((level**2) + (210*level) + 2200) * (500 - (lootboxer_level**1.2)) / 100000)
-            output = f'{output}\n{emojis.bp} Level {level} to {level+1}: **{level_cost:,}** coins'
-
+            level_cost = floor(
+                (level ** 4) * ((level ** 2) + (210 * level) + 2200) * (500 - (lootboxer_level**1.2)) / 100000
+            )
+            output = f'{output}\n{emojis.BP} Level {level} to {level+1}: **{level_cost:,}** coins'
         await ctx.send(output)
 
-    # Command "htctotal" - Calculate total horse training costs up to level x
     @commands.command()
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def htctotal(self, ctx, *args):
+    async def htctotal(self, ctx: commands.Context, *args: str) -> None:
+        """Calculate total horse training costs up to a level"""
+        user_name = ctx.author.name
 
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return (m.author == ctx.author) and (m.channel == ctx.channel)
 
         def epic_rpg_check_horse(m):
             correct_embed = False
             try:
-                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                ctx_author = global_data.format_string(str(user_name))
+                embed_author = global_data.format_string(str(m.embeds[0].author))
+                if f'{ctx_author}\'s horse' in embed_author:
                     correct_embed = True
-                else:
-                    correct_embed = False
             except:
-                correct_embed = False
-
-            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+                pass
+            return (m.author.id == global_data.EPIC_RPG_ID) and (m.channel == ctx.channel) and correct_embed
 
         def epic_rpg_check_professions(m):
             correct_embed = False
             try:
-                ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1):
+                ctx_author = global_data.format_string(str(user_name))
+                embed_author = global_data.format_string(str(m.embeds[0].author))
+                if f'{ctx_author}\'s professions' in embed_author:
                     correct_embed = True
-                else:
-                    correct_embed = False
             except:
-                correct_embed = False
-
-            return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
+                pass
+            return (m.author.id == global_data.EPIC_RPG_ID) and (m.channel == ctx.channel) and correct_embed
 
         prefix = ctx.prefix
         horse_target_level = 0
-
-        syntax = (
-            f'The command syntax is `{prefix}htctotal [horse target level]`.\n'
-            f'Or just use `{prefix}htctotal` to calculate up to your current max horse level.\n\n'
+        message_syntax = (
+            f'{global_data.MSG_SYNTAX.format(syntax=f"{prefix}htctotal [horse target level]")}\n\n'
+            f'Or just use `{prefix}htctotal` to calculate up to your current max horse level.\n'
             f'Examples: `{prefix}htctotal l80` or `{prefix}htctotal 65`'
         )
-
-        if len(args) > 0:
-            arg_target_level = args[0].lower().replace('l','')
-            if arg_target_level.isnumeric():
-                try:
-                    horse_target_level = int(arg_target_level)
-                    if not 2 <= horse_target_level <= 140:
-                        await ctx.send(f'**{ctx.author.name}**, the horse target level has to be between 2 and 140.\n\n{syntax}')
-                        return
-                except:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level.\n\n{syntax}')
-                    return
-
+        if args:
+            horse_target_level, *_ = args
+            try:
+                horse_target_level = int(horse_target_level.lower().replace('l',''))
+            except:
+                await ctx.send(f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+                return
+            if not 2 <= horse_target_level <= 140:
+                await ctx.send(f'{MSG_HORSE_LEVEL_RANGE_2.format(user=user_name)}\n\n{message_syntax}')
+                return
         try:
-            await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
-            answer_user_enchanter = await self.bot.wait_for('message', check=check, timeout = 30)
-            answer = answer_user_enchanter.content
-            answer = answer.lower()
+            await ctx.send(global_data.MSG_WAIT_FOR_INPUT.format(user=user_name, command='rpg horse'))
+            answer_user_horse = await self.bot.wait_for('message', check=check, timeout=30)
+            answer = answer_user_horse.content.lower()
             if answer == 'rpg horse':
-                answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check_horse, timeout = 5)
-                try:
-                    horse_stats = str(answer_bot_at.embeds[0].fields[0])
-                    start_level = horse_stats.find('Horse Level -') + 14
-                    end_level = start_level + 2
-                    horse_level = horse_stats[start_level:end_level]
-                    horse_level = horse_level.strip()
-                    horse_level = int(horse_level)
-                    horse_tier = 0
-                    horse_emoji = ''
-                except:
-                    await ctx.send('Whelp, something went wrong here, sorry.')
-                    return
-
-                if horse_stats.find('Tier - III') > 1:
-                    horse_tier = 3
-                elif horse_stats.find('Tier - II') > 1:
-                    horse_tier = 2
-                elif horse_stats.find('Tier - VIII') > 1:
-                    horse_tier = 8
-                elif horse_stats.find('Tier - VII') > 1:
-                    horse_tier = 7
-                elif horse_stats.find('Tier - VI') > 1:
-                    horse_tier = 6
-                elif horse_stats.find('Tier - V') > 1:
-                    horse_tier = 5
-                elif horse_stats.find('Tier - IV') > 1:
-                    horse_tier = 4
-                elif horse_stats.find('Tier - IX') > 1:
-                    horse_tier = 9
-                elif horse_stats.find('Tier - I') > 1:
-                    horse_tier = 1
-                else:
-                    await ctx.send('Whelp, something went wrong here, sorry.')
-                    return
-            elif (answer == 'abort') or (answer == 'cancel'):
-                await ctx.send(f'Aborting.')
+                answer_bot_horse = await self.bot.wait_for('message', check=epic_rpg_check_horse, timeout=5)
+            elif answer in ('abort', 'cancel'):
+                await ctx.send(global_data.MSG_ABORTING)
                 return
             else:
-                await ctx.send(f'Wrong input. Aborting.')
+                await ctx.send(global_data.MSG_WRONG_INPUT)
                 return
         except asyncio.TimeoutError as error:
-                await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
-                return
+            await ctx.send(global_data.MSG_BOT_MESSAGE_NOT_FOUND.format(user=user_name, information='horse'))
+            return
+        try:
+            horse_stats = str(answer_bot_horse.embeds[0].fields[0])
+            start_level = horse_stats.find('Horse Level -') + 14
+            end_level = start_level + 2
+            horse_level = int(horse_stats[start_level:end_level].strip())
+        except:
+            await ctx.send(global_data.MSG_ERROR)
+            return
+        if '**Tier** - III' in horse_stats:
+            horse_tier = 3
+        elif '**Tier** - II' in horse_stats:
+            horse_tier = 2
+        elif '**Tier** - VIII' in horse_stats:
+            horse_tier = 8
+        elif '**Tier** - VII' in horse_stats:
+            horse_tier = 7
+        elif '**Tier** - VI' in horse_stats:
+            horse_tier = 6
+        elif '**Tier** - V' in horse_stats:
+            horse_tier = 5
+        elif '**Tier** - IV' in horse_stats:
+            horse_tier = 4
+        elif '**Tier** - IX' in horse_stats:
+            horse_tier = 9
+        elif '**Tier** - I' in horse_stats:
+            horse_tier = 1
+        elif '**Tier** - X' in horse_stats:
+            horse_tier = 10
+        else:
+            await ctx.send(global_data.MSG_ERROR)
+            return
 
         try:
-            await ctx.send(f'**{ctx.author.name}**, please type `rpg pr` (or `abort` to abort)')
-            answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
-            answer = answer_user_merchant.content
-            answer = answer.lower()
-            if answer in ('rpg pr','rpg profession', 'rpg professions'):
-                answer_bot_at = await self.bot.wait_for('message', check=epic_rpg_check_professions, timeout = 5)
-                try:
-                    professions = str(answer_bot_at.embeds[0].fields[2])
-                except:
-                    await ctx.send('Whelp, something went wrong here, sorry.')
-                    return
-                start_level = professions.find('Lootboxer Lv ') + 13
-                end_level = professions.find(' |', start_level)
-                lootboxer_level = professions[start_level:end_level]
-            elif (answer == 'abort') or (answer == 'cancel'):
-                await ctx.send('Aborting.')
+            await ctx.send(global_data.MSG_WAIT_FOR_INPUT.format(user=user_name, command='rpg pr'))
+            answer_user_pr = await self.bot.wait_for('message', check=check, timeout=30)
+            answer = answer_user_pr.content.lower()
+            if answer in ('rpg pr', 'rpg profession', 'rpg professions'):
+                answer_bot_pr = await self.bot.wait_for('message', check=epic_rpg_check_professions, timeout=5)
+            elif answer in ('abort', 'cancel'):
+                await ctx.send(global_data.MSG_ABORTING)
                 return
             else:
-                await ctx.send('Wrong input. Aborting.')
-                return
-            if lootboxer_level.isnumeric():
-                lootboxer_level = int(lootboxer_level)
-            else:
-                await ctx.send('Whelp, something went wrong here, sorry.')
+                await ctx.send(global_data.MSG_WRONG_INPUT)
                 return
         except asyncio.TimeoutError as error:
-            await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profession information, RIP.')
+            await ctx.send(global_data.MSG_BOT_MESSAGE_NOT_FOUND.format(user=user_name, information='profession'))
+            return
+        try:
+            professions = str(answer_bot_pr.embeds[0].fields[2])
+            start_level = professions.find('Lootboxer Lv ') + 13
+            end_level = professions.find(' |', start_level)
+            lootboxer_level = int(professions[start_level:end_level])
+        except:
+            await ctx.send(global_data.MSG_ERROR)
             return
 
         horse_emoji = getattr(emojis, f'horset{horse_tier}')
-
         if lootboxer_level > 100:
-            horse_max_level = 10*horse_tier+(lootboxer_level-100)
+            horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:
-            horse_max_level = 10*horse_tier
-
-        if horse_target_level == 0:
-            horse_target_level = horse_max_level
-
+            horse_max_level = 10 * horse_tier
+        if horse_target_level == 0: horse_target_level = horse_max_level
         if horse_target_level > horse_max_level:
-            await ctx.send(f'**{ctx.author.name}**, you have not specified a valid horse target level. With a {horse_emoji} **T{horse_tier}** horse and lootboxer **L{lootboxer_level}**, your max horse level is **L{horse_max_level}**.')
+            horse_level_max_possible = MSG_HORSE_LEVEL_MAX_POSSIBLE.format(
+                horse_emoji=horse_emoji, horse_tier=horse_tier, lootboxer_level=lootboxer_level,
+                horse_max_level=horse_max_level
+            )
+            await ctx.send(
+                f'{MSG_INVALID_HORSE_TARGET_LEVEL.format(user=user_name)} '
+                f'{horse_level_max_possible}'
+            )
             return
-
         if horse_target_level < horse_level:
-            await ctx.send(f'**{ctx.author.name}**, sorry mate, but training your horse to level down is not exactly an option right now.')
+            await ctx.send(MSG_HORSE_LEVEL_OVER_TARGET.format(user=user_name))
             return
-
         if horse_max_level == horse_level:
-            await ctx.send(f'**{ctx.author.name}**, your horse is already at max level. You can\'t level up any further until you increase your lootboxer profession.')
+            await ctx.send(MSG_HORSE_LEVEL_ALREADY_MAX.format(user=user_name))
             return
-
         if horse_target_level == horse_level:
-            await ctx.send(f'**{ctx.author.name}**, your horse is already at the target level.')
+            await ctx.send(MSG_HORSE_LEVEL_ALREADY_TARGET.format(user=user_name))
             return
-
         level_cost_total = 0
         for level in range(horse_level, horse_target_level):
-            level_cost = floor((level**4) * ((level**2) + (210*level) + 2200) * (500 - (lootboxer_level**1.2)) / 100000)
+            level_cost = floor(
+                (level ** 4) * ((level ** 2) + (210 * level) + 2200) * (500 - (lootboxer_level ** 1.2)) / 100000
+            )
             level_cost_total = level_cost_total + level_cost
+        await ctx.send(
+            f'Leveling a {horse_emoji} **T{horse_tier} L{horse_level}** horse to **L{horse_target_level}** '
+            f'with lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.'
+        )
 
-        await ctx.send(f'Levelling a {horse_emoji} **T{horse_tier} L{horse_level}** horse to **L{horse_target_level}** with lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.')
-
-    # Command "htctest" - Calculate total horse training costs up to level x
     @commands.command()
     @commands.is_owner()
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def htctest(self, ctx, *args):
-
+    async def htctest(self, ctx: commands.Context, *args: str) -> None:
+        """Calculate total horse training cost with manually specified values"""
         def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
+            return (m.author == ctx.author) and (m.channel == ctx.channel)
 
         prefix = ctx.prefix
-        horse_target_level = 0
-
-        syntax = (
-            f'The command syntax is `{prefix}htctest [horse tier] [horse current level] [horse target level] [lootboxer level]`.'
+        target_level = 0
+        message_syntax = (
+            global_data.MSG_SYNTAX.format(
+                syntax=f"{prefix}htctest [horse tier] [horse current level] [horse target level] [lootboxer level]"
+            )
         )
-
-        if len(args) == 4:
-            arg_horse_tier = args[0].lower().replace('t','')
-            arg_current_level = args[1].lower().replace('l','')
-            arg_target_level = args[2].lower().replace('l','')
-            arg_lb_level = args[3].lower().replace('l','')
-            if arg_target_level.isnumeric():
-                try:
-                    horse_target_level = int(arg_target_level)
-                    if not 2 <= horse_target_level <= 140:
-                        await ctx.send(f'**{ctx.author.name}**, the horse target level has to be between 2 and 140.\n\n{syntax}')
-                        return
-                except:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level.\n\n{syntax}')
-                    return
-            if arg_current_level.isnumeric():
-                try:
-                    horse_level = int(arg_current_level)
-                    if not 2 <= horse_level <= 140:
-                        await ctx.send(f'**{ctx.author.name}**, the horse level has to be between 2 and 140.\n\n{syntax}')
-                        return
-                except:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse level.\n\n{syntax}')
-                    return
-            if arg_horse_tier.isnumeric():
-                try:
-                    horse_tier = int(arg_horse_tier)
-                    if not 1 <= horse_tier <= 9:
-                        await ctx.send(f'**{ctx.author.name}**, the horse tier has to be between 1 and 9.\n\n{syntax}')
-                        return
-                except:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid horse tier.\n\n{syntax}')
-                    return
-            if arg_lb_level.isnumeric():
-                try:
-                    lootboxer_level = int(arg_lb_level)
-                    if not 1 <= lootboxer_level <= 140:
-                        await ctx.send(f'**{ctx.author.name}**, the lootboxer level has to be between 1 and 140.\n\n{syntax}')
-                        return
-                except:
-                    await ctx.send(f'**{ctx.author.name}**, this is not a valid lootboxer level.\n\n{syntax}')
-                    return
-        else:
-            await ctx.send(syntax)
+        user_name = ctx.author.name
+        if len(args) != 4:
+            await ctx.send(message_syntax)
+            return
+        args = [arg.lower() for arg in args]
+        horse_tier, current_level, target_level, lootboxer_level = args
+        try:
+            horse_tier = int(horse_tier.replace('t',''))
+        except:
+            await ctx.send(f'{MSG_INVALID_HORSE_TIER.format(user=user_name)}\n\n{message_syntax}')
+            return
+        try:
+            current_level = int(current_level.replace('l',''))
+        except:
+            await ctx.send(f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+            return
+        try:
+            target_level = int(target_level.replace('l',''))
+        except:
+            await ctx.send(f'{MSG_INVALID_HORSE_TARGET_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+            return
+        try:
+            lootboxer_level = int(lootboxer_level.replace('l',''))
+        except:
+            await ctx.send(f'{MSG_INVALID_LOOTBOXER_LEVEL.format(user=user_name)}\n\n{message_syntax}')
+            return
+        if not 1 <= horse_tier <= 10:
+            await ctx.send(f'{MSG_HORSE_TIER_RANGE.format(user=user_name)}\n\n{message_syntax}')
+            return
+        if not (2 <= target_level <= 140) or not (2 <= current_level <= 140):
+            await ctx.send(f'{MSG_HORSE_LEVEL_RANGE_2.format(user=user_name)}\n\n{message_syntax}')
+            return
+        if not 1 <= lootboxer_level <= 150:
+            await ctx.send(f'{MSG_LOOTBOXER_LEVEL_RANGE.format(user=user_name)}\n\n{message_syntax}')
             return
 
         horse_emoji = getattr(emojis, f'horset{horse_tier}')
-
         if lootboxer_level > 100:
-            horse_max_level = 10*horse_tier+(lootboxer_level-100)
+            horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:
-            horse_max_level = 10*horse_tier
-
-        if horse_target_level == 0:
-            horse_target_level = horse_max_level
-
-        if horse_target_level > horse_max_level:
-            await ctx.send(f'**{ctx.author.name}**, you have not specified a valid horse target level. With a {horse_emoji} **T{horse_tier}** horse and lootboxer **L{lootboxer_level}**, your max horse level is **L{horse_max_level}**.')
+            horse_max_level = 10 * horse_tier
+        if target_level == 0: target_level = horse_max_level
+        if target_level > horse_max_level:
+            horse_level_max_possible = MSG_HORSE_LEVEL_MAX_POSSIBLE.format(
+                horse_emoji=horse_emoji, horse_tier=horse_tier, lootboxer_level=lootboxer_level,
+                horse_max_level=horse_max_level
+            )
+            await ctx.send(
+                f'{MSG_INVALID_HORSE_TARGET_LEVEL.format(user=user_name)} '
+                f'{horse_level_max_possible}'
+            )
             return
-
-        if horse_target_level < horse_level:
-            await ctx.send(f'**{ctx.author.name}**, sorry mate, but training your horse to level down is not exactly an option right now.')
+        if target_level < current_level:
+            await ctx.send(MSG_HORSE_LEVEL_OVER_TARGET.format(user=user_name))
             return
-
-        if horse_max_level == horse_level:
-            await ctx.send(f'**{ctx.author.name}**, your horse is already at max level. You can\'t level up any further until you increase your lootboxer profession.')
+        if horse_max_level == current_level:
+            await ctx.send(MSG_HORSE_LEVEL_ALREADY_MAX.format(user=user_name))
             return
-
-        if horse_target_level == horse_level:
-            await ctx.send(f'**{ctx.author.name}**, your horse is already at the target level.')
+        if target_level == current_level:
+            await ctx.send(MSG_HORSE_LEVEL_ALREADY_TARGET.format(user=user_name))
             return
-
         level_cost_total = 0
-        for level in range(horse_level, horse_target_level):
-            level_cost = floor((level**4) * ((level**2) + (210*level) + 2200) * (500 - (lootboxer_level**1.2)) / 100000)
+        for level in range(current_level, target_level):
+            level_cost = floor(
+                (level ** 4) * ((level ** 2) + (210 * level) + 2200) * (500 - (lootboxer_level ** 1.2)) / 100000
+            )
             level_cost_total = level_cost_total + level_cost
 
-        await ctx.send(f'Levelling a {horse_emoji} **T{horse_tier} L{horse_level}** horse to **L{horse_target_level}** with lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.')
+        await ctx.send(
+            f'Leveling a {horse_emoji} **T{horse_tier} L{current_level}** horse to **L{target_level}** with '
+            f'lootboxer level **{lootboxer_level}** costs **{level_cost_total:,}** coins. Phew.'
+        )
 
 # Initialization
 def setup(bot):
-    bot.add_cog(horseCog(bot))
-
-
-
-# --- Redundancies ---
-# Guides
-guide_overview = '`{prefix}horse` : Horse overview'
-guide_breed = '`{prefix}horse breed` : Details about horse breeding'
-guide_tier = '`{prefix}horse tier` : Details about horse tiers'
-guide_type = '`{prefix}horse type` : Details about horse types'
-guide_calc = '`{prefix}horse calc` : Horse stats bonus calculator'
-calc_htc = '`{prefix}htc` : Coins you need for your next horse levels'
-calc_htctotal = '`{prefix}htctotal [level]` : Total coins you need to reach `[level]`'
-
+    bot.add_cog(HorseCog(bot))
 
 
 # --- Embeds ---
-# Horse overview
-async def embed_horses_overview(prefix):
-
-    tier = (
-        f'{emojis.bp} Tiers range from I to IX (1 to 9) (see `{prefix}horse tier`)\n'
-        f'{emojis.bp} Every tier unlocks new bonuses\n'
-        f'{emojis.bp} Mainly increased by breeding with other horses (see `{prefix}horse breed`)\n'
-        f'{emojis.bp} Small chance of increasing in horse races (see `{prefix}event race`)'
+async def embed_horses_overview(prefix: str) -> discord.Embed:
+    """Horse overview embed"""
+    horse_tier = (
+        f'{emojis.BP} Tiers range from I to X (1 to 10) (see `{prefix}horse tier`)\n'
+        f'{emojis.BP} Every tier unlocks new bonuses\n'
+        f'{emojis.BP} Mainly increased by breeding with other horses (see `{prefix}horse breed`)\n'
+        f'{emojis.BP} Small chance of increasing in horse races (see `{prefix}event race`)'
     )
-
-    level = (
-        f'{emojis.bp} Levels range from 1 to ([tier] * 10) + [lootboxer bonus]\n'
-        f'{emojis.bp} Example: A T7 horse with lootboxer at 102 has a max level of 72\n'
-        f'{emojis.bp} Leveling up increases the horse type bonus (see the [Wiki](https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'
-        f'{emojis.bp} Increased by using `horse training` which costs coins\n'
-        f'{emojis.bp} Training cost is reduced by leveling up lootboxer (see `{prefix}pr`)'
+    horse_level = (
+        f'{emojis.BP} Levels range from 1 to ([tier] * 10) + [lootboxer bonus]\n'
+        f'{emojis.BP} Example: A T7 horse with lootboxer at 102 has a max level of 72\n'
+        f'{emojis.BP} Leveling up increases the horse type bonus (see the [Wiki]'
+        f'(https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'
+        f'{emojis.BP} Increased by using `horse training` which costs coins\n'
+        f'{emojis.BP} Training cost is reduced by leveling up lootboxer (see `{prefix}pr`)'
     )
-
-    type = (
-        f'{emojis.bp} There are 5 different types (see `{prefix}horse type`)\n'
-        f'{emojis.bp} 4 of the types increase a player stat, 1 unlocks the epic quest\n'
-        f'{emojis.bp} The exact bonus the type gives is dependent on the level\n'
-        f'{emojis.bp} Randomly changes when breeding unless you have a {emojis.horsetoken} horse token in your inventory'
+    horse_type = (
+        f'{emojis.BP} There are 8 different types (see `{prefix}horse type`)\n'
+        f'{emojis.BP} The exact bonus the type gives is dependent on the level\n'
+        f'{emojis.BP} Randomly changes when breeding unless you have a {emojis.HORSE_TOKEN} horse token in your '
+        f'inventory'
     )
-
     calculators = (
-        f'{emojis.bp} {calc_htc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {calc_htctotal.format(prefix=prefix)}'
+        f'{emojis.BP} {CALC_HTC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {CALC_HTCTOTAL.format(prefix=prefix)}'
     )
-
     guides = (
-        f'{emojis.bp} {guide_breed.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_calc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tier.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_type.format(prefix=prefix)}'
+        f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )
-
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HORSES',
         description = 'Horses have tiers, levels and types which all give certain important bonuses.'
     )
-
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='TIER', value=tier, inline=False)
-    embed.add_field(name='LEVEL', value=level, inline=False)
-    embed.add_field(name='TYPE', value=type, inline=False)
+    embed.add_field(name='TIER', value=horse_tier, inline=False)
+    embed.add_field(name='LEVEL', value=horse_level, inline=False)
+    embed.add_field(name='TYPE', value=horse_type, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-
     return embed
 
-# Horse tiers
-async def embed_horses_tiers(prefix):
 
-    tier1 = f'{emojis.bp} No bonuses'
+async def embed_horses_tiers(prefix: str) -> discord.Embed:
+    """Horse tiers embed"""
 
-    tier2 = f'{emojis.bp} 5% more coins when using `daily` and `weekly`'
+    buff_lootbox = '{increase}% buff to lootbox drop chance'
+    buff_monsters = '{increase}% buff to monster drops drop chance'
+    buff_coins = '{increase}% more coins when using `daily` and `weekly`'
+    buff_pets = '{increase}% higher chance to find pets with `training` ({total}%)'
 
-    tier3 = f'{emojis.bp} 10% more coins when using `daily` and `weekly`'
-
+    tier1 = f'{emojis.BP} No bonuses'
+    tier2 = f'{emojis.BP} {buff_coins.format(increase=5)}'
+    tier3 = f'{emojis.BP} {buff_coins.format(increase=10)}'
     tier4 = (
-        f'{emojis.bp} Unlocks immortality in `hunt` and `adventure`\n'
-        f'{emojis.bp} 20% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} Unlocks immortality in `hunt` and `adventure`\n'
+        f'{emojis.BP} {buff_coins.format(increase=20)}'
     )
-
     tier5 = (
-        f'{emojis.bp} Unlocks horse racing\n'
-        f'{emojis.bp} 20% buff to lootbox drop chance\n'
-        f'{emojis.bp} 30% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} Unlocks horse racing\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=20)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=30)}'
     )
-
     tier6 = (
-        f'{emojis.bp} Unlocks free access to dungeons without dungeon keys\n'
-        f'{emojis.bp} 50% buff to lootbox drop chance\n'
-        f'{emojis.bp} 45% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} Unlocks free access to dungeons without dungeon keys\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=50)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=45)}'
     )
-
     tier7 = (
-        f'{emojis.bp} 20% buff to monster drops drop chance\n'
-        f'{emojis.bp} 100% buff to lootbox drop chance\n'
-        f'{emojis.bp} 60% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} {buff_monsters.format(increase=20)}\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=100)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=60)}'
     )
-
     tier8 = (
-        f'{emojis.bp} Unlocks higher chance to get better enchants (% unknown)\n'
-        f'{emojis.bp} 50% buff to monster drops drop chance\n'
-        f'{emojis.bp} 200% buff to lootbox drop chance\n'
-        f'{emojis.bp} 80% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} Unlocks higher chance to get better enchants (% unknown)\n'
+        f'{emojis.BP} {buff_monsters.format(increase=50)}\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=200)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=80)}'
     )
-
     tier9 = (
-        f'{emojis.bp} Unlocks higher chance to find pets with `training` (10%)\n'
-        f'{emojis.bp} 100% buff to monster drops drop chance\n'
-        f'{emojis.bp} 400% buff to lootbox drop chance\n'
-        f'{emojis.bp} 100% more coins when using `daily` and `weekly`'
+        f'{emojis.BP} {buff_pets.format(increase=150, total=10)}\n'
+        f'{emojis.BP} {buff_monsters.format(increase=100)}\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=400)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=100)}\n'
     )
-
+    tier10 = (
+        #f'{emojis.BP} **You need to be {emojis.TIME_TRAVEL} TT50+ to unlock this tier**\n'
+        f'{emojis.BP} Unlocks 2 extra badge slots\n'
+        f'{emojis.BP} 30% chance to get another monster drop after each drop\n'
+        f'{emojis.BP} {buff_pets.format(increase=400, total=20)}\n'
+        f'{emojis.BP} {buff_monsters.format(increase=200)}\n'
+        f'{emojis.BP} {buff_lootbox.format(increase=650)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=200)}\n'
+    )
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_breed.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_calc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_type.format(prefix=prefix)}'
+        f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )
-
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HORSE TIERS',
         description = (
             f'Every horse tier unlocks additional bonuses.\n'
-            f'Note: Every tier only lists the changes to the previous tier. You don\'t lose any unlocks when tiering up.'
+            f'Note: Every tier only lists the unlocks for this tier. You don\'t lose any previous unlocks when '
+            f'tiering up.'
         )
     )
-
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'TIER I {emojis.horset1}', value=tier1, inline=False)
-    embed.add_field(name=f'TIER II {emojis.horset2}', value=tier2, inline=False)
-    embed.add_field(name=f'TIER III {emojis.horset3}', value=tier3, inline=False)
-    embed.add_field(name=f'TIER IV {emojis.horset4}', value=tier4, inline=False)
-    embed.add_field(name=f'TIER V {emojis.horset5}', value=tier5, inline=False)
-    embed.add_field(name=f'TIER VI {emojis.horset6}', value=tier6, inline=False)
-    embed.add_field(name=f'TIER VII {emojis.horset7}', value=tier7, inline=False)
-    embed.add_field(name=f'TIER VIII {emojis.horset8}', value=tier8, inline=False)
-    embed.add_field(name=f'TIER IX {emojis.horset9}', value=tier9, inline=False)
+    embed.add_field(name=f'TIER I {emojis.HORSE_T1}', value=tier1, inline=False)
+    embed.add_field(name=f'TIER II {emojis.HORSE_T2}', value=tier2, inline=False)
+    embed.add_field(name=f'TIER III {emojis.HORSE_T3}', value=tier3, inline=False)
+    embed.add_field(name=f'TIER IV {emojis.HORSE_T4}', value=tier4, inline=False)
+    embed.add_field(name=f'TIER V {emojis.HORSE_T5}', value=tier5, inline=False)
+    embed.add_field(name=f'TIER VI {emojis.HORSE_T6}', value=tier6, inline=False)
+    embed.add_field(name=f'TIER VII {emojis.HORSE_T7}', value=tier7, inline=False)
+    embed.add_field(name=f'TIER VIII {emojis.HORSE_T8}', value=tier8, inline=False)
+    embed.add_field(name=f'TIER IX {emojis.HORSE_T9}', value=tier9, inline=False)
+    embed.add_field(name=f'TIER X {emojis.HORSE_T10}', value=tier10, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-
     return embed
 
-# Horse types
-async def embed_horses_types(prefix):
 
+async def embed_horses_types(prefix: str) -> discord.Embed:
+    """Horse types embed"""
     defender = (
-        f'{emojis.bp} Increases overall DEF\n'
-        f'{emojis.bp} The higher the horse level, the higher the DEF bonus\n'
-        f'{emojis.bp} 23.75 % chance to get this type when breeding'
+        f'{emojis.BP} Increases overall DEF\n'
+        f'{emojis.BP} The higher the horse level, the higher the DEF bonus\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
     )
-
     strong = (
-        f'{emojis.bp} Increases overall AT\n'
-        f'{emojis.bp} The higher the horse level, the higher the AT bonus\n'
-        f'{emojis.bp} 23.75 % chance to get this type when breeding'
+        f'{emojis.BP} Increases overall AT\n'
+        f'{emojis.BP} The higher the horse level, the higher the AT bonus\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
     )
-
     tank = (
-        f'{emojis.bp} Increases overall LIFE\n'
-        f'{emojis.bp} The higher the horse level, the higher the LIFE bonus\n'
-        f'{emojis.bp} 23.75 % chance to get this type when breeding'
+        f'{emojis.BP} Increases overall LIFE\n'
+        f'{emojis.BP} The higher the horse level, the higher the LIFE bonus\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
     )
-
     golden = (
-        f'{emojis.bp} Increases the amount of coins from `hunt` and `adventure`\n'
-        f'{emojis.bp} The higher the horse level, the higher the coin bonus\n'
-        f'{emojis.bp} 23.75 % chance to get this type when breeding'
+        f'{emojis.BP} Increases the amount of coins from `hunt` and `adventure`\n'
+        f'{emojis.BP} The higher the horse level, the higher the coin bonus\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
     )
-
     special = (
-        f'{emojis.bp} Unlocks the epic quest which gives more coins and XP than the regular quest\n'
-        f'{emojis.bp} The higher the horse level, the more coins and XP the epic quest gives\n'
-        f'{emojis.bp} 5 % chance to get this type when breeding'
+        f'{emojis.BP} Unlocks the epic quest which gives more coins and XP than the regular quest\n'
+        f'{emojis.BP} You can do up to ? waves in the epic quest\n'
+        f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
     )
-
+    super_special = (
+        f'{emojis.BP} Unlocks the epic quest which gives more coins and XP than the regular quest\n'
+        f'{emojis.BP} You can do up to 100 waves in the epic quest\n'
+        f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
+        f'{emojis.BP} The coin and XP bonus is 50% higher than SPECIAL\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
+    )
+    magic = (
+        f'{emojis.BP} Increases the effectiveness of enchantments\n'
+        f'{emojis.BP} The higher the horse level, the higher the increase\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
+    )
+    festive = (
+        f'{emojis.BP} Increases the chance to trigger a random event when using commands\n'
+        f'{emojis.BP} The higher the horse level, the higher the increase\n'
+        f'{emojis.BP} ?% chance to get this type when breeding'
+    )
     besttype = (
-        f'{emojis.bp} If you are in {emojis.timetravel} TT 0-2: SPECIAL\n'
-        f'{emojis.bp} If you are in {emojis.timetravel} TT 3+: DEFENDER (if T6 L30+)'
+        f'{emojis.BP} If you are in {emojis.TIME_TRAVEL} TT 0-2: SPECIAL\n'
+        f'{emojis.BP} If you are in {emojis.TIME_TRAVEL} TT 3+: DEFENDER (if T6 L30+)'
     )
-
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_breed.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_calc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tier.format(prefix=prefix)}'
+        f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}'
     )
-
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HORSE TYPES',
         description = (
             f'Each horse type has its unique bonuses.\n'
             f'The best type for you depends on your current TT and your horse tier and level.'
         )
     )
-
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='DEFENDER', value=defender, inline=False)
-    embed.add_field(name='STRONG', value=strong, inline=False)
-    embed.add_field(name='TANK', value=tank, inline=False)
+    embed.add_field(name='FESTIVE', value=festive, inline=False)
     embed.add_field(name='GOLDEN', value=golden, inline=False)
+    embed.add_field(name='MAGIC', value=magic, inline=False)
     embed.add_field(name='SPECIAL', value=special, inline=False)
-    embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
+    embed.add_field(name='STRONG', value=strong, inline=False)
+    embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
+    embed.add_field(name='TANK', value=tank, inline=False)
+    #embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-
     return embed
 
-# Horse breeding
-async def embed_horses_breeding(prefix):
 
+async def embed_horses_breeding(prefix: str) -> discord.Embed:
+    """Horse breeding embed"""
     howto = (
-        f'{emojis.bp} Use `horse breeding [@player]`\n'
-        f'{emojis.bp} You can only breed with a horse of the **same** tier\n'
-        f'{emojis.bp} Ideally breed with a horse of the same level'
+        f'{emojis.BP} Use `horse breeding [@player]`\n'
+        f'{emojis.BP} You can only breed with a horse of the **same** tier\n'
+        f'{emojis.BP} Ideally breed with a horse of the same level'
     )
-
-    whereto = f'{emojis.bp} You can find players in the [official EPIC RPG server](https://discord.gg/w5dej5m)'
-
-    tier = (
-        f'{emojis.bp} You have a chance to get +1 tier\n'
-        f'{emojis.bp} The chance to tier up gets lower the higher your tier is\n'
-        f'{emojis.bp} If one horse tiers up, the other one isn\'t guaranteed to do so too'
+    whereto = f'{emojis.BP} You can find players in the [official EPIC RPG server](https://discord.gg/w5dej5m)'
+    horse_tier = (
+        f'{emojis.BP} You have a chance to get +1 tier\n'
+        f'{emojis.BP} The chance to tier up gets lower the higher your tier is\n'
+        f'{emojis.BP} Everytime you don\'t tier up, you increase your fail count by 1. If your fail count gets high '
+        f'enough, you will be guaranteed to tier up (exact requirements unknown).\n'
+        f'{emojis.BP} A {emojis.GODLY_HORSE_TOKEN} GODLY horse token increases the fail count by 50\n'
+        f'{emojis.BP} If one horse tiers up, the other one isn\'t guaranteed to do so too'
     )
-
-    level = (
-        f'{emojis.bp} The new horses will have an average of both horse\'s levels\n'
-        f'{emojis.bp} Example: L20 horse + L24 horse = L22 horses\n'
-        f'{emojis.bp} Example: L20 horse + L23 horse = L21 **or** L22 horses'
+    horse_level = (
+        f'{emojis.BP} The new horses will have an average of both horse\'s levels\n'
+        f'{emojis.BP} Example: L20 horse + L24 horse = L22 horses\n'
+        f'{emojis.BP} Example: L20 horse + L23 horse = L21 **or** L22 horses'
     )
-
-    type = (
-        f'{emojis.bp} Breeding changes your horse type randomly\n'
-        f'{emojis.bp} You can keep your type by buying a {emojis.horsetoken} horse token\n'
-        f'{emojis.bp} Note: Each breeding consumes 1 {emojis.horsetoken} horse token'
+    horse_type = (
+        f'{emojis.BP} Breeding changes your horse type randomly\n'
+        f'{emojis.BP} You can keep your type by buying a {emojis.HORSE_TOKEN} horse token\n'
+        f'{emojis.BP} Note: Each breeding consumes 1 {emojis.HORSE_TOKEN} horse token'
     )
-
     calculators = (
-        f'{emojis.bp} {calc_htc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {calc_htctotal.format(prefix=prefix)}'
+        f'{emojis.BP} {CALC_HTC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {CALC_HTCTOTAL.format(prefix=prefix)}'
     )
-
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_calc.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tier.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_type.format(prefix=prefix)}'
+        f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}\n'
+        f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )
-
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HORSE BREEDING',
         description = 'You need to breed to increase your horse tier and/or get a different type.'
     )
-
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='HOW TO BREED', value=howto, inline=False)
     embed.add_field(name='WHERE TO BREED', value=whereto, inline=False)
-    embed.add_field(name='IMPACT ON TIER', value=tier, inline=False)
-    embed.add_field(name='IMPACT ON LEVEL', value=level, inline=False)
-    embed.add_field(name='IMPACT ON TYPE', value=type, inline=False)
+    embed.add_field(name='IMPACT ON TIER', value=horse_tier, inline=False)
+    embed.add_field(name='IMPACT ON LEVEL', value=horse_level, inline=False)
+    embed.add_field(name='IMPACT ON TYPE', value=horse_type, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-
     return embed

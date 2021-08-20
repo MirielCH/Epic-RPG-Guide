@@ -145,17 +145,17 @@ class areasCog(commands.Cog):
 
         area_data = await database.get_area_data(ctx, area_no)
         user_settings = await database.get_settings(ctx)
-        if not user_settings == None:
+        if user_settings is not None:
             user_settings = list(user_settings)
 
-        if user_settings == None:
+        if user_settings is None:
             await database.first_time_user(self.bot, ctx)
             return
 
-        if not arg_tt == None:
+        if arg_tt is not None:
             user_settings[0] = arg_tt
 
-            if arg_asc == True:
+            if arg_asc:
                 if arg_tt == 0:
                     await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
                     return
@@ -163,7 +163,7 @@ class areasCog(commands.Cog):
             else:
                 user_settings[1] = 'not ascended'
         else:
-            if arg_asc == True:
+            if arg_asc:
                 user_settings[1] = 'ascended'
 
         traderate_data = await database.get_traderate_data(ctx, area_no)
@@ -196,18 +196,18 @@ async def embed_areas_menu(ctx):
 
     prefix = ctx.prefix
 
-    area_guide = f'{emojis.bp} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
+    area_guide = f'{emojis.BP} `{prefix}area [#]` / `{prefix}a1`-`{prefix}a15` : Guide for area 1~15'
 
     trading = (
-        f'{emojis.bp} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
-        f'{emojis.bp} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
-        f'{emojis.bp} `{prefix}traderates` / `{prefix}trr` : Trade rates (all areas)'
+        f'{emojis.BP} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.BP} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
+        f'{emojis.BP} `{prefix}traderates` / `{prefix}trr` : Trade rates (all areas)'
     )
 
-    drops = f'{emojis.bp} `{prefix}drops` : Monster drops'
+    drops = f'{emojis.BP} `{prefix}drops` : Monster drops'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'AREA GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
@@ -291,8 +291,8 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             15: 10
         }
         area_locked = (
-            f'{emojis.bp} **You can not reach this area in your current TT**\n'
-            f'{emojis.bp} This area is unlocked in {emojis.timetravel} TT {unlock_area[area_no]}'
+            f'{emojis.BP} **You can not reach this area in your current TT**\n'
+            f'{emojis.BP} This area is unlocked in {emojis.TIME_TRAVEL} TT {unlock_area[area_no]}'
             )
         footer = f'Tip: See {prefix}tt for details about time traveling'
 
@@ -303,17 +303,17 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     quick_guide_enchant_armor = ''
 
     if upgrade_sword == 'true':
-        quick_guide_sword = f'\n{emojis.bp} Craft {player_sword_emoji} {player_sword}'
+        quick_guide_sword = f'\n{emojis.BP} Craft {player_sword_emoji} {player_sword}'
 
     if upgrade_armor == 'true':
-        quick_guide_armor = f'\n{emojis.bp} Craft {player_armor_emoji} {player_armor}'
+        quick_guide_armor = f'\n{emojis.BP} Craft {player_armor_emoji} {player_armor}'
 
     if not player_sword_enchant == '':
         if upgrade_sword == 'true':
             quick_guide_enchant_sword = f' and enchant to [{player_sword_enchant}+]'
         else:
             if upgrade_sword_enchant == 'true':
-                quick_guide_enchant_sword = f'\n{emojis.bp} Enchant {player_sword_emoji} {player_sword} to [{player_sword_enchant}+]'
+                quick_guide_enchant_sword = f'\n{emojis.BP} Enchant {player_sword_emoji} {player_sword} to [{player_sword_enchant}+]'
         player_sword_enchant = f'[{player_sword_enchant}]'
 
     if not player_armor_enchant == '':
@@ -321,18 +321,18 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             quick_guide_enchant_armor = f' and enchant to [{player_armor_enchant}+]'
         else:
             if upgrade_armor_enchant == 'true':
-                quick_guide_enchant_armor = f'\n{emojis.bp} Enchant {player_armor_emoji} {player_armor} to [{player_armor_enchant}+]'
+                quick_guide_enchant_armor = f'\n{emojis.BP} Enchant {player_armor_emoji} {player_armor} to [{player_armor_enchant}+]'
         player_armor_enchant = f'[{player_armor_enchant}]'
 
     if time_traveller_prepare == True:
-        quick_guide = f'{emojis.bp} {emojis.timetravel} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
+        quick_guide = f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel (see `{prefix}tt{user_tt+1}`)'
     elif (1 <= area_no <= 4) and (user_tt == 0) :
         if not player_level == 0:
             quick_guide = (
-                f'{emojis.bp} Reach level {player_level}'
+                f'{emojis.BP} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
         else:
             quick_guide = (
@@ -341,84 +341,84 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             )
     elif (area_no == 3) and (user_tt > 0):
         quick_guide = (
-            f'{emojis.bp} Farm the materials mentioned below\n'
-            f'{emojis.bp} Reach level {player_level}'
+            f'{emojis.BP} Farm the materials mentioned below\n'
+            f'{emojis.BP} Reach level {player_level}'
             f'{quick_guide_sword}{quick_guide_enchant_sword}'
             f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-            f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+            f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
         )
     elif area_no in (5,8):
         if not player_level == 0:
             quick_guide = (
-                f'{emojis.bp} Farm the materials mentioned below\n'
-                f'{emojis.bp} Reach level {player_level}'
+                f'{emojis.BP} Farm the materials mentioned below\n'
+                f'{emojis.BP} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
         else:
             quick_guide = (
-                f'{emojis.bp} Farm the materials mentioned below\n'
+                f'{emojis.BP} Farm the materials mentioned below\n'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
     elif area_no == 7:
         if not player_level == 0:
             quick_guide = (
-                f'{emojis.bp} Reach level {player_level}'
+                f'{emojis.BP} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook {emojis.foodorangejuice} orange juice or {emojis.foodapplejuice} apple juice.\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.\n'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
         else:
             quick_guide = (
-                f'{emojis.bp} Farm the materials mentioned below\n'
+                f'{emojis.BP} Farm the materials mentioned below\n'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
     elif area_no == 9:
         if not player_level == 0:
             quick_guide = (
-                f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
-                f'{emojis.bp} Reach level {player_level}'
+                f'{emojis.BP} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
+                f'{emojis.BP} Reach level {player_level}'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
         else:
             quick_guide = (
-                f'{emojis.bp} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
+                f'{emojis.BP} Go back to previous areas if you are missing materials for crafting the armor (see `{prefix}drops`)\n'
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
     else:
         if not player_level == 0:
             if area_no == 3:
                 quick_guide = (
-                    f'{emojis.bp} Reach level {player_level}'
+                    f'{emojis.BP} Reach level {player_level}'
                     f'{quick_guide_sword}{quick_guide_enchant_sword}'
                     f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                    f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                    f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
                 )
             else:
                 quick_guide = (
-                    f'{emojis.bp} Reach level {player_level}'
+                    f'{emojis.BP} Reach level {player_level}'
                     f'{quick_guide_sword}{quick_guide_enchant_sword}'
                     f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                    f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                    f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
                 )
         else:
             quick_guide = (
                 f'{quick_guide_sword}{quick_guide_enchant_sword}'
                 f'{quick_guide_armor}{quick_guide_enchant_armor}\n'
-                f'{emojis.bp} Check below to see which lootboxes to buy, keep or open'
+                f'{emojis.BP} Check below to see which lootboxes to buy, keep or open'
             )
     if not (int(area_no) in (1,2,4,6,12,13,14,15)) and not (time_traveller_prepare == True):
-        quick_guide = f'{quick_guide}\n{emojis.bp} Trade before leaving (see trades below)'
+        quick_guide = f'{quick_guide}\n{emojis.BP} Trade before leaving (see trades below)'
 
     # New commands
     if ((area_no == 4) and (user_tt > 0)) or ((area_no == 11) and (user_tt > 0)) or ((area_no == 12) and (user_tt > 1)):
@@ -453,398 +453,398 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     if 1 <= area_no <= 9:
         if user_asc == 'ascended' and not user_tt == 1:
                 if 1 <= area_no <= 3:
-                    work_cmd = f'{emojis.bp} `ascended dynamite`'
+                    work_cmd = f'{emojis.BP} `ascended dynamite`'
                 elif 4 <= area_no <= 5:
                     work_cmd = (
-                        f'{emojis.bp} `ascended chainsaw` if worker 113 or higher\n'
-                        f'{emojis.bp} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `ascended chainsaw` if worker 113 or higher\n'
+                        f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif 6 <= area_no <= 7:
                     work_cmd = (
-                        f'{emojis.bp} `ascended greenhouse` if worker 104 or higher\n'
-                        f'{emojis.bp} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `ascended greenhouse` if worker 104 or higher\n'
+                        f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif area_no == 8:
                     work_cmd = (
-                        f'{emojis.bp} `ascended chainsaw` if worker 110 or higher\n'
-                        f'{emojis.bp} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `ascended chainsaw` if worker 110 or higher\n'
+                        f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif area_no == 9:
                     work_cmd = (
-                        f'{emojis.bp} `ascended greenhouse` if worker 108 or higher\n'
-                        f'{emojis.bp} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `ascended greenhouse` if worker 108 or higher\n'
+                        f'{emojis.BP} `ascended dynamite` otherwise'
                     )
         else:
             if user_tt == 2 and 6 <= area_no <= 8:
                 work_cmd = (
-                    f'{emojis.bp} `pickaxe`'
+                    f'{emojis.BP} `pickaxe`'
                 )
             else:
                 if money_nohorse == -1:
-                    work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
+                    work_cmd = f'{emojis.BP} `{work_cmd_poor}`'
                 else:
                     work_cmd = (
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.bp} `{work_cmd_rich}` otherwise'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                        f'{emojis.BP} `{work_cmd_rich}` otherwise'
                     )
     elif area_no == 10:
             if user_asc == 'ascended' and not user_tt == 1:
                 work_cmd = (
-                    f'{emojis.bp} `ascended dynamite` if you have all the {emojis.logultra} ULTRA logs you need for forging\n'
-                    f'{emojis.bp} `chainsaw` otherwise'
+                    f'{emojis.BP} `ascended dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
                 )
             else:
                 if money_nohorse == -1:
-                    work_cmd = f'{emojis.bp} `{work_cmd_poor}`'
+                    work_cmd = f'{emojis.BP} `{work_cmd_poor}`'
                 else:
                     work_cmd = (
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.bp} `{work_cmd_rich}` otherwise'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                        f'{emojis.BP} `{work_cmd_rich}` otherwise'
                     )
     elif area_no == 11:
             if user_tt == 0:
                 work_cmd = (
-                    f'{emojis.bp} `drill` if you need coins\n'
-                    f'{emojis.bp} `chainsaw` otherwise'
+                    f'{emojis.BP} `drill` if you need coins\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
                 )
             else:
                 if user_asc == 'ascended' and not user_tt == 1:
                     work_cmd = (
-                        f'{emojis.bp} `ascended dynamite` if you have all the {emojis.logultra} ULTRA logs you need for forging\n'
-                        f'{emojis.bp} `chainsaw` otherwise'
+                        f'{emojis.BP} `ascended dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                        f'{emojis.BP} `chainsaw` otherwise'
                     )
                 else:
                     work_cmd =  (
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.bp} `chainsaw` otherwise'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                        f'{emojis.BP} `chainsaw` otherwise'
                     )
     elif 12 <= area_no <= 15:
         if ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (user_tt in (5,6,7,8))):
             work_cmd = (
-                f'{emojis.bp} `dynamite` if you need coins\n'
-                f'{emojis.bp} `chainsaw` otherwise'
+                f'{emojis.BP} `dynamite` if you need coins\n'
+                f'{emojis.BP} `chainsaw` otherwise'
             )
         else:
             if not money_nohorse == 0:
                 work_cmd = (
-                    f'{emojis.bp} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                    f'{emojis.bp} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                    f'{emojis.bp} `chainsaw` otherwise'
+                    f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                    f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
                 )
             else:
                 work_cmd = (
-                    f'{emojis.bp} `dynamite` if you need coins\n'
-                    f'{emojis.bp} `chainsaw` otherwise'
+                    f'{emojis.BP} `dynamite` if you need coins\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
                 )
 
     # Lootboxes
     if user_tt == 0:
         if 1 <= area_no <= 2:
             lootboxes = (
-                f'{emojis.bp} Buy: Whatever lootbox you have unlocked and can afford\n'
-                f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
-                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                f'{emojis.BP} Buy: Whatever lootbox you have unlocked and can afford\n'
+                f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
+                f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         elif area_no == 3:
             lootboxes = (
-                f'{emojis.bp} Buy: Whatever lootbox you have unlocked and can afford\n'
-                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                f'{emojis.BP} Buy: Whatever lootbox you have unlocked and can afford\n'
+                f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         elif area_no == 4:
             lootboxes = (
-                f'{emojis.bp} Buy: Whatever lootbox you have unlocked and can afford\n'
-                f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                f'{emojis.BP} Buy: Whatever lootbox you have unlocked and can afford\n'
+                f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         elif area_no == 5:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Open: All lootboxes'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Open: All lootboxes'
             )
         elif area_no == 6:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
-                f'{emojis.bp} Open: All lootboxes'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
+                f'{emojis.BP} Open: All lootboxes'
             )
         elif area_no >= 7:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Open: All lootboxes'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Open: All lootboxes'
             )
     elif 1 <= user_tt <= 9:
         if 1 <= area_no <= 2:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC until A3\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC until A3\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 3:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 4:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 5:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
         elif area_no == 6:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif 7 <= area_no <= 10:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
         elif area_no >= 11:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
     elif 10 <= user_tt <= 24:
         if 1 <= area_no <= 2:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbrare} Rare and {emojis.lbepic} EPIC until A3\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 3:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 4:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no == 5:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Open: All lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Open: All lootboxes'
                 )
         elif area_no == 6:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A7\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif 7 <= area_no <= 10:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
         elif area_no >= 11:
             if user_asc == 'ascended':
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All other lootboxes'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All other lootboxes'
                 )
             else:
                 lootboxes = (
-                    f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                    f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for D14 ({emojis.armoromega} OMEGA Armor)\n'
-                    f'{emojis.bp} Open: All lootboxes you don\'t need to keep'
+                    f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                    f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                    f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
     elif user_tt >= 25:
         if 1 <= area_no <= 2:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
-                f'{emojis.bp} Keep: {emojis.lbrare} Rare, {emojis.lbepic} EPIC until A3\n'
-                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon for STT score\n'
+                f'{emojis.BP} Keep: {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC until A3\n'
+                f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: {emojis.LB_OMEGA} OMEGA, {emojis.LB_GODLY} GODLY'
             )
         elif area_no == 3:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
-                f'{emojis.bp} Keep: {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon for STT score\n'
+                f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC, {emojis.LB_OMEGA} OMEGA, {emojis.LB_GODLY} GODLY'
             )
         elif area_no == 4:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
-                f'{emojis.bp} Keep: {emojis.lbepic} EPIC and {emojis.lbedgy} EDGY until A5\n'
-                f'{emojis.bp} Open: {emojis.lbrare} Rare, {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon for STT score\n'
+                f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Open: {emojis.LB_RARE} Rare, {emojis.LB_OMEGA} OMEGA, {emojis.LB_GODLY} GODLY'
             )
         elif area_no == 5:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon for STT score\n'
-                f'{emojis.bp} Open: {emojis.lbrare} Rare, {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY, {emojis.lbomega} OMEGA, {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon for STT score\n'
+                f'{emojis.BP} Open: {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC, {emojis.LB_EDGY} EDGY, {emojis.LB_OMEGA} OMEGA, {emojis.LB_GODLY} GODLY'
             )
         elif 6 <= area_no <= 9:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare for STT score\n'
-                f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
-                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Open: {emojis.lbepic} EPIC, {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon, {emojis.LB_RARE} Rare for STT score\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
+                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Open: {emojis.LB_EPIC} EPIC, {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
             )
         elif 10 <= area_no <= 14:
             lootboxes = (
-                f'{emojis.bp} Buy: {emojis.lbedgy} EDGY\n'
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC for STT score\n'
-                f'{emojis.bp} Keep: 1 {emojis.lbomega} OMEGA for {emojis.armoromega} OMEGA Armor\n'
-                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Open: {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon, {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC for STT score\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
+                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Open: {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
             )
         elif area_no >= 15:
             lootboxes = (
-                f'{emojis.bp} Keep: {emojis.lbcommon} Common, {emojis.lbuncommon} Uncommon, {emojis.lbrare} Rare, {emojis.lbepic} EPIC for STT score\n'
-                f'{emojis.bp} Keep: 15 {emojis.lbomega} OMEGA for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Keep: 1 {emojis.lbgodly} GODLY for D15-2 (only if you plan to do it)\n'
-                f'{emojis.bp} Open: {emojis.lbedgy} EDGY, excess {emojis.lbomega} OMEGA, excess {emojis.lbgodly} GODLY'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon, {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC for STT score\n'
+                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Open: {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
             )
 
     # Materials areas 3, 5 and 8
     if area_no == 5:
         materials = (
-            f'{emojis.bp} 30+ {emojis.wolfskin} wolf skins\n'
-            f'{emojis.bp} 30+ {emojis.zombieeye} zombie eyes\n'
-            f'{emojis.bp} 30+ {emojis.unicornhorn} unicorn horns (after crafting)'
+            f'{emojis.BP} 30+ {emojis.WOLF_SKIN} wolf skins\n'
+            f'{emojis.BP} 30+ {emojis.ZOMBIE_EYE} zombie eyes\n'
+            f'{emojis.BP} 30+ {emojis.UNICORN_HORN} unicorn horns (after crafting)'
         )
         if user_tt < 5:
-            materials = f'{materials}\n{emojis.bp} {mats_apple:,} {emojis.apple} apples'
+            materials = f'{materials}\n{emojis.BP} {mats_apple:,} {emojis.APPLE} apples'
 
     if (area_no == 3) and (1 <= user_tt <= 4):
         materials = (
-            f'{emojis.bp} 20 {emojis.wolfskin} wolf skins\n'
-            f'{emojis.bp} 20 {emojis.zombieeye} zombie eyes'
+            f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins\n'
+            f'{emojis.BP} 20 {emojis.ZOMBIE_EYE} zombie eyes'
         )
 
         if not mats_fish == 0:
             if user_asc == 'ascended':
-                materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
+                materials = f'{materials}\n{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish (= {ceil(mats_fish/225):,} {emojis.RUBY} rubies)'
             else:
-                materials = f'{materials}\n{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
+                materials = f'{materials}\n{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish'
 
     if (area_no == 3) and (user_tt > 4):
         if not mats_fish == 0:
             if user_asc == 'ascended':
-                materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish (= {ceil(mats_fish/225):,} {emojis.ruby} rubies)'
+                materials = f'{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish (= {ceil(mats_fish/225):,} {emojis.RUBY} rubies)'
             else:
-                materials = f'{emojis.bp} {mats_fish:,} {emojis.fish} normie fish'
+                materials = f'{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish'
 
     if area_no == 8:
-        materials = f'{emojis.bp} 30 {emojis.mermaidhair} mermaid hairs\n'
+        materials = f'{emojis.BP} 30 {emojis.MERMAID_HAIR} mermaid hairs\n'
     # Trades
     trades = await global_data.design_field_trades(area_no, user_asc)
 
@@ -855,8 +855,8 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
 
     # Note
     note = (
-        f'{emojis.bp} To see the guide for another TT, use `{prefix}a{area_no} [tt]` or `{prefix}a{area_no} [tt] asc`\n'
-        f'{emojis.bp} To change your personal TT settings, use `{prefix}setprogress`.'
+        f'{emojis.BP} To see the guide for another TT, use `{prefix}a{area_no} [tt]` or `{prefix}a{area_no} [tt] asc`\n'
+        f'{emojis.BP} To change your personal TT settings, use `{prefix}setprogress`.'
     )
 
     # Title
@@ -867,7 +867,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
 
     # Embed
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = title,
         description = description
     )
@@ -876,17 +876,17 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
     embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
     if (area_no > 1) and (user_asc != 'ascended') and (new_cmd != ''):
-        embed.add_field(name='NEW COMMANDS', value=f'{emojis.bp} {new_cmd}', inline=False)
+        embed.add_field(name='NEW COMMANDS', value=f'{emojis.BP} {new_cmd}', inline=False)
     embed.add_field(name='BEST WORK COMMAND', value=work_cmd, inline=False)
     if not time_traveller_prepare == True:
         embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
         if area_no in (7,8):
-            embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
-                                 f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}\n'
-                                 f'{emojis.bp} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook {emojis.foodorangejuice} orange juice or {emojis.foodapplejuice} apple juice.', inline=False)
+            embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.BP} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
+                                 f'{emojis.BP} {player_armor_emoji} {player_armor} {player_armor_enchant}\n'
+                                 f'{emojis.BP} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.', inline=False)
         else:
-            embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.bp} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
-                                 f'{emojis.bp} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
+            embed.add_field(name=f'RECOMMENDED GEAR FOR D{dungeon_no}', value=f'{emojis.BP} {player_sword_emoji} {player_sword} {player_sword_enchant}\n'
+                                 f'{emojis.BP} {player_armor_emoji} {player_armor} {player_armor_enchant}', inline=False)
         embed.add_field(name=f'RECOMMENDED STATS FOR D{dungeon_no}', value=field_rec_stats, inline=False)
     if ((area_no == 3) and (user_tt > 0)) or (area_no in (5,8)):
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)

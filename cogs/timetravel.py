@@ -387,11 +387,11 @@ class timetravelCog(commands.Cog):
         if a15[0] == 15:
             message_a15 = (
                 f'**Area 15**\n'
-                f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
-                f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-                f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-                f'{emojis.bp} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
-                f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,} total score**\n\n'
+                f'{emojis.BP} {score_lootboxes:,} lootbox score\n'
+                f'{emojis.BP} {score_mobdrops:,} mob drop score\n'
+                f'{emojis.BP} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
+                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
+                f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,} total score**\n\n'
             )
         else:
             message_a15 = ''
@@ -402,11 +402,11 @@ class timetravelCog(commands.Cog):
             f'Note that this score does not include gear, levels and stats. This is only your inventory.\n\n'
             f'{message_a15}'
             f'**The TOP**\n'
-            f'{emojis.bp} {score_lootboxes:,} lootbox score\n'
-            f'{emojis.bp} {score_mobdrops:,} mob drop score\n'
-            f'{emojis.bp} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-            f'{emojis.bp} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
-            f'{emojis.bp} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,} total score**'
+            f'{emojis.BP} {score_lootboxes:,} lootbox score\n'
+            f'{emojis.BP} {score_mobdrops:,} mob drop score\n'
+            f'{emojis.BP} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
+            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
+            f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,} total score**'
         )
 
 # Initialization
@@ -431,38 +431,38 @@ guide_stt_score_calc = '`{prefix}scorecalc` / `{prefix}sc` : STT score calculato
 async def embed_timetravel_overview(prefix):
 
     where = (
-        f'{emojis.bp} {emojis.timetravel} TT 0: Beat dungeon 10, reach area 11\n'
-        f'{emojis.bp} {emojis.timetravel} TT 1-2: Beat dungeon 11, reach area 12\n'
-        f'{emojis.bp} {emojis.timetravel} TT 3-4: Beat dungeon 12, reach area 13\n'
-        f'{emojis.bp} {emojis.timetravel} TT 5-9: Beat dungeon 13, reach area 14\n'
-        f'{emojis.bp} {emojis.timetravel} TT 10-24: Beat dungeon 14, reach area 15\n'
-        f'{emojis.bp} {emojis.timetravel} TT 25+: Beat dungeon 15-1 (see `{prefix}stt` for details)\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 0: Beat dungeon 10, reach area 11\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 1-2: Beat dungeon 11, reach area 12\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 3-4: Beat dungeon 12, reach area 13\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 5-9: Beat dungeon 13, reach area 14\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 10-24: Beat dungeon 14, reach area 15\n'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 25+: Beat dungeon 15-1 (see `{prefix}stt` for details)\n'
     )
 
     keptitems = (
-        f'{emojis.bp} Coins (this includes your bank account)\n'
-        f'{emojis.bp} Epic Coins\n'
-        f'{emojis.bp} Items bought from the epic shop\n'
-        f'{emojis.bp} Arena cookies \n'
-        f'{emojis.bp} Dragon essences\n'
-        f'{emojis.bp} TIME dragon essences\n'
-        f'{emojis.bp} OMEGA horse tokens\n'
-        f'{emojis.bp} Event items (if an event is active)\n'
-        f'{emojis.bp} Your horse\n'
-        f'{emojis.bp} Your pets\n'
-        f'{emojis.bp} Your marriage partner\n'
-        f'{emojis.bp} Your guild\n'
-        f'{emojis.bp} Profession levels\n'
+        f'{emojis.BP} Coins (this includes your bank account)\n'
+        f'{emojis.BP} Epic Coins\n'
+        f'{emojis.BP} Items bought from the epic shop\n'
+        f'{emojis.BP} Arena cookies \n'
+        f'{emojis.BP} Dragon essences\n'
+        f'{emojis.BP} TIME dragon essences\n'
+        f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} Event items (if an event is active)\n'
+        f'{emojis.BP} Your horse\n'
+        f'{emojis.BP} Your pets\n'
+        f'{emojis.BP} Your marriage partner\n'
+        f'{emojis.BP} Your guild\n'
+        f'{emojis.BP} Profession levels\n'
     )
 
     guides = (
-        f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tt_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_mytt.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tt_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
         description = (
             f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
@@ -510,106 +510,106 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     unlocks = ''
 
     if not unlock_misc == '':
-        unlocks = f'{emojis.bp} Unlocks **{unlock_misc}**\n'
+        unlocks = f'{emojis.BP} Unlocks **{unlock_misc}**\n'
 
     if not unlock_dungeon == 0:
-        unlocks = f'{unlocks}{emojis.bp} Unlocks **dungeon {unlock_dungeon}**\n'
+        unlocks = f'{unlocks}{emojis.BP} Unlocks **dungeon {unlock_dungeon}**\n'
 
     if not unlock_area == 0:
-        unlocks = f'{unlocks}{emojis.bp} Unlocks **area {unlock_area}**\n'
+        unlocks = f'{unlocks}{emojis.BP} Unlocks **area {unlock_area}**\n'
 
     if not unlock_enchant == '':
-        unlocks = f'{unlocks}{emojis.bp} Unlocks the **{unlock_enchant}** enchant\n'
+        unlocks = f'{unlocks}{emojis.BP} Unlocks the **{unlock_enchant}** enchant\n'
 
     if not unlock_title == '':
-        unlocks = f'{unlocks}{emojis.bp} Unlocks the title **{unlock_title}**\n'
+        unlocks = f'{unlocks}{emojis.BP} Unlocks the title **{unlock_title}**\n'
 
     unlocks = (
-        f"{unlocks}{emojis.bp} **{bonus_xp} %** increased **XP** from everything except duels\n"
-        f'{emojis.bp} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
-        f'{emojis.bp} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'
-        f'{emojis.bp} **{bonus_drop_chance} %** more **items** with work commands (**{rubies}** {emojis.ruby} rubies with `dynamite`)\n'
-        f'{emojis.bp} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)'
+        f"{unlocks}{emojis.BP} **{bonus_xp} %** increased **XP** from everything except duels\n"
+        f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
+        f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'
+        f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands (**{rubies}** {emojis.RUBY} rubies with `dynamite`)\n'
+        f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)'
     )
 
 
     prep_tt1_to_2 = (
-        f'{emojis.bp} If your horse is T6+: Get 30m coins\n'
-        f'{emojis.bp} If your horse is <T6: Get 50m coins\n'
-        f'{emojis.bp} If you need money: Do boosted minibosses, use `drill` and sell mob drops\n'
-        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
-        f'{emojis.bp} Level up professions (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.BP} If your horse is T6+: Get 30m coins\n'
+        f'{emojis.BP} If your horse is <T6: Get 50m coins\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use `drill` and sell mob drops\n'
+        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} Level up professions (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
 
     prep_tt3_to_4 = (
-        f'{emojis.bp} If your horse is T6+: Get 50m coins\n'
-        f'{emojis.bp} If your horse is <T6: Get 150m coins\n'
-        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
-        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
-        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.BP} If your horse is T6+: Get 50m coins\n'
+        f'{emojis.BP} If your horse is <T6: Get 150m coins\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} Level up professions if not done (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
+        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
 
     prep_tt5_to_9 = (
-        f'{emojis.bp} If your horse is T6+: Get 150m coins\n'
-        f'{emojis.bp} If your horse is <T6: Get 350m coins\n'
-        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
-        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
-        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.BP} If your horse is T6+: Get 150m coins\n'
+        f'{emojis.BP} If your horse is <T6: Get 350m coins\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} Level up professions if not done (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
+        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
 
     prep_tt10_to_24 = (
-        f'{emojis.bp} If your horse is T6+: Get 350m coins\n'
-        f'{emojis.bp} If your horse is <T6: Get 850m coins\n'
-        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
-        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
-        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.bp} Tip: Claim the {emojis.badgea15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} If your horse is T6+: Get 350m coins\n'
+        f'{emojis.BP} If your horse is <T6: Get 850m coins\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} Level up professions if not done (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
+        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_tt25 = (
-        f'{emojis.bp} If your horse is T6+: Get 350m coins\n'
-        f'{emojis.bp} If your horse is <T6: Get 850m coins\n'
-        f'{emojis.bp} Note: You **need** a T6+ horse to do Dungeon 15\n'
-        f'{emojis.bp} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
-        f'{emojis.bp} If you need money and are impatient: sell {emojis.apple} apples\n'
-        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.bp} Don\'t forget to sell your armor and sword!'
+        f'{emojis.BP} If your horse is T6+: Get 350m coins\n'
+        f'{emojis.BP} If your horse is <T6: Get 850m coins\n'
+        f'{emojis.BP} Note: You **need** a T6+ horse to do Dungeon 15\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} Level up professions if not done (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
+        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
 
     prep_stt = (
-        f'{emojis.bp} Get 850m coins\n'
-        f'{emojis.bp} Level up professions if not done (see `{prefix}prlevel`)\n'
-        f'{emojis.bp} If you need a higher score: Trade to {emojis.ruby} rubies (see `{prefix}sttscore`)\n'
-        f'{emojis.bp} If you have materials left: Trade to {emojis.apple} apples and sell\n'
-        f'{emojis.bp} Sell everything you don\'t need for your desired score (see `{prefix}sttscore)`\n'
-        f'{emojis.bp} Do not sell items listed in `{prefix}tt`'
+        f'{emojis.BP} Get 850m coins\n'
+        f'{emojis.BP} Level up professions if not done (see `{prefix}prlevel`)\n'
+        f'{emojis.BP} If you need a higher score: Trade to {emojis.RUBY} rubies (see `{prefix}sttscore`)\n'
+        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} Sell everything you don\'t need for your desired score (see `{prefix}sttscore)`\n'
+        f'{emojis.BP} Do not sell items listed in `{prefix}tt`'
     )
 
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_overview.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_mytt.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = f'TIME TRAVEL {tt_no}',
         description = embed_description
     )
@@ -637,38 +637,38 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
 async def embed_stt(prefix):
 
     requirements = (
-        f'{emojis.bp} {emojis.timetravel} TT 25+\n'
-        f'{emojis.bp} {emojis.timekey} TIME key (drops from the boss in dungeon 15-1)'
+        f'{emojis.BP} {emojis.TIME_TRAVEL} TT 25+\n'
+        f'{emojis.BP} {emojis.TIME_KEY} TIME key (drops from the boss in dungeon 15-1)'
     )
 
     starter_bonuses = (
-        f'{emojis.bp} Start with +25 LIFE (50 score)\n'
-        f'{emojis.bp} Start with a new Tier I pet (300 score)\n'
-        f'{emojis.bp} Start with +50 AT (400 score)\n'
-        f'{emojis.bp} Start with +50 DEF (400 score)\n'
-        f'{emojis.bp} Start with 35 of each monster drop (400 score)\n'
-        f'{emojis.bp} Start with an OMEGA lootbox (500 score)\n'
-        f'{emojis.bp} Start with a new Tier III pet (1,500 score)\n'
-        f'{emojis.bp} Start with 10 ULTRA logs (1,750 score)\n'
-        f'{emojis.bp} Start in area 2 (2,000 score)\n'
-        f'{emojis.bp} Start with a new Tier I pet with 1 skill (4,500 score)\n'
-        f'{emojis.bp} Start in area 3 (4,500 score)\n'
-        f'{emojis.bp} Start with a GODLY lootbox (6,500 score)'
+        f'{emojis.BP} Start with +25 LIFE (50 score)\n'
+        f'{emojis.BP} Start with a new Tier I pet (300 score)\n'
+        f'{emojis.BP} Start with +50 AT (400 score)\n'
+        f'{emojis.BP} Start with +50 DEF (400 score)\n'
+        f'{emojis.BP} Start with 35 of each monster drop (400 score)\n'
+        f'{emojis.BP} Start with an OMEGA lootbox (500 score)\n'
+        f'{emojis.BP} Start with a new Tier III pet (1,500 score)\n'
+        f'{emojis.BP} Start with 10 ULTRA logs (1,750 score)\n'
+        f'{emojis.BP} Start in area 2 (2,000 score)\n'
+        f'{emojis.BP} Start with a new Tier I pet with 1 skill (4,500 score)\n'
+        f'{emojis.BP} Start in area 3 (4,500 score)\n'
+        f'{emojis.BP} Start with a GODLY lootbox (6,500 score)'
     )
 
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tt_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt_score.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt_score_calc.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_overview.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_mytt.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tt_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt_score.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt_score_calc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL',
         description = (
-            f'Super time travel is unlocked once you reach {emojis.timetravel} TT 25. From this point onward you have to use `super time travel` to reach the next TT.\n'
+            f'Super time travel is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have to use `super time travel` to reach the next TT.\n'
             f'Super time travel lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'
             f'These bonuses cost score points which are calculated based on your inventory and your gear (see `{prefix}sttscore`).'
         )
@@ -686,57 +686,57 @@ async def embed_stt(prefix):
 async def embed_stt_score(prefix):
 
     base = (
-        f'{emojis.bp} If you are level 200, have the ULTRA-OMEGA set and your inventory is empty, you have 355.5 score'
+        f'{emojis.BP} If you are level 200, have the ULTRA-OMEGA set and your inventory is empty, you have 355.5 score'
     )
 
     gear = (
-        f'{emojis.bp} {emojis.swordultraomega} ULTRA-OMEGA sword = ~74 score\n'
-        f'{emojis.bp} {emojis.armorultraomega} ULTRA-OMEGA armor = ~87 score'
+        f'{emojis.BP} {emojis.SWORD_ULTRAOMEGA} ULTRA-OMEGA sword = ~74 score\n'
+        f'{emojis.BP} {emojis.ARMOR_ULTRAOMEGA} ULTRA-OMEGA armor = ~87 score'
     )
 
     level = (
-        f'{emojis.bp} 1 level = 0.5 score\n'
-        f'{emojis.bp} 1 {emojis.statdef} DEF + 1 {emojis.statat} AT + 5 {emojis.statlife} HP = 0.4 score'
+        f'{emojis.BP} 1 level = 0.5 score\n'
+        f'{emojis.BP} 1 {emojis.STAT_DEF} DEF + 1 {emojis.STAT_AT} AT + 5 {emojis.STAT_LIFE} HP = 0.4 score'
     )
 
     lootboxes = (
-        f'{emojis.bp} 1 {emojis.lbcommon} common lootbox = 0.05 score\n'
-        f'{emojis.bp} 1 {emojis.lbuncommon} uncommon lootbox = 0.1 score\n'
-        f'{emojis.bp} 1 {emojis.lbrare} rare lootbox = 0.15 score\n'
-        f'{emojis.bp} 1 {emojis.lbepic} EPIC lootbox = 0.2 score\n'
-        f'{emojis.bp} 1 {emojis.lbedgy} EDGY lootbox = 0.25 score\n'
-        f'{emojis.bp} 1 {emojis.lbomega} OMEGA lootbox = 2.5 score\n'
-        f'{emojis.bp} 1 {emojis.lbgodly} GODLY lootbox = 25 score'
+        f'{emojis.BP} 1 {emojis.LB_COMMON} common lootbox = 0.05 score\n'
+        f'{emojis.BP} 1 {emojis.LB_UNCOMMON} uncommon lootbox = 0.1 score\n'
+        f'{emojis.BP} 1 {emojis.LB_RARE} rare lootbox = 0.15 score\n'
+        f'{emojis.BP} 1 {emojis.LB_EPIC} EPIC lootbox = 0.2 score\n'
+        f'{emojis.BP} 1 {emojis.LB_EDGY} EDGY lootbox = 0.25 score\n'
+        f'{emojis.BP} 1 {emojis.LB_OMEGA} OMEGA lootbox = 2.5 score\n'
+        f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 25 score'
     )
 
     materials = (
-        f'{emojis.bp} 30 {emojis.potato} potatoes = 1 score\n'
-        f'{emojis.bp} 25 {emojis.ruby} rubies = 1 score\n'
-        f'{emojis.bp} 25 {emojis.carrot} carrots = 1 score\n'
-        f'{emojis.bp} 20 {emojis.bread} bread = 1 score\n'
-        f'{emojis.bp} 2,500 {emojis.seed} seed = 1 score\n'
-        f'{emojis.bp} 5,000 {emojis.apple} apples = 1 score\n'
+        f'{emojis.BP} 30 {emojis.POTATO} potatoes = 1 score\n'
+        f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
+        f'{emojis.BP} 25 {emojis.CARROT} carrots = 1 score\n'
+        f'{emojis.BP} 20 {emojis.BREAD} bread = 1 score\n'
+        f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score\n'
+        f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
     )
 
     mobdrops = (
-        f'{emojis.bp} 20 {emojis.wolfskin} wolf skins = 1 score\n'
-        f'{emojis.bp} 10 {emojis.zombieeye} zombie eyes = 1 score\n'
-        f'{emojis.bp} 7 {emojis.unicornhorn} unicorn horns = 1 score\n'
-        f'{emojis.bp} 5 {emojis.mermaidhair} mermaid hairs = 1 score\n'
-        f'{emojis.bp} 4 {emojis.chip} chips = 1 score\n'
-        f'{emojis.bp} 2 {emojis.dragonscale} dragon scales = 1 score'
+        f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins = 1 score\n'
+        f'{emojis.BP} 10 {emojis.ZOMBIE_EYE} zombie eyes = 1 score\n'
+        f'{emojis.BP} 7 {emojis.UNICORN_HORN} unicorn horns = 1 score\n'
+        f'{emojis.BP} 5 {emojis.MERMAID_HAIR} mermaid hairs = 1 score\n'
+        f'{emojis.BP} 4 {emojis.CHIP} chips = 1 score\n'
+        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score'
     )
 
     guides = (
-        f'{emojis.bp} {guide_overview.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_mytt.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_tt_specific.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_stt_score_calc.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_overview.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_mytt.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tt_specific.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stt_score_calc.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL SCORE',
         description = (
             f'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.\n'

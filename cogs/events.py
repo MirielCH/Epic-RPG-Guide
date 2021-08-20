@@ -208,41 +208,41 @@ events_footer = 'Use {prefix}events to see a list of all events.'
 async def embed_events_overview(prefix):
 
     easter_event = (
-        f'{emojis.bp} `bunny`\n'
-        f'{emojis.bp} `bunny boss`'
+        f'{emojis.BP} `bunny`\n'
+        f'{emojis.BP} `bunny boss`'
     )
 
     sp_events = (
-        f'{emojis.bp} `enchant`\n'
-        f'{emojis.bp} `failed seed` / `farm`\n'
-        f'{emojis.bp} `epic guard`\n'
-        f'{emojis.bp} `heal`\n'
-        f'{emojis.bp} `lootbox`\n'
-        f'{emojis.bp} `ruby dragon` / `work`'
+        f'{emojis.BP} `enchant`\n'
+        f'{emojis.BP} `failed seed` / `farm`\n'
+        f'{emojis.BP} `epic guard`\n'
+        f'{emojis.BP} `heal`\n'
+        f'{emojis.BP} `lootbox`\n'
+        f'{emojis.BP} `ruby dragon` / `work`'
     )
 
     mp_events = (
-        f'{emojis.bp} `arena`\n'
-        f'{emojis.bp} `coin rain` / `catch`\n'
-        f'{emojis.bp} `epic tree` / `chop`\n'
-        f'{emojis.bp} `god`\n'
-        f'{emojis.bp} `legendary boss`\n'
-        f'{emojis.bp} `lootbox summoning` / `summon`\n'
-        f'{emojis.bp} `megalodon` / `fish`\n'
-        f'{emojis.bp} `miniboss`\n'
-        f'{emojis.bp} `special trade`'
+        f'{emojis.BP} `arena`\n'
+        f'{emojis.BP} `coin rain` / `catch`\n'
+        f'{emojis.BP} `epic tree` / `chop`\n'
+        f'{emojis.BP} `god`\n'
+        f'{emojis.BP} `legendary boss`\n'
+        f'{emojis.BP} `lootbox summoning` / `summon`\n'
+        f'{emojis.BP} `megalodon` / `fish`\n'
+        f'{emojis.BP} `miniboss`\n'
+        f'{emojis.BP} `special trade`'
     )
 
     global_events = (
-        f'{emojis.bp} `big arena`\n'
-        f'{emojis.bp} `horse race`\n'
-        f'{emojis.bp} `lottery`\n'
-        f'{emojis.bp} `not so mini boss`\n'
-        f'{emojis.bp} `pet tournament`\n'
+        f'{emojis.BP} `big arena`\n'
+        f'{emojis.BP} `horse race`\n'
+        f'{emojis.BP} `lottery`\n'
+        f'{emojis.BP} `not so mini boss`\n'
+        f'{emojis.BP} `pet tournament`\n'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'EVENTS',
         description = (
             f'This page lists the names of all possible events.\n'
@@ -251,7 +251,7 @@ async def embed_events_overview(prefix):
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    #embed.add_field(name=f'EASTER {emojis.easteregg}', value=easter_event, inline=False)
+    #embed.add_field(name=f'EASTER {emojis.EASTER_EGG}', value=easter_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -262,24 +262,24 @@ async def embed_events_overview(prefix):
 # Enchant event
 async def embed_event_enchant(prefix):
 
-    trigger = f'{emojis.bp} `enchant`, `refine`, `transmute`, `transcend` (0.085 % chance)'
+    trigger = f'{emojis.BP} `enchant`, `refine`, `transmute`, `transcend` (0.085 % chance)'
 
     answers = (
-        f'{emojis.bp} `cry`: Nothing happens but you won\'t get an enchant\n'
-        f'{emojis.bp} `fix`: You get an enchant and either gain **or lose** 5 LIFE\n'
-        f'{emojis.bp} `again`: Small chance to get an ULTRA-EDGY enchant, high chance to die'
+        f'{emojis.BP} `cry`: Nothing happens but you won\'t get an enchant\n'
+        f'{emojis.BP} `fix`: You get an enchant and either gain **or lose** 5 LIFE\n'
+        f'{emojis.BP} `again`: Small chance to get an ULTRA-EDGY enchant, high chance to die'
     )
 
-    safe_answer = f'{emojis.bp} `cry`'
+    safe_answer = f'{emojis.BP} `cry`'
 
     note = (
-        f'{emojis.bp} {events_horse.format(emoji=emojis.horset4)}\n'
-        f'{emojis.bp} Your gear doesn\'t break despite the event indicating this\n'
-        f'{emojis.bp} {events_personal}'
+        f'{emojis.BP} {events_horse.format(emoji=emojis.HORSE_T4)}\n'
+        f'{emojis.BP} Your gear doesn\'t break despite the event indicating this\n'
+        f'{emojis.BP} {events_personal}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'ENCHANT EVENT',
         description = 'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
     )
@@ -295,30 +295,30 @@ async def embed_event_enchant(prefix):
 # Epic Guard event
 async def embed_event_epicguard(prefix):
 
-    trigger = f'{emojis.bp} Most commands that have a cooldown, with the exception of multiplayer commands like `arena`, `duel`, `horse breed` or `miniboss` (chance unknown)'
+    trigger = f'{emojis.BP} Most commands that have a cooldown, with the exception of multiplayer commands like `arena`, `duel`, `horse breed` or `miniboss` (chance unknown)'
 
     answers = (
-        f'{emojis.bp} The name of the random item the guard shows you\n'
-        f'{emojis.bp} Tip: You can use `fish` instead of `normie fish`\n'
-        f'{emojis.bp} Tip: You can use `potion` instead of `life potion`\n'
-        f'{emojis.bp} Tip: You can use `wolf` instead of `wolf skin`'
+        f'{emojis.BP} The name of the random item the guard shows you\n'
+        f'{emojis.BP} Tip: You can use `fish` instead of `normie fish`\n'
+        f'{emojis.BP} Tip: You can use `potion` instead of `life potion`\n'
+        f'{emojis.BP} Tip: You can use `wolf` instead of `wolf skin`'
     )
 
     jail = (
-        f'{emojis.bp} If you answer wrong, you will be put in jail\n'
-        f'{emojis.bp} Use `rpg jail` and then `protest`\n'
-        f'{emojis.bp} Do not try to kill the guard, there is a high chance of losing XP\n'
-        f'{emojis.bp} If you manage to kill the guard anyway, you will get 100 XP'
+        f'{emojis.BP} If you answer wrong, you will be put in jail\n'
+        f'{emojis.BP} Use `rpg jail` and then `protest`\n'
+        f'{emojis.BP} Do not try to kill the guard, there is a high chance of losing XP\n'
+        f'{emojis.BP} If you manage to kill the guard anyway, you will get 100 XP'
     )
 
     note = (
-        f'{emojis.bp} You can lose XP in this event, but you can not die\n'
-        f'{emojis.bp} You get some coins if you answer the question correctly\n'
-        f'{emojis.bp} {events_personal}'
+        f'{emojis.BP} You can lose XP in this event, but you can not die\n'
+        f'{emojis.BP} You get some coins if you answer the question correctly\n'
+        f'{emojis.BP} {events_personal}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'EPIC GUARD EVENT',
         description = 'This is a random captcha event to prevent autotyping.'
     )
@@ -334,23 +334,23 @@ async def embed_event_epicguard(prefix):
 # Failed seed event
 async def embed_event_farm(prefix):
 
-    trigger = f'{emojis.bp} `farm` (chance unknown)'
+    trigger = f'{emojis.BP} `farm` (chance unknown)'
 
     answers = (
-        f'{emojis.bp} `cry`: You get 1 crop and your seed back.\n'
-        f'{emojis.bp} `plant another`: You get your seed back.\n'
-        f'{emojis.bp} `fight`: Small chance to get 20 levels and your seed back, high chance to only get your seed back.'
+        f'{emojis.BP} `cry`: You get 1 crop and your seed back.\n'
+        f'{emojis.BP} `plant another`: You get your seed back.\n'
+        f'{emojis.BP} `fight`: Small chance to get 20 levels and your seed back, high chance to only get your seed back.'
     )
 
-    rec_answer = f'{emojis.bp} `fight`'
+    rec_answer = f'{emojis.BP} `fight`'
 
     note = (
-        f'{emojis.bp} This event is only available in {emojis.timetravel}TT 2+\n'
-        f'{emojis.bp} {events_personal}'
+        f'{emojis.BP} This event is only available in {emojis.TIME_TRAVEL}TT 2+\n'
+        f'{emojis.BP} {events_personal}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'FAILED SEED EVENT',
         description = 'This is a random personal event in which your planted seed won\'t grow as expected.'
     )
@@ -366,22 +366,22 @@ async def embed_event_farm(prefix):
 # Heal event
 async def embed_event_heal(prefix):
 
-    trigger = f'{emojis.bp} `heal` (0.75 % chance)'
+    trigger = f'{emojis.BP} `heal` (0.75 % chance)'
 
     answers = (
-        f'{emojis.bp} `cry`: The event ends, nothing happens\n'
-        f'{emojis.bp} `search`: Leads to the option to `fight` the thief. If you do this, you will either gain **or lose** a level'
+        f'{emojis.BP} `cry`: The event ends, nothing happens\n'
+        f'{emojis.BP} `search`: Leads to the option to `fight` the thief. If you do this, you will either gain **or lose** a level'
     )
 
-    safe_answer = f'{emojis.bp} `cry`'
+    safe_answer = f'{emojis.BP} `cry`'
 
     note = (
-        f'{emojis.bp} This event will not trigger if you are at full LIFE before healing\n'
-        f'{emojis.bp} {events_personal}'
+        f'{emojis.BP} This event will not trigger if you are at full LIFE before healing\n'
+        f'{emojis.BP} {events_personal}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HEAL EVENT',
         description = 'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )
@@ -397,23 +397,23 @@ async def embed_event_heal(prefix):
 # Lootbox event
 async def embed_event_lootbox(prefix):
 
-    trigger = f'{emojis.bp} `open` (0.5 % chance)'
+    trigger = f'{emojis.BP} `open` (0.5 % chance)'
 
     answers = (
-        f'{emojis.bp} `cry`: You get a {emojis.lbepic} EPIC, {emojis.lbrare} rare or {emojis.lbuncommon} uncommon lootbox\n'
-        f'{emojis.bp} `fight`: You destroy the lootbox and get 400 lootboxer XP\n'
-        f'{emojis.bp} `magic spell`: Low chance to get an {emojis.lbomega} OMEGA lootbox, high chance to get nothing'
+        f'{emojis.BP} `cry`: You get a {emojis.LB_EPIC} EPIC, {emojis.LB_RARE} rare or {emojis.LB_UNCOMMON} uncommon lootbox\n'
+        f'{emojis.BP} `fight`: You destroy the lootbox and get 400 lootboxer XP\n'
+        f'{emojis.BP} `magic spell`: Low chance to get an {emojis.LB_OMEGA} OMEGA lootbox, high chance to get nothing'
     )
 
     rec_answer = (
-        f'{emojis.bp} `fight` if lootboxer < 100\n'
-        f'{emojis.bp} `magic spell` if lootboxer 100+'
+        f'{emojis.BP} `fight` if lootboxer < 100\n'
+        f'{emojis.BP} `magic spell` if lootboxer 100+'
     )
 
-    note = f'{emojis.bp} {events_personal}'
+    note = f'{emojis.BP} {events_personal}'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'LOOTBOX EVENT',
         description = 'This is a rare random personal event in which a lootboxes refuses to open.'
     )
@@ -429,32 +429,32 @@ async def embed_event_lootbox(prefix):
 # Ruby dragon event
 async def embed_event_rubydragon(prefix):
 
-    trigger = f'{emojis.bp} Work commands (chance unknown)'
+    trigger = f'{emojis.BP} Work commands (chance unknown)'
 
     answers = (
-        f'{emojis.bp} `cry`: You get 1 {emojis.arenacookie} arena cookie\n'
-        f'{emojis.bp} `move`: You move to another area and spawn the ruby dragon (see below)\n'
-        f'{emojis.bp} `sleep`: You get whatever materials you were about to get'
+        f'{emojis.BP} `cry`: You get 1 {emojis.ARENA_COOKIE} arena cookie\n'
+        f'{emojis.BP} `move`: You move to another area and spawn the ruby dragon (see below)\n'
+        f'{emojis.BP} `sleep`: You get whatever materials you were about to get'
     )
 
     answers_ruby = (
-        f'{emojis.bp} `run`: The event ends, you get nothing\n'
-        f'{emojis.bp} `fight`: You fight the dragon and get 10 {emojis.ruby} rubies\n'
-        f'{emojis.bp} `sleep`: The dragon leaves and you get 2 {emojis.ruby} rubies'
+        f'{emojis.BP} `run`: The event ends, you get nothing\n'
+        f'{emojis.BP} `fight`: You fight the dragon and get 10 {emojis.RUBY} rubies\n'
+        f'{emojis.BP} `sleep`: The dragon leaves and you get 2 {emojis.RUBY} rubies'
     )
 
     best_answer = (
-        f'{emojis.bp} First `move`, then `fight` if you want the 10 {emojis.ruby} rubies\n'
-        f'{emojis.bp} `sleep` if you want the original materials instead'
+        f'{emojis.BP} First `move`, then `fight` if you want the 10 {emojis.RUBY} rubies\n'
+        f'{emojis.BP} `sleep` if you want the original materials instead'
     )
 
     note = (
-        f'{emojis.bp} You actually _do_ move to another area, so you have to move back to your previous area after the event\n'
-        f'{emojis.bp} {events_personal}'
+        f'{emojis.BP} You actually _do_ move to another area, so you have to move back to your previous area after the event\n'
+        f'{emojis.BP} {events_personal}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'THE RUBY DRAGON EVENT',
         description = 'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
     )
@@ -475,35 +475,35 @@ async def embed_event_rubydragon(prefix):
 async def embed_event_arena(prefix):
 
     trigger = (
-        f'{emojis.bp} `arena` to start the event alone\n'
-        f'{emojis.bp} `arena @Users` to start the event with up to 9 people for greater rewards\n'
-        f'{emojis.bp} You can only mention users if their cooldown is ready\n'
-        f'{emojis.bp} This will use up the cooldown of every player mentioned'
+        f'{emojis.BP} `arena` to start the event alone\n'
+        f'{emojis.BP} `arena @Users` to start the event with up to 9 people for greater rewards\n'
+        f'{emojis.BP} You can only mention users if their cooldown is ready\n'
+        f'{emojis.BP} This will use up the cooldown of every player mentioned'
     )
 
     answers = (
-        f'{emojis.bp} `yes` or `y` if you got mentioned\n'
-        f'{emojis.bp} `join` if you are a participant'
+        f'{emojis.BP} `yes` or `y` if you got mentioned\n'
+        f'{emojis.BP} `join` if you are a participant'
     )
 
     rewards = (
-        f'{emojis.bp} 1 {emojis.arenacookie} cookie per kill per initiator\n'
-        f'{emojis.bp} Example: You get 3 {emojis.arenacookie} cookies per kill if you mention 2 players\n'
-        f'{emojis.bp} 3 {emojis.arenacookie} cookies extra for the initiator(s) of the arena'
+        f'{emojis.BP} 1 {emojis.ARENA_COOKIE} cookie per kill per initiator\n'
+        f'{emojis.BP} Example: You get 3 {emojis.ARENA_COOKIE} cookies per kill if you mention 2 players\n'
+        f'{emojis.BP} 3 {emojis.ARENA_COOKIE} cookies extra for the initiator(s) of the arena'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=10)}\n'
-        f'{emojis.bp} Requires at least 2 players, otherwise it will cancel\n'
-        f'{emojis.bp} The outcome is completely random\n'
-        f'{emojis.bp} This event shares its cooldown with `big arena`'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=10)}\n'
+        f'{emojis.BP} Requires at least 2 players, otherwise it will cancel\n'
+        f'{emojis.BP} The outcome is completely random\n'
+        f'{emojis.BP} This event shares its cooldown with `big arena`'
     )
 
-    whichone = f'{emojis.bp} `big arena` has higher rewards than `arena`'
+    whichone = f'{emojis.BP} `big arena` has higher rewards than `arena`'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'ARENA EVENT',
         description =   f'This is a multiplayer event in which up to 10 players fight each other.'
     )
@@ -521,24 +521,24 @@ async def embed_event_arena(prefix):
 async def embed_event_coinrain(prefix):
 
     trigger = (
-        f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
-        f'{emojis.bp} By using a {emojis.cointrumpet} coin trumpet from the EPIC shop'
+        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} By using a {emojis.COIN_TRUMPET} coin trumpet from the EPIC shop'
     )
 
-    answers = f'{emojis.bp} `catch`'
+    answers = f'{emojis.BP} `catch`'
 
     rewards = (
-        f'{emojis.bp} {emojis.coin} coins\n'\
-        f'{emojis.bp} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
+        f'{emojis.BP} {emojis.COIN} coins\n'\
+        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=20)}'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'COIN RAIN EVENT',
         description = 'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
     )
@@ -555,24 +555,24 @@ async def embed_event_coinrain(prefix):
 async def embed_event_epictree(prefix):
 
     trigger = (
-        f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
-        f'{emojis.bp} By using an {emojis.epicseed} epic seed from the EPIC shop'
+        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} By using an {emojis.EPIC_SEED} epic seed from the EPIC shop'
     )
 
-    answers = f'{emojis.bp} `chop`'
+    answers = f'{emojis.BP} `chop`'
 
     rewards = (
-        f'{emojis.bp} {emojis.log} wooden logs\n'
-        f'{emojis.bp} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
+        f'{emojis.BP} {emojis.LOG} wooden logs\n'
+        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=20)}'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'EPIC TREE EVENT',
         description = 'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
     )
@@ -588,25 +588,25 @@ async def embed_event_epictree(prefix):
 # God event
 async def embed_event_god(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
 
     answers = (
-        f'{emojis.bp} The phrase god asks for\n'
-        f'{emojis.bp} For a list of all possible phrases see the [Wiki](https://epic-rpg.fandom.com/wiki/Events#God_Events)'
+        f'{emojis.BP} The phrase god asks for\n'
+        f'{emojis.BP} For a list of all possible phrases see the [Wiki](https://epic-rpg.fandom.com/wiki/Events#God_Events)'
     )
 
     rewards = (
-        f'{emojis.bp} {emojis.coin} Coins (amount depends on your highest area)\n'
-        f'{emojis.bp} {emojis.epiccoin} EPIC coin'
+        f'{emojis.BP} {emojis.COIN} Coins (amount depends on your highest area)\n'
+        f'{emojis.BP} {emojis.EPIC_COIN} EPIC coin'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_first_one}'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_first_one}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'GOD EVENT',
         description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
     )
@@ -622,21 +622,21 @@ async def embed_event_god(prefix):
 # Legendary boss event
 async def embed_event_legendary(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
 
-    answers = f'{emojis.bp} `time to fight`'
+    answers = f'{emojis.BP} `time to fight`'
 
-    rewards = f'{emojis.bp} + 1 level for every participant if successful'
+    rewards = f'{emojis.BP} + 1 level for every participant if successful'
 
     note = (
-        f'{emojis.bp} {events_rare}\n'
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=20)}\n'
-        f'{emojis.bp} The chance to beat the boss is very low'
+        f'{emojis.BP} {events_rare}\n'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}\n'
+        f'{emojis.BP} The chance to beat the boss is very low'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'LEGENDARY BOSS EVENT',
         description = 'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 players can defeat it.'
     )
@@ -652,24 +652,24 @@ async def embed_event_legendary(prefix):
 # Lootbox summoning event
 async def embed_event_lootboxsummoning(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
 
-    answers = f'{emojis.bp} `summon`'
+    answers = f'{emojis.BP} `summon`'
 
     rewards = (
-        f'{emojis.bp} A lootbox for every player that entered\n'
-        f'{emojis.bp} The lootbox tier depends on the amount of players that entered\n'
-        f'{emojis.bp} The lootbox tier ranges from {emojis.lbcommon} common to {emojis.lbedgy} EDGY'
+        f'{emojis.BP} A lootbox for every player that entered\n'
+        f'{emojis.BP} The lootbox tier depends on the amount of players that entered\n'
+        f'{emojis.BP} The lootbox tier ranges from {emojis.LB_COMMON} common to {emojis.LB_EDGY} EDGY'
     )
 
     note = (
-        f'{emojis.bp} {events_rare}\n'
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=20)}'
+        f'{emojis.BP} {events_rare}\n'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'LOOTBOX SUMMONING EVENT',
         description = 'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 players can help to do so.'
     )
@@ -686,24 +686,24 @@ async def embed_event_lootboxsummoning(prefix):
 async def embed_event_megalodon(prefix):
 
     trigger = (
-        f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)\n'
-        f'{emojis.bp} By using an {emojis.ultrabait} ultra bait from the EPIC shop'
+        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} By using an {emojis.ULTRA_BAIT} ultra bait from the EPIC shop'
     )
 
-    answers = f'{emojis.bp} `fish`'
+    answers = f'{emojis.BP} `fish`'
 
     rewards = (
-        f'{emojis.bp} {emojis.fish} normie fish\n'
-        f'{emojis.bp} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
+        f'{emojis.BP} {emojis.FISH} normie fish\n'
+        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=20)}'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'MEGALODON EVENT',
         description = 'This is a multiplayer event in which a megalodon spawns in the river and up to 20 players can get some fish.'
     )
@@ -720,39 +720,39 @@ async def embed_event_megalodon(prefix):
 async def embed_event_miniboss(prefix):
 
     trigger = (
-        f'{emojis.bp} `miniboss` to start the event alone\n'
-        f'{emojis.bp} `miniboss @Users` to start the event with up to 9 people for greater rewards\n'
-        f'{emojis.bp} You can only mention users if their cooldown is ready\n'
-        f'{emojis.bp} This will use up the cooldown of every player mentioned'
+        f'{emojis.BP} `miniboss` to start the event alone\n'
+        f'{emojis.BP} `miniboss @Users` to start the event with up to 9 people for greater rewards\n'
+        f'{emojis.BP} You can only mention users if their cooldown is ready\n'
+        f'{emojis.BP} This will use up the cooldown of every player mentioned'
     )
 
     answers = (
-        f'{emojis.bp} `yes` or `y` if you got mentioned\n'
-        f'{emojis.bp} `fight` if you are a participant'
+        f'{emojis.BP} `yes` or `y` if you got mentioned\n'
+        f'{emojis.BP} `fight` if you are a participant'
     )
 
     rewards = (
-        f'{emojis.bp} {emojis.coin} Coins\n'
-        f'{emojis.bp} 2.5% chance for the initiator(s) to get + 1 level\n'
-        f'{emojis.bp} The initiator reward depends on the level of the initiator and the users mentioned. It depends most on the original initiator however, thus the player with the highest level should start the event.\n'
-        f'{emojis.bp} Participants get 5% of the iniators\' reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.'
+        f'{emojis.BP} {emojis.COIN} Coins\n'
+        f'{emojis.BP} 2.5% chance for the initiator(s) to get + 1 level\n'
+        f'{emojis.BP} The initiator reward depends on the level of the initiator and the users mentioned. It depends most on the original initiator however, thus the player with the highest level should start the event.\n'
+        f'{emojis.BP} Participants get 5% of the iniators\' reward, up to 5,000 coins if there is only one initiator. This maximum amount increases with more initiators.'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=10)}\n'
-        f'{emojis.bp} This event shares its cooldown with `dungeons`\n'
-        f'{emojis.bp} This event shares its cooldown with `not so mini boss`\n'
-        f'{emojis.bp} The chance increases by 5% for every participant'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=10)}\n'
+        f'{emojis.BP} This event shares its cooldown with `dungeons`\n'
+        f'{emojis.BP} This event shares its cooldown with `not so mini boss`\n'
+        f'{emojis.BP} The chance increases by 5% for every participant'
     )
 
     whichone = (
-        f'{emojis.bp} Only do this event if you don\'t need to do a dungeon\n'
-        f'{emojis.bp} `not so mini boss` rewards dragon scales instead of coins'
+        f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
+        f'{emojis.BP} `not so mini boss` rewards dragon scales instead of coins'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'MINIBOSS EVENT',
         description = 'This is a multiplayer event in which you fight a miniboss to get coins.'
     )
@@ -769,30 +769,30 @@ async def embed_event_miniboss(prefix):
 # Special trade event
 async def embed_event_specialtrade(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
 
     answers = (
-        f'{emojis.bp} The phrase the epic NPC asks for\n'
-        f'{emojis.bp} Note: You need the items for the trade in your inventory'
+        f'{emojis.BP} The phrase the epic NPC asks for\n'
+        f'{emojis.BP} Note: You need the items for the trade in your inventory'
     )
 
     rewards = (
-        f'{emojis.bp} 1 {emojis.wolfskin} wolf skin (for 15 {emojis.log} wooden logs)\n'
-        f'{emojis.bp} 3 {emojis.epiccoin} EPIC coins (for 3 {emojis.coin} coins)\n'
-        f'{emojis.bp} 40 {emojis.fishgolden} golden fish (for 15 {emojis.lifepotion} life potions)\n'
-        f'{emojis.bp} 80 {emojis.logepic} EPIC logs (for 40 {emojis.log} wooden logs)\n'
-        f'{emojis.bp} 80 {emojis.fish} normie fish (for 2 {emojis.arenacookie} cookies)\n'
-        f'{emojis.bp} 125 {emojis.arenacookie} cookies (for 5 {emojis.fish} normie fish)'
+        f'{emojis.BP} 1 {emojis.WOLF_SKIN} wolf skin (for 15 {emojis.LOG} wooden logs)\n'
+        f'{emojis.BP} 3 {emojis.EPIC_COIN} EPIC coins (for 3 {emojis.COIN} coins)\n'
+        f'{emojis.BP} 40 {emojis.FISH_GOLDEN} golden fish (for 15 {emojis.LIFE_POTION} life potions)\n'
+        f'{emojis.BP} 80 {emojis.LOG_EPIC} EPIC logs (for 40 {emojis.LOG} wooden logs)\n'
+        f'{emojis.BP} 80 {emojis.FISH} normie fish (for 2 {emojis.ARENA_COOKIE} cookies)\n'
+        f'{emojis.BP} 125 {emojis.ARENA_COOKIE} cookies (for 5 {emojis.FISH} normie fish)'
     )
 
     note = (
-        f'{emojis.bp} You have time to trade to the required material while the event is active\n'
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_first_one}'
+        f'{emojis.BP} You have time to trade to the required material while the event is active\n'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_first_one}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SPECIAL TRADE EVENT',
         description = 'This is a random multiplayer event in which the epic NPC appears and offers one player a (very good) trade.'
     )
@@ -811,26 +811,26 @@ async def embed_event_specialtrade(prefix):
 # Big arena event
 async def embed_event_bigarena(prefix):
 
-    schedule = f'{emojis.bp} Monday, Wednesday, Friday at 18:00 UTC'
+    schedule = f'{emojis.BP} Monday, Wednesday, Friday at 18:00 UTC'
 
-    answers = f'{emojis.bp} `big arena join` (unlocked in area 7)'
+    answers = f'{emojis.BP} `big arena join` (unlocked in area 7)'
 
     rewards = (
-        f'{emojis.bp} ~1000+ {emojis.arenacookie} arena cookies for the winner\n'
-        f'{emojis.bp} ~200+ {emojis.arenacookie} arena cookies for second and third place\n'
-        f'{emojis.bp} ~30+ {emojis.arenacookie} arena cookies for everyone else'
+        f'{emojis.BP} ~1000+ {emojis.ARENA_COOKIE} arena cookies for the winner\n'
+        f'{emojis.BP} ~200+ {emojis.ARENA_COOKIE} arena cookies for second and third place\n'
+        f'{emojis.BP} ~30+ {emojis.ARENA_COOKIE} arena cookies for everyone else'
     )
 
     note = (
-        f'{emojis.bp} {events_official_server}\n'
-        f'{emojis.bp} {events_once_cycle}\n'
-        f'{emojis.bp} This event shares its cooldown with `arena`'
+        f'{emojis.BP} {events_official_server}\n'
+        f'{emojis.BP} {events_once_cycle}\n'
+        f'{emojis.BP} This event shares its cooldown with `arena`'
     )
 
-    whichone = f'{emojis.bp} `big arena` has higher rewards than unboosted `arena`'
+    whichone = f'{emojis.BP} `big arena` has higher rewards than unboosted `arena`'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'BIG ARENA EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
@@ -847,27 +847,28 @@ async def embed_event_bigarena(prefix):
 # Horse race event
 async def embed_event_horserace(prefix):
 
-    schedule = f'{emojis.bp} Every even hour (= every 2 hours)'
+    schedule = f'{emojis.BP} Every even hour (= every 2 hours)'
 
-    answers = f'{emojis.bp} `horse race` (unlocked with a {emojis.horset5} T5+ horse)'
+    answers = f'{emojis.BP} `horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
 
     rewards = (
-        f'{emojis.bp} Random lootbox or + 1 horse tier\n'
-        f'{emojis.bp} {emojis.horset9} T9 horse only: Chance to get a random pet\n'
-        f'{emojis.bp} You **only** get rewards if you place third or higher'
+        f'{emojis.BP} T1 - T8: A random lootbox or +1 horse tier\n'
+        f'{emojis.BP} T9: A random lootbox or a pet (up to T3) or +1 horse tier\n'
+        f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T4)\n'
+        f'{emojis.BP} You **only** get rewards if you place third or higher'
     )
 
     note = (
-        f'{emojis.bp} {events_official_server}\n'
-        f'{emojis.bp} {events_once_cycle}\n'
-        f'{emojis.bp} This event shares its cooldown with `horse breeding`\n'
-        f'{emojis.bp} Your chance to win is heavily influenced by your horse\'s level'
+        f'{emojis.BP} {events_official_server}\n'
+        f'{emojis.BP} {events_once_cycle}\n'
+        f'{emojis.BP} This event shares its cooldown with `horse breeding`\n'
+        f'{emojis.BP} Your chance to win is heavily influenced by your horse\'s level'
     )
 
-    whichone = f'{emojis.bp} Unless your horse is {emojis.horset9} T9, always breed instead'
+    whichone = f'{emojis.BP} Unless your horse is {emojis.HORSE_T10} T10, breed instead'
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'HORSE RACE EVENT',
         description = 'This is a global event which takes place every 2 hours.'
     )
@@ -884,26 +885,26 @@ async def embed_event_horserace(prefix):
 # Pet tournament event
 async def embed_event_pettournamnent(prefix):
 
-    schedule = f'{emojis.bp} Every 12 hours at 08:00 / 20:00 UTC'
+    schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
 
-    answers = f'{emojis.bp} `pets tournament [ID]`'
+    answers = f'{emojis.BP} `pets tournament [ID]`'
 
     rewards = (
-        f'{emojis.bp} + 1 pet tier\n'
-        f'{emojis.bp} You only get the reward if you **win** the tournament'
+        f'{emojis.BP} + 1 pet tier\n'
+        f'{emojis.BP} You only get the reward if you **win** the tournament'
     )
 
     note = (
-        f'{emojis.bp} {events_official_server}\n'
-        f'{emojis.bp} {events_once_cycle}\n'
-        f'{emojis.bp} You can only enter **1** pet per cycle\n'
-        f'{emojis.bp} You can apply with any pet, even pets on adventures\n'
-        f'{emojis.bp} Your chance to win is influenced by your pet\'s score (see `{prefix}pet`)\n'
-        f'{emojis.bp} The tournament will not happen if there are less than 50 pets'
+        f'{emojis.BP} {events_official_server}\n'
+        f'{emojis.BP} {events_once_cycle}\n'
+        f'{emojis.BP} You can only enter **1** pet per cycle\n'
+        f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
+        f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see `{prefix}pet`)\n'
+        f'{emojis.BP} The tournament will not happen if there are less than 50 pets'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'PET TOURNAMENT EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
@@ -919,24 +920,24 @@ async def embed_event_pettournamnent(prefix):
 # Lottery event
 async def embed_event_lottery(prefix):
 
-    schedule = f'{emojis.bp} Every 12 hours at 00:00 / 12:00 UTC'
+    schedule = f'{emojis.BP} Every 12 hours at 00:00 / 12:00 UTC'
 
-    answers = f'{emojis.bp} `buy lottery ticket [1-10]`'
+    answers = f'{emojis.BP} `buy lottery ticket [1-10]`'
 
     rewards = (
-        f'{emojis.bp} A huge amount of {emojis.coin} coins if you win\n'
-        f'{emojis.bp} Absolutely nothing if you don\'t'
+        f'{emojis.BP} A huge amount of {emojis.COIN} coins if you win\n'
+        f'{emojis.BP} Absolutely nothing if you don\'t'
     )
 
     note =(
-        f'{emojis.bp} {events_official_server}\n'
-        f'{emojis.bp} You can buy up to 10 lottery tickets for each draw\n'
-        f'{emojis.bp} The size of the pot depends on ticket prices and tickets sold\n'
-        f'{emojis.bp} The ticket prices are different with every lottery'
+        f'{emojis.BP} {events_official_server}\n'
+        f'{emojis.BP} You can buy up to 10 lottery tickets for each draw\n'
+        f'{emojis.BP} The size of the pot depends on ticket prices and tickets sold\n'
+        f'{emojis.BP} The ticket prices are different with every lottery'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'LOTTERY EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
@@ -952,26 +953,26 @@ async def embed_event_lottery(prefix):
 # Not so mini boss event
 async def embed_event_notsominiboss(prefix):
 
-    schedule = f'{emojis.bp} Tuesday, Thursday, Saturday at 18:00 UTC'
+    schedule = f'{emojis.BP} Tuesday, Thursday, Saturday at 18:00 UTC'
 
-    answers = f'{emojis.bp} `not so mini boss join` (unlocked in area 10)'
+    answers = f'{emojis.BP} `not so mini boss join` (unlocked in area 10)'
 
-    rewards = f'{emojis.bp} 2-4 {emojis.dragonscale} dragon scales **if** the boss dies'
+    rewards = f'{emojis.BP} 2-4 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
 
     note = (
-        f'{emojis.bp} {events_official_server}\n'
-        f'{emojis.bp} {events_once_cycle}\n'
-        f'{emojis.bp} This event shares its cooldown with `miniboss` and `dungeon`\n'
-        f'{emojis.bp} This event has a 20% chance to fail'
+        f'{emojis.BP} {events_official_server}\n'
+        f'{emojis.BP} {events_once_cycle}\n'
+        f'{emojis.BP} This event shares its cooldown with `miniboss` and `dungeon`\n'
+        f'{emojis.BP} This event has a 20% chance to fail'
     )
 
     whichone = (
-        f'{emojis.bp} Only do this event if you don\'t need to do a dungeon\n'
-        f'{emojis.bp} `miniboss` rewards coins instead of dragon scales'
+        f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
+        f'{emojis.BP} `miniboss` rewards coins instead of dragon scales'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'NOT SO MINI BOSS EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
@@ -991,28 +992,28 @@ async def embed_event_notsominiboss(prefix):
 async def embed_event_snowball(prefix):
 
     trigger = (
-        f'{emojis.bp} Any command (chance unknown)\n'
-        f'{emojis.bp} By using a {emojis.xmashat} christmas hat'
+        f'{emojis.BP} Any command (chance unknown)\n'
+        f'{emojis.BP} By using a {emojis.XMAS_HAT} christmas hat'
     )
 
     answers = (
-        f'{emojis.bp} `fight`: Low chance to get more loot than `summon`, high chance to get less.\n'
-        f'{emojis.bp} `summon`: 50/50 chance to get more or less loot\n'
-        f'{emojis.bp} `sleep`: Very low chance to get more loot than `summon` and `fight`, very high chance to get less'
+        f'{emojis.BP} `fight`: Low chance to get more loot than `summon`, high chance to get less.\n'
+        f'{emojis.BP} `summon`: 50/50 chance to get more or less loot\n'
+        f'{emojis.BP} `sleep`: Very low chance to get more loot than `summon` and `fight`, very high chance to get less'
     )
 
     best_answer = (
-        f'{emojis.bp} If you don\'t feel like gambling, `summon` is the safest answer\n'
-        f'{emojis.bp} If you _do_ feel like gambling, `sleep` has the highest potential rewards'
+        f'{emojis.BP} If you don\'t feel like gambling, `summon` is the safest answer\n'
+        f'{emojis.BP} If you _do_ feel like gambling, `sleep` has the highest potential rewards'
     )
 
     note =(
-        f'{emojis.bp} This event gives much higher rewards if it\'s triggered with a {emojis.xmashat} christmas hat\n'
-        f'{emojis.bp} You always get some loot, even if you lose'
+        f'{emojis.BP} This event gives much higher rewards if it\'s triggered with a {emojis.XMAS_HAT} christmas hat\n'
+        f'{emojis.BP} You always get some loot, even if you lose'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'SNOWBALL FIGHT EVENT',
         description =   f'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
     )
@@ -1028,31 +1029,31 @@ async def embed_event_snowball(prefix):
 # Bunny event (easter)
 async def embed_event_bunny(prefix):
 
-    trigger = f'{emojis.bp} `hunt`, `adventure` and work commands (0.75 % chance)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (0.75 % chance)'
 
     answers = (
-        f'{emojis.bp} The bunny has a {emojis.pethappiness} happiness and :carrot: hunger stat\n'
-        f'{emojis.bp} You can enter a line of commands to influence these stats\n'
-        f'{emojis.bp} `feed` decreases hunger by 18-22\n'
-        f'{emojis.bp} `pat` increases happiness by 8-12\n'
-        f'{emojis.bp} Example: `feed feed pat pat pat`\n'
-        f'{emojis.bp} If happiness is 85+ higher than hunger, catch chance is 100%\n'
-        f'{emojis.bp} You can only use up to 6 commands\n'
-        f'{emojis.bp} Less commands = 15 {emojis.easteregg} easter eggs for every command not used'
+        f'{emojis.BP} The bunny has a {emojis.PET_HAPPINESS} happiness and :carrot: hunger stat\n'
+        f'{emojis.BP} You can enter a line of commands to influence these stats\n'
+        f'{emojis.BP} `feed` decreases hunger by 18-22\n'
+        f'{emojis.BP} `pat` increases happiness by 8-12\n'
+        f'{emojis.BP} Example: `feed feed pat pat pat`\n'
+        f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
+        f'{emojis.BP} You can only use up to 6 commands\n'
+        f'{emojis.BP} Less commands = 15 {emojis.EASTER_EGG} easter eggs for every command not used'
     )
 
     rewards = (
-        f'{emojis.bp} {emojis.easterbunny} Bunny (used in crafting {emojis.easterspawner} boss spawners)\n'
-        f'{emojis.bp} {emojis.petgoldenbunny} Fake golden bunny. Gifts you a {emojis.easterspawner} boss spawner every day.'
+        f'{emojis.BP} {emojis.EASTER_BUNNY} Bunny (used in crafting {emojis.EASTER_SPAWNER} boss spawners)\n'
+        f'{emojis.BP} {emojis.PET_GOLDEN_BUNNY} Fake golden bunny. Gifts you a {emojis.EASTER_SPAWNER} boss spawner every day.'
     )
 
     note =(
-        f'{emojis.bp} You can increase the chance of this event by crafting {emojis.easterrainbowcarrot} rainbow carrots\n'
-        f'{emojis.bp} You can craft up to 5 carrots which gives you a 3 % spawn chance'
+        f'{emojis.BP} You can increase the chance of this event by crafting {emojis.EASTER_RAINBOW_CARROT} rainbow carrots\n'
+        f'{emojis.BP} You can craft up to 5 carrots which gives you a 3 % spawn chance'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'BUNNY EVENT',
         description = 'This is a random personal easter event in which a bunny appears for you to tame.'
     )
@@ -1069,32 +1070,32 @@ async def embed_event_bunny(prefix):
 async def embed_event_bunnyboss(prefix):
 
     trigger = (
-        f'{emojis.bp} Craft a {emojis.easterspawner} boss spawner\n'
-        f'{emojis.bp} Use `egg use boss spawner` or `egg buy instant spawn`\n'
-        f'{emojis.bp} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
+        f'{emojis.BP} Craft a {emojis.EASTER_SPAWNER} boss spawner\n'
+        f'{emojis.BP} Use `egg use boss spawner` or `egg buy instant spawn`\n'
+        f'{emojis.BP} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
     )
 
     answers = (
-        f'{emojis.bp} `fight` or `defend`\n'
-        f'{emojis.bp} Look at the boss stats to decide what to choose'
+        f'{emojis.BP} `fight` or `defend`\n'
+        f'{emojis.BP} Look at the boss stats to decide what to choose'
     )
 
     rewards = (
-        f'{emojis.bp} 1-2 {emojis.easteregggolden} golden eggs\n'
-        f'{emojis.bp} {emojis.easteregg} Easter eggs\n'
-        f'{emojis.bp} {emojis.arenacookie} Arena cookies\n'
-        f'{emojis.bp} {emojis.epiccoin} EPIC coins\n'
-        f'{emojis.bp} {emojis.easterlootbox} Easter lootboxes\n'
-        f'{emojis.bp} The participants have a chance to get a few {emojis.easteregg} easter eggs and {emojis.arenacookie} cookies'
+        f'{emojis.BP} 1-2 {emojis.EASTER_EGG_GOLDEN} golden eggs\n'
+        f'{emojis.BP} {emojis.EASTER_EGG} Easter eggs\n'
+        f'{emojis.BP} {emojis.ARENA_COOKIE} Arena cookies\n'
+        f'{emojis.BP} {emojis.EPIC_COIN} EPIC coins\n'
+        f'{emojis.BP} {emojis.EASTER_LOOTBOX} Easter lootboxes\n'
+        f'{emojis.BP} The participants have a chance to get a few {emojis.EASTER_EGG} easter eggs and {emojis.ARENA_COOKIE} cookies'
     )
 
     note = (
-        f'{emojis.bp} {events_multiplayer}\n'
-        f'{emojis.bp} {events_player_no.format(no=15)}'
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=15)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = 'BUNNY BOSS EVENT',
         description = 'This is a multiplayer easter event in which you fight a bunny boss.'
     )

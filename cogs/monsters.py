@@ -225,13 +225,13 @@ guide_mob_daily = '`{prefix}dailymob` : Where to find the daily monster'
 async def embed_mobs(prefix, mobs_data, area):
 
     guides = (
-        #f'{emojis.bp} {guide_mobs_all.format(prefix=prefix)}\n'
-        #f'{emojis.bp} {guide_mobs_area.format(prefix=prefix)}\n'
-        f'{emojis.bp} {guide_mob_daily.format(prefix=prefix)}'
+        #f'{emojis.BP} {guide_mobs_all.format(prefix=prefix)}\n'
+        #f'{emojis.BP} {guide_mobs_area.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_mob_daily.format(prefix=prefix)}'
     )
 
     embed = discord.Embed(
-        color = global_data.color,
+        color = global_data.EMBED_COLOR,
         title = f'MONSTERS IN AREA {area}'
     )
 
@@ -253,11 +253,11 @@ async def embed_mobs(prefix, mobs_data, area):
             else:
                 mob_drop_emoji = None
             if mob_activity == 'hunt':
-                mobs_hunt = f'{mobs_hunt}\n{emojis.bp} {mob_emoji} **{mob_name}**'
+                mobs_hunt = f'{mobs_hunt}\n{emojis.BP} {mob_emoji} **{mob_name}**'
                 if mob_drop_emoji:
                     mobs_hunt = f'{mobs_hunt} (drops {mob_drop_emoji})'
             if mob_activity == 'adventure':
-                mobs_adventure = f'{mobs_adventure}\n{emojis.bp} {mob_emoji} **{mob_name}**'
+                mobs_adventure = f'{mobs_adventure}\n{emojis.BP} {mob_emoji} **{mob_name}**'
 
     if not mobs_hunt == '':
         embed.add_field(name='HUNT', value=mobs_hunt, inline=False)
