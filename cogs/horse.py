@@ -1,4 +1,5 @@
 # horse.py
+"""Contains all horse related guides and calculators"""
 
 import asyncio
 from math import floor
@@ -201,7 +202,7 @@ class HorseCog(commands.Cog):
             else:
                 await ctx.send(global_data.MSG_ERROR)
                 return
-        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+        horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
         try:
             horse_data = await database.get_horse_data(ctx, horse_tier)
         except Exception as error:
@@ -379,7 +380,7 @@ class HorseCog(commands.Cog):
                 await ctx.send(global_data.MSG_ERROR)
                 return
 
-        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+        horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
         if lootboxer_level > 100:
             horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:
@@ -531,7 +532,7 @@ class HorseCog(commands.Cog):
             await ctx.send(global_data.MSG_ERROR)
             return
 
-        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+        horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
         if lootboxer_level > 100:
             horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:
@@ -618,7 +619,7 @@ class HorseCog(commands.Cog):
             await ctx.send(f'{MSG_LOOTBOXER_LEVEL_RANGE.format(user=user_name)}\n\n{message_syntax}')
             return
 
-        horse_emoji = getattr(emojis, f'horset{horse_tier}')
+        horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
         if lootboxer_level > 100:
             horse_max_level = 10 * horse_tier + (lootboxer_level - 100)
         else:

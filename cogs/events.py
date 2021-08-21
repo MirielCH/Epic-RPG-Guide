@@ -397,7 +397,7 @@ async def embed_event_heal(prefix):
 # Lootbox event
 async def embed_event_lootbox(prefix):
 
-    trigger = f'{emojis.BP} `open` (0.5 % chance)'
+    trigger = f'{emojis.BP} `open` (chance unknown)'
 
     answers = (
         f'{emojis.BP} `cry`: You get a {emojis.LB_EPIC} EPIC, {emojis.LB_RARE} rare or {emojis.LB_UNCOMMON} uncommon lootbox\n'

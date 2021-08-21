@@ -34,11 +34,14 @@ class tradingCog(commands.Cog):
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def trades(self, ctx, *args):
 
-        user_settings = await database.get_settings(ctx)
-        if user_settings == None:
-            await database.first_time_user(self.bot, ctx)
-            return
-
+        try:
+            user_settings = await database.get_user_settings(ctx)
+        except Exception as error:
+            if isinstance(error, database.FirstTimeUser):
+                return
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
         invoked = ctx.message.content
         invoked = invoked.lower()
         prefix = ctx.prefix
@@ -238,14 +241,14 @@ async def embed_trading_menu(ctx):
 # Trades before leaving area X
 async def embed_trades_area_specific(user_settings, area_no, prefix):
 
+    user_tt, user_ascended = user_settings
     if area_no==11:
-        if user_settings[0]==0:
+        if user_tt == 0:
             description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
         else:
-            description = await global_data.design_field_trades(area_no, user_settings[1])
+            description = await global_data.design_field_trades(area_no, user_ascended)
     else:
-        description = await global_data.design_field_trades(area_no, user_settings[1])
-
+        description = await global_data.design_field_trades(area_no, user_ascended)
     guides = (
         f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_traderates.format(prefix=prefix)}\n'

@@ -4,7 +4,17 @@ import logging
 import logging.handlers
 import os
 
+from dotenv import load_dotenv
+
 import emojis
+import database
+import global_data
+
+
+# Read tokens
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+DBL_TOKEN = os.getenv('DBL_TOKEN')
 
 # Get bot directory
 BOT_DIR = os.path.dirname(__file__)

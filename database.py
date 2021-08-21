@@ -2,7 +2,9 @@
 
 from datetime import datetime
 import sqlite3
+from typing import Union
 
+import discord
 from discord.ext import commands
 
 import global_data
@@ -20,59 +22,48 @@ INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunc
 
 class FirstTimeUser(commands.CommandError):
     """Custom exception for first time users so they stop spamming my database"""
-    def __init__(self, argument):
-        self.argument = argument
+    pass
 
 
 class NoDataFound(Exception):
     """Exception when no data is returned from the database"""
-    def __init__(self, argument):
-        self.argument = argument
+    pass
 
 
 # --- Get Data ---
-# Check database for stored prefix, if none is found, a record is inserted and the default prefix $ is used, return all bot prefixes
-async def get_prefix_all(bot, ctx):
+async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
+    """Checks the database for a prefix. If no prefix is found, a record for the guild is created with the
+    default prefix.
 
+    Returns:
+        A tuple with the current server prefix and the pingable bot
+    """
     try:
         cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
+        cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (ctx.guild.id,))
         record = cur.fetchone()
-
         if record:
-            prefix = record[1]
+            (prefix,) = record
         else:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.DEFAULT_PREFIX,))
             prefix = global_data.DEFAULT_PREFIX
     except sqlite3.Error as error:
-        global_data.logger.error(error)
         await log_error(ctx, error)
 
     return commands.when_mentioned_or(prefix)(bot, ctx)
 
-# Check database for stored prefix, if none is found, the default prefix $ is used, return only the prefix (returning the default prefix this is pretty pointless as the first command invoke already inserts the record)
-async def get_prefix(bot, ctx, guild_join=False):
 
-    if guild_join == False:
-        guild = ctx.guild
-    else:
-        guild = ctx
-
+async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> str:
+    """Check database for stored prefix. If no prefix is found, the default prefix is used"""
+    guild_id = ctx_or_guild.guild.id if isinstance(ctx_or_guild, commands.Context) else ctx_or_guild.id
     try:
         cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (guild.id,))
+        cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (guild_id,))
         record = cur.fetchone()
-
-        if record:
-            prefix = record[1]
-        else:
-            prefix = global_data.DEFAULT_PREFIX
+        prefix = record[0] if record else global_data.DEFAULT_PREFIX
     except sqlite3.Error as error:
         global_data.logger.error(error)
-        if guild_join == False:
-            await log_error(ctx, error)
-        else:
-            await log_error(ctx, error, True)
+        await log_error(ctx_or_guild, error)
 
     return prefix
 
@@ -461,25 +452,35 @@ async def get_user_number(ctx):
 
     return user_number
 
-# Check database for user settings, if none is found, the default settings TT0 and not ascended are saved and used, return both
-async def get_settings(ctx):
 
+async def get_user_settings(ctx: commands.Context) -> tuple:
+    """Check database for user settings.
+    If none is found, the default settings TT0 and not ascended are
+    stored and an error is raised. There is NO return when this happens.
+
+    Returns:
+        List: [TT, Ascension].
+
+    Raises:
+        FirstTimeUser if there are no settings stored. This also sends the welcome message.
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
     try:
         cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
+        user_id = ctx.author.id
+        cur.execute('SELECT timetravel, ascended FROM settings_user where user_id=?', (user_id,))
         record = cur.fetchone()
-
         if record:
-            current_settings = (record[1], record[2])
+            user_settings = record
         else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, 0, 'not ascended',))
-            current_settings = None
-
+            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (user_id, 0, 'not ascended'))
+            await first_time_user(ctx)
+            raise FirstTimeUser
     except sqlite3.Error as error:
-        global_data.logger.error(error)
         await log_error(ctx, error)
+        raise
 
-    return current_settings
+    return user_settings
 
 # Get monster data by areas
 async def get_mob_data(ctx, areas):
@@ -528,7 +529,7 @@ async def get_mob_by_name(ctx, name):
 # --- Write Data ---
 
 # Set new prefix
-async def set_prefix(bot, ctx, new_prefix):
+async def set_prefix(ctx, new_prefix):
 
     try:
         cur=ERG_DB.cursor()
@@ -544,7 +545,7 @@ async def set_prefix(bot, ctx, new_prefix):
         await log_error(ctx, error)
 
 # Set progress settings
-async def set_progress(bot, ctx, new_tt, new_ascended):
+async def set_progress(ctx, new_tt, new_ascended):
 
     try:
         cur=ERG_DB.cursor()
@@ -561,57 +562,48 @@ async def set_progress(bot, ctx, new_tt, new_ascended):
 
 
 # --- Error Logging ---
-
-# Error logging
-async def log_error(ctx, error, guild_join=False):
-
-    if guild_join == False:
+async def log_error(ctx_or_guild: Union[commands.Context, discord.Guild], error: Union[Exception, str]):
+    """Logs an error to the database and the logfile"""
+    if isinstance(ctx_or_guild, commands.Context):
+        ctx = ctx_or_guild
+        timestamp = ctx.message.created_at
+        user_input = ctx.message.content
         try:
-            settings = ''
-            try:
-                user_settings = await get_settings(ctx)
-                settings = f'TT{user_settings[0]}, {user_settings[1]}'
-            except:
-                settings = 'N/A'
-            cur=ERG_DB.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (ctx.message.created_at, ctx.message.content, str(error), settings))
-        except sqlite3.Error as db_error:
-            print(f'Error inserting error (ha) into database.\n{db_error}')
+            user_settings = await get_user_settings(ctx)
+            user_tt, user_ascended = user_settings
+            settings = f'TT{user_tt}, {user_ascended}'
+        except:
+            settings = 'N/A'
     else:
-        try:
-            cur=ERG_DB.cursor()
-            cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (datetime.now(), 'Error when joining a new guild', str(error), 'N/A'))
-        except sqlite3.Error as db_error:
-            print(f'Error inserting error (ha) into database.\n{db_error}')
-
+        settings = 'N/A'
+        timestamp = datetime.utcnow()
+        user_input = 'Error when joining a new guild'
+    try:
+        cur=ERG_DB.cursor()
+        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), settings))
+    except sqlite3.Error as db_error:
+        global_data.logger.error(f'Error inserting error (ha) into database:\n{db_error}')
 
 
 # --- First Time User ---
-
-# Welcome message to inform the user of his/her initial settings
-async def first_time_user(bot, ctx):
-
+async def first_time_user(ctx: commands.Context) -> None:
+    """Welcome message to inform the user of his/her initial settings"""
     try:
-        current_settings = await get_settings(ctx)
-
-        if current_settings == None:
-            current_tt = 0
-            current_ascension = 'not ascended'
+        user_settings = await get_user_settings(ctx)
+    except Exception as error:
+        if isinstance(error, FirstTimeUser):
+            return
         else:
-            current_tt = current_settings[0]
-            current_ascension = current_settings[1]
+            await ctx.send(global_data.MSG_ERROR)
+            return
+    user_tt, user_ascension = user_settings
+    prefix = ctx.prefix
 
-        prefix = ctx.prefix
-
-        await ctx.send(
-            f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
-            f'I have set your progress to **TT {current_tt}**, **{current_ascension}**.\n\n'
-            f'** --> Please use `{ctx.prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
-            f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'
-            f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'
-            f'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.'
-        )
-    except:
-        raise
-    else:
-        raise FirstTimeUser("First time user, pls ignore")
+    await ctx.send(
+        f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+        f'I have set your progress to **TT {user_tt}**, **{user_ascension}**.\n\n'
+        f'** --> Please use `{prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
+        f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'
+        f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'
+        f'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.'
+    )

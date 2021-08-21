@@ -124,9 +124,15 @@ class petsCog(commands.Cog):
                     await ctx.send(syntax)
                     return
                 else:
-                    current_settings = await database.get_settings(ctx)
-                    user_tt = current_settings[0]
-
+                    try:
+                        user_settings = await database.get_user_settings(ctx)
+                    except Exception as error:
+                        if isinstance(error, database.FirstTimeUser):
+                            return
+                        else:
+                            await ctx.send(global_data.MSG_ERROR)
+                            return
+                user_tt, _ = user_settings
                 embed = await embed_fuse(ctx.prefix, pet_tier, user_tt)
                 await ctx.send(embed=embed)
             else:

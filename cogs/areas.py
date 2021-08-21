@@ -144,17 +144,16 @@ class areasCog(commands.Cog):
                             return
 
         area_data = await database.get_area_data(ctx, area_no)
-        user_settings = await database.get_settings(ctx)
-        if user_settings is not None:
-            user_settings = list(user_settings)
-
-        if user_settings is None:
-            await database.first_time_user(self.bot, ctx)
-            return
-
+        try:
+            user_settings = await database.get_user_settings(ctx)
+        except Exception as error:
+            if isinstance(error, database.FirstTimeUser):
+                return
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
         if arg_tt is not None:
             user_settings[0] = arg_tt
-
             if arg_asc:
                 if arg_tt == 0:
                     await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')

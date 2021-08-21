@@ -79,23 +79,26 @@ class timetravelCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True)
     async def tt1000(self, ctx):
 
-        await ctx.send('https://tenor.com/view/doctor-who-snap-tardis-david-tennant-gif-17590283')
+        await ctx.send('https://tenor.com/view/davidtennant-fangirls-dr-who-scared-oh-crap-gif-6092368')
 
     # Command "mytt" - Information about user's TT
     @commands.command(aliases=('mytimetravel',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def mytt(self, ctx):
 
-        user_settings = await database.get_settings(ctx)
-        if user_settings == None:
-            await database.first_time_user(self.bot, ctx)
-            return
-        my_tt = int(user_settings[0])
-
-        if 1 <= my_tt <= 25:
-            tt_data = await database.get_tt_unlocks(ctx, int(my_tt))
+        try:
+            user_settings = await database.get_user_settings(ctx)
+        except Exception as error:
+            if isinstance(error, database.FirstTimeUser):
+                return
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
+        user_tt, _ = user_settings
+        if 1 <= user_tt <= 25:
+            tt_data = await database.get_tt_unlocks(ctx, user_tt)
         else:
-            tt_data = (my_tt,0,0,'','','')
+            tt_data = (user_tt,0,0,'','','')
         embed = await embed_timetravel_specific(tt_data, ctx.prefix, True)
         await ctx.send(embed=embed)
 

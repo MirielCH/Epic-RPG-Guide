@@ -52,12 +52,12 @@ class craftingCog(commands.Cog):
 
         if args:
             if len(args) == 2:
-                tt_no, horse_tier = args
-                tt_no = tt_no.lower().replace('tt','')
+                user_tt, horse_tier = args
+                user_tt = user_tt.lower().replace('tt','')
                 horse_tier = horse_tier.lower().replace('t','')
 
-                if tt_no.isnumeric():
-                    tt_no = int(tt_no)
+                if user_tt.isnumeric():
+                    user_tt = int(user_tt)
                     if horse_tier.isnumeric():
                         horse_tier = int(horse_tier)
                         if not 1 <= horse_tier <= 10:
@@ -66,14 +66,14 @@ class craftingCog(commands.Cog):
                     else:
                         await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse tier to me :thinking:')
                         return
-                    if not 0 <= tt_no <= 999:
-                            await ctx.send(f'`{tt_no}` is not a valid TT.\nPlease enter a TT between 0 and 999.')
+                    if not 0 <= user_tt <= 999:
+                            await ctx.send(f'`{user_tt}` is not a valid TT.\nPlease enter a TT between 0 and 999.')
                             return
                 else:
                     await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
                     return
 
-                tt_chance = (49+tt_no)*tt_no/2/100
+                tt_chance = (49+user_tt)*user_tt/2/100
 
                 horse_tier_chance = {
                     1: 1,
@@ -110,10 +110,10 @@ class craftingCog(commands.Cog):
                 hunt_drop_chance = round(hunt_drop_chance,2)
                 hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
 
-                horse_emoji = getattr(emojis, f'horset{horse_tier}')
+                horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
 
                 await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
+                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {user_tt}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
                     f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
                     f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
@@ -129,12 +129,16 @@ class craftingCog(commands.Cog):
                 await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
         else:
             try:
-                user_settings = await database.get_settings(ctx)
-                if user_settings is None:
-                    await database.first_time_user(self.bot, ctx)
-                    return
-                tt_no = int(user_settings[0])
-                tt_chance = (49+tt_no)*tt_no/2/100
+                try:
+                    user_settings = await database.get_user_settings(ctx)
+                except Exception as error:
+                    if isinstance(error, database.FirstTimeUser):
+                        return
+                    else:
+                        await ctx.send(global_data.MSG_ERROR)
+                        return
+                user_tt, _ = user_settings
+                tt_chance = (49 + user_tt) * user_tt / 2 / 100
 
                 await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
                 answer_user_merchant = await self.bot.wait_for('message', check=check, timeout = 30)
@@ -148,7 +152,7 @@ class craftingCog(commands.Cog):
                         horse_tier = 0
                         horse_emoji = ''
                     except:
-                        await ctx.send(f'Whelp, something went wrong here, sorry.')
+                        await ctx.send(global_data.MSG_ERROR)
                         return
                     if '**Tier** - III' in horse_stats:
                         horse_chance = 1
@@ -212,14 +216,14 @@ class craftingCog(commands.Cog):
                     hunt_drop_chance = round(hunt_drop_chance,2)
                     hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
 
-                    horse_emoji = getattr(emojis, f'horset{horse_tier}')
+                    horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
 
                 else:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
 
                 await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {tt_no}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
+                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {user_tt}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
                     f'**Your drop chance**\n'
                     f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
                     f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
