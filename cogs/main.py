@@ -123,12 +123,13 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
+    festival = f'{emojis.BP} `{prefix}hf` : Horse festival 2021\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
         f'{emojis.BP} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
         f'{emojis.BP} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
-        f'{emojis.BP} `{prefix}coolness` : Everything known about coolness'
+        f'{emojis.BP} `{prefix}coolness` : Everything known about {emojis.STAT_COOLNESS} coolness'
     )
     crafting = (
         f'{emojis.BP} `{prefix}craft` : Recipes mats calculator\n'
@@ -173,6 +174,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.add_field(name=f'HORSE FESTIVAL {emojis.HORSE_T10}', value=festival, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)

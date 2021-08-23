@@ -126,13 +126,13 @@ class petsCog(commands.Cog):
                 else:
                     try:
                         user_settings = await database.get_user_settings(ctx)
+                        user_tt, _ = user_settings
                     except Exception as error:
                         if isinstance(error, database.FirstTimeUser):
                             return
                         else:
                             await ctx.send(global_data.MSG_ERROR)
                             return
-                user_tt, _ = user_settings
                 embed = await embed_fuse(ctx.prefix, pet_tier, user_tt)
                 await ctx.send(embed=embed)
             else:
@@ -178,7 +178,7 @@ async def embed_pets_overview(prefix):
 
 
     tier = (
-        f'{emojis.BP} Tiers range from I to XII (1 to 12)\n'
+        f'{emojis.BP} Tiers range from I to XV (1 to 15)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
@@ -193,7 +193,7 @@ async def embed_pets_overview(prefix):
     )
 
     specialskills = (
-        f'{emojis.BP} There are 6 special skills (see `{prefix}pet skills special`)\n'
+        f'{emojis.BP} There are 7 special skills (see `{prefix}pet skills special`)\n'
         f'{emojis.BP} Special skills don\'t have a rank and can **not** be lost\n'
         f'{emojis.BP} Only available on special event reward pets\n'
         f'{emojis.BP} Each special skill is unique to a certain special pet'
@@ -487,6 +487,12 @@ async def embed_pets_skills_special(prefix):
         f'{emojis.BP} This pet is a reward in the anniversary event'
     )
 
+    farmer = (
+        f'{emojis.BP} Has a chance to find seeds in pet adventures\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
+        f'{emojis.BP} This pet is a reward in the horse festival'
+    )
+
     skillranks = f'{emojis.BP} Special skills can not be ranked up'
 
     guides = (
@@ -508,10 +514,11 @@ async def embed_pets_skills_special(prefix):
 
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'COMPETITIVE {emojis.SKILL_COMPETITIVE}', value=competitive, inline=False)
+    embed.add_field(name=f'FARMER {emojis.SKILL_FARMER}', value=farmer, inline=False)
     embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'FASTER {emojis.SKILL_FASTER}', value=faster, inline=False)
-    embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
     embed.add_field(name=f'GIFTER {emojis.SKILL_GIFTER}', value=gifter, inline=False)
+    embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
     embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)

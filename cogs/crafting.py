@@ -61,7 +61,7 @@ class craftingCog(commands.Cog):
                     if horse_tier.isnumeric():
                         horse_tier = int(horse_tier)
                         if not 1 <= horse_tier <= 10:
-                            await ctx.send(f'`{horse_tier}` is not a valid horse tier.\nPlease enter a tier between 1 and 9.')
+                            await ctx.send(f'`{horse_tier}` is not a valid horse tier.\nPlease enter a tier between 1 and 10.')
                             return
                     else:
                         await ctx.send(f'`{args[1]}` doesn\'t look like a valid horse tier to me :thinking:')
@@ -154,34 +154,34 @@ class craftingCog(commands.Cog):
                     except:
                         await ctx.send(global_data.MSG_ERROR)
                         return
-                    if '**Tier** - III' in horse_stats:
+                    if 'Tier** - III' in horse_stats:
                         horse_chance = 1
                         horse_tier = 3
-                    elif '**Tier** - II' in horse_stats:
+                    elif 'Tier** - II' in horse_stats:
                         horse_chance = 1
                         horse_tier = 2
-                    elif '**Tier** - VIII' in horse_stats:
+                    elif 'Tier** - VIII' in horse_stats:
                         horse_chance = 1.5
                         horse_tier = 8
-                    elif '**Tier** - VII' in horse_stats:
+                    elif 'Tier** - VII' in horse_stats:
                         horse_chance = 1.2
                         horse_tier = 7
-                    elif '**Tier** - VI' in horse_stats:
+                    elif 'Tier** - VI' in horse_stats:
                         horse_chance = 1
                         horse_tier = 6
-                    elif '**Tier** - V' in horse_stats:
+                    elif 'Tier** - V' in horse_stats:
                         horse_chance = 1
                         horse_tier = 5
-                    elif '**Tier** - IV' in horse_stats:
+                    elif 'Tier** - IV' in horse_stats:
                         horse_chance = 1
                         horse_tier = 4
-                    elif '**Tier** - IX' in horse_stats:
+                    elif 'Tier** - IX' in horse_stats:
                         horse_chance = 2
                         horse_tier = 9
-                    elif '**Tier** - I' in horse_stats:
+                    elif 'Tier** - I' in horse_stats:
                         horse_chance = 1
                         horse_tier = 1
-                    elif '**Tier** - X' in horse_stats:
+                    elif 'Tier** - X' in horse_stats:
                         horse_chance = 3
                         horse_tier = 10
                     else:

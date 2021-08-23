@@ -440,7 +440,7 @@ async def embed_coolness(prefix):
 
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
-        title = 'COOLNESS',
+        title = f'COOLNESS {emojis.STAT_COOLNESS}',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
     )
 
@@ -456,11 +456,11 @@ async def embed_coolness(prefix):
 async def embed_badges(prefix):
 
     badges = (
-        f'{emojis.BP} {emojis.BADGE_1} : Unlocked with 1 coolness\n'
-        f'{emojis.BP} {emojis.BADGE_100} : Unlocked with 100 coolness\n'
-        f'{emojis.BP} {emojis.BADGE_200} : Unlocked with 200 coolness\n'
-        f'{emojis.BP} {emojis.BADGE_500} : Unlocked with 500 coolness\n'
-        f'{emojis.BP} {emojis.BADGE_1000} : Unlocked with 1000 coolness\n'
+        f'{emojis.BP} {emojis.BADGE_1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
         f'{emojis.BP} {emojis.BADGE_A15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown'

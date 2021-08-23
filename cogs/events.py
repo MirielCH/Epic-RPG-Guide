@@ -14,6 +14,7 @@ class eventsCog(commands.Cog):
 
     events_aliases = (
         'event','events',
+        'zombiehorde','horde',
         'enchantevent',
         'epicguard','guard','jail',
         'heal','healevent',
@@ -62,6 +63,9 @@ class eventsCog(commands.Cog):
                 await ctx.send(embed=embed)
             elif (event_name.find('legendary') > -1) or (event_name == 'boss'):
                 embed = await embed_event_legendary(ctx.prefix)
+                await ctx.send(embed=embed)
+            elif (event_name.find('hunt') > -1) or (event_name.find('zombie') > -1) or (event_name.find('horde') > -1):
+                embed = await embed_event_hunt(ctx.prefix)
                 await ctx.send(embed=embed)
             elif (event_name.find('lootbox') > -1) or (event_name == 'lb'):
                 if (event_name.find('summon') > -1):
@@ -173,6 +177,9 @@ class eventsCog(commands.Cog):
             elif (invoked.find('summon') > -1):
                 embed = await embed_event_lootboxsummoning(ctx.prefix)
                 await ctx.send(embed=embed)
+            elif (invoked.find('horde') > -1):
+                embed = await embed_event_hunt(ctx.prefix)
+                await ctx.send(embed=embed)
             elif (invoked.find('ruby') > -1) or (invoked.find('work') > -1):
                 embed = await embed_event_rubydragon(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -218,7 +225,8 @@ async def embed_events_overview(prefix):
         f'{emojis.BP} `epic guard`\n'
         f'{emojis.BP} `heal`\n'
         f'{emojis.BP} `lootbox`\n'
-        f'{emojis.BP} `ruby dragon` / `work`'
+        f'{emojis.BP} `ruby dragon` / `work`\n'
+        f'{emojis.BP} `zombie horde` / `hunt`'
     )
 
     mp_events = (
@@ -1104,6 +1112,41 @@ async def embed_event_bunnyboss(prefix):
     embed.add_field(name='HOW TO START', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+
+    return embed
+
+
+async def embed_event_hunt(prefix):
+    """Hunt event embed"""
+    trigger = f'{emojis.BP} `hunt` in areas 3+ (chance unknown)'
+
+    answers = (
+        f'{emojis.BP} `cry`: The zombie horde walks away, you get nothing\n'
+        f'{emojis.BP} `fight`: Small chance to get 1 coin and _almost_ one level of XP, high chance to get nothing\n'
+        f'{emojis.BP} `join`: You move to area 2 with the horde and get 5-7 {emojis.ZOMBIE_EYE} zombie eyes'
+    )
+
+    rec_answer = (
+        f'{emojis.BP} `join` if you need the zombie eyes\n'
+        f'{emojis.BP} `fight` otherwise\n'
+    )
+
+    note = (
+        f'{emojis.BP} You actually _do_ move to area 2 if you choose `join`\n'
+        f'{emojis.BP} {events_personal}'
+    )
+
+    embed = discord.Embed(
+        color = global_data.EMBED_COLOR,
+        title = 'ZOMBIE HORDE EVENT',
+        description = 'This is a rare random personal event in which you encounter a zombie horde.'
+    )
+
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 
     return embed

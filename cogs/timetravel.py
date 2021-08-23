@@ -373,7 +373,7 @@ class timetravelCog(commands.Cog):
 
         score_lootboxes = round((lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25),2)
         score_mobdrops = round((wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2),2)
-        score_farm_items = floor((bread/20)+(carrot/25)+(potato/30)+(seed/2500))
+        score_farm_items = floor(bread/30)+floor(carrot/35)+floor(potato/40)+floor(seed/2500)
         score_ruby_a15 = floor(ruby_a15/25)
         score_ruby_a16 = floor(ruby_a16/25)
         score_lifepotions = floor(lifepotion/500000)
@@ -713,12 +713,13 @@ async def embed_stt_score(prefix):
     )
 
     materials = (
-        f'{emojis.BP} 30 {emojis.POTATO} potatoes = 1 score\n'
+        f'{emojis.BP} 40 {emojis.POTATO} potatoes = 1 score\n'
+        f'{emojis.BP} 35 {emojis.CARROT} carrots = 1 score\n'
+        f'{emojis.BP} 30 {emojis.BREAD} bread = 1 score\n'
         f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
-        f'{emojis.BP} 25 {emojis.CARROT} carrots = 1 score\n'
-        f'{emojis.BP} 20 {emojis.BREAD} bread = 1 score\n'
         f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score\n'
         f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
+        f'{emojis.BP} **Take farm item score with a grain of salt for now**\n'
     )
 
     mobdrops = (

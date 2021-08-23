@@ -121,7 +121,7 @@ class HorseCog(commands.Cog):
         message_syntax = (
             f'{global_data.MSG_SYNTAX.format(syntax=f"{prefix}horsecalc [tier] [level]")}\n\n'
             'You can also omit all parameters to use your horse tier and level for the calculation.\n'
-            f'Examples: `{prefix}horsecalc 6 25` or `{prefix}horsecalc t7 l30` or `{prefix}horsecalc 6 25`'
+            f'Examples: `{prefix}horsecalc 6 25` or `{prefix}horsecalc t7 l30` or `{prefix}horsecalc`'
         )
         if args:
             if len(args) != 2:
@@ -163,40 +163,40 @@ class HorseCog(commands.Cog):
                 return
             try:
                 horse_stats = str(answer_bot_at.embeds[0].fields[0])
-                start_level = horse_stats.find('Horse Level -') + 14
+                start_level = horse_stats.find('Horse Level** -') + 16
                 end_level = start_level + 2
                 horse_level = int(horse_stats[start_level:end_level].strip())
             except:
                 await ctx.send(global_data.MSG_ERROR)
                 return
-            if '**Tier** - III' in horse_stats:
+            if 'Tier** - III' in horse_stats:
                 horse_chance = 1
                 horse_tier = 3
-            elif '**Tier** - II' in horse_stats:
+            elif 'Tier** - II' in horse_stats:
                 horse_chance = 1
                 horse_tier = 2
-            elif '**Tier** - VIII' in horse_stats:
+            elif 'Tier** - VIII' in horse_stats:
                 horse_chance = 1.5
                 horse_tier = 8
-            elif '**Tier** - VII' in horse_stats:
+            elif 'Tier** - VII' in horse_stats:
                 horse_chance = 1.2
                 horse_tier = 7
-            elif '**Tier** - VI' in horse_stats:
+            elif 'Tier** - VI' in horse_stats:
                 horse_chance = 1
                 horse_tier = 6
-            elif '**Tier** - V' in horse_stats:
+            elif 'Tier** - V' in horse_stats:
                 horse_chance = 1
                 horse_tier = 5
-            elif '**Tier** - IV' in horse_stats:
+            elif 'Tier** - IV' in horse_stats:
                 horse_chance = 1
                 horse_tier = 4
-            elif '**Tier** - IX' in horse_stats:
+            elif 'Tier** - IX' in horse_stats:
                 horse_chance = 2
                 horse_tier = 9
-            elif '**Tier** - I' in horse_stats:
+            elif 'Tier** - I' in horse_stats:
                 horse_chance = 1
                 horse_tier = 1
-            elif '**Tier** - X' in horse_stats:
+            elif 'Tier** - X' in horse_stats:
                 horse_chance = 3
                 horse_tier = 10
             else:
@@ -209,7 +209,9 @@ class HorseCog(commands.Cog):
             await ctx.send(global_data.MSG_ERROR)
             return
         def_bonus = horse_data['def_level_bonus']
+        festive_bonus = horse_data['festive_level_bonus']
         golden_bonus = horse_data['golden_level_bonus']
+        magic_bonus = horse_data['magic_level_bonus']
         special_bonus = horse_data['special_level_bonus']
         strong_bonus = horse_data['strong_level_bonus']
         super_special_bonus = horse_data['super_special_level_bonus']
@@ -217,7 +219,9 @@ class HorseCog(commands.Cog):
         await ctx.send(
             f'Stat bonuses for a {horse_emoji} **T{horse_tier} L{horse_level}** horse:\n'
             f'{emojis.BP} **DEFENDER**: {def_bonus * horse_level:,g}% extra DEF\n'
+            f'{emojis.BP} **FESTIVE**: {festive_bonus * horse_level:,g}% extra chance to spawn random events\n'
             f'{emojis.BP} **GOLDEN**: {golden_bonus * horse_level:,g}% extra coins from `rpg hunt` and `rpg adventure`\n'
+            f'{emojis.BP} **MAGIC**: {magic_bonus * horse_level:,g}% increased enchantment efficiency\n'
             f'{emojis.BP} **SPECIAL**: {special_bonus * horse_level:,g}% extra coins and XP from the epic quest\n'
             f'{emojis.BP} **STRONG**: {strong_bonus * horse_level:,g}% extra AT\n'
             f'{emojis.BP} **SUPER SPECIAL**: {super_special_bonus * horse_level:,g}% extra coins and XP from the epic '
@@ -325,31 +329,31 @@ class HorseCog(commands.Cog):
                 return
             try:
                 horse_stats = str(answer_bot_horse.embeds[0].fields[0])
-                start_level = horse_stats.find('Horse Level -') + 14
+                start_level = horse_stats.find('Horse Level** -') + 16
                 end_level = start_level + 2
                 horse_level = int(horse_stats[start_level:end_level].strip())
             except:
                 await ctx.send(global_data.MSG_ERROR)
                 return
-            if '**Tier** - III' in horse_stats:
+            if 'Tier** - III' in horse_stats:
                 horse_tier = 3
-            elif '**Tier** - II' in horse_stats:
+            elif 'Tier** - II' in horse_stats:
                 horse_tier = 2
-            elif '**Tier** - VIII' in horse_stats:
+            elif 'Tier** - VIII' in horse_stats:
                 horse_tier = 8
-            elif '**Tier** - VII' in horse_stats:
+            elif 'Tier** - VII' in horse_stats:
                 horse_tier = 7
-            elif '**Tier** - VI' in horse_stats:
+            elif 'Tier** - VI' in horse_stats:
                 horse_tier = 6
-            elif '**Tier** - V' in horse_stats:
+            elif 'Tier** - V' in horse_stats:
                 horse_tier = 5
-            elif '**Tier** - IV' in horse_stats:
+            elif 'Tier** - IV' in horse_stats:
                 horse_tier = 4
-            elif '**Tier** - IX' in horse_stats:
+            elif 'Tier** - IX' in horse_stats:
                 horse_tier = 9
-            elif '**Tier** - I' in horse_stats:
+            elif 'Tier** - I' in horse_stats:
                 horse_tier = 1
-            elif '**Tier** - X' in horse_stats:
+            elif 'Tier** - X' in horse_stats:
                 horse_tier = 10
             else:
                 await ctx.send(global_data.MSG_ERROR)
@@ -478,31 +482,31 @@ class HorseCog(commands.Cog):
             return
         try:
             horse_stats = str(answer_bot_horse.embeds[0].fields[0])
-            start_level = horse_stats.find('Horse Level -') + 14
+            start_level = horse_stats.find('Horse Level** -') + 16
             end_level = start_level + 2
             horse_level = int(horse_stats[start_level:end_level].strip())
         except:
             await ctx.send(global_data.MSG_ERROR)
             return
-        if '**Tier** - III' in horse_stats:
+        if 'Tier** - III' in horse_stats:
             horse_tier = 3
-        elif '**Tier** - II' in horse_stats:
+        elif 'Tier** - II' in horse_stats:
             horse_tier = 2
-        elif '**Tier** - VIII' in horse_stats:
+        elif 'Tier** - VIII' in horse_stats:
             horse_tier = 8
-        elif '**Tier** - VII' in horse_stats:
+        elif 'Tier** - VII' in horse_stats:
             horse_tier = 7
-        elif '**Tier** - VI' in horse_stats:
+        elif 'Tier** - VI' in horse_stats:
             horse_tier = 6
-        elif '**Tier** - V' in horse_stats:
+        elif 'Tier** - V' in horse_stats:
             horse_tier = 5
-        elif '**Tier** - IV' in horse_stats:
+        elif 'Tier** - IV' in horse_stats:
             horse_tier = 4
-        elif '**Tier** - IX' in horse_stats:
+        elif 'Tier** - IX' in horse_stats:
             horse_tier = 9
-        elif '**Tier** - I' in horse_stats:
+        elif 'Tier** - I' in horse_stats:
             horse_tier = 1
-        elif '**Tier** - X' in horse_stats:
+        elif 'Tier** - X' in horse_stats:
             horse_tier = 10
         else:
             await ctx.send(global_data.MSG_ERROR)
@@ -794,49 +798,50 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     defender = (
         f'{emojis.BP} Increases overall DEF\n'
         f'{emojis.BP} The higher the horse level, the higher the DEF bonus\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     strong = (
         f'{emojis.BP} Increases overall AT\n'
         f'{emojis.BP} The higher the horse level, the higher the AT bonus\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     tank = (
         f'{emojis.BP} Increases overall LIFE\n'
         f'{emojis.BP} The higher the horse level, the higher the LIFE bonus\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     golden = (
         f'{emojis.BP} Increases the amount of coins from `hunt` and `adventure`\n'
         f'{emojis.BP} The higher the horse level, the higher the coin bonus\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     special = (
         f'{emojis.BP} Unlocks the epic quest which gives more coins and XP than the regular quest\n'
-        f'{emojis.BP} You can do up to ? waves in the epic quest\n'
+        f'{emojis.BP} You can do up to 15 waves in the epic quest\n'
         f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     super_special = (
         f'{emojis.BP} Unlocks the epic quest which gives more coins and XP than the regular quest\n'
         f'{emojis.BP} You can do up to 100 waves in the epic quest\n'
         f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
         f'{emojis.BP} The coin and XP bonus is 50% higher than SPECIAL\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        f'{emojis.BP} **You only have a chance getting this type when breeding two SPECIAL horses**'
     )
     magic = (
         f'{emojis.BP} Increases the effectiveness of enchantments\n'
         f'{emojis.BP} The higher the horse level, the higher the increase\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     festive = (
         f'{emojis.BP} Increases the chance to trigger a random event when using commands\n'
         f'{emojis.BP} The higher the horse level, the higher the increase\n'
-        f'{emojis.BP} ?% chance to get this type when breeding'
+        #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     besttype = (
-        f'{emojis.BP} If you are in {emojis.TIME_TRAVEL} TT 0-2: SPECIAL\n'
-        f'{emojis.BP} If you are in {emojis.TIME_TRAVEL} TT 3+: DEFENDER (if T6 L30+)'
+        f'{emojis.BP} SPECIAL (or SUPER SPECIAL) if you are in {emojis.TIME_TRAVEL} TT 0-2\n'
+        f'{emojis.BP} DEFENDER if you are in {emojis.TIME_TRAVEL} TT 3+ and your horse is T6 L30+\n'
+        f'{emojis.BP} MAGIC if you get ULTRA-OMEGA or GODLY enchants'
     )
     guides = (
         f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
@@ -861,7 +866,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     embed.add_field(name='STRONG', value=strong, inline=False)
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)
-    #embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
+    embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed
 

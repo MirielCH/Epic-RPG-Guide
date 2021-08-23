@@ -33,10 +33,9 @@ class DevCog(commands.Cog):
                             for alias in subcommand.aliases:
                                 aliases = f'{aliases}, `{alias}`'
                             subcommands = f'{subcommands}{emojis.BP} {aliases}\n'
-        await ctx.reply(
+        await ctx.send(
             f'Available dev commands:\n'
-            f'{subcommands}',
-            mention_author=False
+            f'{subcommands}'
         )
 
     @dev.command()
@@ -105,6 +104,29 @@ class DevCog(commands.Cog):
         except asyncio.TimeoutError as error:
             await ctx.send('Oh thank god, he forgot to answer.')
 
+    # Enable/disable commands
+    @dev.command(aliases=('disable',))
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def enable(self, ctx, *args):
+        action = ctx.invoked_with
+        if args:
+            command = ''
+            for arg in args:
+                command = f'{command} {arg}'
+            command = self.bot.get_command(command)
+            if command is None:
+                await ctx.send('No command with that name found.')
+            elif ctx.command == command:
+                await ctx.send(f'You can not {action} this command.')
+            else:
+                if action == 'enable':
+                    command.enabled = True
+                else:
+                    command.enabled = False
+                await ctx.send(f'Command {command.qualified_name} {action}d.')
+        else:
+            await ctx.send(f'The syntax is `{ctx.prefix}{ctx.command} [command]`')
 
 # Initialization
 def setup(bot):

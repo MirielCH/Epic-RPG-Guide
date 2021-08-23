@@ -480,7 +480,7 @@ async def get_user_settings(ctx: commands.Context) -> tuple:
         await log_error(ctx, error)
         raise
 
-    return user_settings
+    return list(user_settings)
 
 # Get monster data by areas
 async def get_mob_data(ctx, areas):

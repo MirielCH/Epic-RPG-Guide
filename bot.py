@@ -35,6 +35,7 @@ COG_EXTENSIONS = [
     'cogs.settings',
     'cogs.timetravel',
     'cogs.trading',
+    'cogs.horse_festival'
     ]
 if __name__ == '__main__':
     for extension in COG_EXTENSIONS:
