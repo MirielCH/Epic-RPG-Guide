@@ -46,7 +46,14 @@ class SettingsCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def settings(self, ctx: commands.Context) -> None:
         """Returns current user progress settings"""
-        embed = await embed_user_settings(ctx)
+        try:
+            embed = await embed_user_settings(ctx)
+        except Exception as error:
+            if isinstance(error, database.FirstTimeUser):
+                return
+            else:
+                await ctx.send(global_data.MSG_ERROR)
+                return
         await ctx.send(embed=embed)
 
     @commands.command(aliases=('sp','setpr','setp',))
@@ -173,15 +180,17 @@ def setup(bot):
 
 # --- Embeds ---
 async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
-    """User settings embed"""
+    """User settings embed
+
+    Raises
+    ------
+    FirstTimeUser if no settings are stored.
+    sqlite3.Error if something happened during the query.
+    """
     try:
         user_settings = await database.get_user_settings(ctx)
-    except Exception as error:
-        if isinstance(error, database.FirstTimeUser):
-            return
-        else:
-            await ctx.send(global_data.MSG_ERROR)
-            return
+    except:
+        raise
     user_tt, user_ascension = user_settings
     settings_field = (
         f'{emojis.BP} Current run: **TT {user_tt}**\n'

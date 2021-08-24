@@ -1123,7 +1123,7 @@ async def embed_event_hunt(prefix):
 
     answers = (
         f'{emojis.BP} `cry`: The zombie horde walks away, you get nothing\n'
-        f'{emojis.BP} `fight`: Small chance to get 1 coin and _almost_ one level of XP, high chance to get nothing\n'
+        f'{emojis.BP} `fight`: Small chance to get 1 coin and _almost_ one level, high chance to get nothing\n'
         f'{emojis.BP} `join`: You move to area 2 with the horde and get 5-7 {emojis.ZOMBIE_EYE} zombie eyes'
     )
 

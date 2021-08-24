@@ -92,19 +92,19 @@ async def embed_megarace(prefix: str) -> discord.Embed:
         f'{emojis.BP} Cliff: **B**\n'
         f'{emojis.BP} Cooldown: **A**\n'
         f'{emojis.BP} Dinosaur: **B**\n'
-        f'{emojis.BP} EPIC Guards: **A** (**B** for gamblers)\n'
-        f'{emojis.BP} EPIC NPC: **C**\n'
+        f'{emojis.BP} EPIC Guards: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Injured Racers: **C**\n'
         f'{emojis.BP} Legendary Boss: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Many Horses: **B**\n'
         f'{emojis.BP} Mountains: **C** (**A** for gamblers)\n'
-        f'{emojis.BP} Mysterious Racer: Does not matter\n'
-        f'{emojis.BP} Nothing: **C** (**A** for gamblers)\n'
+        f'{emojis.BP} Mysterious Racer: All answers are the same\n'
+        f'{emojis.BP} Nothing: **C** (**B** for gamblers)\n'
         f'{emojis.BP} Rainy: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Sandstorm: **B** (**A** for gamblers)\n'
-        f'{emojis.BP} Team: **B** (**C** for gamblers)\n'
+        f'{emojis.BP} The EPIC NPC: **C**\n'
+        f'{emojis.BP} Team: **B** (**A** for gamblers)\n'
         f'{emojis.BP} World Border: **A**\n'
-        f'{emojis.BP} Zombie Horde: **B**\n'
+        f'{emojis.BP} Zombie Horde: **B** (**C** for gamblers)\n'
     )
 
     note = (
@@ -120,7 +120,7 @@ async def embed_megarace(prefix: str) -> discord.Embed:
 
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='OVERVIEW', value=overview, inline=False)
-    embed.add_field(name='BEST ANSWERS', value=best_answers, inline=False)
+    embed.add_field(name='SHORTEST ANSWERS', value=best_answers, inline=False)
     embed.add_field(name='NOTES', value=note, inline=False)
 
     return embed

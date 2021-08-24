@@ -59,7 +59,7 @@ class FunCog(commands.Cog):
         else:
             await ctx.send('https://tenor.com/view/raquita-gif-9201609')
 
-    @commands.command(aliases=('thank','thanks!'))
+    @commands.command(aliases=('thank','thanks!','ty','thx'))
     @commands.bot_has_permissions(send_messages=True)
     async def thanks(self, ctx: commands.Context, *args: str) -> None:
         """You're very welcome"""

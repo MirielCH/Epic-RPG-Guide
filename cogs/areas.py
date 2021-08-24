@@ -111,6 +111,7 @@ class areasCog(commands.Cog):
                 return
 
             if args:
+                args = [arg.lower() for arg in args]
                 arg1 = args[0]
                 arg1 = arg1.replace('tt','')
                 if arg1.isnumeric():
