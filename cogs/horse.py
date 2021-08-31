@@ -839,9 +839,9 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     besttype = (
-        f'{emojis.BP} SPECIAL (or SUPER SPECIAL) if you are in {emojis.TIME_TRAVEL} TT 0-1\n'
-        f'{emojis.BP} DEFENDER if you are in {emojis.TIME_TRAVEL} TT 2+\n'
-        f'{emojis.BP} MAGIC if you get ULTRA-OMEGA or GODLY enchants'
+        f'{emojis.BP} SPECIAL or SUPER SPECIAL if you are in {emojis.TIME_TRAVEL} TT 0-1\n'
+        f'{emojis.BP} DEFENDER or STRONG if you are in {emojis.TIME_TRAVEL} TT 2+\n'
+        #f'{emojis.BP} MAGIC if you get ULTRA-OMEGA or GODLY enchants'
     )
     guides = (
         f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
@@ -866,7 +866,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     embed.add_field(name='STRONG', value=strong, inline=False)
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)
-    #embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
+    embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed
 

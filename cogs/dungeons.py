@@ -1021,7 +1021,7 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.BP} {player_sword_emoji} {player_sword}\n'
             f'{emojis.BP} {emojis.PET_CAT} T4+ cat pet\n{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet\n'
             f'{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+\n'
-            f'{emojis.BP} 2,000+ {emojis.STAT_COOLNESS} coolness'
+            f'{emojis.BP} {emojis.STAT_COOLNESS} 2,000+ coolness'
         )
         strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
         strategy_name = 'STRATEGY'

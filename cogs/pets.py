@@ -488,7 +488,7 @@ async def embed_pets_skills_special(prefix):
     )
 
     farmer = (
-        f'{emojis.BP} Has a chance to find seeds in pet adventures\n'
+        f'{emojis.BP} Has a 40% chance to find seeds in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
         f'{emojis.BP} This pet is a reward in the horse festival'
     )

@@ -84,9 +84,10 @@ async def embed_megarace(prefix: str) -> discord.Embed:
         f'{emojis.BP} Every stage you will encounter 3 random events and have to choose what to do\n'
         f'{emojis.BP} The cooldown of the next stage depends on your answers\n'
     )
-    best_answers = (
+    best_answers_1 = (
         f'{emojis.BP} Ancient Racer: **C**\n'
         f'{emojis.BP} Annoying Racer: **B** (**C** for gamblers)\n'
+        f'{emojis.BP} Asteroid: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Black Hole: **C** (**A** for gamblers)\n'
         f'{emojis.BP} Bottleneck: **C**\n'
         f'{emojis.BP} Cliff: **B**\n'
@@ -94,22 +95,26 @@ async def embed_megarace(prefix: str) -> discord.Embed:
         f'{emojis.BP} Dinosaur: **B**\n'
         f'{emojis.BP} EPIC Guards: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Injured Racers: **C**\n'
-        f'{emojis.BP} Legendary Boss: **A** (**C** for gamblers)\n'
+        f'{emojis.BP} Legendary Boss: **C**\n'
+    )
+    best_answers_2 = (
         f'{emojis.BP} Many Horses: **B**\n'
         f'{emojis.BP} Mountains: **C** (**A** for gamblers)\n'
         f'{emojis.BP} Mysterious Racer: All answers are the same\n'
-        f'{emojis.BP} Nothing: **C** (**B** for gamblers)\n'
+        f'{emojis.BP} Nothing: **C** (**A** for gamblers)\n'
+        f'{emojis.BP} Party: **B** (**A** for gamblers)\n'
         f'{emojis.BP} Rainy: **A** (**C** for gamblers)\n'
         f'{emojis.BP} Sandstorm: **B** (**A** for gamblers)\n'
+        f'{emojis.BP} Sleepy: **A** (**B** for gamblers)\n'
+        f'{emojis.BP} Team: **B**\n'
         f'{emojis.BP} The EPIC NPC: **C**\n'
-        f'{emojis.BP} Team: **B** (**A** for gamblers)\n'
         f'{emojis.BP} World Border: **A**\n'
         f'{emojis.BP} Zombie Horde: **B** (**C** for gamblers)\n'
     )
 
     note = (
         f'{emojis.BP} The answers for gamblers are better **if** you get lucky, otherwise they are worse\n'
-        f'{emojis.BP} If you want to choose those, get a {emojis.HORSE_ARMOR} horse armor first'
+        f'{emojis.BP} If you want to choose those, get a {emojis.HORSE_ARMOR} horse armor first\n'
     )
 
     embed = discord.Embed(
@@ -120,7 +125,8 @@ async def embed_megarace(prefix: str) -> discord.Embed:
 
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='OVERVIEW', value=overview, inline=False)
-    embed.add_field(name='SHORTEST ANSWERS', value=best_answers, inline=False)
-    embed.add_field(name='NOTES', value=note, inline=False)
+    embed.add_field(name='SHORTEST ANSWERS (1)', value=best_answers_1, inline=False)
+    embed.add_field(name='SHORTEST ANSWERS (2)', value=best_answers_2, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
 
     return embed

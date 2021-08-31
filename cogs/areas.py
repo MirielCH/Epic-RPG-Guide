@@ -572,11 +572,20 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
                 f'{emojis.BP} Open: All lootboxes'
             )
-        elif area_no >= 7:
+        elif area_no == 10:
+            lootboxes = (
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
+                f'log for the EDGY sword\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
+            )
+        else:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Open: All lootboxes'
             )
+
+
     elif 1 <= user_tt <= 9:
         if 1 <= area_no <= 2:
             if user_asc == 'ascended':
@@ -643,7 +652,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
                     f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
-        elif 7 <= area_no <= 10:
+        elif 7 <= area_no <= 9:
             if user_asc == 'ascended':
                 lootboxes = (
                     f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
@@ -654,6 +663,13 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                     f'{emojis.BP} Open: All lootboxes'
                 )
+        elif area_no == 10:
+            lootboxes = (
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
+                f'log for the EDGY sword\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
+            )
         elif area_no >= 11:
             if user_asc == 'ascended':
                 lootboxes = (
@@ -733,7 +749,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
                     f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
-        elif 7 <= area_no <= 10:
+        elif 7 <= area_no <= 9:
             if user_asc == 'ascended':
                 lootboxes = (
                     f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
@@ -746,6 +762,14 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
                     f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )
+        elif area_no == 10:
+            lootboxes = (
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
+                f'log for the EDGY sword\n'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
+            )
         elif area_no >= 11:
             if user_asc == 'ascended':
                 lootboxes = (
@@ -797,7 +821,18 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: {emojis.LB_EPIC} EPIC, {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
             )
-        elif 10 <= area_no <= 14:
+        elif area_no == 10:
+            lootboxes = (
+                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon, {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC for STT score\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
+                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
+                f'log for the EDGY sword\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Open: {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
+            )
+        elif 11 <= area_no <= 14:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_COMMON} Common, {emojis.LB_UNCOMMON} Uncommon, {emojis.LB_RARE} Rare, {emojis.LB_EPIC} EPIC for STT score\n'

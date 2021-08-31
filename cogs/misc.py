@@ -368,6 +368,12 @@ async def embed_duels(prefix):
         f'{emojis.BP} Thus the duel outcome can be highly unexpected'
     )
 
+    note = (
+        f'{emojis.BP} Unless you are really rich, don\'t choose coins/cards.\n'
+        f'{emojis.BP} If you don\'t choose a weapon, your opponent will automatically win.\n'
+    )
+
+
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
         title = 'DUELS',
@@ -377,7 +383,7 @@ async def embed_duels(prefix):
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
-    embed.add_field(name='TIP', value=f'{emojis.BP} Unless you are __very__ rich, don\'t choose coins.', inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
 
     return embed
 

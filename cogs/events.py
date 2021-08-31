@@ -860,9 +860,9 @@ async def embed_event_horserace(prefix):
     answers = f'{emojis.BP} `horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
 
     rewards = (
-        f'{emojis.BP} T1 - T8: A random lootbox or +1 horse tier\n'
-        f'{emojis.BP} T9: A random lootbox or a pet (up to T3) or +1 horse tier\n'
-        f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T4)\n'
+        f'{emojis.BP} T1 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
+        f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +1 horse level or +1 horse tier\n'
+        f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T5)\n'
         f'{emojis.BP} You **only** get rewards if you place third or higher'
     )
 
