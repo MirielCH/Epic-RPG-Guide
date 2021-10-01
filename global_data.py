@@ -225,72 +225,72 @@ async def design_field_trades(area_no, ascended='not ascended'):
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
             f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
-            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
-            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
         )
     elif int(area_no) == 5:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
             f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
-            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
-            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
         )
     elif int(area_no) == 7:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)'
         )
     elif int(area_no) == 8:
         if ascended == 'ascended':
             field_value = (
                 f'{emojis.BP} Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
                 f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
             )
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_MEGA} MEGA logs and below\n'
                 f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
                 f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
             )
     elif int(area_no) == 9:
         if ascended == 'ascended':
             field_value = (
                 f'{emojis.BP} Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
                 f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
             )
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_EPIC} EPIC logs\n'
                 f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
                 f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish'
+                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
+                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
             )
     elif int(area_no) == 10:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)'
         )
     elif int(area_no) == 11:
-        field_value = f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs'
+        field_value = f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)'
     elif int(area_no) == 15:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.FISH_GOLDEN} golden fish and below\n'
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs\n'
-            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs\n'
-            f'{emojis.BP} Trade {emojis.APPLE} apple to {emojis.LOG} logs'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)'
         )
     else:
         field_value = f'{emojis.BP} N/A'

@@ -84,6 +84,12 @@ class FunCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def complain(self, ctx: commands.Context) -> None:
+        """Complain"""
+        await ctx.send('No u')
+
+    @commands.command()
     @commands.is_owner()
     @commands.bot_has_permissions(send_messages=True)
     async def hey(self, ctx: commands.Context) -> None:

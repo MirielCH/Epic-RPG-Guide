@@ -371,12 +371,12 @@ class timetravelCog(commands.Cog):
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
 
-        score_lootboxes = round((lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25),2)
-        score_mobdrops = round((wolfskin/20)+floor(zombieeye/9)+floor(unicornhorn/7)+floor(mermaidhair/5)+floor(chip/4)+floor(dragonscale/2),2)
-        score_farm_items = floor(bread/25)+floor(carrot/30)+floor(potato/35)+floor(seed/2500)
-        score_ruby_a15 = floor(ruby_a15/25)
-        score_ruby_a16 = floor(ruby_a16/25)
-        score_lifepotions = floor(lifepotion/500000)
+        score_lootboxes = (lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25)
+        score_mobdrops = (wolfskin/20)+(zombieeye/10)+(unicornhorn/7)+(mermaidhair/5)+(chip/4)+(dragonscale/2)
+        score_farm_items = (bread/25)+(carrot/30)+(potato/35)+(seed/2500)
+        score_ruby_a15 = (ruby_a15/25)
+        score_ruby_a16 = (ruby_a16/25)
+        score_lifepotions = (lifepotion/500000)
         if score_lifepotions > 20:
             score_lifepotions = 20
         if score_lifepotions == 0 and lifepotion > 0:
@@ -390,11 +390,12 @@ class timetravelCog(commands.Cog):
         if a15[0] == 15:
             message_a15 = (
                 f'**Area 15**\n'
-                f'{emojis.BP} {score_lootboxes:,} lootbox score\n'
-                f'{emojis.BP} {score_mobdrops:,} mob drop score\n'
-                f'{emojis.BP} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions:,} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
-                f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,} total score**\n\n'
+                f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
+                f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
+                f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
+                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions:,.2f} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
+                f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,.2f} total score**\n\n'
+                f'\n'
             )
         else:
             message_a15 = ''
@@ -405,11 +406,11 @@ class timetravelCog(commands.Cog):
             f'Note that this score does not include gear, levels and stats. This is only your inventory.\n\n'
             f'{message_a15}'
             f'**The TOP**\n'
-            f'{emojis.BP} {score_lootboxes:,} lootbox score\n'
-            f'{emojis.BP} {score_mobdrops:,} mob drop score\n'
-            f'{emojis.BP} ~{score_farm_items:,} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions:,} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
-            f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,} total score**'
+            f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
+            f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
+            f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
+            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions:,.2f} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
+            f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,.2f} total score**'
         )
 
 # Initialization
@@ -450,6 +451,7 @@ async def embed_timetravel_overview(prefix):
         f'{emojis.BP} Dragon essences\n'
         f'{emojis.BP} TIME dragon essences\n'
         f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} GODLY horse tokens\n'
         f'{emojis.BP} Event items (if an event is active)\n'
         f'{emojis.BP} Your horse\n'
         f'{emojis.BP} Your pets\n'

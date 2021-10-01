@@ -91,12 +91,13 @@ class MainCog(commands.Cog):
     async def on_ready(self) -> None:
         """Fires when bot has finished starting"""
         #DiscordComponents(bot)
+
         startup_info = f'{self.bot.user.name} has connected to Discord!'
         print(startup_info)
         global_data.logger.info(startup_info)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
-                                                            name='your questions'))
-        await self.update_stats.start()
+                                                                 name='your questions'))
+        if not self.update_stats.is_running(): await self.update_stats.start()
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
@@ -123,7 +124,6 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
-    festival = f'{emojis.BP} `{prefix}hf` : Horse festival 2021\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
@@ -174,7 +174,6 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    embed.add_field(name=f'HORSE FESTIVAL {emojis.HORSE_T10}', value=festival, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -195,7 +194,10 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
     user_count, *_ = await database.get_user_number(ctx)
     closed_shards = 0
     for shard_id in bot.shards:
-        if bot.get_shard(shard_id).is_closed():
+        shard = bot.get_shard(shard_id)
+        if shard is not None:
+            if shard.is_closed(): closed_shards += 1
+        else:
             closed_shards += 1
     general = (
         f'{emojis.BP} {len(bot.guilds):,} servers\n'
@@ -204,9 +206,10 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
         f'{emojis.BP} {round(bot.latency * 1000):,} ms average latency'
     )
     current_shard = bot.get_shard(ctx.guild.shard_id)
+    bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'
     current_shard_status = (
-        f'{emojis.BP} Shard: {current_shard.id + 1} of {len(bot.shards):,}\n'
-        f'{emojis.BP} Bot latency: {round(current_shard.latency * 1000):,} ms\n'
+        f'{emojis.BP} Shard: {ctx.guild.shard_id + 1} of {len(bot.shards):,}\n'
+        f'{emojis.BP} Bot latency: {bot_latency}\n'
         f'{emojis.BP} API latency: {round(api_latency.total_seconds() * 1000):,} ms'
     )
     creator = f'{emojis.BP} Miriel#0001'

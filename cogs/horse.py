@@ -139,8 +139,8 @@ class HorseCog(commands.Cog):
             except:
                 await ctx.send(f'{MSG_INVALID_HORSE_LEVEL.format(user=user_name)}\n\n{message_syntax}')
                 return
-            if horse_level < 1:
-                await ctx.send(f'{MSG_HORSE_LEVEL_MIN_1.format(user=user_name)}\n\n{message_syntax}')
+            if not 1 <= horse_level <= 140:
+                await ctx.send(f'{MSG_HORSE_LEVEL_RANGE_1.format(user=user_name)}\n\n{message_syntax}')
                 return
             if not 1 <= horse_tier <= 10:
                 await ctx.send(f'{MSG_HORSE_TIER_RANGE.format(user=user_name)}\n\n{message_syntax}')
@@ -757,7 +757,7 @@ async def embed_horses_tiers(prefix: str) -> discord.Embed:
     tier10 = (
         #f'{emojis.BP} **You need to be {emojis.TIME_TRAVEL} TT50+ to unlock this tier**\n'
         f'{emojis.BP} Unlocks 2 extra badge slots\n'
-        f'{emojis.BP} 30% chance monsters drop a second item (both mob drops and lootboxes)\n'
+        f'{emojis.BP} 30% chance for another drop after each drop (mob drops and lootboxes)\n'
         f'{emojis.BP} {buff_pets.format(increase=400, total=20)}\n'
         f'{emojis.BP} {buff_monsters.format(increase=200)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=650)}\n'
@@ -882,10 +882,15 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
     horse_tier = (
         f'{emojis.BP} You have a chance to get +1 tier\n'
         f'{emojis.BP} The chance to tier up gets lower the higher your tier is\n'
-        f'{emojis.BP} Everytime you don\'t tier up, you increase your fail count by 1. If your fail count gets high '
-        f'enough, you will be guaranteed to tier up (exact requirements unknown).\n'
-        f'{emojis.BP} A {emojis.GODLY_HORSE_TOKEN} GODLY horse token increases the fail count by 50\n'
         f'{emojis.BP} If one horse tiers up, the other one isn\'t guaranteed to do so too'
+    )
+    fail_count = (
+        f'{emojis.BP} Everytime you don\'t tier up, you increase your fail count by 1\n'
+        f'{emojis.BP} After a certain amount of fails, you will unlock an increased tier up chance\n'
+        f'{emojis.BP} If you still don\'t tier up, you will unlock a guaranteed tier up at some point\n'
+        f'{emojis.BP} The exact fail count needed depends on the horse tier and is unknown\n'
+        f'{emojis.BP} A {emojis.GODLY_HORSE_TOKEN} GODLY horse token increases the fail count by 50\n'
+        f'{emojis.BP} The token can be earned in certain seasonal events\n'
     )
     horse_level = (
         f'{emojis.BP} The new horses will have an average of both horse\'s levels\n'
@@ -918,6 +923,7 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
     embed.add_field(name='IMPACT ON TIER', value=horse_tier, inline=False)
     embed.add_field(name='IMPACT ON LEVEL', value=horse_level, inline=False)
     embed.add_field(name='IMPACT ON TYPE', value=horse_type, inline=False)
+    embed.add_field(name='TIER UP FAIL COUNT', value=fail_count, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed

@@ -247,8 +247,8 @@ async def embed_pets_overview(prefix):
 async def embed_pets_catch(prefix):
 
     source = (
-        f'{emojis.BP} After using `training` (4% chance, 10% with {emojis.HORSE_T9} T9 horse)\n'
-        f'{emojis.BP} By ranking at least 3rd in {emojis.HORSE_T9} T9 horse races\n'
+        f'{emojis.BP} After using `training` (4% base chance, 10% with {emojis.HORSE_T9} T9 horse, 20% with {emojis.HORSE_T10} T10 horse)\n'
+        f'{emojis.BP} By ranking at least 3rd in {emojis.HORSE_T9} T9 or {emojis.HORSE_T10} T10 horse races\n'
         f'{emojis.BP} In some seasonal events (these are not TT locked)\n'
         f'{emojis.BP} In some dev giveaways (these are not TT locked)\n'
         f'{emojis.BP} By sending {emojis.SKILL_ASCENDED} ascended pets on adventures (see `{prefix}pet adv`)'
@@ -403,7 +403,6 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
-        f'{emojis.BP} Note: You need to be in {emojis.TIME_TRAVEL} TT 25+ to be able to use the skill'
     )
 
     skillranks = (
@@ -488,7 +487,7 @@ async def embed_pets_skills_special(prefix):
     )
 
     farmer = (
-        f'{emojis.BP} Has a 40% chance to find seeds in pet adventures\n'
+        f'{emojis.BP} Has a 40% chance to find normal or special seeds in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
         f'{emojis.BP} This pet is a reward in the horse festival'
     )
@@ -601,7 +600,10 @@ async def embed_fuse(prefix, pet_tier, user_tt):
         what_to_fuse_with_tier = f'{emojis.BP} **T1** + **T1** ➜ **T2**'
     elif pet_tier == 2:
         how_to_get_tier = f'{emojis.BP} **T1** + **T1**'
-        what_to_fuse_with_tier = f'{emojis.BP} **T1** + **T2** ➜ **T3**'
+        what_to_fuse_with_tier = (
+            f'{emojis.BP} **T1** + **T2** ➜ **T3**\n'
+            f'{emojis.BP} **T2** + **T3** ➜ **T4**'
+        )
     elif pet_tier == 3:
         how_to_get_tier = f'{emojis.BP} **T1** + **T2**'
         if 0 <= user_tt <= 9:
