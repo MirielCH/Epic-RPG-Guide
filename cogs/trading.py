@@ -109,6 +109,8 @@ class tradingCog(commands.Cog):
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
     async def tradecalc(self, ctx, *args):
 
+        invalid_amount = f'Couldn\'t find a valid amount. :eyes:'
+
         if len(args) >= 3:
             area = args[0]
             amount = None
@@ -131,29 +133,37 @@ class tradingCog(commands.Cog):
                         f'Example: `{ctx.prefix}{ctx.invoked_with} a3 60k fish`'
                     )
                     return
+            args = [arg.lower() for arg in args]
             for arg in args[1:]:
-                argument = arg
-                argument = argument.replace('k','000').replace('m','000000')
-                if argument.isnumeric():
-                    amount = argument
+                found_number = False
+                if arg.endswith('k'):
+                    try:
+                        amount = int(float(arg.replace('k','')) * 1_000)
+                        found_number = True
+                    except:
+                        found_number = False
+                elif arg.endswith('m'):
+                    try:
+                        amount = int(float(arg.replace('m','')) * 1_000_000)
+                        found_number = True
+                    except:
+                        found_number = False
                 else:
-                    mat = f'{mat}{argument}'
-                    original_argument = f'{mat} {argument}'
+                    try:
+                        amount = int(arg)
+                        found_number = True
+                    except:
+                        found_number = False
 
-            if amount:
-                if not amount.isnumeric():
-                    await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
-                    return
-                try:
-                    amount = int(amount)
-                except:
-                    await ctx.send('Are you trying to break me or something? :thinking:')
-                    return
-                if amount > 100000000000:
-                    await ctx.send('Are you trying to break me or something? :thinking:')
-                    return
-            else:
-                await ctx.send(f'Couldn\'t find a valid amount. :eyes:')
+                if not found_number:
+                    mat = f'{mat}{arg}'
+                    original_argument = f'{mat} {arg}'
+
+            if amount is None:
+                await ctx.send(invalid_amount)
+                return
+            if amount > 100_000_000_000:
+                await ctx.send('Are you trying to break me or something? :thinking:')
                 return
 
             mat = mat.lower()

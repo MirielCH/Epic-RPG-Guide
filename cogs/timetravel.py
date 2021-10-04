@@ -595,7 +595,8 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
-        f'{emojis.BP} Don\'t forget to sell your armor and sword!'
+        f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_stt = (
@@ -622,13 +623,13 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
     if not (mytt == True) and not (tt_no == 0):
-        if 1 <= tt_no <= 2:
+        if 1 <= tt_no <= 3:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1_to_2, inline=False)
-        elif 3 <= tt_no <= 4:
+        elif 4 <= tt_no <= 5:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt3_to_4, inline=False)
-        elif 5 <= tt_no <= 9:
+        elif 6 <= tt_no <= 10:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt5_to_9, inline=False)
-        elif 10 <= tt_no <= 24:
+        elif 11 <= tt_no <= 24:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt10_to_24, inline=False)
         elif tt_no == 25:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt25, inline=False)
