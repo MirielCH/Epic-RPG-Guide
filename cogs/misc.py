@@ -59,8 +59,44 @@ class miscCog(commands.Cog):
         embed = await embed_start(ctx.prefix)
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=('ultr',))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+    async def ultraining(self, ctx: commands.Context, *args: str) -> None:
+        """Ultraining guide"""
+        embed = await embed_ultraining(ctx.prefix)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=('ucalc','ultrcalc','ultrainingcalc','stage'))
+    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
+    async def uc(self, ctx: commands.Context, *args: str) -> None:
+        """Ultraining stage calculator"""
+        prefix = ctx.prefix
+        message_syntax = f'The command syntax is `{prefix}uc [stage]`\nExample: `{prefix}uc 150`'
+        if not args:
+            await ctx.send(f'This command calculates EPIC NPC stats in a certain ultraining stage.\n{message_syntax}')
+            return
+
+        arg, *_ = args
+        try:
+            stage = int(arg)
+        except:
+            await ctx.send(f'Invalid stage. The stage has to be a number.\n\n{message_syntax}')
+            return
+        if not 1 <= stage <= 1_000_000:
+            await ctx.send(f'Why do people always try {emojis.SUS}')
+            return
+        npc_at_base = 5 * (stage ** 1.25)
+        npc_def_base = 6 * (stage ** 1.25)
+
+        answer = (
+            f'Estimated EPIC NPC stats in stage **{stage:,}**:\n'
+            f'{emojis.STAT_AT} AT: {round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}\n'
+            f'{emojis.STAT_DEF} DEF: {round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}\n'
+        )
+        await ctx.send(answer)
+
     # Command "calc" - Simple calculator
-    @commands.command(aliases=('calculate','calculator',))
+    @commands.command(aliases=('calculate','calculator','math'))
     @commands.bot_has_permissions(send_messages=True)
     async def calc(self, ctx, *args):
         def formatNumber(num):
@@ -428,7 +464,7 @@ async def embed_coolness(prefix):
     req = f'{emojis.BP} Unlocks when you reach area 12 in {emojis.TIME_TRAVEL}TT 1'
 
     howtoget = (
-        f'{emojis.BP} `ultraining` awards 2 coolness per stage (unlocked in A12)\n'
+        f'{emojis.BP} `ultraining` awards 2 coolness per stage (see `{prefix}ultr`)\n'
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
         f'{emojis.BP} Get {emojis.LOG_HYPER} HYPER or {emojis.LOG_ULTRA} ULTRA logs from work commands\n'
@@ -622,5 +658,64 @@ async def embed_start(prefix):
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
     embed.add_field(name='GRINDING & TRADES', value=grinding_trades, inline=False)
     embed.add_field(name='TIPS', value=tips, inline=False)
+
+    return embed
+
+
+# Ultraining guide
+async def embed_ultraining(prefix):
+
+    how_it_works = (
+        f'{emojis.BP} The EPIC NPC appears with stats depending on the stage (see `{prefix}uc`)\n'
+        f'{emojis.BP} You have to choose between `ATTACK`, `BLOCK` and `ATTLOCK`\n'
+        f'{emojis.BP} You win or lose depending on your stats vs the EPIC NPC\'s stats\n'
+        f'{emojis.BP} If you win, the stage increases by +1 the next time\n'
+        f'{emojis.BP} Stages never reset\n'
+        f'{emojis.BP} You can use `rpg ultr p` to check your progress\n'
+    )
+
+    which_command = (
+        f'{emojis.BP} The exact impact of the chosen answer is unknown\n'
+        f'{emojis.BP} However, it seems that it doesn\'t matter at all\n'
+    )
+
+    when = (
+        f'{emojis.BP} It is recommended to wait until {emojis.TIME_TRAVEL} TT 25+\n'
+    )
+
+    preparation = (
+        f'{emojis.BP} Get GODLY enchants\n'
+        f'{emojis.BP} Get a STRONG or DEFENDER horse (or MAGIC **if** you have GODLY enchants)\n'
+        f'{emojis.BP} Craft as many {emojis.FOOD_APPLE_JUICE} apple juice and {emojis.FOOD_ORANGE_JUICE} orange juice '
+        f'you need to reach your desired stage\n'
+        f'{emojis.BP} Duel on cooldown to increase your level\n'
+    )
+
+    rewards = (
+        f'{emojis.BP} 2 {emojis.STAT_COOLNESS} coolness per win\n'
+        f'{emojis.BP} XP (depends on your TT and your area)\n'
+        f'{emojis.BP} Note: You can **not** get pets in ultraining\n'
+    )
+
+    calculators = (
+        f'{emojis.BP} `{prefix}uc`: EPIC NPC stats calculator\n'
+    )
+
+    embed = discord.Embed(
+        color = global_data.EMBED_COLOR,
+        title = 'ULTRAINING',
+        description = (
+            f'Ultraining is a higher tier of training that is unlocked in area 12. It rewards coolness in addition to XP.\n'
+            f'It is the main source of coolness which you need for dungeon 15-2.'
+        )
+    )
+
+    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='HOW IT WORKS', value=how_it_works, inline=False)
+    embed.add_field(name='ATTACK, BLOCK OR ATTLOCK?', value=which_command, inline=False)
+    embed.add_field(name='WHEN TO DO ULTRAINING', value=when, inline=False)
+    embed.add_field(name='PREPARING FOR ULTRAINING', value=preparation, inline=False)
+    embed.add_field(name='REWARDS', value=rewards, inline=False)
+    embed.add_field(name='CALCULATOR', value=calculators, inline=False)
 
     return embed

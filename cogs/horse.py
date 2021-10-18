@@ -41,9 +41,9 @@ GUIDE_OVERVIEW = '`{prefix}horse` : Horse overview'
 GUIDE_BREED = '`{prefix}horse breed` : Details about horse breeding'
 GUIDE_TIER = '`{prefix}horse tier` : Details about horse tiers'
 GUIDE_TYPE = '`{prefix}horse type` : Details about horse types'
-GUIDE_CALC = '`{prefix}horse calc` : Horse stats bonus calculator'
 CALC_HTC = '`{prefix}htc` : Coins you need for your next horse levels'
 CALC_HTCTOTAL = '`{prefix}htctotal [level]` : Total coins you need to reach `[level]`'
+CALC_TYPE = '`{prefix}hc` : Horse stats bonus calculator'
 
 
 class HorseCog(commands.Cog):
@@ -98,7 +98,7 @@ class HorseCog(commands.Cog):
             embed = await embed_horses_overview(prefix)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=('hcalc',))
+    @commands.command(aliases=('hcalc','hc'))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
     async def horsecalc(self, ctx: commands.Context, *args: str) -> None:
         """Calculates the horse stat bonuses"""
@@ -223,6 +223,8 @@ class HorseCog(commands.Cog):
             f'{emojis.BP} **GOLDEN**: {golden_bonus * horse_level:,g}% extra coins from `rpg hunt` and `rpg adventure`\n'
             f'{emojis.BP} **MAGIC**: {magic_bonus * horse_level:,g}% increased enchantment efficiency\n'
             f'{emojis.BP} **SPECIAL**: {special_bonus * horse_level:,g}% extra coins and XP from the epic quest\n'
+            f'{emojis.BP} {emojis.HAL_PUMPKIN} **SPOOKY**: {strong_bonus * horse_level * 1.25:,g}% extra chance to find pumpkins and 5% extra '
+            f'chance to find bat slimes\n'
             f'{emojis.BP} **STRONG**: {strong_bonus * horse_level:,g}% extra AT\n'
             f'{emojis.BP} **SUPER SPECIAL**: {super_special_bonus * horse_level:,g}% extra coins and XP from the epic '
             f'quest\n'
@@ -573,9 +575,8 @@ class HorseCog(commands.Cog):
         )
 
     @commands.command()
-    @commands.is_owner()
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def htctest(self, ctx: commands.Context, *args: str) -> None:
+    async def htcmanual(self, ctx: commands.Context, *args: str) -> None:
         """Calculate total horse training cost with manually specified values"""
         def check(m):
             return (m.author == ctx.author) and (m.channel == ctx.channel)
@@ -584,7 +585,7 @@ class HorseCog(commands.Cog):
         target_level = 0
         message_syntax = (
             global_data.MSG_SYNTAX.format(
-                syntax=f"{prefix}htctest [horse tier] [horse current level] [horse target level] [lootboxer level]"
+                syntax=f"{prefix}htcmanual [horse tier] [horse current level] [horse target level] [lootboxer level]"
             )
         )
         user_name = ctx.author.name
@@ -689,12 +690,12 @@ async def embed_horses_overview(prefix: str) -> discord.Embed:
         f'inventory'
     )
     calculators = (
+        f'{emojis.BP} {CALC_TYPE.format(prefix=prefix)}\n'
         f'{emojis.BP} {CALC_HTC.format(prefix=prefix)}\n'
         f'{emojis.BP} {CALC_HTCTOTAL.format(prefix=prefix)}'
     )
     guides = (
         f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )
@@ -766,7 +767,6 @@ async def embed_horses_tiers(prefix: str) -> discord.Embed:
     guides = (
         f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )
     embed = discord.Embed(
@@ -843,10 +843,12 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
         f'{emojis.BP} DEFENDER or STRONG if you are in {emojis.TIME_TRAVEL} TT 2+\n'
         #f'{emojis.BP} MAGIC if you get ULTRA-OMEGA or GODLY enchants'
     )
+    calculators = (
+        f'{emojis.BP} {CALC_TYPE.format(prefix=prefix)}\n'
+    )
     guides = (
         f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_BREED.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}'
     )
     embed = discord.Embed(
@@ -867,6 +869,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)
     embed.add_field(name='WHICH TYPE TO CHOOSE', value=besttype, inline=False)
+    embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed
 
@@ -903,12 +906,12 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
         f'{emojis.BP} Note: Each breeding consumes 1 {emojis.HORSE_TOKEN} horse token'
     )
     calculators = (
+        f'{emojis.BP} {CALC_TYPE.format(prefix=prefix)}\n'
         f'{emojis.BP} {CALC_HTC.format(prefix=prefix)}\n'
         f'{emojis.BP} {CALC_HTCTOTAL.format(prefix=prefix)}'
     )
     guides = (
         f'{emojis.BP} {GUIDE_OVERVIEW.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_CALC.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TIER.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_TYPE.format(prefix=prefix)}'
     )

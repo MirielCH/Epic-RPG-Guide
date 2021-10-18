@@ -598,7 +598,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 lootboxes = (
                     f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                    f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC until A3\n'
+                    f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
                     f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
                     f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
                 )

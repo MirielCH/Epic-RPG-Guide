@@ -3,13 +3,11 @@
 
 import asyncio
 import importlib
+import sys
 
-import discord
 from discord.ext import commands
 
-import database
 import emojis
-import global_data
 
 
 class DevCog(commands.Cog):
@@ -38,39 +36,60 @@ class DevCog(commands.Cog):
             f'{subcommands}'
         )
 
-    @dev.command()
+
+    @dev.command(aliases=('unload','reload',))
     @commands.is_owner()
     @commands.bot_has_permissions(send_messages=True)
-    async def reload(self, ctx: commands.Context, *args: str) -> None:
-        """Reloads modules and cogs"""
-        if args:
-            args = [arg.lower() for arg in args]
-            arg, *_ = args
-            actions = []
-            if arg in ('lib','libs','modules','module'):
-                importlib.reload(database)
-                actions.append(f'Module \'database\' reloaded.')
-                importlib.reload(emojis)
-                actions.append(f'Module \'emojis\' reloaded.')
-                importlib.reload(global_data)
-                actions.append(f'Module \'global_data\' reloaded.')
-            else:
-                for arg in args:
-                    cog_name = f'cogs.{arg}'
-                    try:
-                        result = self.bot.reload_extension(cog_name)
-                        if result is None:
-                            actions.append(f'Extension \'{cog_name}\' reloaded.')
-                        else:
-                            actions.append(f'{cog_name}: {result}')
-                    except Exception as error:
-                        actions.append(f'{cog_name}: {error}')
-            message = ''
-            for action in actions:
-                message = f'{message}\n{action}'
-            await ctx.send(message)
-        else:
-            await ctx.send('Uhm, what.')
+    async def load(self, ctx: commands.Context, *args: str) -> None:
+        """Loads/unloads cogs and reloads cogs or modules"""
+        action = ctx.invoked_with
+        message_syntax = f'The syntax is `{ctx.prefix}dev {action} [name(s)]`'
+        if not args:
+            await ctx.send(message_syntax)
+            return
+        args = [arg.lower() for arg in args]
+        actions = []
+        for mod_or_cog in args:
+            name_found = False
+            if not 'cogs.' in mod_or_cog:
+                cog_name = f'cogs.{mod_or_cog}'
+            try:
+                if action == 'load':
+                    cog_status = self.bot.load_extension(cog_name)
+                elif action == 'reload':
+                    cog_status = self.bot.reload_extension(cog_name)
+                else:
+                    if cog_name != 'cogs.dev':
+                        cog_status = self.bot.unload_extension(cog_name)
+                    else:
+                        cog_status = 'dev-unload'
+            except:
+                cog_status = 'error'
+            if cog_status is None:
+                actions.append(f'+ Extension \'{cog_name}\' {action}ed.')
+                name_found = True
+            if not name_found:
+                if action == 'reload':
+                    for module_name in sys.modules.copy():
+                        if mod_or_cog == module_name:
+                            module = sys.modules.get(module_name)
+                            if module is not None:
+                                importlib.reload(module)
+                                actions.append(f'+ Module \'{module_name}\' reloaded.')
+                                name_found = True
+            if not name_found:
+                if action == 'reload':
+                    actions.append(f'- No cog with the name \'{mod_or_cog}\' found or cog not loaded.')
+                elif cog_status == 'dev-unload':
+                    actions.append(f'- You can not unload \'cogs.dev\', dummy.')
+                else:
+                    actions.append(f'- No cog with the name \'{mod_or_cog}\' found or cog already {action}ed.')
+
+        message = ''
+        for action in actions:
+            message = f'{message}\n{action}'
+        await ctx.send(f'```diff\n{message}\n```')
+
 
     @dev.command()
     @commands.is_owner()

@@ -124,12 +124,14 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
+    seasonal_event = f'{emojis.BP} `{prefix}halloween` / `{prefix}hal` : Halloween guide\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
         f'{emojis.BP} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
         f'{emojis.BP} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
-        f'{emojis.BP} `{prefix}coolness` : Everything known about {emojis.STAT_COOLNESS} coolness'
+        f'{emojis.BP} `{prefix}coolness` : Everything known about {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} `{prefix}ultraining` / `{prefix}ultr` : Ultraining guide\n'
     )
     crafting = (
         f'{emojis.BP} `{prefix}craft` : Recipes mats calculator\n'
@@ -174,6 +176,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.add_field(name=f'HALLOWEEN 2021 {emojis.HAL_PUMPKIN}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)

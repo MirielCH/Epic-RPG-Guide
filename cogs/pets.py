@@ -469,7 +469,7 @@ async def embed_pets_skills_special(prefix):
     )
 
     monsterhunter = (
-        f'{emojis.BP} Has a chance to find random mob drops in pet adventures\n'
+        f'{emojis.BP} Has a 35% chance to find 3-5 random mob drops in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PUMPKIN_BAT} pumpkin bat pet\n'
         f'{emojis.BP} This pet is a reward in the halloween event'
     )

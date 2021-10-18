@@ -1740,7 +1740,7 @@ async def embed_professions_enchanter(prefix):
 
     level_101 =(
         f'{emojis.BP} Adds a chance to win the price of the enchant instead of spending it\n'
-        f'{emojis.BP} The chance is 2% at level 101 and increases by 2% for every level'
+        f'{emojis.BP} The chance is 2% at level 101 and increases logarithmically with each level'
     )
 
     how_to_get_xp = (
@@ -1770,7 +1770,7 @@ async def embed_professions_enchanter(prefix):
         f'{emojis.BP} `enchant`: 1\n'
         f'{emojis.BP} `refine`: 10\n'
         f'{emojis.BP} `transmute`: 100\n'
-        f'{emojis.BP} `transcend`: 1000'
+        f'{emojis.BP} `transcend`: 1,000'
     )
 
     calculators = (

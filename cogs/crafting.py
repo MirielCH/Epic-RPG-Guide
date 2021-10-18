@@ -1225,11 +1225,28 @@ async def embed_enchants(prefix):
         f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5'
     )
 
-    commands = (
-        f'{emojis.BP} `enchant` - unlocked in area 2, costs 1k * area\n'
-        f'{emojis.BP} `refine` - unlocked in area 7, costs 10k * area\n'
-        f'{emojis.BP} `transmute` - unlocked in area 13, costs 100k * area\n'
-        f'{emojis.BP} `transcend` - unlocked in area 15, costs 1m * area'
+    commands_tiers = (
+        f'{emojis.BP} `enchant` - area 2+, rolls `1 * TT multiplier` enchants\n'
+        f'{emojis.BP} `refine` - area 7+, rolls `10 * TT multiplier` enchants\n'
+        f'{emojis.BP} `transmute` - area 13+, rolls `100 * TT multiplier` enchants\n'
+        f'{emojis.BP} `transcend` - area 15+, rolls `1,000 * TT multiplier` enchants'
+    )
+
+    how_enchanting_works = (
+        f'{emojis.BP} Each command rolls a certain amount of enchants\n'
+        f'{emojis.BP} The resulting enchant is the highest enchant that got rolled\n'
+        f'{emojis.BP} Higher command tiers increase the amount of rolls\n'
+    )
+
+    enchant_cost = (
+        f'{emojis.BP} The enchant cost is `1k * amount of rolls * area * TT multiplier`\n'
+    )
+
+    multiplier = (
+        f'{emojis.BP} The multiplier increases the amount of rolls of all command tiers\n'
+        f'{emojis.BP} The multiplier increases with {emojis.TIME_TRAVEL} TT\n'
+        f'{emojis.BP} More rolls also means higher cost!\n'
+        f'{emojis.BP} You can check your current multiplier with `rpg time travel`\n'
     )
 
     embed = discord.Embed(
@@ -1244,8 +1261,10 @@ async def embed_enchants(prefix):
 
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name='POSSIBLE ENCHANTS', value=buffs, inline=False)
-    embed.add_field(name='COMMAND TIERS', value=commands, inline=False)
-
+    embed.add_field(name='HOW ENCHANTING WORKS', value=how_enchanting_works, inline=False)
+    embed.add_field(name='COMMAND TIERS', value=commands_tiers, inline=False)
+    embed.add_field(name='ENCHANT COST', value=enchant_cost, inline=False)
+    embed.add_field(name='TT MULTIPLIER', value=multiplier, inline=False)
     return embed
 
 # Monster drops

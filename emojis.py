@@ -136,6 +136,19 @@ PET_GOLDEN_BUNNY = '<:erg_goldenbunny:770327200674349056>'
 
 # Event: Halloween
 PET_PUMPKIN_BAT = '<:erg_petpumpkinbat:817872700797747261>'
+HAL_BAT_SLIME = '<:erg_batslime:897745203333574657>'
+HAL_BOSS = '<:erg_pumpkinbatboss:898580409087057981>'
+HAL_CANDY_BAIT = '<:erg_candyball:897745203396493332>'
+HAL_CANDY_BELL = '<:erg_candybell:897745203274846260>'
+HAL_CANDY_FISH = '<:erg_candyfish:897745203237117972>'
+HAL_PUMPKIN = '<:erg_carvedpumpkin:897745203279056926>'
+HAL_EPIC_CANDY = '<:erg_epiccandy:897745203262287892>'
+HAL_FILLED_PUMPKIN = '<:erg_filledpumpkin:897745203455197204>'
+HAL_MONSTER_SOUL = '<:erg_monstersoul:897745202847043585>'
+HAL_RED_SOUL = '<:erg_redsoul:897745203203571764>'
+HAL_JACK_O_LANTERN = '<:erg_sleepyjackolantern:897745203241312266>'
+HAL_SPOOKY_SCROLL = '<:erg_spookyscroll:897745203291623444>'
+HAL_SPOOKY_ORB = '<:erg_spookyorb:897745203018989629>'
 
 # Event: Horse Festival
 GOLD = '<:erg_gold:879416299212648508>'
@@ -259,6 +272,7 @@ ASCENSION = ':star2:'
 LIFE_BOOST = ':sparkles:'
 WAIT_WHAT = '<:waitwhat:781624799037489152>'
 NONE = ''
+SUS = '<:sus:777166146515369985>' # Emoji from support server
 
 # Monsters
 MOB_ADULT_DRAGON = '<:erg_adultdragon:772908868102914079>'
