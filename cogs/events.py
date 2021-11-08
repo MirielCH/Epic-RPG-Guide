@@ -497,6 +497,7 @@ async def embed_event_rubydragon(prefix):
 
     note = (
         f'{emojis.BP} You actually _do_ move to another area, so you have to move back to your previous area after the event\n'
+        f'{emojis.BP} This event is not available in the TOP\n'
         f'{emojis.BP} {events_personal}'
     )
 
@@ -1199,13 +1200,13 @@ async def embed_event_slime(prefix):
     )
 
     answers = (
-        f'{emojis.BP} `fight`: Get 6 {emojis.HAL_SPOOKY_ORB} spooky orbs\n'
-        f'{emojis.BP} `boo`: Get 4-8 {emojis.HAL_SPOOKY_ORB} spooky orbs'
+        f'{emojis.BP} `fight`: Get 3-6 {emojis.HAL_SPOOKY_ORB} spooky orbs\n'
+        f'{emojis.BP} `boo`: Get 2-8 {emojis.HAL_SPOOKY_ORB} spooky orbs'
     )
 
     best_answer = (
-        f'{emojis.BP} If you don\'t feel like gambling, `fight` is the safest answer\n'
-        f'{emojis.BP} If you _do_ feel like gambling, `boo` has the highest potential rewards'
+        f'{emojis.BP} If you don\'t feel like gambling, `fight` is the safer answer\n'
+        f'{emojis.BP} If you _do_ feel like gambling, `boo` has the higher potential rewards'
     )
 
     note =(

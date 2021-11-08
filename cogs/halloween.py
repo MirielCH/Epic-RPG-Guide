@@ -14,6 +14,8 @@ GUIDE_SLIME = '`{prefix}event slime` : Bat slime event'
 GUIDE_BOSS = '`{prefix}event scroll boss` : Scroll boss event & tactics'
 GUIDE_CHANCES = '`{prefix}hal chances` : Spawn and drop chances'
 GUIDE_ERPG = '`rpg hal info` : EPIC RPG event guide'
+GUIDE_EPRG_CONSUMABLES = '`rpg hal info consumables` : EPIC RPG consumables guide'
+GUIDE_EPRG_ITEMS = '`rpg hal info items` : EPIC RPG items guide'
 
 # Items
 ITEMS = ['epic candy', 'monster soul', 'pumpkin', 'sleepy potion', 'spooky orb']
@@ -67,7 +69,7 @@ async def embed_halloween_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} **Craft** various items (see `rpg hal info consumables`)\n'
         f'{emojis.BP} Scare your friends with `rpg hal boo` (2h cooldown)\n'
         f'{emojis.BP} Complete daily and weekly **tasks** (see `rpg hal tasks`)\n'
-        f'{emojis.BP} Defeat the event themed {emojis.HAL_JACK_O_LANTERN} Sleepy Jack\'O\'Lantern **miniboss**\n'
+        f'{emojis.BP} Defeat the event themed {emojis.HAL_JACK_O_LANTERN} Sleepy Jack O\'Lantern **miniboss**\n'
         f'{emojis.BP} Join the **world boss** fight to unlock codes (see `rpg hal wb`)\n'
         f'{emojis.BP} Complete the event **quest** to get the {emojis.PET_PUMPKIN_BAT} pumpkin bat pet '
         f'(see `rpg hal quest`)\n'
@@ -78,8 +80,19 @@ async def embed_halloween_overview(prefix: str) -> discord.Embed:
     )
     schedule = (
         f'{emojis.BP} Event started on October 18, 2021\n'
+        f'{emojis.BP} World boss fight ends on October 31, 2021, 23:55 UTC\n'
         f'{emojis.BP} Event ends on November 14, 2021, 23:00 UTC\n'
         f'{emojis.BP} Items will vanish on November 22, 2021, 23:00 UTC'
+    )
+    tldr_guide = (
+        f'{emojis.BP} **Optional**: Craft a {emojis.HAL_CANDY_FISH} candy fish and use it to get the SPOOKY horse\n'
+        f'{emojis.BP} Complete your daily and weekly tasks\n'
+        f'{emojis.BP} Craft as many {emojis.HAL_CANDY_BELL} candy bells as you are allowed daily\n'
+        f'{emojis.BP} Use your first 40 {emojis.HAL_SPOOKY_ORB} spooky orbs to craft 10 {emojis.HAL_SPOOKY_SCROLL} '
+        f'spooky scrolls. Use `{prefix}scroll` for the correct answers.\n**Do not spend orbs in the shop until you have done this.**\n'
+        f'{emojis.BP} Use {emojis.HAL_MONSTER_SOUL} monster souls you get with `rpg hal wb throw`\n'
+        f'{emojis.BP} Complete the quest\n'
+        f'{emojis.BP} Check the rest of this guide for everything else\n'
     )
     guides = (
         f'{emojis.BP} {GUIDE_ITEMS.format(prefix=prefix)}\n'
@@ -94,6 +107,7 @@ async def embed_halloween_overview(prefix: str) -> discord.Embed:
         description = 'Boo.'
     )
     embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
@@ -113,7 +127,8 @@ async def embed_halloween_item_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_SLIME.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_BOSS.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_CHANCES.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_ERPG}'
+        f'{emojis.BP} {GUIDE_EPRG_CONSUMABLES}\n'
+        f'{emojis.BP} {GUIDE_EPRG_ITEMS}\n'
     )
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
@@ -138,32 +153,36 @@ async def embed_halloween_item(prefix: str, item: str) -> discord.Embed:
         f'{emojis.BP} ➜ See `rpg hal info items` and `rpg hal info consumables` for more items\n'
     )
     epic_candy_source = (
-        f'{emojis.BP} 3 per defeated {emojis.HAL_JACK_O_LANTERN} Jack\'O\'Lantern miniboss\n'
+        f'{emojis.BP} 3 per defeated {emojis.HAL_JACK_O_LANTERN} Jack O\'Lantern miniboss\n'
         f'{emojis.BP} 2 per daily task, 5 per weekly task in `hal tasks`\n'
     )
     epic_candy_usage = (
         f'{emojis.BP} **Optional**: Craft 1 {emojis.HAL_CANDY_FISH} candy fish and use it. This will get you a SPOOKY horse which '
         f'increases the chance to find pumpkins and bat slimes. Note that your horse type will **not** revert after the event.\n'
-        f'{emojis.BP} Craft {emojis.HAL_CANDY_BELL} candy bells. This increases your chance to find bat slimes, '
-        f'plus you need to do this for the quest. You can have 3 on first day and +1 each day after that (30 max).\n'
+        f'{emojis.BP} Craft 12 {emojis.HAL_CANDY_BELL} candy bells. This increases your chance to find bat slimes, '
+        f'plus you need to do this for the quest. You can have 3 on first day and +1 per day after that (20 max).\n'
+        f'{emojis.BP} Craft 10 {emojis.HAL_SPOOKY_SCROLL} spooky scrolls to spawn scroll bosses '
+        f'(see `{prefix}event scroll boss`). You need these for the quest.\n'
         f'{emojis.BP} Craft {emojis.HAL_CANDY_BAIT} candy bait after finishing the quest and use them to spawn bat '
         f'slimes (see `{prefix}event slime`)\n'
-        f'{emojis.BP} Craft {emojis.HAL_FILLED_PUMPKIN} filled pumpkins and use them to get 3 LIFE each\n'
     )
     orb_source = (
         f'{emojis.BP} 1 per encountered {emojis.HAL_BAT_SLIME} bat slime in `adventure`\n'
         f'{emojis.BP} 4-8 per {emojis.HAL_BAT_SLIME} bat slime event (see `{prefix}event slime`)\n'
         f'{emojis.BP} 50 from `hal quest`\n'
+        f'{emojis.BP} 5 from code `worldboss4`\n'
+        f'{emojis.BP} 3 from code `worldboss5`\n'
     )
     orb_usage = (
+        f'{emojis.BP} Craft 10 {emojis.HAL_SPOOKY_SCROLL} spooky scrolls to spawn scroll bosses '
+        f'(see `{prefix}event scroll boss`). You need these for the quest.\n'
+        f'{emojis.BP} **Do not use orbs for anything else until you have done the 10 scrolls**\n'
         f'{emojis.BP} Buy the {emojis.LB_OMEGA} OMEGA lootboxes in the shop\n'
-        f'{emojis.BP} Craft {emojis.HAL_SPOOKY_SCROLL} spooky scrolls and use them to spawn scroll bosses '
-        f'(see `{prefix}event scroll boss`)\n'
         f'{emojis.BP} Buy the event title and background if you like them\n'
+        f'{emojis.BP} Craft more {emojis.HAL_SPOOKY_SCROLL} spooky scrolls if you want\n'
     )
     soul_source = (
         f'{emojis.BP} `hunt`\n'
-        f'{emojis.BP} `adventure`\n'
     )
     soul_usage = (
         f'{emojis.BP} Join the fight against the world boss (`rpg hal wb throw`). You also need to do this '
@@ -177,6 +196,7 @@ async def embed_halloween_item(prefix: str, item: str) -> discord.Embed:
         f'{emojis.BP} 5,000 from `hal quest`\n'
         f'{emojis.BP} 200 if you defeat the {emojis.HAL_BOSS} scroll boss\n'
         f'{emojis.BP} 150 if you lose against the {emojis.HAL_BOSS} scroll boss\n'
+        f'{emojis.BP} 300 (so far) from event codes (see `{prefix}codes`)\n'
     )
     pumpkin_usage = (
         f'{emojis.BP} Keep some pumpkins around to craft the items you need\n'
@@ -187,7 +207,9 @@ async def embed_halloween_item(prefix: str, item: str) -> discord.Embed:
         f'{emojis.BP} 15 from `hal quest`\n'
         f'{emojis.BP} 1 from code `halloween`\n'
         f'{emojis.BP} 1 from code `halpensation`\n'
-        f'{emojis.BP} ? from world boss codes (`worldboss1` to `worldboss9`)\n'
+        f'{emojis.BP} 1 from code `worldboss1`\n'
+        f'{emojis.BP} 1 from code `worldboss2`\n'
+        f'{emojis.BP} 1 from code `worldboss3`\n'
     )
     potion_usage = (
         f'{emojis.BP} Use them to reset your cooldowns\n'
@@ -220,7 +242,8 @@ async def embed_halloween_item(prefix: str, item: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_SLIME.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_BOSS.format(prefix=prefix)}\n'
         f'{emojis.BP} {GUIDE_CHANCES.format(prefix=prefix)}\n'
-        f'{emojis.BP} {GUIDE_ERPG}'
+        f'{emojis.BP} {GUIDE_EPRG_CONSUMABLES}\n'
+        f'{emojis.BP} {GUIDE_EPRG_ITEMS}\n'
     )
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
@@ -237,18 +260,18 @@ async def embed_halloween_chances(prefix: str) -> discord.Embed:
     """Halloween chances"""
 
     bat_slime = (
-        f'{emojis.BP} 0.5% base spawn chance\n'
-        f'{emojis.BP} Inceases with {emojis.HAL_CANDY_BELL} candy bells (% unknown, 30 bells max)\n'
+        f'{emojis.BP} Base spawn chance unknown\n'
+        f'{emojis.BP} Inceases with {emojis.HAL_CANDY_BELL} candy bells (% unknown, 20 bells max)\n'
         f'{emojis.BP} + 5% if horse has SPOOKY type (use a {emojis.HAL_CANDY_FISH} candy fish to get this type)\n'
         f'{emojis.BP} * 1.3 if world buff is active (use a {emojis.HAL_RED_SOUL} red soul to activate it)\n'
     )
     monster_soul = (
-        f'{emojis.BP} Drop chance is unknown\n'
+        f'{emojis.BP} Base drop chance unknown\n'
         f'{emojis.BP} Increases with the time since your last hunt\n'
         f'{emojis.BP} Increases with {emojis.TIME_TRAVEL} TT\n'
     )
     miniboss = (
-        f'{emojis.BP} 50% chance to get this miniboss when using `rpg miniboss`\n'
+        f'{emojis.BP} 50% chance to get this miniboss when using `rpg miniboss` or when buying an instant miniboss\n'
     )
     boo = (
         f'{emojis.BP} 70% chance to scare someone when using `rpg hal boo`\n'
@@ -269,7 +292,7 @@ async def embed_halloween_chances(prefix: str) -> discord.Embed:
     embed.set_footer(text=await global_data.default_footer(prefix))
     embed.add_field(name=f'BAT SLIME {emojis.HAL_BAT_SLIME}', value=bat_slime, inline=False)
     embed.add_field(name=f'MONSTER SOUL {emojis.HAL_MONSTER_SOUL}', value=monster_soul, inline=False)
-    embed.add_field(name=f'SLEEPY JACK\'O\'LANTERN {emojis.HAL_JACK_O_LANTERN}', value=miniboss, inline=False)
+    embed.add_field(name=f'SLEEPY JACK O\'LANTERN {emojis.HAL_JACK_O_LANTERN}', value=miniboss, inline=False)
     embed.add_field(name='BOO', value=boo, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed

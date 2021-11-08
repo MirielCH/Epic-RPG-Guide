@@ -46,7 +46,7 @@ class MainCog(commands.Cog):
         embed = await embed_main_help(ctx)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats'))
+    @commands.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats','privacy'))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def about(self, ctx: commands.Context):
         """Shows some bot info"""
@@ -220,9 +220,14 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
         f'{emojis.BP} FlyingPanda#0328\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )
+    privacy = (
+        f'{emojis.BP} You can find this bot\'s privacy policy [here]'
+        f'(https://docs.google.com/document/d/1CStt8k902m5s5CUb2RyPTTN-dmb-N2FAONfxzm7eAio/edit?usp=sharing).\n'
+    )
     embed = discord.Embed(color = global_data.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
+    embed.add_field(name='PRIVACY POLICY', value=privacy, inline=False)
     return embed

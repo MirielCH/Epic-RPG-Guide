@@ -838,6 +838,12 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
         f'{emojis.BP} The higher the horse level, the higher the increase\n'
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
+    spooky = (
+        f'{emojis.BP} Increases the chance to find pumpkins and spawn bat slimes\n'
+        f'{emojis.BP} The higher the horse level, the higher the pumpkin chance\n'
+        f'{emojis.BP} The bat slime spawn chance increase is always 5%\n'
+        f'{emojis.BP} To get this type, craft and use a {emojis.HAL_CANDY_FISH} candy fish'
+    )
     besttype = (
         f'{emojis.BP} SPECIAL or SUPER SPECIAL if you are in {emojis.TIME_TRAVEL} TT 0-1\n'
         f'{emojis.BP} DEFENDER or STRONG if you are in {emojis.TIME_TRAVEL} TT 2+\n'
@@ -865,6 +871,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     embed.add_field(name='GOLDEN', value=golden, inline=False)
     embed.add_field(name='MAGIC', value=magic, inline=False)
     embed.add_field(name='SPECIAL', value=special, inline=False)
+    embed.add_field(name=f'SPOOKY {emojis.HAL_PUMPKIN}', value=spooky, inline=False)
     embed.add_field(name='STRONG', value=strong, inline=False)
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)
