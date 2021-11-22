@@ -35,8 +35,6 @@ class eventsCog(commands.Cog):
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
         'ruby','rubydragon','working','work','nothing',
         'failedseed','farmevent',
-        'slime','batslime',
-        'scroll','scrollboss','pumpkinbat',
     )
 
     # Command "events"
@@ -135,14 +133,6 @@ class eventsCog(commands.Cog):
             embed = await embed_event_farm(ctx.prefix)
             await ctx.send(embed=embed)
             return
-        elif (invoked.find('slime') > -1):
-            embed = await embed_event_slime(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
-        elif (invoked.find('scroll') > -1) or (invoked.find('pumpkin') > -1):
-            embed = await embed_event_scroll_boss(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
         else:
             if args:
                 event_name = ''
@@ -215,12 +205,6 @@ class eventsCog(commands.Cog):
                     await ctx.send(embed=embed)
                 elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1) or (event_name.find('seed') > -1):
                     embed = await embed_event_farm(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif (event_name.find('slime') > -1):
-                    embed = await embed_event_slime(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif (event_name.find('scroll') > -1) or (event_name.find('pumpkin') > -1):
-                    embed = await embed_event_scroll_boss(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')
@@ -298,7 +282,7 @@ async def embed_events_overview(prefix):
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name=f'HALLOWEEN {emojis.HAL_PUMPKIN}', value=halloween_event, inline=False)
+    #embed.add_field(name=f'HALLOWEEN {emojis.HAL_PUMPKIN}', value=halloween_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -481,7 +465,7 @@ async def embed_event_rubydragon(prefix):
     answers = (
         f'{emojis.BP} `cry`: You get 1 {emojis.ARENA_COOKIE} arena cookie\n'
         f'{emojis.BP} `move`: You move to another area and spawn the ruby dragon (see below)\n'
-        f'{emojis.BP} `sleep`: You get whatever materials you were about to get'
+        f'{emojis.BP} `sleep`: The event ends, you get nothing'
     )
 
     answers_ruby = (
@@ -491,8 +475,7 @@ async def embed_event_rubydragon(prefix):
     )
 
     best_answer = (
-        f'{emojis.BP} First `move`, then `fight` if you want the 10 {emojis.RUBY} rubies\n'
-        f'{emojis.BP} `sleep` if you want the original materials instead'
+        f'{emojis.BP} First `move`, then `fight`\n'
     )
 
     note = (

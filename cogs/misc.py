@@ -87,11 +87,23 @@ class miscCog(commands.Cog):
             return
         npc_at_base = 5 * (stage ** 1.25)
         npc_def_base = 6 * (stage ** 1.25)
+        if stage <= 300 or stage > 1500:
+            trainer = 'EPIC NPC'
+        elif 300 < stage <= 600:
+            trainer = 'SUPER NPC'
+        elif 600 < stage <= 900:
+            trainer = 'MEGA NPC'
+        elif 900 < stage <= 1200:
+            trainer = 'HYPER NPC'
+        elif 1200 < stage <= 1500:
+            trainer = 'ULTRA NPC'
 
         answer = (
-            f'Estimated EPIC NPC stats in stage **{stage:,}**:\n'
-            f'{emojis.STAT_AT} AT: {round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}\n'
-            f'{emojis.STAT_DEF} DEF: {round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}\n'
+            f'Stage: **{stage:,}**\n'
+            f'Trainer: **{trainer}**\n'
+            f'Estimated trainer stats:\n'
+            f'{emojis.STAT_AT} AT: **{round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}**\n'
+            f'{emojis.STAT_DEF} DEF: **{round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}**\n'
         )
         await ctx.send(answer)
 

@@ -295,6 +295,7 @@ async def embed_guild_stats(prefix):
         f'{emojis.BP} Decreases the likelihood of getting raided\n'
         f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
         f'{emojis.BP} Maximum amount is 100\n'
+        f'{emojis.BP} Guilds at 100 stealth are immune to being raided\n'
         f'{emojis.BP} Each upgrade gives you 0~4 stealth'
     )
 
@@ -342,9 +343,8 @@ async def embed_guild_weekly(prefix):
     )
 
     strategy = (
-        f'{emojis.BP} First increase your {emojis.GUILD_STEALTH} stealth to 90 or more\n'
+        f'{emojis.BP} First increase your {emojis.GUILD_STEALTH} stealth to 95 or more\n'
         f'{emojis.BP} Once your stealth is up, start raiding for the rest of the week\n'
-        f'{emojis.BP} Note that it\'s still possible to get raided with high stealth'
     )
 
     schedule = f'{emojis.BP} Stats reset every Saturday 22:00 UTC'

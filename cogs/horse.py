@@ -164,8 +164,8 @@ class HorseCog(commands.Cog):
             try:
                 horse_stats = str(answer_bot_at.embeds[0].fields[0])
                 start_level = horse_stats.find('Horse Level** -') + 16
-                end_level = start_level + 2
-                horse_level = int(horse_stats[start_level:end_level].strip())
+                end_level = start_level + 3
+                horse_level = int(horse_stats[start_level:end_level].replace('\\','').strip())
             except:
                 await ctx.send(global_data.MSG_ERROR)
                 return
@@ -223,8 +223,8 @@ class HorseCog(commands.Cog):
             f'{emojis.BP} **GOLDEN**: {golden_bonus * horse_level:,g}% extra coins from `rpg hunt` and `rpg adventure`\n'
             f'{emojis.BP} **MAGIC**: {magic_bonus * horse_level:,g}% increased enchantment efficiency\n'
             f'{emojis.BP} **SPECIAL**: {special_bonus * horse_level:,g}% extra coins and XP from the epic quest\n'
-            f'{emojis.BP} {emojis.HAL_PUMPKIN} **SPOOKY**: {strong_bonus * horse_level * 1.25:,g}% extra chance to find pumpkins and 5% extra '
-            f'chance to find bat slimes\n'
+            #f'{emojis.BP} {emojis.HAL_PUMPKIN} **SPOOKY**: {strong_bonus * horse_level * 1.25:,g}% extra chance to find pumpkins and 5% extra '
+            #f'chance to find bat slimes\n'
             f'{emojis.BP} **STRONG**: {strong_bonus * horse_level:,g}% extra AT\n'
             f'{emojis.BP} **SUPER SPECIAL**: {super_special_bonus * horse_level:,g}% extra coins and XP from the epic '
             f'quest\n'
@@ -332,8 +332,8 @@ class HorseCog(commands.Cog):
             try:
                 horse_stats = str(answer_bot_horse.embeds[0].fields[0])
                 start_level = horse_stats.find('Horse Level** -') + 16
-                end_level = start_level + 2
-                horse_level = int(horse_stats[start_level:end_level].strip())
+                end_level = start_level + 3
+                horse_level = int(horse_stats[start_level:end_level].replace('\\','').strip())
             except:
                 await ctx.send(global_data.MSG_ERROR)
                 return
@@ -485,8 +485,8 @@ class HorseCog(commands.Cog):
         try:
             horse_stats = str(answer_bot_horse.embeds[0].fields[0])
             start_level = horse_stats.find('Horse Level** -') + 16
-            end_level = start_level + 2
-            horse_level = int(horse_stats[start_level:end_level].strip())
+            end_level = start_level + 3
+            horse_level = int(horse_stats[start_level:end_level].replace('\\','').strip())
         except:
             await ctx.send(global_data.MSG_ERROR)
             return
@@ -871,7 +871,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     embed.add_field(name='GOLDEN', value=golden, inline=False)
     embed.add_field(name='MAGIC', value=magic, inline=False)
     embed.add_field(name='SPECIAL', value=special, inline=False)
-    embed.add_field(name=f'SPOOKY {emojis.HAL_PUMPKIN}', value=spooky, inline=False)
+    #embed.add_field(name=f'SPOOKY {emojis.HAL_PUMPKIN}', value=spooky, inline=False)
     embed.add_field(name='STRONG', value=strong, inline=False)
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)

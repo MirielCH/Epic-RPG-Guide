@@ -81,8 +81,8 @@ async def embed_halloween_overview(prefix: str) -> discord.Embed:
     schedule = (
         f'{emojis.BP} Event started on October 18, 2021\n'
         f'{emojis.BP} World boss fight ends on October 31, 2021, 23:55 UTC\n'
-        f'{emojis.BP} Event ends on November 14, 2021, 23:00 UTC\n'
-        f'{emojis.BP} Items will vanish on November 22, 2021, 23:00 UTC'
+        f'{emojis.BP} Event ends on November 14, 2021, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on November 21, 2021, 23:55 UTC'
     )
     tldr_guide = (
         f'{emojis.BP} **Optional**: Craft a {emojis.HAL_CANDY_FISH} candy fish and use it to get the SPOOKY horse\n'
