@@ -8,7 +8,7 @@ import global_data
 
 
 intents = discord.Intents.none()
-intents.guilds = True   # for on_guild_join() and bot.guilds
+intents.guilds = True   # for on_guild_join(), bot.guilds and everything guild related
 intents.messages = True   # for the calculators that read the game
 
 
@@ -39,6 +39,5 @@ COG_EXTENSIONS = [
 if __name__ == '__main__':
     for extension in COG_EXTENSIONS:
         bot.load_extension(extension)
-
 
 bot.run(global_data.TOKEN)

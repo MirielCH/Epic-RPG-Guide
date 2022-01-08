@@ -1,6 +1,7 @@
 # timetravel.py
 
 import asyncio
+from decimal import Decimal, ROUND_HALF_UP
 from math import floor
 from operator import itemgetter
 
@@ -498,7 +499,16 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     bonus_duel_xp = (99+tt_no)*tt_no/4
     bonus_drop_chance = (49+tt_no)*tt_no/2
     dynamite_rubies = 1+(bonus_drop_chance / 100)
-    rubies = round(dynamite_rubies)
+    dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    rubies = int(dynamite_rubies)
+    # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
+    tt_enchant_multipliers = {
+        15: 6,
+    }
+    if tt_no in tt_enchant_multipliers:
+        enchant_multiplier = tt_enchant_multipliers[tt_no]
+    else:
+        enchant_multiplier = round((tt_no**2/64) + (7*tt_no/73) + (19/35))
 
     bonus_xp = f'{bonus_xp:,g}'
     bonus_duel_xp = f'{bonus_duel_xp:,g}'
@@ -534,8 +544,8 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'
         f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands (**{rubies}** {emojis.RUBY} rubies with `dynamite`)\n'
+        f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
         f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)\n'
-        f'{emojis.BP} Higher multiplier for enchant commands (formula unknown)\n'
     )
 
 
@@ -717,13 +727,28 @@ async def embed_stt_score(prefix):
     )
 
     materials = (
+        f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score (best value)\n'
+        f'{emojis.BP} 25,000 {emojis.LOG} wooden logs = 1 score\n'
+        f'{emojis.BP} 2,500 {emojis.LOG_EPIC} EPIC logs = 1 score\n'
+        f'{emojis.BP} 250 {emojis.LOG_SUPER} SUPER logs = 1 score\n'
+        f'{emojis.BP} 25 {emojis.LOG_MEGA} MEGA logs = 1 score\n'
+        f'{emojis.BP} 2.5 {emojis.LOG_HYPER} HYPER log = 1 score\n'
+        f'{emojis.BP} 1 {emojis.LOG_ULTRA} ULTRA log = 4 score\n'
+        f'{emojis.BP} 25,000 {emojis.FISH} normie fish = 1 score\n'
+        f'{emojis.BP} 1,250 {emojis.FISH_GOLDEN} golden fish = 1 score\n'
+        f'{emojis.BP} 12.5 {emojis.FISH_EPIC} EPIC fish = 1 score\n'
+        f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
+        f'{emojis.BP} 250 {emojis.BANANA} bananas = 1 score\n'
+    )
+
+    farming = (
         f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
         f'{emojis.BP} 30 {emojis.CARROT} carrots = 1 score\n'
-        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score\n'
-        f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
-        f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score\n'
-        f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
-        f'{emojis.BP} **Take farm item score with a grain of salt for now**\n'
+        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score (best value)\n'
+        f'{emojis.BP} 1 {emojis.SEED_POTATO} potato seed = 1 score\n'
+        f'{emojis.BP} 1 {emojis.SEED_CARROT} carrot seed = 1 score\n'
+        f'{emojis.BP} 1 {emojis.SEED_BREAD} bread seed = 1 score\n'
+        f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score (10k seeds max)\n'
     )
 
     mobdrops = (
@@ -733,6 +758,11 @@ async def embed_stt_score(prefix):
         f'{emojis.BP} 5 {emojis.MERMAID_HAIR} mermaid hairs = 1 score\n'
         f'{emojis.BP} 4 {emojis.CHIP} chips = 1 score\n'
         f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score'
+    )
+
+    misc = (
+        f'{emojis.BP} Having at least 1 {emojis.LIFE_POTION} life potion = 1 score\n'
+        f'{emojis.BP} 500,000 {emojis.LIFE_POTION} life potions = 1 score (10m potions max)\n'
     )
 
     guides = (
@@ -758,7 +788,9 @@ async def embed_stt_score(prefix):
     embed.add_field(name='GEAR', value=gear, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
     embed.add_field(name='MATERIALS', value=materials, inline=False)
+    embed.add_field(name='FARM ITEMS', value=farming, inline=False)
     embed.add_field(name='MOB DROPS', value=mobdrops, inline=False)
+    embed.add_field(name='OTHER ITEMS', value=misc, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed

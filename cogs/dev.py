@@ -147,6 +147,15 @@ class DevCog(commands.Cog):
         else:
             await ctx.send(f'The syntax is `{ctx.prefix}{ctx.command} [command]`')
 
+    # Enable/disable commands
+    @commands.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def test(self, ctx, tt: int):
+        multiplier = round((tt ** 2 / 64) + (7 * tt / 73) + (19 / 35))
+        await ctx.send(f'Enchant multiplier for TT {tt} is {multiplier}')
+
+
 # Initialization
 def setup(bot):
     bot.add_cog(DevCog(bot))

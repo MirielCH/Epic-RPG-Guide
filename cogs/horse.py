@@ -333,7 +333,7 @@ class HorseCog(commands.Cog):
                 horse_stats = str(answer_bot_horse.embeds[0].fields[0])
                 start_level = horse_stats.find('Horse Level** -') + 16
                 end_level = start_level + 3
-                horse_level = int(horse_stats[start_level:end_level].replace('\\','').strip())
+                horse_level = int(horse_stats[start_level:end_level].replace('\\','').replace('(','').strip())
             except:
                 await ctx.send(global_data.MSG_ERROR)
                 return
@@ -486,7 +486,7 @@ class HorseCog(commands.Cog):
             horse_stats = str(answer_bot_horse.embeds[0].fields[0])
             start_level = horse_stats.find('Horse Level** -') + 16
             end_level = start_level + 3
-            horse_level = int(horse_stats[start_level:end_level].replace('\\','').strip())
+            horse_level = int(horse_stats[start_level:end_level].replace('\\','').replace('(','').strip())
         except:
             await ctx.send(global_data.MSG_ERROR)
             return
@@ -758,7 +758,9 @@ async def embed_horses_tiers(prefix: str) -> discord.Embed:
     tier10 = (
         #f'{emojis.BP} **You need to be {emojis.TIME_TRAVEL} TT50+ to unlock this tier**\n'
         f'{emojis.BP} Unlocks 2 extra badge slots\n'
-        f'{emojis.BP} 30% chance for another drop after each drop (mob drops and lootboxes)\n'
+        f'{emojis.BP} Adds a chance for another drop after each drop (mob drops and lootboxes)\n'
+        f'{emojis.BLANK} The chance is believed to be around 20-35%, depending on the item\n'
+        f'{emojis.BLANK} The better the item, the lower the chance\n'
         f'{emojis.BP} {buff_pets.format(increase=400, total=20)}\n'
         f'{emojis.BP} {buff_monsters.format(increase=200)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=650)}\n'
@@ -826,7 +828,8 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
         f'{emojis.BP} You can do up to 100 waves in the epic quest\n'
         f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
         f'{emojis.BP} The coin and XP bonus is 50% higher than SPECIAL\n'
-        f'{emojis.BP} **You only have a chance getting this type when breeding two SPECIAL horses**'
+        f'{emojis.BP} **You only have a chance getting this type when breeding two SPECIAL horses**\n'
+        f'{emojis.BP} As with every type change, you need to breed **without** a horse token\n'
     )
     magic = (
         f'{emojis.BP} Increases the effectiveness of enchantments\n'

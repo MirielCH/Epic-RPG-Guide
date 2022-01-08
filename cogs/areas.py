@@ -483,11 +483,16 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 if money_nohorse == -1:
                     work_cmd = f'{emojis.BP} `{work_cmd_poor}`'
                 else:
-                    work_cmd = (
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.BP} `{work_cmd_rich}` otherwise'
-                    )
+                    if user_tt < 25:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        )
+                    else:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins'
+                        )
+                    work_cmd = f'{work_cmd}\n{emojis.BP} `{work_cmd_rich}` otherwise'
     elif area_no == 10:
             if user_asc == 'ascended' and not user_tt == 1:
                 work_cmd = (
@@ -877,6 +882,8 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 materials = f'{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish (= {ceil(mats_fish/225):,} {emojis.RUBY} rubies)'
             else:
                 materials = f'{emojis.BP} {mats_fish:,} {emojis.FISH} normie fish'
+        if user_tt >= 25:
+            materials = f'{materials}\n{emojis.BLANK} Note: This does not include materials for STT score.'
 
     if area_no == 8:
         materials = f'{emojis.BP} 30 {emojis.MERMAID_HAIR} mermaid hairs\n'

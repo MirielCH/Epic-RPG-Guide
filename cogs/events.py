@@ -35,6 +35,7 @@ class eventsCog(commands.Cog):
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
         'ruby','rubydragon','working','work','nothing',
         'failedseed','farmevent',
+        'snowball','snowballfight'
     )
 
     # Command "events"
@@ -133,6 +134,10 @@ class eventsCog(commands.Cog):
             embed = await embed_event_farm(ctx.prefix)
             await ctx.send(embed=embed)
             return
+        elif (invoked.find('snowball') > -1):
+            embed = await embed_event_snowball(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
         else:
             if args:
                 event_name = ''
@@ -206,6 +211,9 @@ class eventsCog(commands.Cog):
                 elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1) or (event_name.find('seed') > -1):
                     embed = await embed_event_farm(ctx.prefix)
                     await ctx.send(embed=embed)
+                elif (event_name.find('snowball') > -1):
+                    embed = await embed_event_snowball(ctx.prefix)
+                    await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')
             else:
@@ -237,9 +245,8 @@ events_footer = 'Use {prefix}events to see a list of all events.'
 # Events overview
 async def embed_events_overview(prefix):
 
-    halloween_event = (
-        f'{emojis.BP} `slime`\n'
-        f'{emojis.BP} `scroll boss`'
+    xmas_event = (
+        f'{emojis.BP} `snowball`'
     )
 
     sp_events = (
@@ -282,7 +289,7 @@ async def embed_events_overview(prefix):
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    #embed.add_field(name=f'HALLOWEEN {emojis.HAL_PUMPKIN}', value=halloween_event, inline=False)
+    embed.add_field(name=f'CHRISTMAS {emojis.XMAS_TREE}', value=xmas_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)

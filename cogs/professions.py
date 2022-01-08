@@ -1647,6 +1647,10 @@ async def embed_professions_leveling(prefix):
         f'{emojis.BP} Costs around 2 billion coins with {emojis.HORSE_T8} T8+ horse'
     )
 
+    ascended = (
+        f'{emojis.BP} Increase crafter to 101, then focus exclusively on worker\n'
+    )
+
     calculators = (
         f'{emojis.BP} {calc_pre.format(prefix=prefix)}\n'
         f'{emojis.BP} {calc_prl.format(prefix=prefix)}\n'
@@ -1684,6 +1688,7 @@ async def embed_professions_leveling(prefix):
     embed.add_field(name=f'3. WORKER {emojis.PR_WORKER}', value=worker, inline=False)
     embed.add_field(name=f'4. LOOTBOXER {emojis.PR_LOOTBOXER}', value=lootboxer, inline=False)
     embed.add_field(name=f'5. ENCHANTER {emojis.PR_ENCHANTER}', value=enchanter, inline=False)
+    embed.add_field(name='AFTER ASCENSION', value=ascended, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -1745,8 +1750,8 @@ async def embed_professions_enchanter(prefix):
 
     how_to_get_xp = (
         f'{emojis.BP} Use enchanting commands\n'
-        f'{emojis.BP} The XP formula is [command multiplier] * [enchantment xp]\n'
-        f'{emojis.BP} Example: If you enchant **Ultimate** with `transmute`, you get 600 (100*6) XP\n'
+        f'{emojis.BLANK} The XP formula is [tt multiplier] * [command multiplier] * [enchantment xp]\n'
+        f'{emojis.BLANK} Ex: If you enchant **Perfect** with `transmute` in TT6, you get `2 * 100 * 7` XP\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_FRUIT_ICE_CREAM} fruit ice cream (100 XP each)~~ (don\'t do that)'
     )
 
@@ -1773,6 +1778,10 @@ async def embed_professions_enchanter(prefix):
         f'{emojis.BP} `transcend`: 1,000'
     )
 
+    tt_multiplier = (
+        f'{emojis.BP} Use `rpg time travel` to check your TT multiplier'
+    )
+
     calculators = (
         f'{emojis.BP} {calc_pre.format(prefix=prefix)}\n'
         f'{emojis.BP} {calc_pretotal.format(prefix=prefix)}'
@@ -1794,6 +1803,7 @@ async def embed_professions_enchanter(prefix):
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
     embed.add_field(name='COMMAND MULTIPLIERS', value=command_multipliers, inline=False)
+    embed.add_field(name='TT MULTIPLIER', value=tt_multiplier, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 

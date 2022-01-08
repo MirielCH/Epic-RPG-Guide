@@ -475,7 +475,7 @@ async def embed_pets_skills_special(prefix):
     )
 
     gifter = (
-        f'{emojis.BP} Has a chance to find a random lootbox in a pet adventure\n'
+        f'{emojis.BP} Has a 35% chance to find a random lootbox in a pet adventure\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_SNOWBALL} snowball pet\n'
         f'{emojis.BP} This pet is a reward in the christmas event'
     )
@@ -609,7 +609,10 @@ async def embed_fuse(prefix, pet_tier, user_tt):
         if 0 <= user_tt <= 9:
             what_to_fuse_with_tier = f'{emojis.BP} **T3** + **T3** ➜ **T4**'
         elif 10 <= user_tt <= 24:
-            what_to_fuse_with_tier = f'{emojis.BP} **T2** + **T3** ➜ **T4**'
+            what_to_fuse_with_tier = (
+                f'{emojis.BP} **T2** + **T3** ➜ **T4**\n'
+                f'{emojis.BP} **T3** + **T4** ➜ **T5**'
+            )
         else:
             what_to_fuse_with_tier = f'{emojis.BP} **T1** + **T3** ➜ **T4**'
     elif pet_tier == 4:

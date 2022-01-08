@@ -4,6 +4,7 @@
 import discord
 from discord.ext import commands
 
+import emojis
 import global_data
 
 
@@ -83,11 +84,17 @@ class FunCog(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=('complaint',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def complain(self, ctx: commands.Context) -> None:
         """Complain"""
-        await ctx.send('No u')
+        await ctx.send('I am so terribly sorry, sir, the complaint function is currently out of service.')
+
+    @commands.command(aliases=('ban','mute','warn'))
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def kick(self, ctx: commands.Context) -> None:
+        """Complain"""
+        await ctx.send(f'Do I look like a moderation bot {emojis.SUS}')
 
     @commands.command()
     @commands.is_owner()

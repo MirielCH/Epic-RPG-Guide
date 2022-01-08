@@ -124,7 +124,7 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
-    seasonal_event = f'{emojis.BP} `{prefix}halloween` / `{prefix}hal` : Halloween guide\n'
+    seasonal_event = f'{emojis.BP} `{prefix}xmas` : Christmas guide\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
@@ -176,7 +176,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    #embed.add_field(name=f'HALLOWEEN 2021 {emojis.HAL_PUMPKIN}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'CHRISTMAS 2021 {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -196,8 +196,7 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
     """Bot info embed"""
     user_count, *_ = await database.get_user_number(ctx)
     closed_shards = 0
-    for shard_id in bot.shards:
-        shard = bot.get_shard(shard_id)
+    for shard in bot.shards.values():
         if shard is not None:
             if shard.is_closed(): closed_shards += 1
         else:
