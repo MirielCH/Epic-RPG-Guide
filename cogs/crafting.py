@@ -424,7 +424,7 @@ class craftingCog(commands.Cog):
         )
 
         items = [
-            'log',
+            'wooden log',
             'epic log',
             'super log',
             'mega log',
@@ -433,7 +433,7 @@ class craftingCog(commands.Cog):
             'ruby',
             'apple',
             'banana',
-            'fish',
+            'normie fish',
             'golden fish',
             'epic fish'
         ]
@@ -526,7 +526,7 @@ class craftingCog(commands.Cog):
         ruby_rate = traderate_data[3]
 
         # Calculate logs
-        if item == 'log':
+        if item == 'wooden log':
             loghyper_calc = loghyper + (logultra * 8)
             logmega_calc = logmega + (loghyper_calc * 8)
             logsuper_calc = logsuper + (logmega_calc * 8)
@@ -677,7 +677,7 @@ class craftingCog(commands.Cog):
             result_item = f'{emojis.LOG_ULTRA} ULTRA logs'
 
         # Calculate normie fish
-        if item == 'fish':
+        if item == 'normie fish':
             fishgolden_calc = fishgolden + (fishepic * 80)
             fish_calc = fish + (fishgolden_calc * 12)
             loghyper_calc = loghyper + (logultra * 8)
