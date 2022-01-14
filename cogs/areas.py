@@ -456,22 +456,22 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                     work_cmd = f'{emojis.BP} `ascended dynamite`'
                 elif 4 <= area_no <= 5:
                     work_cmd = (
-                        f'{emojis.BP} `ascended chainsaw` if worker 113 or higher\n'
+                        f'{emojis.BP} `ascended chainsaw` if worker 115 or higher\n'
                         f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif 6 <= area_no <= 7:
                     work_cmd = (
-                        f'{emojis.BP} `ascended greenhouse` if worker 104 or higher\n'
+                        f'{emojis.BP} `ascended greenhouse` if worker 102 or higher\n'
                         f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif area_no == 8:
                     work_cmd = (
-                        f'{emojis.BP} `ascended chainsaw` if worker 110 or higher\n'
+                        f'{emojis.BP} `ascended chainsaw` if worker 109 or higher\n'
                         f'{emojis.BP} `ascended dynamite` otherwise'
                     )
                 elif area_no == 9:
                     work_cmd = (
-                        f'{emojis.BP} `ascended greenhouse` if worker 108 or higher\n'
+                        f'{emojis.BP} `ascended greenhouse` if worker 107 or higher\n'
                         f'{emojis.BP} `ascended dynamite` otherwise'
                     )
         else:
@@ -503,11 +503,16 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 if money_nohorse == -1:
                     work_cmd = f'{emojis.BP} `{work_cmd_poor}`'
                 else:
-                    work_cmd = (
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.BP} `{work_cmd_rich}` otherwise'
-                    )
+                    if user_tt < 25:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        )
+                    else:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins'
+                        )
+                    work_cmd = f'{work_cmd}\n{emojis.BP} `{work_cmd_rich}` otherwise'
     elif area_no == 11:
             if user_tt == 0:
                 work_cmd = (
@@ -521,11 +526,16 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                         f'{emojis.BP} `chainsaw` otherwise'
                     )
                 else:
-                    work_cmd =  (
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                        f'{emojis.BP} `chainsaw` otherwise'
-                    )
+                    if user_tt < 25:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        )
+                    else:
+                        work_cmd = (
+                            f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins'
+                        )
+                    work_cmd = f'{work_cmd}\n{emojis.BP} `chainsaw` otherwise'
     elif 12 <= area_no <= 15:
         if ((area_no == 12) and (user_tt in (1,2))) or ((area_no == 13) and (user_tt in (3,4))) or ((area_no == 14) and (user_tt in (5,6,7,8))):
             work_cmd = (
@@ -534,11 +544,16 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             )
         else:
             if not money_nohorse == 0:
-                work_cmd = (
-                    f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                    f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+\n'
-                    f'{emojis.BP} `chainsaw` otherwise'
-                )
+                if user_tt < 25:
+                    work_cmd = (
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                    )
+                else:
+                    work_cmd = (
+                        f'{emojis.BP} `{work_cmd_poor}` if < {money_t6horse}m coins'
+                    )
+                work_cmd = f'{work_cmd}\n{emojis.BP} `chainsaw` otherwise'
             else:
                 work_cmd = (
                     f'{emojis.BP} `dynamite` if you need coins\n'

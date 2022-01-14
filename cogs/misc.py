@@ -87,21 +87,9 @@ class miscCog(commands.Cog):
             return
         npc_at_base = 5 * (stage ** 1.25)
         npc_def_base = 6 * (stage ** 1.25)
-        if stage <= 300 or stage > 1500:
-            trainer = 'EPIC NPC'
-        elif 300 < stage <= 600:
-            trainer = 'SUPER NPC'
-        elif 600 < stage <= 900:
-            trainer = 'MEGA NPC'
-        elif 900 < stage <= 1200:
-            trainer = 'HYPER NPC'
-        elif 1200 < stage <= 1500:
-            trainer = 'ULTRA NPC'
 
         answer = (
-            f'Stage: **{stage:,}**\n'
-            f'Trainer: **{trainer}**\n'
-            f'Estimated trainer stats:\n'
+            f'Estimated trainer stats at stage **{stage:,}**:\n'
             f'{emojis.STAT_AT} AT: **{round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}**\n'
             f'{emojis.STAT_DEF} DEF: **{round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}**\n'
         )
@@ -578,7 +566,7 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.SWORD_HAIR} `Hair Sword` ➜ 4 {emojis.MERMAID_HAIR} + **220** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} `Electronical Armor` ➜ 12 {emojis.CHIP} + 1 {emojis.LOG_HYPER} + **180** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ **1** {emojis.BREAD} + 160 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **20** {emojis.BREAD}\n'
+        f'{emojis.BP} 1 STT score per **25** {emojis.BREAD}\n'
         f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
@@ -587,7 +575,7 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_ORANGE_JUICE} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.POTATO} + **80** {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **25** {emojis.CARROT}\n'
+        f'{emojis.BP} 1 STT score per **30** {emojis.CARROT}\n'
         f'{emojis.BP} Can be sold for 2,500 coins and 3 merchant XP\n'
         f'{emojis.BP} Can be used to change the horse name with `rpg horse feed`'
     )
@@ -597,7 +585,7 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.ARMOR_RUBY} `Ruby Armor` ➜ 7 {emojis.RUBY} + 4 {emojis.UNICORN_HORN} + **120** {emojis.POTATO} + 2 {emojis.LOG_MEGA}\n'
         f'{emojis.BP} {emojis.SWORD_ELECTRONICAL} `Electronical Sword` ➜ 8 {emojis.CHIP} + 1 {emojis.LOG_MEGA} + **140** {emojis.POTATO}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.POTATO} + 80 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **30** {emojis.POTATO}\n'
+        f'{emojis.BP} 1 STT score per **35** {emojis.POTATO}\n'
         f'{emojis.BP} Can be sold for 2,000 coins and 3 merchant XP'
     )
 

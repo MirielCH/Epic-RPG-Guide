@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import sqlite3
-from typing import Union
+from typing import NamedTuple, Tuple, Union
 
 import discord
 from discord.ext import commands
@@ -29,6 +29,19 @@ class NoDataFound(Exception):
     """Exception when no data is returned from the database"""
     pass
 
+
+class PetFusion(NamedTuple):
+    """Container for pet fusion data"""
+    tier: int
+    fusion: str
+
+
+class PetTier(NamedTuple):
+    """Container for pet tier data"""
+    tier: int
+    tt_no: int
+    fusion_to_get_tier: PetFusion
+    fusions_including_tier: Tuple[PetFusion]
 
 # --- Get Data ---
 async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
@@ -416,16 +429,78 @@ async def get_horse_data(ctx: commands.Context, tier: int) -> dict:
         raise
     return horse_data
 
+
+async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
+    """Returns a pet tier.
+
+    Returns:
+       PetTier object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found. This also logs an error.
+    """
+    if 0 <= tt_no <= 9:
+        column = 'tt_0_9'
+    elif 10 <= tt_no <= 24:
+        column = 'tt_10_24'
+    elif 25 <= tt_no <= 40:
+        column = 'tt_25_40'
+    elif 41 <= tt_no <= 60:
+        column = 'tt_41_60'
+    elif 61 <= tt_no <= 90:
+        column = 'tt_61_90'
+    else:
+        column = 'tt_91_plus'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute('SELECT * FROM pets WHERE pet_tier=?',(tier,))
+        record_pet_tier = cur.fetchone()
+        cur.execute(f"SELECT * FROM pets WHERE {column} LIKE 'T{tier} %' OR {column} LIKE '%T{tier}'")
+        records_fusions = cur.fetchall()
+    except sqlite3.Error:
+        raise
+    if not record_pet_tier:
+        await log_error(
+            ctx, INTERNAL_ERROR_NO_DATA_FOUND.format(table='pets',
+                                                     function='get_pet_tier',
+                                                     select=f'Pet tier {tier}')
+        )
+        raise NoDataFound
+    record_pet_tier = dict(record_pet_tier)
+    fusion_to_get_tier = PetFusion(
+        tier = tier,
+        fusion = record_pet_tier[column] if record_pet_tier[column] is not None else 'None'
+    )
+    fusions_including_tier = []
+    for record in records_fusions:
+        record = dict(record)
+        fusion = PetFusion(
+            tier = record['pet_tier'],
+            fusion = record[column]
+        )
+        fusions_including_tier.append(fusion)
+    pet_tier = PetTier(
+        tier = tier,
+        tt_no = tt_no,
+        fusion_to_get_tier = fusion_to_get_tier,
+        fusions_including_tier = tuple(fusions_including_tier)
+    )
+
+    return pet_tier
+
+
 # Get redeemable codes
 async def get_codes(ctx):
 
     try:
         cur=ERG_DB.cursor()
         cur.execute('SELECT * FROM codes ORDER BY code')
-        record = cur.fetchall()
+        records = cur.fetchall()
 
-        if record:
-            codes = record
+        if records:
+            codes = records
         else:
             await log_error(ctx, 'No codes data found in database.')
     except sqlite3.Error as error:
