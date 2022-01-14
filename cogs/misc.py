@@ -82,8 +82,11 @@ class miscCog(commands.Cog):
         except:
             await ctx.send(f'Invalid stage. The stage has to be a number.\n\n{message_syntax}')
             return
-        if not 1 <= stage <= 1_000_000:
+        if stage < 1:
             await ctx.send(f'Why do people always try {emojis.SUS}')
+            return
+        if stage > 63_096:
+            await ctx.send(f'The current maximum possible stage is 63,096 which equals 100% EPIC NPC strength.')
             return
         npc_at_base = 5 * (stage ** 1.25)
         npc_def_base = 6 * (stage ** 1.25)
