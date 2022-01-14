@@ -241,159 +241,158 @@ class craftingCog(commands.Cog):
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
-    # Command "craft" - Calculates mats you need for amount of items
     @commands.command(aliases=('cook','forge',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def craft(self, ctx, *args):
-
-        invoked = ctx.message.content
-        invoked = invoked.lower()
-
-        if args:
-            itemname = ''
-            amount = 1
-            for arg in args:
-                if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
-                    itemname = f'{itemname} {arg}'
-                    itemname = itemname.strip()
-                    itemname = itemname.lower()
-                else:
-                    try:
-                        if (arg.find('.') != -1) or (arg.find(',') != -1):
-                            await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
-                            return
-                        elif (arg.find('-') != -1) or (int(arg) == 0):
-                            await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
-                            return
-                        elif int(arg) >= 100000000000:
-                            await ctx.send(f'Are you trying to break me or something? :thinking:')
-                            return
-                        else:
-                            amount = int(arg)
-                    except:
-                        await ctx.send(f'Are you trying to break me or something? :thinking:')
-                        return
-
-            if not itemname == '' and amount >= 1:
-                try:
-                    itemname_replaced = itemname.replace('logs','log').replace('ultra edgy','ultra-edgy').replace('ultra omega','ultra-omega').replace('uo ','ultra-omega ')
-                    itemname_replaced = itemname_replaced.replace('creatures','creature').replace('salads','salad').replace('juices','juice').replace('cookies','cookie').replace('pickaxes','pickaxe')
-                    itemname_replaced = itemname_replaced.replace('lootboxes','lootbox').replace(' lb',' lootbox').replace('sandwiches','sandwich').replace('apples','apple').replace('oranges','orange')
-
-                    if itemname_replaced in global_data.item_aliases:
-                        itemname_replaced = global_data.item_aliases[itemname_replaced]
-
-                    items_data = await database.get_item_data(ctx, itemname_replaced)
-                    if items_data == '':
-                        await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
-                        return
-                except:
-                    await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
-                    return
-
-                items_values = items_data[1]
-                itemtype = items_values[1]
-
-                if ((itemtype == 'sword') or (itemtype == 'armor')) and (amount > 1):
-                    await ctx.send(f'You can only craft 1 {getattr(emojis, items_values[3])} {items_values[2]}.')
-                    return
-
-                mats_data = await function_mats(items_data, amount, ctx.prefix)
-                await ctx.send(mats_data)
+    async def craft(self, ctx: commands.Context, *args: str) -> None:
+        """Calculates mats you need when crafting items"""
+        msg_syntax = (
+            f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\n'
+            f'You can omit the amount if you want to see the materials for one item only.'
+        )
+        if not args:
+            await ctx.send(msg_syntax)
+            return
+        itemname = ''
+        amount = 1
+        for arg in args:
+            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
+                itemname = f'{itemname} {arg}'
+                itemname = itemname.strip()
+                itemname = itemname.lower()
             else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+                try:
+                    amount = int(arg.replace('.','').replace(',',''))
+                except:
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
+                    return
+                if amount <= 0:
+                    await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
+                    return
+                if amount >= 100_000_000_000:
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
+                    return
+
+        if itemname == '':
+            await ctx.send(msg_syntax)
+            return
+
+        itemname_replaced = (
+            itemname.replace('logs','log')
+            .replace('ultra edgy','ultra-edgy')
+            .replace('ultra omega','ultra-omega')
+            .replace('uo ','ultra-omega ')
+            .replace('creatures','creature')
+            .replace('salads','salad')
+            .replace('juices','juice')
+            .replace('cookies','cookie')
+            .replace('pickaxes','pickaxe')
+            .replace('lootboxes','lootbox')
+            .replace(' lb',' lootbox')
+            .replace('sandwiches','sandwich')
+            .replace('apples','apple')
+            .replace('oranges','orange')
+        )
+        if itemname_replaced in global_data.item_aliases:
+            itemname_replaced = global_data.item_aliases[itemname_replaced]
+
+        if itemname_replaced in ('ultimate log', 'super fish', 'watermelon'):
+            await ctx.send(':shushing_face:')
+            return
+        try:
+            item: database.Item = await database.get_item(ctx, itemname_replaced)
+        except database.NoDataFound:
+            await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
+            return
+
+        if item.item_type in ('sword', 'armor') and amount > 1:
+            await ctx.send(f'You can only craft 1 {item.emoji} `{item.name}`.')
+            return
+        if not item.ingredients:
+            await ctx.send(f'{item.emoji} `{item.name}` is not craftable.')
+            return
+
+        breakdown_totals = await get_item_breakdown(ctx, item, amount)
+
+        if amount == 1:
+            message = f'To craft {item.emoji} `{item.name}` you need:'
         else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}craft [amount] [item]` or `{ctx.prefix}craft [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+            message = f'To craft {amount:,} {item.emoji} `{item.name}` you need:'
+        for ingredient in item.ingredients:
+            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            message = f'{message}\n> {ingredient.amount * amount:,} {ingredient_item.emoji} `{ingredient_item.name}`'
 
+        if breakdown_totals != '':
+            message = f'{message}\n\n{breakdown_totals}'
 
-    # Command "dismantle" - Calculates mats you get by dismantling items
+        await ctx.send(message)
+
     @commands.command(aliases=('dm',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
-    async def dismantle(self, ctx, *args):
-
-        invoked = ctx.message.content
-        invoked = invoked.lower()
-
-        if args:
-            itemname = ''
-            amount = 1
-            for arg in args:
-                if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
-                    itemname = f'{itemname} {arg}'
-                    itemname = itemname.strip()
-                    itemname = itemname.lower()
-                else:
-                    try:
-                        if (arg.find('.') != -1) or (arg.find(',') != -1):
-                            await ctx.send(f'I\'m no Einstein, sorry. Please give me the amount with whole numbers only. :eyes:')
-                            return
-                        elif (arg.find('-') != -1) or (int(arg) == 0):
-                            await ctx.send(f'You wanna do _what_? Dismantle **{arg}** items?? Have some :bread: instead.')
-                            return
-                        elif int(arg) >= 100000000000:
-                            await ctx.send(f'Are you trying to break me or something? :thinking:')
-                            return
-                        else:
-                            amount = int(arg)
-                    except:
-                        await ctx.send(f'Are you trying to break me or something? :thinking:')
-                        return
-
-            if not itemname == '' and amount >= 1:
+    async def dismantle(self, ctx: commands.Context, *args: str) -> None:
+        """Calculates mats you get when dismantling items"""
+        msg_syntax = (
+            f'The command syntax is `{ctx.prefix}dismantle [amount] [item]` or `{ctx.prefix}dismantle [item] [amount]`\n'
+            f'You can omit the amount if you want to see the materials for one item only.'
+        )
+        if not args:
+            await ctx.send(msg_syntax)
+            return
+        itemname = ''
+        amount = 1
+        args = [arg.lower() for arg in args]
+        for arg in args:
+            if not arg.lstrip('-').replace('.','').replace(',','').replace('\'','').isnumeric():
+                itemname = f'{itemname} {arg}'.strip()
+            else:
                 try:
-                    if itemname == 'brandon':
-                        await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
-                        return
-
-                    itemname_replaced = itemname.replace('logs','log')
-
-                    shortcuts = {
-                        'brandon': 'epic fish',
-                        'bananas': 'banana',
-                        'ultralog': 'ultra log',
-                        'hyperlog': 'hyper log',
-                        'megalog': 'mega log',
-                        'epiclog': 'epic log',
-                        'goldenfish': 'golden fish',
-                        'epicfish': 'epic fish',
-                        'gf': 'golden fish',
-                        'golden': 'golden fish',
-                        'ef': 'epic fish',
-                        'el': 'epic log',
-                        'sl': 'super log',
-                        'super': 'super log',
-                        'ml': 'mega log',
-                        'mega': 'mega log',
-                        'hl': 'hyper log',
-                        'hyper': 'hyper log',
-                        'ul': 'ultra log',
-                        'ultra': 'ultra log',
-                    }
-
-                    if itemname_replaced in shortcuts:
-                        itemname_replaced = shortcuts[itemname_replaced]
-
-                    if not itemname_replaced in ('epic log', 'super log', 'mega log', 'hyper log', 'ultra log', 'golden fish', 'epic fish', 'banana'):
-                        await ctx.send(f'Uhm, I don\'t know how to dismantle `{itemname}`, sorry.')
-                        return
-
-                    items_data = await database.get_item_data(ctx, itemname_replaced)
-                    if items_data == '':
-                        await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
-                        return
+                    amount = int(arg.replace('.','').replace(',',''))
                 except:
-                    await ctx.send(f'Uhm, I don\'t know how to dismantle something called `{itemname}`, sorry.')
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
+                    return
+                if amount <= 0:
+                    await ctx.send(f'You wanna do _what_? Dismantle **{arg}** items?? Have some :bread: instead.')
+                    return
+                if amount >= 100_000_000_000:
+                    await ctx.send(f'Are you trying to break me or something? :thinking:')
                     return
 
-                items_values = items_data[1]
-                itemtype = items_values[1]
+        if itemname == '':
+            await ctx.send(msg_syntax)
+            return
 
-                mats = await function_dismantle_mats(items_data, amount, ctx.prefix)
-                await ctx.send(mats)
-            else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+        if itemname == 'brandon':
+            await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
+            return
+
+        if itemname in global_data.item_aliases:
+            itemname = global_data.item_aliases[itemname]
+
+        if itemname in ('ultimate log', 'super fish', 'watermelon'):
+            await ctx.send(':shushing_face:')
+            return
+        try:
+            item: database.Item = await database.get_item(ctx, itemname)
+        except database.NoDataFound:
+            await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
+            return
+        if not item.dismanteable:
+            await ctx.send(f'{item.emoji} `{item.name}` can not be dismantled.')
+            return
+
+        breakdown_totals = await get_item_breakdown(ctx, item, amount, dismantle=True)
+
+        if amount == 1:
+            message = f'By dismantling {item.emoji} `{item.name}` you get:'
         else:
-            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [amount] [item]` or `{ctx.prefix}{ctx.invoked_with} [item] [amount]`\nYou can omit the amount if you want to see the materials for one item only.')
+            message = f'By dismantling {amount:,} {item.emoji} `{item.name}` you get:'
+        for ingredient in item.ingredients:
+            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            message = f'{message}\n> {int(ingredient.amount * amount * 0.8):,} {ingredient_item.emoji} `{ingredient_item.name}`'
+
+        if breakdown_totals != '':
+            message = f'{message}\n\n{breakdown_totals}'
+
+        await ctx.send(message)
 
     # Command "invcalc" - Calculates amount of items craftable with current inventory
     @commands.command(aliases=('ic','invc','icalc','inventoryc','inventorycalc',))
@@ -852,357 +851,65 @@ def setup(bot):
     bot.add_cog(craftingCog(bot))
 
 
-
 # --- Functions ---
-# List needed items for recipe
-async def function_mats(items_data, amount, prefix):
-
-    items_headers = items_data[0]
-
-    item_crafted = items_data[1]
-    item_crafted_name = item_crafted[2]
-    item_crafted_emoji = getattr(emojis, item_crafted[3])
-
-    ingredients = []
-
-    for item_index, value in enumerate(item_crafted[6:]):
-        header_index = item_index+6
-        if not value == 0:
-            if items_headers[header_index] == 'log':
-                ingredients.append([value, emojis.LOG, 'wooden log'])
-            elif items_headers[header_index] == 'epiclog':
-                ingredients.append([value, emojis.LOG_EPIC, 'EPIC log'])
-            elif items_headers[header_index] == 'superlog':
-                ingredients.append([value, emojis.LOG_SUPER, 'SUPER log'])
-            elif items_headers[header_index] == 'megalog':
-                ingredients.append([value, emojis.LOG_MEGA, 'MEGA log'])
-            elif items_headers[header_index] == 'hyperlog':
-                ingredients.append([value, emojis.LOG_HYPER, 'HYPER log'])
-            elif items_headers[header_index] == 'ultralog':
-                ingredients.append([value, emojis.LOG_ULTRA, 'ULTRA log'])
-            elif items_headers[header_index] == 'fish':
-                ingredients.append([value, emojis.FISH, 'normie fish'])
-            elif items_headers[header_index] == 'goldenfish':
-                ingredients.append([value, emojis.FISH_GOLDEN, 'golden fish'])
-            elif items_headers[header_index] == 'epicfish':
-                ingredients.append([value, emojis.FISH_EPIC, 'EPIC fish'])
-            elif items_headers[header_index] == 'apple':
-                ingredients.append([value, emojis.APPLE, 'apple'])
-            elif items_headers[header_index] == 'banana':
-                ingredients.append([value, emojis.BANANA, 'banana'])
-            elif items_headers[header_index] == 'ruby':
-                ingredients.append([value, emojis.RUBY, 'ruby'])
-            elif items_headers[header_index] == 'wolfskin':
-                ingredients.append([value, emojis.WOLF_SKIN, 'wolf skin'])
-            elif items_headers[header_index] == 'zombieeye':
-                ingredients.append([value, emojis.ZOMBIE_EYE, 'zombie eye'])
-            elif items_headers[header_index] == 'unicornhorn':
-                ingredients.append([value, emojis.UNICORN_HORN, 'unicorn horn'])
-            elif items_headers[header_index] == 'mermaidhair':
-                ingredients.append([value, emojis.MERMAID_HAIR, 'mermaid hair'])
-            elif items_headers[header_index] == 'chip':
-                ingredients.append([value, emojis.CHIP, 'chip'])
-            elif items_headers[header_index] == 'dragonscale':
-                ingredients.append([value, emojis.DRAGON_SCALE, 'dragon scale'])
-            elif items_headers[header_index] == 'coin':
-                ingredients.append([value, emojis.COIN, 'coin'])
-            elif items_headers[header_index] == 'life':
-                ingredients.append([value, emojis.STAT_LIFE, 'LIFE'])
-            elif items_headers[header_index] == 'lifepotion':
-                ingredients.append([value, emojis.LIFE_POTION, 'life potion'])
-            elif items_headers[header_index] == 'cookies':
-                ingredients.append([value, emojis.ARENA_COOKIE, 'arena cookie'])
-            elif items_headers[header_index] == 'dragonessence':
-                ingredients.append([value, emojis.DRAGON_ESSENCE, 'dragon essence'])
-            elif items_headers[header_index] == 'bread':
-                ingredients.append([value, emojis.BREAD, 'bread'])
-            elif items_headers[header_index] == 'carrot':
-                ingredients.append([value, emojis.CARROT, 'carrot'])
-            elif items_headers[header_index] == 'potato':
-                ingredients.append([value, emojis.POTATO, 'potato'])
-            elif items_headers[header_index] == 'lbrare':
-                ingredients.append([value, emojis.LB_RARE, 'rare lootbox'])
-            elif items_headers[header_index] == 'lbomega':
-                ingredients.append([value, emojis.LB_OMEGA, 'OMEGA lootbox'])
-            elif items_headers[header_index] == 'lbgodly':
-                ingredients.append([value, emojis.LB_GODLY, 'GODLY lootbox'])
-            elif items_headers[header_index] == 'armoredgy':
-                ingredients.append([value, emojis.ARMOR_EDGY, 'EDGY Armor'])
-            elif items_headers[header_index] == 'swordedgy':
-                ingredients.append([value, emojis.SWORD_EDGY, 'EDGY Sword'])
-            elif items_headers[header_index] == 'armorultraedgy':
-                ingredients.append([value, emojis.ARMOR_ULTRAEDGY, 'ULTRA-EDGY Armor'])
-            elif items_headers[header_index] == 'swordultraedgy':
-                ingredients.append([value, emojis.SWORD_ULTRAEDGY, 'ULTRA-EDGY Sword'])
-            elif items_headers[header_index] == 'armoromega':
-                ingredients.append([value, emojis.ARMOR_OMEGA, 'OMEGA Armor'])
-            elif items_headers[header_index] == 'swordomega':
-                ingredients.append([value, emojis.SWORD_OMEGA, 'OMEGA Sword'])
-            elif items_headers[header_index] == 'armorultraomega':
-                ingredients.append([value, emojis.ARMOR_ULTRAOMEGA, 'ULTRA-OMEGA Armor'])
-            elif items_headers[header_index] == 'swordultraomega':
-                ingredients.append([value, emojis.SWORD_ULTRAOMEGA, 'ULTRA-OMEGA Sword'])
-
-    breakdown_logs = ''
-    breakdown_fish = ''
-    breakdown_banana = ''
-
-    breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
-    breakdown_list_fish = ['EPIC fish', 'golden fish',]
-
-    ingredient_submats_logs = ['',0]
-    ingredient_submats_fish = ['',0]
-    ingredient_submats_banana = ['',0]
-    ingredient_submats = ''
-    mats = ''
-    total_logs = 0
-    total_fish = 0
-    total_apple = 0
-    mats_total_logs = ''
-    mats_total_fish = ''
-    mats_total_apple = ''
-
-    if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
-        ingredient = ingredients[0]
-        ingredient_amount = ingredient[0]*amount
-        ingredient_emoji = ingredient[1]
-        ingredient_name = ingredient[2]
-
-        if ingredient_name == 'wooden log':
-            total_logs = total_logs+ingredient_amount
-        elif ingredient_name == 'normie fish':
-            total_fish = total_fish+ingredient_amount
-        elif ingredient_name == 'apple':
-            total_apple = total_apple+ingredient_amount
-
-        if ingredient_name in breakdown_list_logs:
-            ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-            total_logs = total_logs+ingredient_submats_logs[1]
-        elif ingredient_name in breakdown_list_fish:
-            ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-            total_fish = total_fish+ingredient_submats_fish[1]
-        elif ingredient_name == 'banana':
-            ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-            total_apple = total_apple+ingredient_submats_banana[1]
-
-        ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
-
-        if amount == 1:
-            mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-        else:
-            mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-
-    else:
-        if amount == 1:
-            mats = f'To craft {item_crafted_emoji} `{item_crafted_name}` you need:'
-        else:
-            mats = f'To craft {amount:,} {item_crafted_emoji} `{item_crafted_name}` you need:'
-
-        for ingredient in ingredients:
-            ingredient_amount = ingredient[0]*amount
-            ingredient_emoji = ingredient[1]
-            ingredient_name = ingredient[2]
-
-            if ingredient_name == 'wooden log':
-                total_logs = total_logs+ingredient_amount
-            elif ingredient_name == 'normie fish':
-                total_fish = total_fish+ingredient_amount
-            elif ingredient_name == 'apple':
-                total_apple = total_apple+ingredient_amount
-
-            mats = f'{mats}\n> {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`'
-
-            if ingredient_name in breakdown_list_logs:
-                ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-                total_logs = total_logs+ingredient_submats_logs[1]
-                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_logs[0]}'
-            elif ingredient_name in breakdown_list_fish:
-                ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-                total_fish = total_fish+ingredient_submats_fish[1]
-                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_fish[0]}'
-            elif ingredient_name == 'banana':
-                ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,))
-                total_apple = total_apple+ingredient_submats_banana[1]
-                ingredient_submats = f'{ingredient_submats}\n  {ingredient_submats_banana[0]}'
-
-    if not total_logs == 0:
-        mats_total_logs = f'\n> {total_logs:,} {emojis.LOG} `wooden log`'
-    if not total_fish == 0:
-        mats_total_fish = f'\n> {total_fish:,} {emojis.FISH} `normie fish`'
-    if not total_apple == 0:
-        mats_total_apple = f'\n> {total_apple:,} {emojis.APPLE} `apple`'
-
-    if not ingredient_submats == '':
-        ingredient_submats = ingredient_submats.strip()
-        mats = f'{mats}\n\n**Ingredients breakdown**\n{ingredient_submats}'
-
-    if not (total_logs == 0) or not (total_fish == 0) or not (total_apple == 0):
-        mats = f'{mats}\n\n**Base materials total**{mats_total_logs}{mats_total_fish}{mats_total_apple}'
-
-    return mats
-
-# Aufschlüsseln von Subamounts
-async def function_get_submats(items_data, amount, ingredient, dismantle=False):
-
-    item1 = ''
-    item2 = ''
-    item3 = ''
-    item4 = ''
-    item5 = ''
+async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount: int, dismantle: bool = False) -> str:
+    """Generate item breakdown"""
+    log_total = fish_total = apple_total = 0
     breakdown = ''
-    ingredient_name = ingredient[0]
-    ingredient_emoji = ingredient[1]
+    multiplier = 0.8 if dismantle else 1
+    base_totals = {}
 
-    breakdown = f'> {amount:,} {ingredient_emoji}'
+    for ingredient in item.ingredients:
+        ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+        if ingredient.name == 'wooden log':
+            log_total += ingredient.amount * amount * multiplier
+        elif ingredient.name == 'normie fish':
+            fish_total += ingredient.amount * amount * multiplier
+        elif ingredient.name == 'apple':
+            apple_total += ingredient.amount * amount * multiplier
+        if not ingredient_item.ingredients:
+            if ingredient_item.item_type not in ('log', 'fish', 'fruit'):
+                base_totals[ingredient.name] = (ingredient.amount, ingredient_item.emoji)
+            continue
+        if ingredient_item.item_type not in ('log', 'fish', 'fruit'): continue
+        current_ingredient = ingredient
+        current_breakdown = ''
+        current_amount = amount
+        while True:
+            current_amount = current_amount * current_ingredient.amount * multiplier
+            if current_ingredient.name == 'wooden log':
+                log_total += current_amount
+            elif current_ingredient.name == 'normie fish':
+                fish_total += current_amount
+            elif current_ingredient.name == 'apple':
+                apple_total += current_amount
+            sub_item: database.Item = await database.get_item(ctx, current_ingredient.name)
+            if current_breakdown == '':
+                current_breakdown = f'> {int(current_amount):,} {sub_item.emoji}'
+            else:
+                current_breakdown = f'{current_breakdown} ➜ {int(current_amount):,} {sub_item.emoji}'
+            if not sub_item.ingredients:
+                breakdown = f'{breakdown}\n{current_breakdown}'
+                break
+            current_ingredient = sub_item.ingredients[0] # If he ever makes more sub ingredients, this will break
 
-    mats_ultralog = ['ULTRA log','HYPER log', 'MEGA log', 'SUPER log', 'EPIC log',]
-    mats_hyperlog = ['HYPER log','MEGA log', 'SUPER log', 'EPIC log',]
-    mats_megalog = ['MEGA log','SUPER log', 'EPIC log',]
-    mats_superlog = ['SUPER log','EPIC log',]
-    mats_epiclog = ['EPIC log',]
-    mats_epicfish = ['EPIC fish','golden fish',]
-    mats_goldenfish = ['golden fish',]
-    mats_banana = ['banana',]
-    mats_all = [mats_ultralog, mats_hyperlog, mats_megalog, mats_superlog, mats_epiclog, mats_epicfish, mats_goldenfish, mats_banana,]
+    message = ''
+    if '➜' in breakdown:
+        if dismantle:
+            message = f'**Full breakdown**\n{breakdown.strip()}'
+            return message.strip()
+        message = f'**Ingredients breakdown**\n{breakdown.strip()}'
+        message = f'**Full breakdown**\n{breakdown.strip()}'
+        message = f'{message}\n\n**Base materials total**'
+        message = message.strip()
+        if (log_total > 0 or fish_total > 0 or apple_total > 0) and not dismantle:
+            if apple_total > 0: base_totals['apple'] = (apple_total, emojis.APPLE)
+            if fish_total > 0: base_totals['normie fish'] = (fish_total, emojis.FISH)
+            if log_total > 0: base_totals['wooden log'] = (log_total, emojis.LOG)
+        for name, amount_emoji in sorted(base_totals.items(), key=lambda item: item[1][0]):
+            message = f'{message}\n> {amount_emoji[0]:,} {amount_emoji[1]} `{name}`'
 
-    items_subitems = {
-        'ULTRA log': 'HYPER log',
-        'HYPER log': 'MEGA log',
-        'MEGA log': 'SUPER log',
-        'SUPER log': 'EPIC log',
-        'EPIC log': 'wooden log',
-        'EPIC fish': 'golden fish',
-        'golden fish': 'normie fish',
-        'banana': 'apple'
-    }
-
-    subitems_emojis = {
-        'HYPER log': emojis.LOG_HYPER,
-        'MEGA log': emojis.LOG_MEGA,
-        'SUPER log': emojis.LOG_SUPER,
-        'EPIC log': emojis.LOG_EPIC,
-        'wooden log': emojis.LOG,
-        'golden fish': emojis.FISH_GOLDEN,
-        'normie fish': emojis.FISH,
-        'apple': emojis.APPLE
-    }
-
-    last_item_amount = 0
-
-    for mats_item in mats_all:
-        if ingredient_name == mats_item[0]:
-            last_item_amount = amount
-            for data_index, item in enumerate(items_data[1:]):
-                item_name = item[2]
-                if item_name in mats_item:
-                    subitem_name = items_subitems[item_name]
-                    subitem_emoji = subitems_emojis[subitem_name]
-                    item_filtered = list(dict.fromkeys(item))
-                    item_filtered = list(filter(lambda num: num != 0, item_filtered))
-                    item_amount = item_filtered[4]
-                    if dismantle == True:
-                        subitem_amount = item_amount*last_item_amount*0.8
-                        try:
-                            subitem_amount = int(subitem_amount)
-                        except:
-                            pass
-                    else:
-                        subitem_amount = item_amount*last_item_amount
-                    last_item_amount = subitem_amount
-                    breakdown = f'{breakdown} ➜ {subitem_amount:,} {subitem_emoji}'
-
-    return (breakdown, last_item_amount)
-
-# Dismantle items
-async def function_dismantle_mats(items_data, amount, prefix):
-
-    items_headers = items_data[0]
-
-    item_crafted = items_data[1]
-    item_crafted_name = item_crafted[2]
-    item_crafted_emoji = getattr(emojis, item_crafted[3])
-
-    ingredients = []
-
-    for item_index, value in enumerate(item_crafted[6:]):
-        header_index = item_index+6
-        if not value == 0:
-            if items_headers[header_index] == 'log':
-                ingredients.append([value, emojis.LOG, 'wooden log'])
-            elif items_headers[header_index] == 'epiclog':
-                ingredients.append([value, emojis.LOG_EPIC, 'EPIC log'])
-            elif items_headers[header_index] == 'superlog':
-                ingredients.append([value, emojis.LOG_SUPER, 'SUPER log'])
-            elif items_headers[header_index] == 'megalog':
-                ingredients.append([value, emojis.LOG_MEGA, 'MEGA log'])
-            elif items_headers[header_index] == 'hyperlog':
-                ingredients.append([value, emojis.LOG_HYPER, 'HYPER log'])
-            elif items_headers[header_index] == 'fish':
-                ingredients.append([value, emojis.FISH, 'normie fish'])
-            elif items_headers[header_index] == 'goldenfish':
-                ingredients.append([value, emojis.FISH_GOLDEN, 'golden fish'])
-            elif items_headers[header_index] == 'apple':
-                ingredients.append([value, emojis.APPLE, 'apple'])
-
-    breakdown_logs = ''
-    breakdown_fish = ''
-    breakdown_banana = ''
-
-    breakdown_list_logs = ['EPIC log', 'SUPER log', 'MEGA log', 'HYPER log', 'ULTRA log', ]
-    breakdown_list_fish = ['EPIC fish', 'golden fish',]
-
-    ingredient_submats_logs = ['',0]
-    ingredient_submats_fish = ['',0]
-    ingredient_submats_banana = ['',0]
-    ingredient_submats = ''
-    mats = ''
-    total_logs = 0
-    total_fish = 0
-    total_apple = 0
-    mats_total_logs = ''
-    mats_total_fish = ''
-    mats_total_apple = ''
-
-    if (len(ingredients) == 1) or (item_crafted_name in breakdown_list_logs) or (item_crafted_name in breakdown_list_fish) or (item_crafted_name == 'banana'):
-        ingredient = ingredients[0]
-        ingredient_amount = ingredient[0]*amount*0.8
-        try:
-            ingredient_amount = int(ingredient_amount)
-        except:
-            pass
-        ingredient_emoji = ingredient[1]
-        ingredient_name = ingredient[2]
-
-        if ingredient_name in breakdown_list_logs:
-            ingredient_submats_logs = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
-            total_logs = total_logs+ingredient_submats_logs[1]
-        elif ingredient_name in breakdown_list_fish:
-            ingredient_submats_fish = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
-            total_fish = total_fish+ingredient_submats_fish[1]
-        elif ingredient_name == 'banana':
-            ingredient_submats_banana = await function_get_submats(items_data, ingredient_amount, (ingredient_name, ingredient_emoji,), True)
-            total_apple = total_apple+ingredient_submats_banana[1]
-
-        ingredient_submats = f'{ingredient_submats_logs[0]}{ingredient_submats_fish[0]}{ingredient_submats_banana[0]}'
-
-        if amount == 1:
-            mats = f'By dismantling {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-        else:
-            mats = f'By dismantling {amount:,} {item_crafted_emoji} `{item_crafted_name}` you get {ingredient_amount:,} {ingredient_emoji} `{ingredient_name}`.'
-
-    if not total_logs == 0:
-        mats_total_logs = f'\n> {total_logs:,} {emojis.LOG} `wooden log`'
-    if not total_fish == 0:
-        mats_total_fish = f'\n> {total_fish:,} {emojis.FISH} `normie fish`'
-    if not total_apple == 0:
-        mats_total_apple = f'\n> {total_apple:,} {emojis.APPLE} `apple`'
-
-    if not ingredient_submats == '':
-        ingredient_submats = ingredient_submats.strip()
-        mats = f'{mats}\n\n**Full breakdown**\n{ingredient_submats}'
-
-    return mats
-
+    return message.strip()
 
 
 # --- Embeds ---

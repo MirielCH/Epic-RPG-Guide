@@ -7,6 +7,7 @@ from typing import NamedTuple, Tuple, Union
 import discord
 from discord.ext import commands
 
+import emojis
 import global_data
 
 
@@ -30,6 +31,7 @@ class NoDataFound(Exception):
     pass
 
 
+# Containers
 class PetFusion(NamedTuple):
     """Container for pet fusion data"""
     tier: int
@@ -42,6 +44,24 @@ class PetTier(NamedTuple):
     tt_no: int
     fusion_to_get_tier: PetFusion
     fusions_including_tier: Tuple[PetFusion]
+
+
+class Ingredient(NamedTuple):
+    """Container for ingredients"""
+    amount: int
+    name: str
+
+
+class Item(NamedTuple):
+    """Container for items"""
+    item_type: str
+    dismanteable: bool
+    emoji: str
+    ingredients: Tuple[Ingredient]
+    name: str
+    stat_at: int
+    stat_def: int
+
 
 # --- Get Data ---
 async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
@@ -202,105 +222,66 @@ async def get_mats_data(ctx, user_tt):
 
     return mats_data
 
-# Get items
-async def get_item_data(ctx, itemname):
+
+async def get_item(ctx: commands.Context, name: str) -> Item:
+    """Returns an item from table "items".
+
+    Returns:
+       Item object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found. This also logs an error.
+    """
     try:
+        ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
+        cur.execute('SELECT * FROM items WHERE name=?',(name,))
+        record = cur.fetchone()
+    except sqlite3.Error:
+        raise
+    if not record:
+        await log_error(
+            ctx, INTERNAL_ERROR_NO_DATA_FOUND.format(table='items',
+                                                     function='get_items',
+                                                     select=f'Item name {name}')
+        )
+        raise NoDataFound
+    record = dict(record)
+    item_name = record['name']
+    record.pop('name')
+    item_emoji = getattr(emojis, record['emoji'])
+    record.pop('emoji')
+    item_type = record['type']
+    record.pop('type')
+    item_at = int(record['at'])
+    record.pop('at')
+    item_def = int(record['def'])
+    record.pop('def')
+    item_dismantleable = bool(record['dismantleable'])
+    record.pop('dismantleable')
+    for name, amount in record.copy().items():
+        if amount == 0: record.pop(name)
+    ingredients = []
+    for name, amount in record.items():
+        ingredient = Ingredient(
+            amount = amount,
+            name = global_data.item_columns_names[name]
+        )
+        ingredients.append(ingredient)
+    ingredients.sort(key=lambda ingredient: ingredient.amount)
+    item = Item(
+        item_type = item_type,
+        dismanteable = item_dismantleable,
+        emoji = item_emoji,
+        ingredients = ingredients,
+        name = item_name,
+        stat_at = item_at,
+        stat_def = item_def
+    )
 
-        items_data = []
+    return item
 
-        if itemname == 'ultra log':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'hyper log':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'mega log':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'super log':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'epic fish':
-            itemnames = (itemname,'golden fish','','','','','','')
-        elif itemname == 'wooden sword':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'fish sword':
-            itemnames = (itemname,'golden fish','epic log','','','','','')
-        elif itemname == 'wolf armor':
-            itemnames = (itemname,'epic log','','','','','','')
-        elif itemname == 'apple sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'eye armor':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'zombie sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'banana armor':
-            itemnames = (itemname,'super log','epic log','banana','','','','')
-        elif itemname == 'ruby sword':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'epic armor':
-            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
-        elif itemname == 'unicorn sword':
-            itemnames = (itemname,'super log','epic log','','','','','')
-        elif itemname == 'ruby armor':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'hair sword':
-            itemnames = (itemname,'mega log','super log','epic log','','','','')
-        elif itemname == 'coin armor':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'coin sword':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'mermaid armor':
-            itemnames = (itemname,'mega log','super log','epic log','golden fish','','','')
-        elif itemname == 'electronical sword':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'electronical armor':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'edgy sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'ultra-edgy sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','epic fish','golden fish')
-        elif itemname == 'ultra-edgy armor':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'omega sword':
-            itemnames = (itemname,'mega log','super log','epic log','', '','','')
-        elif itemname == 'ultra-omega sword':
-            itemnames = (itemname,'ultra log','hyper log','mega log','super log', 'epic log','','')
-        elif itemname == 'baked fish':
-            itemnames = (itemname,'epic log','epic fish','golden fish','','','','')
-        elif itemname == 'fruit salad':
-            itemnames = (itemname,'banana','','','','','','')
-        elif itemname == 'apple juice':
-            itemnames = (itemname,'hyper log','mega log','super log','epic log','','','')
-        elif itemname == 'banana pickaxe':
-            itemnames = (itemname,'mega log','super log','epic log','banana','','','')
-        elif itemname == 'filled lootbox':
-            itemnames = (itemname,'banana','','','','','','')
-        elif itemname == 'coin sandwich':
-            itemnames = (itemname,'epic fish','golden fish','banana','','','','')
-        elif itemname == 'fruit ice cream':
-            itemnames = (itemname,'super log','epic log','banana','','','','')
-        else:
-            itemnames = (itemname,'','','','','','','')
-
-        cur.execute('SELECT * FROM items WHERE name IN (?,?,?,?,?,?,?,?) ORDER BY level DESC;', itemnames)
-        record = cur.fetchall()
-
-        if record:
-            items_columns = []
-            colnames = cur.description
-
-            for row in colnames:
-                items_columns.append(row[0])
-            items_data = [items_columns,]
-
-            for row in record:
-                items_data.append(list(row))
-        else:
-            items_data = ''
-
-    except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
-
-    return items_data
 
 # Get tt unlocks
 async def get_tt_unlocks(ctx, user_tt):
