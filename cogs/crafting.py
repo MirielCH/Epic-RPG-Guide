@@ -298,6 +298,7 @@ class craftingCog(commands.Cog):
         if itemname_replaced in ('ultimate log', 'super fish', 'watermelon'):
             await ctx.send(':shushing_face:')
             return
+
         try:
             item: database.Item = await database.get_item(ctx, itemname_replaced)
         except database.NoDataFound:
@@ -370,6 +371,7 @@ class craftingCog(commands.Cog):
         if itemname in ('ultimate log', 'super fish', 'watermelon'):
             await ctx.send(':shushing_face:')
             return
+
         try:
             item: database.Item = await database.get_item(ctx, itemname)
         except database.NoDataFound:
@@ -899,7 +901,6 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
             message = f'**Full breakdown**\n{breakdown.strip()}'
             return message.strip()
         message = f'**Ingredients breakdown**\n{breakdown.strip()}'
-        message = f'**Full breakdown**\n{breakdown.strip()}'
         message = f'{message}\n\n**Base materials total**'
         message = message.strip()
         if (log_total > 0 or fish_total > 0 or apple_total > 0) and not dismantle:

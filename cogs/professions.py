@@ -1616,8 +1616,9 @@ async def embed_professions_leveling(prefix):
     merchant = (
         f'{emojis.BP} This is the second profession you should level up\n'
         f'{emojis.BP} Level **before time traveling** with leftover materials\n'
-        f'{emojis.BP} Trade everything to {emojis.LOG} logs\n'
-        f'{emojis.BP} For each level look up `rpg pr merchant` and calculate the XP you need for the next level\n'
+        f'{emojis.BP} Trade everything except {emojis.LOG_ULTRA} ULTRA logs to {emojis.LOG} logs\n'
+        f'{emojis.BP} Sell {emojis.LOG_ULTRA} ULTRA logs\n'
+        f'{emojis.BP} For each remaining level look up `rpg pr merchant` and calculate the XP you need for the next level\n'
         f'{emojis.BP} Take 5x the XP amount and sell as many {emojis.LOG} logs\n'
         f'{emojis.BP} Tip: You can quickly calculate logs to sell with `{prefix}prm`\n'
         f'{emojis.BP} Once you reach level 100, focus on lootboxer and worker'

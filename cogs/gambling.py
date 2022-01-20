@@ -147,7 +147,7 @@ async def embed_blackjack(prefix):
         f'{emojis.BP} The goal is go get 21 or a number close to it (but not exceed it)\n'
         f'{emojis.BP} Each round you must choose to either `hit` or `stay`\n'
         f'{emojis.BP} `Hit` will give you another card, `stay` will end the game and count the cards\n'
-        f'{emojis.BP} If your total value is higher than the leader\'s and you are below or at 21, you win\n'
+        f'{emojis.BP} If your total value is higher than the dealer\'s and you are below or at 21, you win\n'
         f'{emojis.BP} If you get 21 on the first hand, you win\n'
         f'{emojis.BP} If you exceed 21 at any point (bust), you lose. The dealer can bust too.\n'
         f'{emojis.BP} If you manage to hold 7 cards without busting, you win'

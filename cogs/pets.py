@@ -387,6 +387,7 @@ async def embed_pets_skills(prefix):
 
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
+        f'{emojis.BP} The chance is 11.11...% per rank (100% at SS+)\n'
         f'{emojis.BP} This skill has to be unlocked with `pets ascend`\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
@@ -481,9 +482,11 @@ async def embed_pets_skills_special(prefix):
     )
 
     booster = (
-        f'{emojis.BP} **All** pets have a chance to advance skills twice in a pet adventure\n'
+        f'{emojis.BP} **All** pets have a 75% chance of advancing skills twice in a pet adventure\n'
+        f'{emojis.BP} This chance only applies if the pet decided to learn\n'
+        f'{emojis.BP} The chance increases if you have multiple pets with this skill\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_HAMSTER} hamster pet\n'
-        f'{emojis.BP} This pet is a reward in the anniversary event'
+        f'{emojis.BP} This pet is a reward in the anniversary event\n'
     )
 
     farmer = (

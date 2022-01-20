@@ -763,6 +763,7 @@ async def embed_stt_score(prefix):
     misc = (
         f'{emojis.BP} Having at least 1 {emojis.LIFE_POTION} life potion = 1 score\n'
         f'{emojis.BP} 500,000 {emojis.LIFE_POTION} life potions = 1 score (10m potions max)\n'
+        f'{emojis.BP} 2 {emojis.LOTTERY_TICKET} lottery tickets = 1 score (10 tickets max)\n'
     )
 
     guides = (
