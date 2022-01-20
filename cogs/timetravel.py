@@ -237,6 +237,11 @@ class timetravelCog(commands.Cog):
                 carrot = await global_data.inventory_get(inventory, 'carrot')
                 bread = await global_data.inventory_get(inventory, 'bread')
                 seed = await global_data.inventory_get(inventory, 'seed')
+                seed_bread = await global_data.inventory_get(inventory, 'bread seed')
+                seed_carrot = await global_data.inventory_get(inventory, 'carrot seed')
+                seed_potato = await global_data.inventory_get(inventory, 'potato seed')
+                lottery_ticket = await global_data.inventory_get(inventory, 'lottery ticket')
+
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
                 return
@@ -374,10 +379,12 @@ class timetravelCog(commands.Cog):
 
         score_lootboxes = (lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25)
         score_mobdrops = (wolfskin/20)+(zombieeye/10)+(unicornhorn/7)+(mermaidhair/5)+(chip/4)+(dragonscale/2)
-        score_farm_items = (bread/25)+(carrot/30)+(potato/35)+(seed/2500)
+        score_farm_items = (bread/25)+(carrot/30)+(potato/35)+(seed/2500)+seed_bread+seed_potato+seed_carrot
         score_ruby_a15 = (ruby_a15/25)
         score_ruby_a16 = (ruby_a16/25)
         score_lifepotions = (lifepotion/500000)
+        score_lottery = (lottery_ticket/2)
+        special_seeds = seed_bread+seed_potato+seed_carrot
         if score_lifepotions > 20:
             score_lifepotions = 20
         if score_lifepotions == 0 and lifepotion > 0:
@@ -393,8 +400,10 @@ class timetravelCog(commands.Cog):
                 f'**Area 15**\n'
                 f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
                 f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
-                f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions:,.2f} materials score ({ruby_a15:,} rubies, {lifepotion:,} life potions)\n'
+                f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, '
+                f'{potato:,} potatoes, {seed:,} seeds, {special_seeds:,} special seeds)\n'
+                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions+score_lottery:,.2f} materials score '
+                f'({ruby_a15:,} rubies, {lifepotion:,} life potions, {lottery_ticket} lottery tickets)\n'
                 f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,.2f} total score**\n\n'
                 f'\n'
             )
@@ -409,8 +418,10 @@ class timetravelCog(commands.Cog):
             f'**The TOP**\n'
             f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
             f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
-            f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, {potato:,} potatoes, {seed:,} seeds)\n'
-            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions:,.2f} materials score ({ruby_a16:,} rubies, {lifepotion:,} life potions)\n'
+            f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, '
+            f'{potato:,} potatoes, {seed:,} seeds, {special_seeds:,} special seeds)\n'
+            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions+score_lottery:,.2f} materials score '
+            f'({ruby_a16:,} rubies, {lifepotion:,} life potions, {lottery_ticket} lottery tickets)\n'
             f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,.2f} total score**'
         )
 
