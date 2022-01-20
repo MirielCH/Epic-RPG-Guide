@@ -377,53 +377,117 @@ class timetravelCog(commands.Cog):
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
 
-        score_lootboxes = (lbcommon*0.05)+(lbuncommon*0.1)+(lbrare*0.15)+(lbepic*0.2)+(lbedgy*0.25)+(lbomega*2.5)+(lbgodly*25)
-        score_mobdrops = (wolfskin/20)+(zombieeye/10)+(unicornhorn/7)+(mermaidhair/5)+(chip/4)+(dragonscale/2)
-        score_farm_items = (bread/25)+(carrot/30)+(potato/35)+(seed/2500)+seed_bread+seed_potato+seed_carrot
-        score_ruby_a15 = (ruby_a15/25)
-        score_ruby_a16 = (ruby_a16/25)
-        score_lifepotions = (lifepotion/500000)
-        score_lottery = (lottery_ticket/2)
-        special_seeds = seed_bread+seed_potato+seed_carrot
-        if score_lifepotions > 20:
-            score_lifepotions = 20
-        if score_lifepotions == 0 and lifepotion > 0:
-            score_lifepotions = 1
+        score_lbcommon = lbcommon * 0.05
+        score_lbuncommon = lbuncommon * 0.1
+        score_lbrare = lbrare * 0.15
+        score_lbepic = lbepic * 0.2
+        score_lbedgy = lbedgy * 0.25
+        score_lbomega = lbomega * 2.5
+        score_lbgodly = lbgodly * 25
+        score_lootboxes = (
+            score_lbcommon + score_lbuncommon + score_lbrare + score_lbepic + score_lbedgy + score_lbomega + score_lbgodly
+        )
+        score_bread = bread / 25
+        score_carrot = carrot / 30
+        score_potato = potato / 35
+        score_seed = seed / 2500
+        score_seed_bread = seed_bread
+        score_seed_carrot = seed_carrot
+        score_seed_potato = seed_potato
+        score_farm_items = (
+            score_bread + score_carrot + score_potato + score_seed + score_seed_bread + score_seed_potato + score_seed_carrot
+        )
+        score_wolfskin = wolfskin / 20
+        score_zombieeye = zombieeye / 10
+        score_unicornhorn = unicornhorn / 7
+        score_mermaidhair = mermaidhair / 5
+        score_chip = chip / 4
+        score_dragonscale = dragonscale / 2
+        score_mobdrops = (
+            score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
+        )
+        score_ruby_a15 = ruby_a15 / 25
+        score_ruby_a16 = ruby_a16 / 25
+        score_lifepotion = lifepotion / 500_000 + 1 if lifepotion > 0 else 0
+        score_lottery = lottery_ticket / 2
+        score_a15 = score_ruby_a15 + score_lifepotion + score_lottery
+        score_a16 = score_ruby_a16 + score_lifepotion + score_lottery
+        score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_a15
+        score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_a16
 
         if original_area == 16:
             message_area = 'The TOP'
         else:
             message_area = original_area
 
-        if a15[0] == 15:
-            message_a15 = (
-                f'**Area 15**\n'
-                f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
-                f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
-                f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, '
-                f'{potato:,} potatoes, {seed:,} seeds, {special_seeds:,} special seeds)\n'
-                f'{emojis.BP} ~{score_ruby_a15+score_lifepotions+score_lottery:,.2f} materials score '
-                f'({ruby_a15:,} rubies, {lifepotion:,} life potions, {lottery_ticket} lottery tickets)\n'
-                f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a15+score_lifepotions:,.2f} total score**\n\n'
-                f'\n'
-            )
-        else:
-            message_a15 = ''
-
-        await ctx.send(
-            f'**{ctx.author.name}**, this is the theoretical STT score for your inventory, calculated up to area 15 / the TOP.\n'
-            f'The material calculation assumes that your **current** max area is **{message_area}** and that you trade **all** of your materials to rubies.\n'
-            f'Note that this score does not include gear, levels and stats. This is only your inventory.\n\n'
-            f'{message_a15}'
-            f'**The TOP**\n'
-            f'{emojis.BP} {score_lootboxes:,.2f} lootbox score\n'
-            f'{emojis.BP} ~{score_mobdrops:,.2f} mob drop score\n'
-            f'{emojis.BP} ~{score_farm_items:,.2f} farm items score ({bread:,} bread, {carrot:,} carrots, '
-            f'{potato:,} potatoes, {seed:,} seeds, {special_seeds:,} special seeds)\n'
-            f'{emojis.BP} ~{score_ruby_a16+score_lifepotions+score_lottery:,.2f} materials score '
-            f'({ruby_a16:,} rubies, {lifepotion:,} life potions, {lottery_ticket} lottery tickets)\n'
-            f'{emojis.BP} ~**{score_lootboxes+score_mobdrops+score_farm_items+score_ruby_a16+score_lifepotions:,.2f} total score**'
+        field_lootboxes = (
+            f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
+            f'{emojis.BP} {lbuncommon:,} {emojis.LB_UNCOMMON} = {score_lbuncommon:,.2f}\n'
+            f'{emojis.BP} {lbrare:,} {emojis.LB_RARE} = {score_lbrare:,.2f}\n'
+            f'{emojis.BP} {lbepic:,} {emojis.LB_EPIC} = {score_lbepic:,.2f}\n'
+            f'{emojis.BP} {lbedgy:,} {emojis.LB_EDGY} = {score_lbedgy:,.2f}\n'
+            f'{emojis.BP} {lbomega:,} {emojis.LB_OMEGA} = {score_lbomega:,.2f}\n'
+            f'{emojis.BP} Total: **{score_lootboxes:,.2f}**\n'
         )
+
+        field_mobdrops = (
+            f'{emojis.BP} {wolfskin:,} {emojis.WOLF_SKIN} = {score_wolfskin:,.2f}\n'
+            f'{emojis.BP} {zombieeye:,} {emojis.ZOMBIE_EYE} = {score_zombieeye:,.2f}\n'
+            f'{emojis.BP} {unicornhorn:,} {emojis.UNICORN_HORN} = {score_unicornhorn:,.2f}\n'
+            f'{emojis.BP} {mermaidhair:,} {emojis.MERMAID_HAIR} = {score_mermaidhair:,.2f}\n'
+            f'{emojis.BP} {chip:,} {emojis.CHIP} = {score_chip:,.2f}\n'
+            f'{emojis.BP} {dragonscale:,} {emojis.DRAGON_SCALE} = {score_dragonscale:,.2f}\n'
+            f'{emojis.BP} Total: **{score_mobdrops:,.2f}**\n'
+        )
+
+        field_farming = (
+            f'{emojis.BP} {bread:,} {emojis.BREAD} = {score_bread:,.2f}\n'
+            f'{emojis.BP} {carrot:,} {emojis.CARROT} = {score_carrot:,.2f}\n'
+            f'{emojis.BP} {potato:,} {emojis.POTATO} = {score_potato:,.2f}\n'
+            f'{emojis.BP} {seed:,} {emojis.SEED} = {score_seed:,.2f}\n'
+            f'{emojis.BP} {seed_bread:,} {emojis.SEED_BREAD} = {score_seed_bread:,.2f}\n'
+            f'{emojis.BP} {seed_carrot:,} {emojis.SEED_CARROT} = {score_seed_carrot:,.2f}\n'
+            f'{emojis.BP} {seed_potato:,} {emojis.SEED_POTATO} = {score_seed_potato:,.2f}\n'
+            f'{emojis.BP} Total: **{score_farm_items:,.2f}**\n'
+        )
+
+        field_materials = (
+            f'{emojis.BP} {ruby_a15:,} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
+            f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in the TOP = {score_ruby_a16:,.2f}\n'
+            f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
+            f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
+            f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
+            f'{emojis.BP} Total in the TOP: **{score_a16:,.2f}**\n'
+        )
+
+        field_totals = (
+            f'{emojis.BP} Total in A15: **{score_total_a15:,.2f}**\n'
+            f'{emojis.BP} Total in the TOP: **{score_total_a16:,.2f}**\n'
+        )
+
+        notes = (
+            f'{emojis.BP} This calculation assumes that you trade **all** of your materials to rubies\n'
+            f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
+            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
+        )
+
+        embed = discord.Embed(
+            title = 'STT SCORE CALCULATOR',
+            description = (
+                f'Your current area: **{message_area}**\n'
+                f'Total score in A15: **{score_total_a15:,.2f}**\n'
+                f'Total score in the TOP: **{score_total_a16:,.2f}**\n'
+            )
+        )
+        embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)
+        embed.add_field(name='FARM ITEMS', value=field_farming, inline=True)
+        embed.add_field(name='MOB DROPS', value=field_mobdrops, inline=True)
+        embed.add_field(name='MATERIALS', value=field_materials, inline=True)
+        embed.add_field(name='TOTAL SCORE', value=field_totals, inline=True)
+        embed.add_field(name='NOTES', value=notes, inline=False)
+
+        await ctx.send(embed=embed)
+
 
 # Initialization
 def setup(bot):
