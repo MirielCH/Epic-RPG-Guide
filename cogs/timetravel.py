@@ -427,6 +427,7 @@ class timetravelCog(commands.Cog):
             f'{emojis.BP} {lbepic:,} {emojis.LB_EPIC} = {score_lbepic:,.2f}\n'
             f'{emojis.BP} {lbedgy:,} {emojis.LB_EDGY} = {score_lbedgy:,.2f}\n'
             f'{emojis.BP} {lbomega:,} {emojis.LB_OMEGA} = {score_lbomega:,.2f}\n'
+            f'{emojis.BP} {lbgodly:,} {emojis.LB_GODLY} = {score_lbgodly:,.2f}\n'
             f'{emojis.BP} Total: **{score_lootboxes:,.2f}**\n'
         )
 
