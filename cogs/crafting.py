@@ -89,45 +89,7 @@ class craftingCog(commands.Cog):
                 }
 
                 horse_chance = horse_tier_chance[horse_tier]
-                drop_chance = 4*(1+tt_chance)*horse_chance
-                drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-                drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
-                drop_chance_worldbuff_daily = 4*(1+tt_chance)*horse_chance*1.3
-                drop_chance = round(drop_chance,1)
-                drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-                drop_chance_daily = round(drop_chance_daily,1)
-                drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-
-                if drop_chance >= 100: drop_chance = 100
-                if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
-                if drop_chance_daily >= 100: drop_chance_daily = 100
-                if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
-
-                hunt_drop_chance = drop_chance/2
-                hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
-                hunt_drop_chance_daily = drop_chance_daily/2
-                hunt_drop_chance_worldbuff_daily = drop_chance_worldbuff_daily/2
-                hunt_drop_chance = round(hunt_drop_chance,2)
-                hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-
-                horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
-
-                await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {user_tt}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
-                    f'**Your drop chance**\n'
-                    f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
-                    f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
-                    f'{emojis.BP} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
-                    f'{emojis.BP} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
-                    f'**Total drop chance while hunting**\n'
-                    f'{emojis.BP} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
-                    f'**Drop chance in hardmode**\n'
-                    f'{emojis.BP} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.'
-                )
-
-            else:
-                await ctx.send(f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\nYou can also omit all parameters to use your current TT and horse tier for the calculation.\n\nExamples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` or `{ctx.prefix}dropchance`')
-        else:
+        if not args:
             try:
                 try:
                     user_settings = await database.get_user_settings(ctx)
@@ -194,52 +156,71 @@ class craftingCog(commands.Cog):
                     await ctx.send('Wrong input. Aborting.')
                     return
 
-                if horse_chance != 0 and horse_tier != 0:
-                    drop_chance = 4*(1+tt_chance)*horse_chance
-                    drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-                    drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
-                    drop_chance_worldbuff_daily = 4*(1+tt_chance)*horse_chance*1.3
-                    drop_chance = round(drop_chance,1)
-                    drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-                    drop_chance_daily = round(drop_chance_daily,1)
-                    drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-
-                    if drop_chance >= 100: drop_chance = 100
-                    if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
-                    if drop_chance_daily >= 100: drop_chance_daily = 100
-                    if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
-
-                    hunt_drop_chance = drop_chance/2
-                    hunt_drop_chance_worldbuff = drop_chance_worldbuff/2
-                    hunt_drop_chance_daily = drop_chance_daily/2
-                    hunt_drop_chance_worldbuff_daily = drop_chance_worldbuff_daily/2
-                    hunt_drop_chance = round(hunt_drop_chance,2)
-                    hunt_drop_chance_worldbuff = round(hunt_drop_chance_worldbuff,2)
-
-                    horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
-
-                else:
+                if horse_chance == 0 or horse_tier == 0:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-
-                await ctx.send(
-                    f'**{ctx.author.name}**, you are currently in {emojis.TIME_TRAVEL} **TT {user_tt}** and have a {horse_emoji} **T{horse_tier}** horse.\n\n'
-                    f'**Your drop chance**\n'
-                    f'{emojis.BP} Base drop chance: **__{drop_chance:g} %__**.\n'
-                    f'{emojis.BP} Active world buff: **__{drop_chance_worldbuff:g} %__**.\n'
-                    f'{emojis.BP} Mob is daily monster: **__{drop_chance_daily:g} %__**.\n'
-                    f'{emojis.BP} Active world buff _and_ mob is daily monster: **__{drop_chance_worldbuff_daily:g} %__**.\n\n'
-                    f'**Total drop chance while hunting**\n'
-                    f'{emojis.BP} The chance to encounter a mob that drops items is 50 %, so the total chance of getting a mob drop when using `rpg hunt` is **half** of the values above.\n\n'
-                    f'**Drop chance in hardmode**\n'
-                    f'{emojis.BP} If you are using `rpg hunt hardmode`, the drop chance is increased further. The exact increase is unknown, it is currently believed to be around 70 to 75 %.\n\n'
-                    f'**Note**\n'
-                    f'If your TT is wrong, use `{ctx.prefix}setprogress` to update your user settings.\n\n'
-                    f'Tip: You can use `{ctx.prefix}dropchance [tt] [horse tier]` to check the drop chance for any TT and horse.'
-                )
-
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+
+        drop_chance = 4*(1+tt_chance)*horse_chance
+        drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
+        drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
+        drop_chance_worldbuff_daily = 4*(1+tt_chance)*horse_chance*1.3
+        drop_chance_hm = drop_chance * 1.7
+        drop_chance_worldbuff_hm = drop_chance_worldbuff * 1.7
+        drop_chance_daily_hm = drop_chance_daily * 1.7
+        drop_chance_worldbuff_daily_hm = drop_chance_worldbuff_daily * 1.7
+        drop_chance = round(drop_chance,1)
+        drop_chance_worldbuff = round(drop_chance_worldbuff,1)
+        drop_chance_daily = round(drop_chance_daily,1)
+        drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
+        drop_chance_hm = round(drop_chance_hm,1)
+        drop_chance_worldbuff_hm = round(drop_chance_worldbuff_hm,1)
+        drop_chance_daily_hm = round(drop_chance_daily_hm,1)
+        drop_chance_worldbuff_daily_hm = round(drop_chance_worldbuff_daily_hm,1)
+
+        if drop_chance >= 100: drop_chance = 100
+        if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
+        if drop_chance_daily >= 100: drop_chance_daily = 100
+        if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
+        if drop_chance_hm >= 100: drop_chance_hm = 100
+        if drop_chance_worldbuff_hm >= 100: drop_chance_worldbuff_hm = 100
+        if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
+        if drop_chance_worldbuff_daily_hm >= 100: drop_chance_worldbuff_daily_hm = 100
+
+        horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
+
+        field_drop_chance = (
+            f'{emojis.BP} Base chance: __{drop_chance:g}%__\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_worldbuff:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_daily:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily:g}%__\n'
+        )
+
+        field_drop_chance_hardmode = (
+            f'{emojis.BP} Base chance: __{drop_chance_hm:g}__%\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_worldbuff_hm:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_daily_hm:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily_hm:g}%__\n'
+        )
+
+        field_hunting_chance = (
+            f'{emojis.BP} The drop chance is the chance to get an item from a mob that can drop one\n'
+            f'{emojis.BP} You have a 50% chance of encountering such a mob when hunting\n'
+            f'{emojis.BP} Thus, the chance to get an item while hunting is __half__ of the values above\n'
+        )
+
+        embed = discord.Embed(
+            title = 'DROP CHANCE CALCULATOR',
+            description = (
+                f'Time travel: {emojis.TIME_TRAVEL} **{user_tt}**\n'
+                f'Horse: {horse_emoji} **T{horse_tier}**'
+            )
+        )
+        embed.add_field(name='DROP CHANCES', value=field_drop_chance, inline=False)
+        embed.add_field(name='HARDMODE DROP CHANCES (ESTIMATED)', value=field_drop_chance_hardmode, inline=False)
+        embed.add_field(name='NOTES', value=field_hunting_chance, inline=False)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=('cook','forge',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
