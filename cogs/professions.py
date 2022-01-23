@@ -1874,8 +1874,8 @@ async def embed_professions_merchant(prefix):
     )
 
     level_101 =(
-        f'{emojis.BP} Adds a chance to get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
-        f'{emojis.BP} The exact chance increase is unknown'
+        f'{emojis.BP} Adds a chance to get a {emojis.DRAGON_SCALE} dragon scale when selling a mob drop\n'
+        f'{emojis.BP} The chance is 2% at level 101 and increases by 2% for every level\n'
     )
 
     how_to_get_xp = (
