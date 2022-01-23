@@ -63,6 +63,17 @@ class Item(NamedTuple):
     stat_def: int
 
 
+class Title(NamedTuple):
+    """Conatiner for title data"""
+    achievement_id: int
+    command: str
+    requirements: str
+    requires_id: int
+    source: str
+    tip: str
+    title: str
+
+
 # --- Get Data ---
 async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
     """Checks the database for a prefix. If no prefix is found, a record for the guild is created with the
@@ -581,10 +592,45 @@ async def get_mob_by_name(ctx, name):
     return mob
 
 
+async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
+    """Returns all titles for a search query.
+
+    Returns:
+       Tuple with Title objects.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    ERG_DB.row_factory = sqlite3.Row
+    cur=ERG_DB.cursor()
+    if search_string.isnumeric():
+        cur.execute('SELECT * FROM titles WHERE id=?', (search_string,))
+    else:
+        search_string = search_string.replace(' ','%')
+        cur.execute(f"SELECT * FROM titles WHERE title LIKE '%{search_string}%' or requirements LIKE '%{search_string}%'")
+    records = cur.fetchall()
+    if not records:
+        raise NoDataFound
+    titles = []
+    for record in records:
+        record = dict(record)
+        title = Title(
+            achievement_id = record['id'],
+            command = record['command'],
+            requirements = record['requirements'],
+            requires_id = record['requires_id'],
+            source = record['source'],
+            tip = record['tip'],
+            title = record['title']
+        )
+        titles.append(title)
+
+    return tuple(titles)
+
 
 # --- Write Data ---
-
-# Set new prefix
+# # Set new prefix
 async def set_prefix(ctx, new_prefix):
 
     try:

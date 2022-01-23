@@ -158,7 +158,8 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'{emojis.BP} `{prefix}codes` : Redeemable codes\n'
         f'{emojis.BP} `{prefix}duel` : Duelling weapons\n'
         f'{emojis.BP} `{prefix}farm` : Farming guide\n'
-        f'{emojis.BP} `{prefix}tip` : A handy dandy random tip'
+        f'{emojis.BP} `{prefix}tip` : A handy dandy random tip\n'
+        f'{emojis.BP} `{prefix}title` / `{prefix}t`  : Titles / Achievements\n'
     )
     botlinks = (
         f'{emojis.BP} `{prefix}invite` : Invite me to your server\n'
