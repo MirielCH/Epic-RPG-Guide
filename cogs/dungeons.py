@@ -923,7 +923,8 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'
             f'{emojis.BP} {player_sword_emoji} {player_sword}\n {emojis.BP} {player_armor_emoji} {player_armor}'
         )
-        strategy = (
+        strategy = f'{emojis.BP} Currently unknown.'
+        strategy_old_delete_later = (
             f'{emojis.BP} The player that starts the dungeon gets the attacker role.\n'
             f'{emojis.BP} The other player gets the defender role.\n'
             f'{emojis.BP} Attacker command sequence:\n{emojis.BLANK} `charge edgy sword` x20\n{emojis.BLANK} `attack`\n'

@@ -259,7 +259,9 @@ class craftingCog(commands.Cog):
 
         itemname_replaced = (
             itemname.replace('logs','log')
-            .replace('ultra edgy','ultra-edgy')
+            .replace('ultra edgy','ultra-chad')
+            .replace('ultra chad','ultra-chad')
+            .replace('edgy','chad')
             .replace('ultra omega','ultra-omega')
             .replace('uo ','ultra-omega ')
             .replace('creatures','creature')
@@ -907,11 +909,12 @@ async def embed_enchants(prefix):
         f'{emojis.BP} **Hyper** - 70% buff\n'
         f'{emojis.BP} **Ultimate** - 80% buff\n'
         f'{emojis.BP} **Perfect** - 90% buff\n'
-        f'{emojis.BP} **EDGY** - 95% buff\n'
-        f'{emojis.BP} **ULTRA-EDGY** - 100% buff\n'
+        f'{emojis.BP} **CHAD** - 95% buff\n'
+        f'{emojis.BP} **ULTRA-CHAD** - 100% buff\n'
         f'{emojis.BP} **OMEGA** - 125% buff, unlocked in {emojis.TIME_TRAVEL} TT 1\n'
         f'{emojis.BP} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.TIME_TRAVEL} TT 3\n'
-        f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5'
+        f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5\n'
+        f'{emojis.BP} **VOID** - 300% buff, unlocked in {emojis.TIME_TRAVEL} TT 15\n'
     )
 
     commands_tiers = (

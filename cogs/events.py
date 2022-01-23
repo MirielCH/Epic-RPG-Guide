@@ -297,7 +297,7 @@ async def embed_event_enchant(prefix):
     answers = (
         f'{emojis.BP} `cry`: Nothing happens but you won\'t get an enchant\n'
         f'{emojis.BP} `fix`: You get an enchant and either gain **or lose** 5 LIFE\n'
-        f'{emojis.BP} `again`: Small chance to get an ULTRA-EDGY enchant, high chance to die'
+        f'{emojis.BP} `again`: Small chance to get an ULTRA-CHAD enchant, high chance to die'
     )
 
     safe_answer = f'{emojis.BP} `cry`'

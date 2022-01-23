@@ -178,7 +178,7 @@ async def embed_pets_overview(prefix):
 
 
     tier = (
-        f'{emojis.BP} Tiers range from I to XV (1 to 15)\n'
+        f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
@@ -406,6 +406,13 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
     )
 
+    master = (
+        f'{emojis.BP} Unknown\n'
+        f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier XX\n'
+        f'{emojis.BP} You can **not** lose this skill when fusing\n'
+        f'{emojis.BP} This skill can currently not be ranked up\n'
+    )
+
     skillranks = (
         f'{emojis.BP} Every skill has 9 possible ranks\n'
         f'{emojis.BP} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
@@ -443,6 +450,7 @@ async def embed_pets_skills(prefix):
     embed.add_field(name=f'EPIC {emojis.SKILL_EPIC}', value=epic, inline=False)
     embed.add_field(name=f'ASCENDED {emojis.SKILL_ASCENDED}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.SKILL_FIGHTER}', value=fighter, inline=False)
+    embed.add_field(name=f'MASTER {emojis.SKILL_MASTER}', value=master, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 

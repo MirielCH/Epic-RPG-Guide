@@ -453,26 +453,26 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     if 1 <= area_no <= 9:
         if user_asc == 'ascended' and not user_tt == 1:
                 if 1 <= area_no <= 3:
-                    work_cmd = f'{emojis.BP} `ascended dynamite`'
+                    work_cmd = f'{emojis.BP} `dynamite`'
                 elif 4 <= area_no <= 5:
                     work_cmd = (
-                        f'{emojis.BP} `ascended chainsaw` if worker 115 or higher\n'
-                        f'{emojis.BP} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `chainsaw` if worker 115 or higher\n'
+                        f'{emojis.BP} `dynamite` otherwise'
                     )
                 elif 6 <= area_no <= 7:
                     work_cmd = (
-                        f'{emojis.BP} `ascended greenhouse` if worker 102 or higher\n'
-                        f'{emojis.BP} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `greenhouse` if worker 102 or higher\n'
+                        f'{emojis.BP} `dynamite` otherwise'
                     )
                 elif area_no == 8:
                     work_cmd = (
-                        f'{emojis.BP} `ascended chainsaw` if worker 109 or higher\n'
-                        f'{emojis.BP} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `chainsaw` if worker 109 or higher\n'
+                        f'{emojis.BP} `dynamite` otherwise'
                     )
                 elif area_no == 9:
                     work_cmd = (
-                        f'{emojis.BP} `ascended greenhouse` if worker 107 or higher\n'
-                        f'{emojis.BP} `ascended dynamite` otherwise'
+                        f'{emojis.BP} `greenhouse` if worker 107 or higher\n'
+                        f'{emojis.BP} `dynamite` otherwise'
                     )
         else:
             if user_tt == 2 and 6 <= area_no <= 8:
@@ -496,7 +496,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     elif area_no == 10:
             if user_asc == 'ascended' and not user_tt == 1:
                 work_cmd = (
-                    f'{emojis.BP} `ascended dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
                     f'{emojis.BP} `chainsaw` otherwise'
                 )
             else:
@@ -522,7 +522,7 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
             else:
                 if user_asc == 'ascended' and not user_tt == 1:
                     work_cmd = (
-                        f'{emojis.BP} `ascended dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                        f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
                         f'{emojis.BP} `chainsaw` otherwise'
                     )
                 else:

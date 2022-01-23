@@ -483,7 +483,7 @@ async def embed_coolness(prefix):
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
         f'{emojis.BP} Get {emojis.LOG_HYPER} HYPER or {emojis.LOG_ULTRA} ULTRA logs from work commands\n'
-        f'{emojis.BP} Forge ULTRA-EDGY or higher gear\n'
+        f'{emojis.BP} Forge ULTRA-CHAD or higher gear\n'
         f'{emojis.BP} Ascend a pet\n'
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
     )
@@ -642,10 +642,10 @@ async def embed_start(prefix):
     first_run = (
         f'Your first run is called TT0 (time travel 0) because you haven\'t time traveled yet. In TT0 you need to reach area 11 which means you need to beat dungeon 10.\n'
         f'Now, as mentioned, D10 has gear requirements, so you can not cheese that dungeon, you **need** to craft the following gear:\n'
-        f'{emojis.SWORD_EDGY} EDGY Sword (requires 1 {emojis.LOG_ULTRA} ULTRA log)\n'
-        f'{emojis.ARMOR_EDGY} EDGY Armor (requires a lot of mob drops)\n'
+        f'{emojis.SWORD_CHAD} CHAD Sword (requires 1 {emojis.LOG_ULTRA} ULTRA log)\n'
+        f'{emojis.ARMOR_CHAD} CHAD Armor (requires a lot of mob drops)\n'
         f'The ULTRA log needed for the sword equals 250,000 wooden logs and the mob drops for the armor are pretty rare (see `{prefix}drops`).\n'
-        f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny EDGY gear.'
+        f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny CHAD gear.'
     )
 
     grinding_trades = (
@@ -653,12 +653,12 @@ async def embed_start(prefix):
         f'Trade rates are the single most important thing in this game to help you saving time. Every area has different trade rates, so every time you advance, your trade rates change (see `{prefix}trr`). You can **not** go back to earlier trade rates, these are tied to your highest unlocked area.\n'
         f'This means you can save a lot of time and materials if you farm **early** and exploit the trade rate changes to multiply your inventory. See `{prefix}trading` for more trading info.\n'
         f'In TT0 the most important area is **area 5**. You want to stay there until you have the recommended materials (see `{prefix}a5`).\n'
-        f'If you do this, you will save a ton of time later on and be able to craft that EDGY gear as soon as you reach areas 9 and 10. Don\'t forget to check out the area guides for other recommendations.'
+        f'If you do this, you will save a ton of time later on and be able to craft that CHAD gear as soon as you reach areas 9 and 10. Don\'t forget to check out the area guides for other recommendations.'
     )
 
     tips = (
         f'{emojis.BP} Yes, farming in area 5 is boring. But do not leave the area early, you **will** regret it.\n'
-        f'{emojis.BP} Do not craft the EDGY Sword before area 10. You will lose materials if you do.'
+        f'{emojis.BP} Do not craft the CHAD Sword before area 10. You will lose materials if you do.'
     )
 
     embed = discord.Embed(
