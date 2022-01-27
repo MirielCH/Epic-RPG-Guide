@@ -581,21 +581,11 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
                 f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
-        elif area_no == 5:
-            lootboxes = (
-                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Open: All lootboxes'
-            )
         elif area_no == 6:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
-            )
-        elif area_no == 10:
-            lootboxes = (
-                f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Open: All lootboxes'
             )
         else:
             lootboxes = (
