@@ -98,6 +98,9 @@ SWORD_ZOMBIE = '<:erg_zombiesword:770326606941913118>'
 # Event: Shared Items
 SLEEPY_POTION = '<:erg_sleepypotion:782200523776458772>'
 
+# Event: Celebration
+COIN_CELEBRATION = '<:erg_celebrationcoin:936912877791629312>'
+
 # Event: Christmas
 CANDY_CANE = '<:erg_candycane:782200523713544242>'
 CANDY_DRAGON = '<:erg_candydragon:914796294126587905>'
