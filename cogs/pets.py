@@ -262,7 +262,7 @@ async def embed_pets_catch(prefix):
         f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
         f'{emojis.BP} Example: `feed feed pat pat pat`\n'
         f'{emojis.BP} You can use up to 6 commands\n'
-        f'{emojis.BP} If you use less than 6 commands, you have a 25% chance at getting skills on the pet\n'
+        f'{emojis.BP} If you use less than 6 commands, you have a 25% chance at getting skills\n'
         f'{emojis.BP} The less commands you use, the higher the chance to get rarer skills\n'
     )
 
