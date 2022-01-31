@@ -280,9 +280,9 @@ class miscCog(commands.Cog):
         prefix = ctx.prefix
 
         error_syntax = (
-            f'The command syntax is `{prefix}coincap [tt] [area]`\n'
+            f'The command syntax is `{prefix}coincap [tt]`\n'
             f'You can also use `{prefix}coincap` and let me read your profile.\n'
-            f'Examples: `{prefix}coincap tt5 a12`, `{prefix}coincap 8 10`'
+            f'Examples: `{prefix}coincap tt5`, `{prefix}coincap 8`'
         )
 
         user_tt = None
@@ -296,40 +296,15 @@ class miscCog(commands.Cog):
                 arg1 = args[0]
                 arg1 = arg1.lower()
                 arg1 = arg1.replace('tt','')
-                if arg1.isnumeric():
-                    user_tt = int(arg1)
-                    if 0 <= user_tt <= 999:
-                        if len(args) > 1:
-                            arg2 = args[1]
-                            arg2 = arg2.lower()
-                            arg2 = arg2.replace('a','')
-                            if arg1.isnumeric():
-                                try:
-                                    user_area = int(arg2)
-                                except:
-                                    await ctx.send(error_syntax)
-                                    return
-                                if 1 <= user_area <= 15:
-                                    if ((user_area == 12) and (user_tt < 1)) or ((user_area == 13) and (user_tt < 3)) or ((user_area == 14) and (user_tt < 5)) or ((user_area == 15) and (user_tt < 10)):
-                                        await ctx.send(f'You can not reach area {user_area} in TT {user_tt}.')
-                                        return
-                                else:
-                                    await ctx.send('Sure, send me a postcard from that totally legit area.')
-                                    return
-                            else:
-                                await ctx.send(error_syntax)
-                                return
-                        else:
-                            await ctx.send(error_syntax)
-                            return
-                    else:
-                        await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
-                        return
-                else:
+                if not arg1.isnumeric():
                     await ctx.send(error_syntax)
                     return
+                user_tt = int(arg1)
+                if not 0 <= user_tt <= 999:
+                    await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
+                    return
 
-        if user_tt == None:
+        if user_tt is None:
             try:
                 await ctx.send(
                     f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
@@ -349,14 +324,9 @@ class miscCog(commands.Cog):
                         except:
                             await ctx.send(
                                 f'Whelp, something went wrong here, sorry.\n'
-                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt] [max area]` instead.'
+                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt]` instead.'
                             )
                             return
-
-                    start_area = profile.find('(Max:') + 6
-                    end_area = profile.find(')', start_area)
-                    user_area = profile[start_area:end_area]
-                    user_area = int(user_area)
                     if profile.find('Time travels') > -1:
                         start_tt = profile.find('Time travels**') + 16
                         end_tt = profile.find('\',', start_tt)
@@ -370,14 +340,12 @@ class miscCog(commands.Cog):
                 else:
                     await ctx.send('Wrong input. Aborting.')
                     return
-
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-
-        coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
+        coin_cap = pow(user_tt, 4) * 500_000_000 if user_tt > 0 else 'unknown'
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.COIN} coins.\n'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap:,}** {emojis.COIN} coins.\n'
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
             f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
