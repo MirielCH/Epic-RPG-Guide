@@ -31,10 +31,10 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
     """Celebration overview embed"""
     activities = (
         f'{emojis.BP} Get {emojis.COIN_CELEBRATION} celebration coins in `hunt`, `adventure` and `fish` commands\n'
-        f'{emojis.BP} Kill the celebration slime in `hunt` to get a big amount of coins (0.25% chance)\n'
-        f'{emojis.BP} Complete the daily quest to get even more coins\n'
-        f'{emojis.BP} Multiply your coins with `rpg cel multiply` (12h cooldown)\n'
-        f'{emojis.BP} Get a big reward at the end of the event based on the coins you gathered\n'
+        f'{emojis.BP} Kill the rare celebration slime in `hunt` to get more coins\n'
+        f'{emojis.BP} Complete the daily quest to get EVEN MORE coins\n'
+        f'{emojis.BP} Increase your coins by 5% with `rpg cel multiply` (12h cooldown)\n'
+        f'{emojis.BP} Get a big reward at the end of the event based on coins you gathered\n'
     )
     bonuses = (
         f'{emojis.BP} All cooldowns are reduced by 25%'
@@ -48,6 +48,12 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} Multiply your celebration coins every 12h (`rpg cel multiply`)\n'
         f'{emojis.BP} Use `rpg cel trade` to preview the rewards\n'
     )
+    chances = (
+        f'{emojis.BP} 20% to get coins with `hunt` (~ 50 {emojis.COIN_CELEBRATION})\n'
+        f'{emojis.BP} 60% to get coins with `adventure` (~ 220 {emojis.COIN_CELEBRATION})\n'
+        f'{emojis.BP} 35% to get coins with `fish` commands (~ 130 {emojis.COIN_CELEBRATION})\n'
+        f'{emojis.BP} 0.25% to find the celebration slime in `hunt` (2,000 {emojis.COIN_CELEBRATION})\n'
+    ) # 2020 values, unclear if still accurate
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
         title = f'500K CELEBRATION EVENT 2022 {emojis.COIN_CELEBRATION}',
@@ -57,5 +63,6 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
+    # embed.add_field(name='CHANCES', value=chances, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
     return embed

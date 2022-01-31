@@ -852,7 +852,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
             apple_total += ingredient.amount * amount * multiplier
         if not ingredient_item.ingredients:
             if ingredient_item.item_type not in ('log', 'fish', 'fruit'):
-                base_totals[ingredient.name] = (ingredient.amount, ingredient_item.emoji)
+                base_totals[ingredient.name] = (ingredient.amount * amount, ingredient_item.emoji)
             continue
         if ingredient_item.item_type not in ('log', 'fish', 'fruit'): continue
         current_ingredient = ingredient

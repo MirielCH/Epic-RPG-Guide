@@ -395,7 +395,8 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} **You will lose all other skills when ascending**\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} You can **not** rank up this skill with adventures\n'
-        f'{emojis.BP} To rank up the skill, get all other skills to SS+ and ascend again'
+        f'{emojis.BP} To rank up the skill, either ascend again or fuse with other ascended pets\n'
+        f'{emojis.BP} Fusing ascended pets combines the ascended skills into one (e.g. F+E=D)\n'
     )
 
     fighter = (

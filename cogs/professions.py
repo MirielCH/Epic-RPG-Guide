@@ -1649,7 +1649,7 @@ async def embed_professions_leveling(prefix):
     )
 
     ascended = (
-        f'{emojis.BP} Increase crafter to 101, then focus exclusively on worker\n'
+        f'{emojis.BP} Increase crafter and merchant to 101, then focus exclusively on worker\n'
     )
 
     calculators = (
