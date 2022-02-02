@@ -907,13 +907,13 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
     )
     chances = (
         f'{emojis.BP} T1 ➜ T2: 100% chance\n'
-        f'{emojis.BP} T2 ➜ T3: 60% chance (guaranteed at 2 attempts)\n'
-        f'{emojis.BP} T3 ➜ T4: 30% chance (guaranteed at 4 attempts)\n'
-        f'{emojis.BP} T4 ➜ T5: 15% chance (guaranteed at 8 attempts)\n'
-        f'{emojis.BP} T5 ➜ T6: 5% chance (guaranteed at 24 attempts)\n'
-        f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed at 60 attempts)\n'
-        f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed at 120 attempts)\n'
-        f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed at 360 attempts)\n'
+        f'{emojis.BP} T2 ➜ T3: 60% chance (guaranteed after 2 attempts)\n'
+        f'{emojis.BP} T3 ➜ T4: 30% chance (guaranteed after 4 attempts)\n'
+        f'{emojis.BP} T4 ➜ T5: 15% chance (guaranteed after 8 attempts)\n'
+        f'{emojis.BP} T5 ➜ T6: 5% chance (guaranteed after 24 attempts)\n'
+        f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed after 60 attempts)\n'
+        f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed after 120 attempts)\n'
+        f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed after 360 attempts)\n'
         f'{emojis.BP} T9 ➜ T10: chance & attempts unknown\n'
     )
     horse_level = (

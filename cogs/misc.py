@@ -152,7 +152,11 @@ class miscCog(commands.Cog):
                             last_char_was_operator = False
                         else:
                             if slice == '.':
-                                number = f'{number}{slice}'
+                                if number == '':
+                                    number = f'0{slice}'
+                                    last_char_was_number = True
+                                else:
+                                    number = f'{number}{slice}'
                             else:
                                 if number != '':
                                     calculation_parsed.append(Decimal(float(number)))

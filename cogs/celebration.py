@@ -31,22 +31,27 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
     """Celebration overview embed"""
     activities = (
         f'{emojis.BP} Get {emojis.COIN_CELEBRATION} celebration coins in `hunt`, `adventure` and `fish` commands\n'
-        f'{emojis.BP} Kill the rare celebration slime in `hunt` to get more coins\n'
+        f'{emojis.BP} Kill the rare party slime in `hunt` to get more coins\n'
         f'{emojis.BP} Complete the daily quest to get EVEN MORE coins\n'
         f'{emojis.BP} Increase your coins by 5% with `rpg cel multiply` (12h cooldown)\n'
+        f'{emojis.BP} Unlock the title **500,000** title with `rpg cel title` at 250,000 coins\n'
+        f'{emojis.BLANK} This does **not** use up the coins\n'
         f'{emojis.BP} Get a big reward at the end of the event based on coins you gathered\n'
     )
     bonuses = (
-        f'{emojis.BP} All cooldowns are reduced by 25%'
+        f'{emojis.BP} All cooldowns except `daily` and `weekly` are reduced by 25%'
     )
     schedule = (
-        f'{emojis.BP} Event started on October 18, 2021\n'
-        f'{emojis.BP} Event ends on November 14, 2021, 23:55 UTC\n'
+        f'{emojis.BP} Event started on February 1, 2022\n'
+        f'{emojis.BP} Event ends on February 5, 2022, 23:55 UTC\n'
+        f'{emojis.BP} Reward can be claimed until February 7, 2022, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Complete the daily quest every day (`rpg cel dailyquest`)\n'
         f'{emojis.BP} Multiply your celebration coins every 12h (`rpg cel multiply`)\n'
-        f'{emojis.BP} Use `rpg cel trade` to preview the rewards\n'
+        f'{emojis.BP} Get the event title with `rpg cel title` once you reach 250,000 coins\n'
+        f'{emojis.BP} Use `rpg cel trade` to get your reward after February 5\n'
+        f'{emojis.BLANK} Tip: Try to be in A1-A5 when you get the reward\n'
     )
     chances = (
         f'{emojis.BP} 20% to get coins with `hunt` (~ 50 {emojis.COIN_CELEBRATION})\n'
