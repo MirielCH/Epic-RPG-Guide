@@ -54,11 +54,10 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
         f'{emojis.BLANK} Tip: Try to be in A1-A5 when you get the reward\n'
     )
     chances = (
-        f'{emojis.BP} 20% to get coins with `hunt` (~ 50 {emojis.COIN_CELEBRATION})\n'
-        f'{emojis.BP} 60% to get coins with `adventure` (~ 220 {emojis.COIN_CELEBRATION})\n'
-        f'{emojis.BP} 35% to get coins with `fish` commands (~ 130 {emojis.COIN_CELEBRATION})\n'
-        f'{emojis.BP} 0.25% to find the celebration slime in `hunt` (2,000 {emojis.COIN_CELEBRATION})\n'
-    ) # 2020 values, unclear if still accurate
+        f'{emojis.BP} 30% to get coins with `hunt`\n'
+        f'{emojis.BP} 80% to get coins with `adventure`\n'
+        f'{emojis.BP} 50% to get coins with `fish` commands\n'
+    )
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
         title = f'500K CELEBRATION EVENT 2022 {emojis.COIN_CELEBRATION}',
@@ -68,6 +67,6 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
-    # embed.add_field(name='CHANCES', value=chances, inline=False)
+    embed.add_field(name='CHANCES', value=chances, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
     return embed
