@@ -411,6 +411,7 @@ SKILL_LUCKY = '<:erg_skilllucky:770327200591118437>'
 SKILL_MASTER = '<:erg_skillmaster:934727999436226660>'
 SKILL_MONSTER_HUNTER = '<:erg_skillmonsterhunter:817823775826640906>'
 SKILL_NORMIE = '<:erg_skillnormie:770327200641187861>'
+SKILL_RESETTER = '<:erg_skillresetter:939432107258810389>'
 SKILL_TRAVELER = '<:erg_skilltimetraveler:770327200217169962>'
 
 # Pets
@@ -421,6 +422,7 @@ PET_HAMSTER = '<:erg_hamster:770327200834388008>'
 PET_HAPPINESS = ':heart:'
 PET_HUNGER = ':taco:'
 PET_PANDA = '<:erg_petpanda:826345853110583357>'
+PET_VOIDOG = '<:erg_voidog:939432107078467694>'
 
 # Professions
 PR_WORKER = LOG_EPIC
