@@ -480,15 +480,32 @@ async def embed_coolness(prefix):
 # Badges
 async def embed_badges(prefix):
 
-    badges = (
-        f'{emojis.BP} {emojis.BADGE_1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_A15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
+    badges_coolness = (
+        f'{emojis.BP} {emojis.BADGE_C1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C2000} : Unlocked with 2,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C5000} : Unlocked with 5,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C10000} : Unlocked with 10,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C20000} : Unlocked with 20,000 {emojis.STAT_COOLNESS} coolness\n'
+    )
+
+    badges_achievements = (
+        f'{emojis.BP} {emojis.BADGE_A10} : Unlocked with 10 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A25} : Unlocked with 25 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A75} : Unlocked with 75 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A125} : Unlocked with 125 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A175} : Unlocked with 175 achievements\n'
+    )
+
+    badges_other = (
+        f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by defeating the EPIC NPC in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
+        f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )
 
     howtouse = (
@@ -510,7 +527,9 @@ async def embed_badges(prefix):
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='AVAILABLE BADGES', value=badges, inline=False)
+    embed.add_field(name='ACHIEVEMENT BADGES', value=badges_achievements, inline=False)
+    embed.add_field(name='COOLNESS BADGES', value=badges_coolness, inline=False)
+    embed.add_field(name='OTHER BADGES', value=badges_other, inline=False)
     embed.add_field(name='HOW TO USE', value=howtouse, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 
