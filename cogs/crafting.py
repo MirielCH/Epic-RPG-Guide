@@ -29,6 +29,7 @@ class craftingCog(commands.Cog):
         embed = await embed_drops(ctx.prefix)
         await ctx.send(embed=embed)
 
+
     # Command "dropchance" - Calculate current drop chance
     @commands.command(aliases=('dropcalc','droprate',))
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
@@ -218,7 +219,7 @@ class craftingCog(commands.Cog):
             )
         )
         embed.add_field(name='DROP CHANCES', value=field_drop_chance, inline=False)
-        embed.add_field(name='HARDMODE DROP CHANCES (ESTIMATED)', value=field_drop_chance_hardmode, inline=False)
+        embed.add_field(name='HARDMODE DROP CHANCES', value=field_drop_chance_hardmode, inline=False)
         embed.add_field(name='NOTES', value=field_hunting_chance, inline=False)
         await ctx.send(embed=embed)
 

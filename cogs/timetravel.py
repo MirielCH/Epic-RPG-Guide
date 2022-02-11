@@ -619,7 +619,9 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f"{unlocks}{emojis.BP} **{bonus_xp} %** increased **XP** from everything except duels\n"
         f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'
-        f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands (**{rubies}** {emojis.RUBY} rubies with `dynamite`)\n'
+        f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
+        f'{emojis.BLANK} ➜ **{rubies:,}** {emojis.RUBY} rubies with `dynamite`\n'
+        f'{emojis.BLANK} ➜ **{rubies:,}** {emojis.LOG_HYPER} HYPER logs / {emojis.LOG_ULTRA} ULTRA logs with `chainsaw`\n'
         f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
         f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)\n'
     )

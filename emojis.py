@@ -169,7 +169,10 @@ PET_PONY = '<:erg_petpony:879246534183632927>'
 STEEL = '<:erg_steel:879416298931617792>'
 
 # Event: Valentine
+COIN_LOVE = '<:erg_lovecoin:809306526678253589>'
+MOB_PINK_WOLF = '<:erg_pinkwolf:941033952611811378>'
 PET_PINK_FISH = '<:erg_petpinkfish:817872571420114995>'
+TOKEN_LOVE = '<:erg_lovetoken:941033952653766707>'
 
 # Food
 FOOD_APPLE_JUICE = '<:erg_applejuice:770325211513487380>'
@@ -272,6 +275,7 @@ ZOMBIE_EYE = '<:erg_zombieeye:770324898194915328>'
 # Misc
 ARENA_COOKIE = '<:erg_arenacookie:770324898068955186>'
 BP = ':small_blue_diamond:'
+BLUE_ARROW = '<:ba:832499874008006656>'
 CD_COOLDOWN = ':clock4:'
 CD_READY = ':white_check_mark:'
 CD_REWARDS = ':gift:'
@@ -281,7 +285,7 @@ GODLY_HORSE_TOKEN = '<:erg_godlyhorsetoken:877789907001683998>'
 LIFE_POTION = '<:erg_lifepotion:770327166956601425>'
 LOTTERY_TICKET = '<:erg_lotteryticket:770327167044419624>'
 TIME_TRAVEL = ':cyclone:'
-BLANK = '<:blank:771777870498234378>'
+BLANK = '<:b:771777870498234378>'
 ASCENSION = ':star2:'
 LIFE_BOOST = ':sparkles:'
 WAIT_WHAT = '<:waitwhat:781624799037489152>'

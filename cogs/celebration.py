@@ -44,7 +44,7 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
     schedule = (
         f'{emojis.BP} Event started on February 1, 2022\n'
         f'{emojis.BP} Event ends on February 5, 2022, 23:55 UTC\n'
-        f'{emojis.BP} Reward can be claimed until February 7, 2022, 23:55 UTC\n'
+        f'{emojis.BP} Reward can be claimed until February 10, 2022, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Complete the daily quest every day (`rpg cel dailyquest`)\n'
