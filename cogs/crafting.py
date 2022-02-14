@@ -278,10 +278,6 @@ class craftingCog(commands.Cog):
         if itemname_replaced in global_data.item_aliases:
             itemname_replaced = global_data.item_aliases[itemname_replaced]
 
-        if itemname_replaced in ('ultimate log', 'super fish', 'watermelon'):
-            await ctx.send(':shushing_face:')
-            return
-
         try:
             item: database.Item = await database.get_item(ctx, itemname_replaced)
         except database.NoDataFound:
@@ -292,7 +288,7 @@ class craftingCog(commands.Cog):
             await ctx.send(f'You can only craft 1 {item.emoji} `{item.name}`.')
             return
         if not item.ingredients:
-            await ctx.send(f'{item.emoji} `{item.name}` is not craftable.')
+            await ctx.send(f'{item.emoji} `{item.name}` can not be crafted.')
             return
 
         breakdown_totals = await get_item_breakdown(ctx, item, amount)
@@ -350,10 +346,6 @@ class craftingCog(commands.Cog):
 
         if itemname in global_data.item_aliases:
             itemname = global_data.item_aliases[itemname]
-
-        if itemname in ('ultimate log', 'super fish', 'watermelon'):
-            await ctx.send(':shushing_face:')
-            return
 
         try:
             item: database.Item = await database.get_item(ctx, itemname)

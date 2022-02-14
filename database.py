@@ -252,11 +252,6 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
     except sqlite3.Error:
         raise
     if not record:
-        await log_error(
-            ctx, INTERNAL_ERROR_NO_DATA_FOUND.format(table='items',
-                                                     function='get_items',
-                                                     select=f'Item name {name}')
-        )
         raise NoDataFound
     record = dict(record)
     item_name = record['name']
