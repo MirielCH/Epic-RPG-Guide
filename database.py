@@ -602,8 +602,10 @@ async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
     if search_string.isnumeric():
         cur.execute('SELECT * FROM titles WHERE id=?', (search_string,))
     else:
-        search_string = search_string.replace(' ','%')
-        cur.execute(f"SELECT * FROM titles WHERE title LIKE '%{search_string}%' or requirements LIKE '%{search_string}%'")
+        search_string = search_string.replace(' ','%').replace("'",'_').replace('’','_')
+        search_string = f'%{search_string}%'
+        sql = f"SELECT * FROM titles WHERE title LIKE ? or requirements LIKE ?"
+        cur.execute(sql, (search_string, search_string))
     records = cur.fetchall()
     if not records:
         raise NoDataFound

@@ -52,6 +52,14 @@ class craftingCog(commands.Cog):
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
 
         if args:
+            if len(args) != 2:
+                await ctx.send(
+                    f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\n'
+                    f'You can also omit all parameters to use your current TT and horse tier for the calculation.\n\n'
+                    f'Examples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` '
+                    f'or `{ctx.prefix}dropchance`'
+                )
+                return
             if len(args) == 2:
                 user_tt, horse_tier = args
                 user_tt = user_tt.lower().replace('tt','')
@@ -162,6 +170,7 @@ class craftingCog(commands.Cog):
                     return
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
+                return
 
         drop_chance = 4*(1+tt_chance)*horse_chance
         drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
