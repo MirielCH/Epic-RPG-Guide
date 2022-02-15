@@ -28,7 +28,7 @@ class monstersCog(commands.Cog):
         error_area = f'This is not a valid area. The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 15.'
         info_area_16 = (
             f'Area 16 (aka The TOP) does not have its own monsters.\n'
-            f'Instead the EPIC NPC poses as a random monster which can be any monster from all the other areas.'
+            f'Instead the EPIC NPC poses as a random monster which can be any monster from areas 1~15.'
         )
         error_syntax = ( #Temporary solution because buttons use a shit ton of cpu for some reason
             f'This command shows all mobs in an area.\n'
@@ -43,15 +43,11 @@ class monstersCog(commands.Cog):
                 except:
                     await ctx.send(error_area)
                     return
-                if not 1 <= area <= 15:
-                    if area == 16:
-                        await ctx.send(info_area_16)
-                        return
-                    else:
-                        await ctx.send(error_area)
-                        return
+                if not 1 <= area <= 20:
+                    await ctx.send(error_area)
+                    return
             else:
-                if area in ('top'):
+                if 'top' in area:
                     await ctx.send(info_area_16)
                     return
                 else:
@@ -62,88 +58,10 @@ class monstersCog(commands.Cog):
             return
             # area = 1
 
-        mobs_data = await database.get_mob_data(ctx, (1,15))
+        mobs_data = await database.get_mob_data(ctx, (1,20))
         embed = await embed_mobs(prefix, mobs_data, area)
         await ctx.send(embed=embed)
 
-        """
-        if area == 1:
-            components=[
-                [
-                    Button(style=ButtonStyle.blue, label="◀", disabled = True),
-                    Button(style=ButtonStyle.blue, label="▶")
-                ]
-            ]
-        elif area == 15:
-            components=[
-                [
-                    Button(style=ButtonStyle.blue, label="◀"),
-                    Button(style=ButtonStyle.blue, label="▶", disabled = True)
-                ]
-            ]
-        else:
-            components=[
-                [
-                    Button(style=ButtonStyle.blue, label="◀"),
-                    Button(style=ButtonStyle.blue, label="▶")
-                ]
-            ]
-
-        original_message = await ctx.send(
-            embed=embed,
-            components=components
-        )
-
-        while True==True:
-            try:
-                interaction = await self.bot.wait_for("button_click", check=check, timeout=20)
-                if interaction.component.label == '▶':
-                    area = area + 1
-                if interaction.component.label == '◀':
-                    area = area - 1
-
-                if area == 1:
-                    components=[
-                        [
-                            Button(style=ButtonStyle.blue, label="◀", disabled = True),
-                            Button(style=ButtonStyle.blue, label="▶")
-                        ]
-                    ]
-                elif area == 15:
-                    components=[
-                        [
-                            Button(style=ButtonStyle.blue, label="◀"),
-                            Button(style=ButtonStyle.blue, label="▶", disabled = True)
-                        ]
-                    ]
-                else:
-                    components=[
-                        [
-                            Button(style=ButtonStyle.blue, label="◀"),
-                            Button(style=ButtonStyle.blue, label="▶")
-                        ]
-                    ]
-
-                embed = await embed_mobs(prefix, mobs_data, area)
-
-                await interaction.message.edit(
-                    embed=embed,
-                    components=components
-                )
-                await interaction.respond(type=InteractionType.DeferredUpdateMessage)
-
-            except asyncio.TimeoutError:
-                await original_message.edit(
-                    components=[]
-                )
-                break
-            except Exception as error:
-                await original_message.edit(
-                    components=[]
-                )
-                global_data.logger.error(f'Error occured while waiting for button input in mob list: {error}')
-                break
-            """
     # Daily mob lookup
     @commands.command(aliases=('mobdaily','daily',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True)
