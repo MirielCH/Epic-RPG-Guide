@@ -62,7 +62,8 @@ async def embed_valentine_overview(prefix: str) -> discord.Embed:
     )
     schedule = (
         f'{emojis.BP} Event started on February 11, 2022\n'
-        f'{emojis.BP} Event ends on February 17, 2022, 23:55 UTC\n'
+        f'{emojis.BP} Event ended on February 17, 2022, 23:55 UTC\n'
+        f'{emojis.BP} Love tokens and coins can be used until February 24, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Use `rpg love share` after every hunt to get {emojis.COIN_LOVE} love coins\n'

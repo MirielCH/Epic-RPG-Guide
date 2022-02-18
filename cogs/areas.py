@@ -936,7 +936,8 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     if ((area_no == 3) and (user_tt > 0)) or (area_no in (5,8)):
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveller_prepare == True:
-        embed.add_field(name='TRADES BEFORE LEAVING', value=trades, inline=False)
+        field_name = 'TRADES BEFORE LEAVING (IF YOU DO D15-2)' if area_no == 15 else 'TRADES BEFORE LEAVING'
+        embed.add_field(name=field_name, value=trades, inline=False)
     embed.add_field(name=f'TRADE RATES A{area_no}', value=traderates, inline=True)
     if not (traderate_data_next == '') and not (time_traveller_prepare == True):
         embed.add_field(name=f'TRADE RATES A{area_no+1}', value=traderates_next, inline=True)
