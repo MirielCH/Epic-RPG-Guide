@@ -669,7 +669,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_tt25 = (
@@ -683,7 +683,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_stt = (

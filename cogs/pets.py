@@ -408,7 +408,7 @@ async def embed_pets_skills(prefix):
     )
 
     master = (
-        f'{emojis.BP} Unknown\n'
+        f'{emojis.BP} Increases the tier of pets found with the {emojis.SKILL_ASCENDED} ascended skill\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier XX\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} This skill can currently not be ranked up\n'
