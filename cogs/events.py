@@ -593,7 +593,7 @@ async def embed_event_epictree(prefix):
 
     rewards = (
         f'{emojis.BP} {emojis.LOG} wooden logs\n'
-        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
+        f'{emojis.BP} The amount depends on the amount of people that participate and some RNG'
     )
 
     note = (
@@ -688,7 +688,7 @@ async def embed_event_lootboxsummoning(prefix):
 
     rewards = (
         f'{emojis.BP} A lootbox for every player that entered\n'
-        f'{emojis.BP} The lootbox tier depends on the amount of players that entered\n'
+        f'{emojis.BP} The lootbox tier depends on the amount of players that participate\n'
         f'{emojis.BP} The lootbox tier ranges from {emojis.LB_COMMON} common to {emojis.LB_EDGY} EDGY'
     )
 
@@ -724,7 +724,7 @@ async def embed_event_megalodon(prefix):
 
     rewards = (
         f'{emojis.BP} {emojis.FISH} normie fish\n'
-        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that participate and some RNG'
+        f'{emojis.BP} The amount depends on the amount of people that participate and some RNG'
     )
 
     note = (

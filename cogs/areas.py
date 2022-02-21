@@ -301,12 +301,11 @@ async def embed_area(area_data, mats_data, traderate_data, traderate_data_next, 
     quick_guide_armor = ''
     quick_guide_enchant_sword = ''
     quick_guide_enchant_armor = ''
-
+    action = 'Craft' if area_no < 11 else 'Forge'
     if upgrade_sword == 'true':
-        quick_guide_sword = f'\n{emojis.BP} Craft {player_sword_emoji} {player_sword}'
-
+        quick_guide_sword = f'\n{emojis.BP} {action} {player_sword_emoji} {player_sword}'
     if upgrade_armor == 'true':
-        quick_guide_armor = f'\n{emojis.BP} Craft {player_armor_emoji} {player_armor}'
+        quick_guide_armor = f'\n{emojis.BP} {action} {player_armor_emoji} {player_armor}'
 
     if not player_sword_enchant == '':
         if upgrade_sword == 'true':
