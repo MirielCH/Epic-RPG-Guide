@@ -339,15 +339,16 @@ async def embed_traderates(traderate_data, prefix):
 
     previous_area = [0,0,0,0]
     actual_areas = []
-    for area_x in traderate_data:
+    for area_x in traderate_data[:-1]:
         if not (area_x[1] == previous_area[1]) or not (area_x[2] == previous_area[2]) or not (area_x[3] == previous_area[3]):
             actual_areas.append(list(area_x))
         previous_area = area_x
+    actual_areas.append(list(traderate_data[-1]))
 
     counter = 0
     for index, area_x in enumerate(actual_areas):
         counter = counter + 1
-        if not area_x[0] == counter:
+        if not area_x[0] == counter or area_x[0] == 21:
             actual_areas[index-1][0] = f'{actual_areas[index-1][0]}-{area_x[0]-1}'
         counter = area_x[0]
 
@@ -358,7 +359,7 @@ async def embed_traderates(traderate_data, prefix):
         if not area_x[3] == 0:
             area_value = f'{area_value}\n1 {emojis.RUBY} ⇄ {emojis.LOG} {area_x[3]}'
 
-        if area_x[0] == 16:
+        if area_x[0] == 21:
             embed.add_field(name='THE TOP', value=f'{area_value}\n{emojis.BLANK}', inline=True)
         else:
             embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.BLANK}', inline=True)

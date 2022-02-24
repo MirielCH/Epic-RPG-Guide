@@ -42,7 +42,7 @@ class guildCog(commands.Cog):
         'guildprogress',
         'magicchair',
         'guildtask',
-        'guildtasks'
+        'guildtasks',
     )
 
     # Command "guild"
@@ -400,21 +400,22 @@ async def embed_guild_weekly(prefix):
 async def embed_guild_tasks(prefix: str) -> discord.Embed:
     """Weekly guild tasks"""
     all_tasks = (
-        f'{emojis.BP} Activate 1 world buff\n'
+        f'{emojis.BP} Answer 40 EPIC guard questions correctly\n'
         f'{emojis.BP} Chop 200 MEGA logs\n'
-        f'{emojis.BP} Complete 45 dungeons\n'
+        f'{emojis.BP} Complete 20 dungeons\n'
         f'{emojis.BP} Craft 30 swords or armors\n'
         f'{emojis.BP} Collect 2,000 profession XP\n'
         f'{emojis.BP} Complete 20 quests\n'
-        f'{emojis.BP} Cook 80 recipes\n'
+        f'{emojis.BP} Cook 75 recipes\n'
+        f'{emojis.BP} Go on an adventure 120 times\n'
         f'{emojis.BP} Drop 100 lootboxes\n'
         f'{emojis.BP} Drop 100 monster items\n'
         f'{emojis.BP} Fish 20 EPIC fish\n'
-        f'{emojis.BP} Gain 50 levels (outside random events)\n'
-        f'{emojis.BP} Get 50 STEALTH for the guild\n'
-        f'{emojis.BP} Hunt 120 times\n'
-        f'{emojis.BP} Obtain 200 special seeds\n'
-        f'{emojis.BP} Open 300 lootboxes\n'
+        f'{emojis.BP} Gain 40 levels (outside random events)\n'
+        f'{emojis.BP} Get 40 STEALTH for the guild\n'
+        f'{emojis.BP} Hunt 800 times\n'
+        f'{emojis.BP} Obtain 50 special seeds\n'
+        f'{emojis.BP} Open 180 lootboxes\n'
         f'{emojis.BP} Pick up 120 bananas\n'
         f'{emojis.BP} Trigger or start 30 random events\n'
         f'{emojis.BP} Vote for the bot 25 times\n'
@@ -424,7 +425,6 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
     rewards = (
         f'{emojis.BP} 1 {emojis.GUILD_COIN} guild coin\n'
         f'{emojis.BP} 25 guild XP\n'
-        f'{emojis.BP} 100 {emojis.GUILD_ENERGY} guild energy\n'
     )
 
     guides = (

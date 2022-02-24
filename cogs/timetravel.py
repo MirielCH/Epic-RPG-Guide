@@ -177,12 +177,12 @@ class timetravelCog(commands.Cog):
                 area = args[0]
                 area = area.lower()
                 if area.find('top') > -1:
-                    area = 16
+                    area = 21
                 else:
                     area = area.lower().replace('a','')
                     if area.isnumeric():
                         area = int(area)
-                        if not 1 <= area <= 16:
+                        if not 1 <= area <= 21:
                             await ctx.send(f'There is no area {area}.')
                             return
                     else:
@@ -415,10 +415,7 @@ class timetravelCog(commands.Cog):
         score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_a15
         score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_a16
 
-        if original_area == 16:
-            message_area = 'The TOP'
-        else:
-            message_area = original_area
+        message_area = 'The TOP' if original_area == 21 else original_area
 
         field_lootboxes = (
             f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
@@ -458,12 +455,12 @@ class timetravelCog(commands.Cog):
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
             f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
-            f'{emojis.BP} Total in the TOP: **{score_a16:,.2f}**\n'
+            f'{emojis.BP} Total in A16-A20 and the TOP: **{score_a16:,.2f}**\n'
         )
 
         field_totals = (
             f'{emojis.BP} Total in A15: **{score_total_a15:,.2f}**\n'
-            f'{emojis.BP} Total in the TOP: **{score_total_a16:,.2f}**\n'
+            f'{emojis.BP} Total in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
         )
 
         notes = (
@@ -477,7 +474,7 @@ class timetravelCog(commands.Cog):
             description = (
                 f'Your current area: **{message_area}**\n'
                 f'Total score in A15: **{score_total_a15:,.2f}**\n'
-                f'Total score in the TOP: **{score_total_a16:,.2f}**\n'
+                f'Total score in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
             )
         )
         embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)

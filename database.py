@@ -1,6 +1,7 @@
 # database.py
 
 from datetime import datetime
+from decimal import Decimal
 import sqlite3
 from typing import NamedTuple, Tuple, Union
 
@@ -57,10 +58,35 @@ class Item(NamedTuple):
     item_type: str
     dismanteable: bool
     emoji: str
+    requirements: str
     ingredients: Tuple[Ingredient]
     name: str
     stat_at: int
     stat_def: int
+
+
+class Dungeon(NamedTuple):
+    """Conatiner for dungeon data"""
+    boss_at: int
+    boss_emoji: str
+    boss_life: float
+    boss_name: str
+    description: str
+    dungeon_no: float
+    key_price: int
+    life_boost_needed: bool
+    player_armor: Item
+    player_armor_enchant: str
+    player_at: int
+    player_def: int
+    player_carry_def: int
+    player_level: int
+    player_life: int
+    player_sword: Item
+    player_sword_enchant: str
+    player_amount: Tuple[int, int] # min, max
+    time_limit: int # seconds
+    tt: int
 
 
 class Title(NamedTuple):
@@ -110,6 +136,58 @@ async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> st
         await log_error(ctx_or_guild, error)
 
     return prefix
+
+
+async def get_dungeon(ctx: commands.Context, dungeon_no: float) -> Dungeon:
+    """Returns a dungeon from table "dungeons".
+
+    Returns:
+       Dungeon object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute('SELECT * FROM dungeons WHERE dungeon=?',(dungeon_no,))
+        record = cur.fetchone()
+    except sqlite3.Error:
+        raise
+    if not record:
+        raise NoDataFound
+    record = dict(record)
+    player_armor = player_sword = None
+    if record['player_armor_name'] is not None:
+        player_armor = await get_item(ctx, record['player_armor_name'])
+    if record['player_sword_name'] is not None:
+        player_sword = await get_item(ctx, record['player_sword_name'])
+    dungeon = Dungeon(
+        boss_at = record['boss_at'],
+        boss_emoji = getattr(emojis, record['boss_emoji']) if record['boss_emoji'] is not None else None,
+        boss_life = record['boss_life'],
+        boss_name = record['boss_name'],
+        description = record['description'],
+        dungeon_no = record['dungeon'],
+        key_price = record['key_price'],
+        life_boost_needed = bool(record['life_boost_needed']),
+        player_armor = player_armor,
+        player_armor_enchant = record['player_armor_enchant'],
+        player_at = record['player_at'],
+        player_carry_def = record['player_carry_def'],
+        player_def = record['player_def'],
+        player_level = record['player_level'],
+        player_life = record['player_life'],
+        player_sword = player_sword,
+        player_sword_enchant = record['player_sword_enchant'],
+        player_amount = (record['min_players'], record['max_players']),
+        time_limit = record['time_limit_s'],
+        tt = record['tt']
+    )
+
+    return dungeon
+
 
 # Get dungeon data for the dungeon commands
 async def get_dungeon_data(ctx, dungeon):
@@ -260,6 +338,8 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
     record.pop('emoji')
     item_type = record['type']
     record.pop('type')
+    requirements = record['requirements']
+    record.pop('requirements')
     item_at = int(record['at'])
     record.pop('at')
     item_def = int(record['def'])
@@ -280,6 +360,7 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
         item_type = item_type,
         dismanteable = item_dismantleable,
         emoji = item_emoji,
+        requirements = requirements,
         ingredients = ingredients,
         name = item_name,
         stat_at = item_at,
@@ -314,7 +395,7 @@ async def get_traderate_data(ctx, areas):
 
         if (type(areas) == str) and (areas == 'all'):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
-            record = cur.fetchall()
+            record = cur.fetchall() 
         elif type(areas) == int:
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (areas,))
             record = cur.fetchone()

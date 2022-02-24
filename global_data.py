@@ -15,6 +15,7 @@ import global_data
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DBL_TOKEN = os.getenv('DBL_TOKEN')
+DEBUG_MODE = os.getenv('DEBUG_MODE')
 
 # Get bot directory
 BOT_DIR = os.path.dirname(__file__)
@@ -435,56 +436,35 @@ async def design_field_trades(area_no, ascended='not ascended'):
 
     return (field_value)
 
-# Create field "Recommended Stats" for areas & dungeons
-async def design_field_rec_stats(field_rec_stats_data, short_version=False):
 
-    player_at = field_rec_stats_data[0]
-    player_def = field_rec_stats_data[1]
-    player_carry_def = field_rec_stats_data[2]
-    player_life = field_rec_stats_data[3]
-    life_boost = field_rec_stats_data[4]
-    player_level = field_rec_stats_data[5]
-    dungeon_no = field_rec_stats_data[6]
+async def design_field_rec_stats(dungeon_data, short_version: bool = False) -> str:
+    """Design field "Recommended Stats" for areas & dungeons. NEEDS REFACTORING"""
+    if 16 <= dungeon_data.dungeon_no <= 21:
+        return f'{emojis.BP} Currently unknown'
 
-    if not dungeon_no == 15.2:
-        dungeon_no = int(dungeon_no)
+    if dungeon_data.dungeon_no != 15.2:
+        dungeon_no = int(dungeon_data.dungeon_no)
 
-    player_at = f'{player_at:,}'
-    player_def = f'{player_def:,}'
-    player_life = f'{player_life:,}'
-
-    if short_version == False:
-        if life_boost == 'true':
-            if dungeon_no < 11:
-                life_boost = '(buy boost if necessary)'
-            else:
-                life_boost = '(buy boost and cook food if necessary)'
+    life_boost = ''
+    if not short_version and dungeon_data.life_boost_needed:
+        if dungeon_no < 11:
+            life_boost = '(buy boost if necessary)'
         else:
-            life_boost = ''
-    else:
-        life_boost = ''
+            life_boost = '(buy boost and cook food if necessary)'
 
-    if not player_carry_def == 0:
-        if short_version == False:
-            player_carry_def = f'({player_carry_def}+ to carry)'
+    player_carry_def = ''
+    if dungeon_data.player_carry_def is not None:
+        if not short_version:
+            player_carry_def = f'({dungeon_data.player_carry_def}+ to carry)'
         else:
-            player_carry_def = f'({player_carry_def})'
-    else:
-        player_carry_def = ''
+            player_carry_def = f'({dungeon_data.player_carry_def})'
 
-    if player_at == '0':
-        player_at = '-'
+    player_at = '-' if dungeon_data.player_at is None else f'{dungeon_data.player_at:,}'
+    player_def = '-' if dungeon_data.player_def is None else f'{dungeon_data.player_def:,}'
+    player_level = '-' if dungeon_data.player_level is None else f'{dungeon_data.player_level:,}'
+    player_life = '-' if dungeon_data.player_life is None else f'{dungeon_data.player_life:,}'
 
-    if player_def == '0':
-        player_def = '-'
-
-    if player_life == '0':
-        player_life = '-'
-
-    if player_level == 0:
-        player_level = '-'
-
-    if short_version == False:
+    if not short_version:
         field_value = (
             f'{emojis.BP} {emojis.STAT_AT} **AT**: {player_at}\n'
             f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
@@ -500,6 +480,7 @@ async def design_field_rec_stats(field_rec_stats_data, short_version=False):
         )
 
     return field_value
+
 
 # Get amount of material in inventory
 async def inventory_get(inventory, material):

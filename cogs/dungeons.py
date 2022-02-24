@@ -2,6 +2,7 @@
 
 import asyncio
 from humanfriendly import format_timespan
+from typing import Tuple
 
 import discord
 from discord.ext import commands
@@ -24,8 +25,10 @@ class dungeonsCog(commands.Cog):
         await ctx.send(embed=embed)
 
     # Dungeon guide, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
-    dungeon_aliases = ['dungeon','dung','dung15-1','d15-1','dungeon15-1','dung15-2','d15-2','dungeon15-2','dung152','d152','dungeon152','dung151','d151','dungeon151',]
-    for x in range(1,16):
+    dungeon_aliases = ['dungeon','dung','dung15-1','d15-1','dungeon15-1','dung15-2','d15-2','dungeon15-2','dung152',
+                       'd152','dungeon152','dung151','d151','dungeon151','dtop','dfinal','dungtop','dungfinal',
+                       'dungeontop','dungeonfinal']
+    for x in range(1,21):
         dungeon_aliases.append(f'd{x}')
         dungeon_aliases.append(f'dungeon{x}')
         dungeon_aliases.append(f'dung{x}')
@@ -61,16 +64,18 @@ class dungeonsCog(commands.Cog):
                             await self.dungeongear(ctx, page)
                             return
                     else:
-                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
+                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d20`')
                 else:
-                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
+                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d20`')
             elif len(args) == 1:
                 arg = args[0]
-                arg = arg.lower().replace('-','')
+                arg = arg.lower().replace('-','').replace('top','21').replace('final','21')
                 if arg.isnumeric():
-                    arg = int(arg)
-                    if 1 <= arg <= 15 or arg in (151,152):
-                        dungeon_data = await database.get_dungeon_data(ctx, arg)
+                    dungeon_no = int(arg)
+                    if dungeon_no == 151: dungeon_no = 15
+                    if dungeon_no == 152: dungeon_no = 15.2
+                    if 1 <= dungeon_no <= 21 or dungeon_no == 15.2:
+                        dungeon_data = await database.get_dungeon(ctx, dungeon_no)
                         dungeon_embed = await embed_dungeon(dungeon_data, ctx.prefix)
                         if dungeon_embed[0] == '':
                             await ctx.send(embed=dungeon_embed[1])
@@ -86,13 +91,17 @@ class dungeonsCog(commands.Cog):
                         await self.dungeonstats(ctx)
                         return
                     else:
-                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
+                        await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d20`')
         else:
-            dungeon_no = invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','').replace(f'{prefix}dung','').replace(f'{prefix}d','').replace('-','')
+            dungeon_no = (invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','')
+                          .replace(f'{prefix}dung','').replace(f'{prefix}d','').replace('-','')
+                          .replace('top','21').replace('final','21'))
             if dungeon_no.isnumeric():
                 dungeon_no = int(dungeon_no)
-                if 1 <= dungeon_no <= 15 or dungeon_no in (151,152):
-                    dungeon_data = await database.get_dungeon_data(ctx, dungeon_no)
+                if dungeon_no == 151: dungeon_no = 15
+                if dungeon_no == 152: dungeon_no = 15.2
+                if 1 <= dungeon_no <= 21 or dungeon_no == 15.2:
+                    dungeon_data = await database.get_dungeon(ctx, dungeon_no)
                     dungeon_embed = await embed_dungeon(dungeon_data, ctx.prefix)
                     if dungeon_embed[0] == '':
                         await ctx.send(embed=dungeon_embed[1])
@@ -105,7 +114,7 @@ class dungeonsCog(commands.Cog):
                     await self.dungeonguide(ctx)
                     return
                 else:
-                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d15`')
+                    await ctx.send(f'The command syntax is `{prefix}dungeon [#]` or `{prefix}d1`-`{prefix}d20`')
 
     # Command "dungeonstats" - Returns recommended stats for all dungeons
     @commands.command(aliases=('dstats','ds',))
@@ -466,7 +475,7 @@ def setup(bot):
 
 # --- Redundancies ---
 # Guides
-guide_dungeon = '`{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15'
+guide_dungeon = '`{prefix}d1`-`{prefix}d20` : Guide for dungeon 1~20'
 guide_check = '`{prefix}dc{dungeon_no}` : Check if you\'re ready for this dungeon'
 guide_check_all = '`{prefix}dc1`-`{prefix}dc15` : Dungeon 1~15 stats check'
 guide_gear = '`{prefix}dg` : Recommended gear (all dungeons)'
@@ -475,27 +484,25 @@ guide_stats = '`{prefix}ds` : Recommended stats (all dungeons)'
 
 
 # --- Functions ---
-# Create field "Recommended gear"
-async def function_design_field_rec_gear(field_rec_gear_data):
+async def function_design_field_rec_gear(dungeon_data: database.Dungeon) -> str:
+    """Create field "Recommended gear. May return None."""
+    player_armor_enchant = '' if dungeon_data.player_armor_enchant is None else f'[{dungeon_data.player_armor_enchant}]'
+    player_sword_enchant = '' if dungeon_data.player_sword_enchant is None else f'[{dungeon_data.player_sword_enchant}]'
 
-    player_sword = field_rec_gear_data[0]
-    player_sword_enchant = field_rec_gear_data[1]
-    player_sword_emoji = getattr(emojis, field_rec_gear_data[2])
-    player_armor = field_rec_gear_data[3]
-    player_armor_enchant = field_rec_gear_data[4]
-    player_armor_emoji = getattr(emojis, field_rec_gear_data[5])
+    field_value = ''
+    if dungeon_data.player_sword is not None:
+        field_value = (
+            f'{emojis.BP} {dungeon_data.player_sword.emoji} {dungeon_data.player_sword.name} {player_sword_enchant}'
+        )
+    if dungeon_data.player_armor is not None:
+        field_value = (
+            f'{field_value}\n{emojis.BP} {dungeon_data.player_armor.emoji} {dungeon_data.player_armor.name} '
+            f'{player_armor_enchant}'
+        )
 
-    if not player_armor_enchant == '':
-        player_armor_enchant = f'[{player_armor_enchant}]'
-
-    if not player_sword_enchant == '':
-        player_sword_enchant = f'[{player_sword_enchant}]'
-
-    field_value = f'{emojis.BP} {player_sword_emoji} {player_sword} {player_sword_enchant}'
-    if not player_armor == 'None':
-        field_value = f'{field_value}\n{emojis.BP} {player_armor_emoji} {player_armor} {player_armor_enchant}'
-
+    if field_value == '': field_value = None
     return field_value
+
 
 # Create field "Check dungeon stats" for areas and dungeons
 async def function_design_field_check_stats(field_check_stats_data, user_data, prefix, short_version):
@@ -825,7 +832,7 @@ async def embed_dungeons_menu(ctx):
     prefix = ctx.prefix
 
     dungeon_guide = (
-        f'{emojis.BP} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d15` : Guide for dungeon 1~15\n'
+        f'{emojis.BP} `{prefix}dungeon [#]` / `{prefix}d1`-`{prefix}d20` : Guide for dungeon 1~20\n'
         f'{emojis.BP} `{prefix}dgear` / `{prefix}dg` : Recommended gear (all dungeons)\n'
         f'{emojis.BP} `{prefix}dstats` / `{prefix}ds` : Recommended stats (all dungeons)'
     )
@@ -847,99 +854,97 @@ async def embed_dungeons_menu(ctx):
 
     return embed
 
-# Dungeon guide
-async def embed_dungeon(dungeon_data, prefix):
 
-    dungeon_no = dungeon_data[0]
-    dungeon_tt = dungeon_data[1]
-    boss_name = dungeon_data[2]
-    boss_emoji = getattr(emojis, dungeon_data[3])
-    boss_at = dungeon_data[4]
-    boss_life = dungeon_data[5]
-    min_players = dungeon_data[6]
-    max_players = dungeon_data[7]
-    key_price = dungeon_data[8]
-    player_at = dungeon_data[9]
-    player_def = dungeon_data[10]
-    player_carry_def = dungeon_data[11]
-    player_life = dungeon_data[12]
-    life_boost = dungeon_data[13]
-    player_level = dungeon_data[14]
-    player_sword = dungeon_data[15]
-    player_sword_enchant = dungeon_data[16]
-    player_armor = dungeon_data[17]
-    player_armor_enchant = dungeon_data[18]
-    time_limit = format_timespan(dungeon_data[19])
-    player_sword_emoji = getattr(emojis, dungeon_data[20])
-    player_armor_emoji = getattr(emojis, dungeon_data[21])
-    img_dungeon = ''
-    image_url = ''
+async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[discord.File, discord.Embed]:
+    """Creates dungeon guide embed"""
 
-    field_rec_stats_data = (player_at, player_def, player_carry_def, player_life, life_boost, player_level, dungeon_no)
-    field_rec_stats = await global_data.design_field_rec_stats(field_rec_stats_data)
+    img_dungeon = image_url = image_name = None
+    boss_life = time_limit = player_amount = key_price = description = requirements = strategy = tips = rewards = None
 
-    field_rec_gear_data = (player_sword, player_sword_enchant, dungeon_data[20], player_armor, player_armor_enchant, dungeon_data[21])
-    field_rec_gear = await function_design_field_rec_gear(field_rec_gear_data)
+    if dungeon_data.boss_life is not None:
+        boss_life = int(dungeon_data.boss_life) if dungeon_data.boss_life.is_integer() else dungeon_data.boss_life
+    dungeon_no = int(dungeon_data.dungeon_no) if dungeon_data.dungeon_no.is_integer() else dungeon_data.dungeon_no
 
-    if 1 <= dungeon_no <= 9:
-        time_limit = f'{time_limit} per player'
+    field_rec_stats = await global_data.design_field_rec_stats(dungeon_data)
+    field_rec_gear = await function_design_field_rec_gear(dungeon_data)
 
-    if min_players == max_players:
-        players = f'{emojis.BP} {min_players}'
-        if not boss_life == 0:
-            try:
-                boss_life = f'{dungeon_data[5]:,}'
-            except:
-                boss_life = int(dungeon_data[5])
-        else:
-            boss_life = '-'
+    # Time limit
+    if dungeon_data.time_limit is not None:
+        time_limit = format_timespan(dungeon_data.time_limit)
+        if 1 <= dungeon_no <= 9:
+            time_limit = f'{time_limit} per player'
+
+    # Amount of players and boss stats
+    if dungeon_data.player_amount[0] == dungeon_data.player_amount[1]:
+        player_amount = f'{emojis.BP} {dungeon_data.player_amount[0]}'
+        boss_life = '-' if boss_life is None else f'{boss_life:,}'
     else:
-        players = f'{emojis.BP} {min_players}-{max_players}'
+        player_amount = f'{emojis.BP} {dungeon_data.player_amount[0]}-{dungeon_data.player_amount[1]}'
         boss_life = f'{boss_life:,} per player'
+    boss_at = '-' if dungeon_data.boss_at is None else f'~{dungeon_data.boss_at:,}'
+    if 16 <= dungeon_no <= 21:
+        boss_at = 'Currently unknown'
+        if dungeon_no == 21: boss_life = 'Currently unknown'
+    if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
-    if boss_at == 0:
-        boss_at = '-'
-    else:
-        boss_at = f'~{boss_at}'
-
-    if not key_price == 0:
-        try:
-            key_price = f'{dungeon_data[8]:,}'
-        except:
-            key_price = int(dungeon_data[8])
-        key_price = f'{key_price} coins'
+    # Key price
+    if dungeon_data.key_price is not None:
+        key_price = f'{dungeon_data.key_price:,} coins'
     else:
         key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse.'
 
-    if 1 <= dungeon_no <= 9:
-        embed_description = 'This is a simple stats based dungeon.'
+    # Description
+    description = dungeon_data.description
+    if dungeon_no == 15:
+        description = f'{description}\nTo see part 2 of this dungeon, use `{prefix}d15-2`'
+    elif dungeon_no == 15.2:
+        description = f'{description}\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
+
+    # Requirements
+    if 1 <= dungeon_no <= 14:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_1} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
+    else:
+        requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
+    if dungeon_no in (10, 11, 13, 15, 15.2, 21):
+        requirements = f'{requirements}\n{emojis.BP} {dungeon_data.player_sword.emoji} {dungeon_data.player_sword.name}'
+    if dungeon_no in (10, 12, 14, 15):
+        requirements = f'{requirements}\n{emojis.BP} {dungeon_data.player_armor.emoji} {dungeon_data.player_armor.name}'
+    if dungeon_no in (15, 15.2):
+        requirements = (
+            f'{requirements}\n'
+            f'{emojis.BP} {emojis.PET_CAT} T4+ cat pet\n'
+            f'{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n'
+            f'{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet'
+        )
+    if dungeon_data.tt is not None:
+        if dungeon_data.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_data.tt}+'
+    if dungeon_no == 15.2:
+        requirements = f'{requirements}\n{emojis.BP} {emojis.STAT_COOLNESS} 2,000+ coolness'
+
+    # Strategy
+    if 1 <= dungeon_no <= 9:
         strategy = f'{emojis.BP} Use `stab` or `power`'
-        strategy_name = 'STRATEGY'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 10:
-        embed_description = 'This is a scripted strategy dungeon.'
-        requirements = (
-            f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'
-            f'{emojis.BP} {player_sword_emoji} {player_sword}\n {emojis.BP} {player_armor_emoji} {player_armor}'
-        )
         strategy = f'{emojis.BP} Currently unknown.'
-        strategy_old_delete_later = (
-            f'{emojis.BP} The player that starts the dungeon gets the attacker role.\n'
-            f'{emojis.BP} The other player gets the defender role.\n'
-            f'{emojis.BP} Attacker command sequence:\n{emojis.BLANK} `charge edgy sword` x20\n{emojis.BLANK} `attack`\n'
-            f'{emojis.BP} Defender command sequence:\n{emojis.BLANK} `weakness spell`\n{emojis.BLANK} `protect`\n{emojis.BLANK} `charge edgy armor` x4\n{emojis.BLANK} `protect` x2\n{emojis.BLANK} `invulnerability`\n{emojis.BLANK} `healing spell`\n{emojis.BLANK} `protect` x5\n'
-            f'{emojis.BP} Note: The defender will die before the boss.'
-        )
-        strategy_name = 'STRATEGY'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
-    elif dungeon_no == 11:
-        embed_description = 'This is a randomized puzzle-based dungeon.'
-        requirements = (
-            f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'\
-            f'{emojis.BP} {player_sword_emoji} {player_sword}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+'
-        )
+    elif dungeon_no == 13:
         strategy = (
+            f'{emojis.BP} You start in room 1, 2 or 3\n'
+            f'{emojis.BP} Your goal is to reach the dragon\'s room\n'
+            f'{emojis.BP} In each room you will be asked one question\n'
+            f'{emojis.BP} Your answer determines your next room\n'
+            f'{emojis.BP} Refer to the image below for a walkthrough\n'
+            f'{emojis.BP} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_13)'
+        )
+    elif dungeon_no == 14:
+        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_14'
+    elif dungeon_no == 15:
+        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.1'
+    elif dungeon_no == 15.2:
+        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
+
+    # Tips
+    if dungeon_no == 11:
+        tips = (
             f'{emojis.BP} You can move left, right, up, down or pass\n'
             f'{emojis.BP} Your goal is to reach and hit the boss until it dies\n'
             f'{emojis.BP} Each point of AT you have does 1 damage to the boss\n'
@@ -953,117 +958,82 @@ async def embed_dungeon(dungeon_data, prefix):
             f'{emojis.BP} Check the image below to see the movement behaviour\n'
             f'{emojis.BP} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_11)'
         )
-        strategy_name = 'TIPS'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
+    elif dungeon_no == 12:
+        tips = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_12'
+
+    # Rewards
+    if 1 <= dungeon_no <= 14:
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1}'
+    elif dungeon_no == 15:
+        rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
+    elif dungeon_no == 15.2:
+        rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks \'The TOP\''
+    elif 16 <= dungeon_no <= 19:
+        rewards = (
+            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to jump to area {dungeon_no + 1} (if it\'s unsealed)'
+        )
+    elif dungeon_no == 21:
+        rewards = (
+            f'{emojis.BP} Allows you to access areas 16-20 if they are unsealed.\n'
+            f'{emojis.BLANK} This reward is permanent, you don\'t have to redo this dungeon.'
+        )
+
+
+    # Images
+    if dungeon_no == 11:
         img_dungeon = discord.File(global_data.IMG_DUNGEON_11, filename='dungeon11.png')
         image_url = 'attachment://dungeon11.png'
         image_name = 'MOVEMENT BEHAVIOUR'
-    elif dungeon_no == 12:
-        embed_description = 'This is a randomized puzzle-based dungeon.'
-        requirements = (
-            f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'\
-            f'{emojis.BP} {player_armor_emoji} {player_armor}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+'
-        )
-        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_12'
-        strategy_name = 'TIPS'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
     elif dungeon_no == 13:
-        embed_description = 'This is a trivia themed strategy dungeon.'
-        requirements = (
-            f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'
-            f'{emojis.BP} {player_sword_emoji} {player_sword}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+'
-        )
-        strategy = (
-            f'{emojis.BP} You start in room 1, 2 or 3\n'
-            f'{emojis.BP} Your goal is to reach the dragon\'s room\n'
-            f'{emojis.BP} In each room you will be asked one question\n'
-            f'{emojis.BP} Your answer determines your next room\n'
-            f'{emojis.BP} Refer to the image below for a walkthrough\n'
-            f'{emojis.BP} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Dungeon_13)'
-        )
-        strategy_name = 'STRATEGY'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
         img_dungeon = discord.File(global_data.IMG_DUNGEON_13, filename='dungeon13.png')
         image_url = 'attachment://dungeon13.png'
         image_name = 'WALKTHROUGH'
-    elif dungeon_no == 14:
-        embed_description = 'This is a strategy dungeon.'
-        requirements = (
-            f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse\n'
-            f'{emojis.BP} {player_armor_emoji} {player_armor}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+'
-        )
-        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_14'
-        strategy_name = 'STRATEGY'
-        boss_life = f'2x {boss_life}'
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no+1:g}'
-    elif dungeon_no == 15:
-        dungeon_no = '15-1'
-        embed_description = (
-            f'This is a strategy dungeon.\n'
-            f'To see part 2 of this dungeon, use `{prefix}d15-2`'
-        )
-        requirements = (
-            f'{emojis.BP} {emojis.HORSE_T6} T6+ horse\n'
-            f'{emojis.BP} {player_sword_emoji} {player_sword}\n {emojis.BP} {player_armor_emoji} {player_armor}\n'
-            f'{emojis.BP} {emojis.PET_CAT} T4+ cat pet\n{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet\n'
-            f'{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+'
-        )
-        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.1'
-        strategy_name = 'STRATEGY'
-        rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
-    elif dungeon_no == 15.2:
-        dungeon_no = '15-2'
-        embed_description = (
-            f'This is an **optional** strategy dungeon.\n'
-            f'To see part 1 of this dungeon, use `{prefix}d15-1`'
-        )
-        requirements = (
-            f'{emojis.BP} {emojis.HORSE_T6} T6+ horse\n'
-            f'{emojis.BP} {player_sword_emoji} {player_sword}\n'
-            f'{emojis.BP} {emojis.PET_CAT} T4+ cat pet\n{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet\n'
-            f'{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_tt}+\n'
-            f'{emojis.BP} {emojis.STAT_COOLNESS} 2,000+ coolness'
-        )
-        strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
-        strategy_name = 'STRATEGY'
-        rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks area \'The TOP\''
-    else:
-        embed_description = ''
-        rewards = 'N/A'
-        requirements = f'{emojis.BP} N/A'
-        strategy = f'{emojis.BP} N/A'
-        strategy_name = 'STRATEGY'
 
-    if isinstance(dungeon_no, float):
-        dungeon_no = f'{dungeon_no:g}'
-
-    embed_title = f'DUNGEON {dungeon_no}'
+    title = f'DUNGEON {str(dungeon_no).replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
 
     guides = (
-        f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=dungeon_no)}\n'
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}'
     )
+    if dungeon_no <= 15:
+        guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=dungeon_no)}\n{guides}'
 
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
-        title = embed_title,
-        description = embed_description
+        title = title,
+        description = description
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='BOSS', value=f'{emojis.BP} {boss_emoji} {boss_name}', inline=False)
-    embed.add_field(name='PLAYERS', value=players, inline=False)
-    embed.add_field(name='TIME LIMIT', value=f'{emojis.BP} {time_limit}', inline=False)
-    embed.add_field(name='REWARDS', value=rewards, inline=False)
-    embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
-    embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.BP} {key_price}', inline=False)
-    embed.add_field(name='BOSS STATS', value=f'{emojis.BP} {emojis.STAT_AT} **AT**: {boss_at}\n{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {boss_life}', inline=False)
-    embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
-    embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
-    embed.add_field(name=strategy_name, value=strategy, inline=False)
+    embed.add_field(name='BOSS', value=f'{emojis.BP} {dungeon_data.boss_emoji} {dungeon_data.boss_name}', inline=False)
+    if player_amount is not None:
+        embed.add_field(name='PLAYERS', value=player_amount, inline=False)
+    if time_limit is not None:
+        embed.add_field(name='TIME LIMIT', value=f'{emojis.BP} {time_limit}', inline=False)
+    if rewards is not None:
+        embed.add_field(name='REWARDS', value=rewards, inline=False)
+    if requirements is not None:
+        embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
+    if key_price is not None:
+        embed.add_field(name='DUNGEON KEY PRICE', value=f'{emojis.BP} {key_price}', inline=False)
+    embed.add_field(
+        name='BOSS STATS',
+        value=(
+            f'{emojis.BP} {emojis.STAT_AT} **AT**: {boss_at}\n'
+            f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {boss_life}'
+        ),
+            inline=False
+    )
+    if field_rec_gear is not None:
+        embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
+    if field_rec_stats is not None:
+        embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
+    if strategy is not None:
+        embed.add_field(name='STRATEGY', value=strategy, inline=False)
+    if tips is not None:
+        embed.add_field(name='TIPS', value=tips, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-    if not image_url == '':
+    if image_url is not None:
         embed.set_image(url=image_url)
         embed.add_field(name=image_name, value=f'** **', inline=False)
 

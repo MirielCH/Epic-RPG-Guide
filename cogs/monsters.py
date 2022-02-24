@@ -25,14 +25,14 @@ class monstersCog(commands.Cog):
             return m.author == ctx.author and m.channel == ctx.channel
 
         prefix = ctx.prefix
-        error_area = f'This is not a valid area. The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 15.'
+        error_area = f'This is not a valid area. The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 20.'
         info_area_16 = (
             f'Area 16 (aka The TOP) does not have its own monsters.\n'
-            f'Instead the EPIC NPC poses as a random monster which can be any monster from areas 1~15.'
+            f'Instead the EPIC NPC poses as a random monster which can be any monster from areas 1~20.'
         )
         error_syntax = ( #Temporary solution because buttons use a shit ton of cpu for some reason
             f'This command shows all mobs in an area.\n'
-            f'The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 15.'
+            f'The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 20.'
         )
 
         if args:

@@ -162,23 +162,16 @@ class craftingCog(commands.Cog):
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
 
-        drop_chance = 4*(1+tt_chance)*horse_chance
-        drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-        drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
-        drop_chance_worldbuff_daily = 4*(1+tt_chance)*horse_chance*1.3
-        drop_chance_hm = drop_chance * 1.7
-        drop_chance_worldbuff_hm = drop_chance_worldbuff * 1.7
-        drop_chance_daily_hm = drop_chance_daily * 1.7
-        drop_chance_worldbuff_daily_hm = drop_chance_worldbuff_daily * 1.7
-        drop_chance = round(drop_chance,1)
-        drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-        drop_chance_daily = round(drop_chance_daily,1)
-        drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-        drop_chance_hm = round(drop_chance_hm,1)
-        drop_chance_worldbuff_hm = round(drop_chance_worldbuff_hm,1)
-        drop_chance_daily_hm = round(drop_chance_daily_hm,1)
-        drop_chance_worldbuff_daily_hm = round(drop_chance_worldbuff_daily_hm,1)
-
+        # Dropchance for all mob drops except dark energy
+        drop_chance = 4 * (1 + tt_chance) * horse_chance
+        drop_chance_worldbuff = round(drop_chance * 1.2, 1)
+        drop_chance_daily = round(drop_chance * 1.1, 1)
+        drop_chance_worldbuff_daily = round(drop_chance * 1.3, 1)
+        drop_chance_hm = round(drop_chance * 1.7, 1)
+        drop_chance_worldbuff_hm = round(drop_chance * 1.2 * 1.7, 1)
+        drop_chance_daily_hm = round(drop_chance * 1.1 * 1.7, 1)
+        drop_chance_worldbuff_daily_hm = round(drop_chance * 1.3 * 1.7, 1)
+        drop_chance = round(drop_chance, 1)
         if drop_chance >= 100: drop_chance = 100
         if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
         if drop_chance_daily >= 100: drop_chance_daily = 100
@@ -187,6 +180,25 @@ class craftingCog(commands.Cog):
         if drop_chance_worldbuff_hm >= 100: drop_chance_worldbuff_hm = 100
         if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
         if drop_chance_worldbuff_daily_hm >= 100: drop_chance_worldbuff_daily_hm = 100
+
+        # Dropchance for dark energy
+        drop_chance_energy = 0.1 * (1 + tt_chance) * horse_chance
+        drop_chance_energy_worldbuff = round(drop_chance_energy * 1.2, 1)
+        drop_chance_energy_daily = round(drop_chance_energy * 1.1, 1)
+        drop_chance_energy_worldbuff_daily = round(drop_chance_energy * 1.3, 1)
+        drop_chance_energy_hm = round(drop_chance_energy * 1.7, 1)
+        drop_chance_energy_worldbuff_hm = round(drop_chance_energy * 1.2 * 1.7, 1)
+        drop_chance_energy_daily_hm = round(drop_chance_energy * 1.1 * 1.7, 1)
+        drop_chance_energy_worldbuff_daily_hm = round(drop_chance_energy * 1.3 * 1.7, 1)
+        drop_chance_energy = round(drop_chance_energy, 1)
+        if drop_chance_energy >= 100: drop_chance_energy = 100
+        if drop_chance_energy_worldbuff >= 100: drop_chance_energy_worldbuff = 100
+        if drop_chance_energy_daily >= 100: drop_chance_energy_daily = 100
+        if drop_chance_energy_worldbuff_daily >= 100: drop_chance_energy_worldbuff_daily = 100
+        if drop_chance_energy_hm >= 100: drop_chance_energy_hm = 100
+        if drop_chance_energy_worldbuff_hm >= 100: drop_chance_energy_worldbuff_hm = 100
+        if drop_chance_energy_daily_hm >= 100: drop_chance_energy_daily_hm = 100
+        if drop_chance_energy_worldbuff_daily_hm >= 100: drop_chance_energy_worldbuff_daily_hm = 100
 
         horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
 
@@ -197,11 +209,25 @@ class craftingCog(commands.Cog):
             f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily:g}%__\n'
         )
 
+        field_drop_chance_energy = (
+            f'{emojis.BP} Base chance: __{drop_chance_energy:g}%__\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_energy_worldbuff:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_energy_daily:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_energy_worldbuff_daily:g}%__\n'
+        )
+
         field_drop_chance_hardmode = (
             f'{emojis.BP} Base chance: __{drop_chance_hm:g}__%\n'
             f'{emojis.BP} With active world buff: __{drop_chance_worldbuff_hm:g}%__\n'
             f'{emojis.BP} If mob is daily mob: __{drop_chance_daily_hm:g}%__\n'
             f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily_hm:g}%__\n'
+        )
+
+        field_drop_chance_energy_hardmode = (
+            f'{emojis.BP} Base chance: __{drop_chance_energy_hm:g}__%\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_energy_worldbuff_hm:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_energy_daily_hm:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_energy_worldbuff_daily_hm:g}%__\n'
         )
 
         field_hunting_chance = (
@@ -215,10 +241,35 @@ class craftingCog(commands.Cog):
             description = (
                 f'Time travel: {emojis.TIME_TRAVEL} **{user_tt}**\n'
                 f'Horse: {horse_emoji} **T{horse_tier}**'
-            )
+            ),
+            color = global_data.EMBED_COLOR
         )
-        embed.add_field(name='DROP CHANCES', value=field_drop_chance, inline=False)
-        embed.add_field(name='HARDMODE DROP CHANCES (ESTIMATED)', value=field_drop_chance_hardmode, inline=False)
+        embed.add_field(
+            name=(
+                f'DROP CHANCES FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
+                f'{emojis.CHIP}{emojis.DRAGON_SCALE}'
+            ),
+            value=field_drop_chance,
+            inline=False
+        )
+        embed.add_field(
+            name=(
+                f'HARDMODE DROP CHANCES FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}'
+                f'{emojis.MERMAID_HAIR}{emojis.CHIP}{emojis.DRAGON_SCALE}'
+            ),
+            value=field_drop_chance_hardmode,
+            inline=False
+        )
+        embed.add_field(
+            name=f'DROP CHANCES FOR {emojis.DARK_ENERGY}',
+            value=field_drop_chance_energy,
+            inline=False
+        )
+        embed.add_field(
+            name=f'HARDMODE DROP CHANCES FOR {emojis.DARK_ENERGY}',
+            value=field_drop_chance_energy_hardmode,
+            inline=False
+        )
         embed.add_field(name='NOTES', value=field_hunting_chance, inline=False)
         await ctx.send(embed=embed)
 
@@ -300,6 +351,9 @@ class craftingCog(commands.Cog):
         for ingredient in item.ingredients:
             ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
             message = f'{message}\n> {ingredient.amount * amount:,} {ingredient_item.emoji} `{ingredient_item.name}`'
+
+        if item.requirements is not None:
+            message = f'{message}\n\nRequirements\n> {item.requirements}'
 
         if breakdown_totals != '':
             message = f'{message}\n\n{breakdown_totals}'
@@ -873,10 +927,10 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
     message = ''
     if '➜' in breakdown:
         if dismantle:
-            message = f'**Full breakdown**\n{breakdown.strip()}'
+            message = f'Full breakdown\n{breakdown.strip()}'
             return message.strip()
-        message = f'**Ingredients breakdown**\n{breakdown.strip()}'
-        message = f'{message}\n\n**Base materials total**'
+        message = f'Ingredients breakdown\n{breakdown.strip()}'
+        message = f'{message}\n\nBase materials total'
         message = message.strip()
         if (log_total > 0 or fish_total > 0 or apple_total > 0) and not dismantle:
             if apple_total > 0: base_totals['apple'] = (apple_total, emojis.APPLE)
@@ -964,35 +1018,43 @@ async def embed_drops(prefix):
     zombieeye = (
         f'{emojis.BP} Areas: 3~4\n'
         f'{emojis.BP} Source: {emojis.MOB_ZOMBIE}\n'
-        f'{emojis.BP} Value: 2\'000\n'
+        f'{emojis.BP} Value: 2,000\n'
         f'{emojis.BLANK}'
     )
 
     unicornhorn = (
         f'{emojis.BP} Areas: 5~6\n'
         f'{emojis.BP} Source: {emojis.MOB_UNICORN}\n'
-        f'{emojis.BP} Value: 7\'500\n'
+        f'{emojis.BP} Value: 7,500\n'
         f'{emojis.BLANK}'
     )
 
     mermaidhair = (
         f'{emojis.BP} Areas: 7~8\n'
         f'{emojis.BP} Source: {emojis.MOB_MERMAID}\n'
-        f'{emojis.BP} Value: 30\'000\n'
+        f'{emojis.BP} Value: 30,000\n'
         f'{emojis.BLANK}'
     )
 
     chip = (
         f'{emojis.BP} Areas: 9~10\n'
         f'{emojis.BP} Source: {emojis.MOB_KILLER_ROBOT}\n'
-        f'{emojis.BP} Value: 100\'000\n'
+        f'{emojis.BP} Value: 100,000\n'
         f'{emojis.BLANK}'
     )
 
     dragonscale = (
         f'{emojis.BP} Areas: 11~15\n'
         f'{emojis.BP} Source: {emojis.MOB_BABY_DRAGON}{emojis.MOB_TEEN_DRAGON}{emojis.MOB_ADULT_DRAGON}{emojis.MOB_OLD_DRAGON}\n'
-        f'{emojis.BP} Value: 250\'000\n'
+        f'{emojis.BP} Value: 250,000\n'
+        f'{emojis.BLANK}'
+    )
+
+    dark_energy = (
+        f'{emojis.BP} Areas: 16~20\n'
+        f'{emojis.BP} Source: {emojis.MOB_VOID_SHARD}{emojis.MOB_ABYSS_BUG}{emojis.MOB_CORRUPTED_UNICORN}'
+        f'{emojis.MOB_NEUTRON_STAR}{emojis.MOB_TIME_ALTERATION}\n'
+        f'{emojis.BP} Value: 5,000,000\n'
         f'{emojis.BLANK}'
     )
 
@@ -1025,6 +1087,7 @@ async def embed_drops(prefix):
     embed.add_field(name=f'MERMAID HAIR {emojis.MERMAID_HAIR}', value=mermaidhair, inline=True)
     embed.add_field(name=f'CHIP {emojis.CHIP}', value=chip, inline=True)
     embed.add_field(name=f'DRAGON SCALE {emojis.DRAGON_SCALE}', value=dragonscale, inline=True)
+    embed.add_field(name=f'DARK ENERGY {emojis.DARK_ENERGY}', value=dark_energy, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
 
     return embed

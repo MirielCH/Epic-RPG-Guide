@@ -86,6 +86,8 @@ class MainCog(commands.Cog):
                 await send_error()
         else:
             await database.log_error(ctx, error)
+            if global_data.DEBUG_MODE == 'ON': await send_error()
+
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
