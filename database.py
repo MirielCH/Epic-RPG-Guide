@@ -20,6 +20,8 @@ ERG_DB = sqlite3.connect(DB_FILE, isolation_level=None)
 
 # Internal errors
 INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunction: {function}\nSELECT: {select}'
+INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: {function}\nRecord: {record}\n'
+INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\SQL: {sql}'
 
 
 class FirstTimeUser(commands.CommandError):
@@ -100,6 +102,60 @@ class Title(NamedTuple):
     title: str
 
 
+# Miscellaneous functions
+async def _dict_to_dungeon(record: dict) -> Dungeon:
+    """Creates a Dungeon object from a database record
+
+    Arguments
+    ---------
+    record: Database record from table "dungeons" as a dict.
+
+    Returns
+    -------
+    Dungeon object.
+
+    Raises
+    ------
+    LookupError if something goes wrong reading the dict. Also logs this error to the database.
+    """
+    function_name = '_dict_to_dungeon'
+    try:
+        player_armor = player_sword = None
+        if record['player_armor_name'] is not None:
+            player_armor = await get_item(record['player_armor_name'])
+        if record['player_sword_name'] is not None:
+            player_sword = await get_item(record['player_sword_name'])
+        dungeon = Dungeon(
+            boss_at = record['boss_at'],
+            boss_emoji = getattr(emojis, record['boss_emoji']) if record['boss_emoji'] is not None else None,
+            boss_life = record['boss_life'],
+            boss_name = record['boss_name'],
+            description = record['description'],
+            dungeon_no = record['dungeon'],
+            key_price = record['key_price'],
+            life_boost_needed = bool(record['life_boost_needed']),
+            player_armor = player_armor,
+            player_armor_enchant = record['player_armor_enchant'],
+            player_at = record['player_at'],
+            player_carry_def = record['player_carry_def'],
+            player_def = record['player_def'],
+            player_level = record['player_level'],
+            player_life = record['player_life'],
+            player_sword = player_sword,
+            player_sword_enchant = record['player_sword_enchant'],
+            player_amount = (record['min_players'], record['max_players']),
+            time_limit = record['time_limit_s'],
+            tt = record['tt']
+        )
+    except Exception as error:
+        await log_error(
+            INTERNAL_ERROR_DICT_TO_OBJECT.format(function=function_name, record=record)
+        )
+        raise LookupError(error)
+
+    return dungeon
+
+
 # --- Get Data ---
 async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
     """Checks the database for a prefix. If no prefix is found, a record for the guild is created with the
@@ -138,7 +194,7 @@ async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> st
     return prefix
 
 
-async def get_dungeon(ctx: commands.Context, dungeon_no: float) -> Dungeon:
+async def get_dungeon(dungeon_no: float) -> Dungeon:
     """Returns a dungeon from table "dungeons".
 
     Returns:
@@ -157,36 +213,48 @@ async def get_dungeon(ctx: commands.Context, dungeon_no: float) -> Dungeon:
         raise
     if not record:
         raise NoDataFound
-    record = dict(record)
-    player_armor = player_sword = None
-    if record['player_armor_name'] is not None:
-        player_armor = await get_item(ctx, record['player_armor_name'])
-    if record['player_sword_name'] is not None:
-        player_sword = await get_item(ctx, record['player_sword_name'])
-    dungeon = Dungeon(
-        boss_at = record['boss_at'],
-        boss_emoji = getattr(emojis, record['boss_emoji']) if record['boss_emoji'] is not None else None,
-        boss_life = record['boss_life'],
-        boss_name = record['boss_name'],
-        description = record['description'],
-        dungeon_no = record['dungeon'],
-        key_price = record['key_price'],
-        life_boost_needed = bool(record['life_boost_needed']),
-        player_armor = player_armor,
-        player_armor_enchant = record['player_armor_enchant'],
-        player_at = record['player_at'],
-        player_carry_def = record['player_carry_def'],
-        player_def = record['player_def'],
-        player_level = record['player_level'],
-        player_life = record['player_life'],
-        player_sword = player_sword,
-        player_sword_enchant = record['player_sword_enchant'],
-        player_amount = (record['min_players'], record['max_players']),
-        time_limit = record['time_limit_s'],
-        tt = record['tt']
-    )
+    dungeon = await _dict_to_dungeon(dict(record))
 
     return dungeon
+
+
+async def get_all_dungeons() -> Tuple[Dungeon]:
+    """Gets all dungeons from the table "dungeons".
+
+    Returns
+    -------
+    Tuple[Dungeon]
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no dungeons were found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'dungeons'
+    function_name = 'get_all_dungeons'
+    sql = f'SELECT * FROM {table} WHERE dungeon BETWEEN 1 AND 21' # Remove condition once dungeon 0 is gone
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not records:
+        error_message = 'No dungeons found in database.'
+        raise NoDataFound(error_message)
+    dungeons = []
+    for record in records:
+        dungeon = await _dict_to_dungeon(dict(record))
+        dungeons.append(dungeon)
+
+    return tuple(dungeons)
 
 
 # Get dungeon data for the dungeon commands
@@ -312,7 +380,7 @@ async def get_mats_data(ctx, user_tt):
     return mats_data
 
 
-async def get_item(ctx: commands.Context, name: str) -> Item:
+async def get_item(name: str) -> Item:
     """Returns an item from table "items".
 
     Returns:
@@ -320,7 +388,7 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
 
     Raises:
         sqlite3.Error if something goes wrong.
-        NoDataFound if no data was found. This also logs an error.
+        NoDataFound if no data was found.
     """
     try:
         ERG_DB.row_factory = sqlite3.Row
@@ -395,7 +463,7 @@ async def get_traderate_data(ctx, areas):
 
         if (type(areas) == str) and (areas == 'all'):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas ORDER BY area')
-            record = cur.fetchall() 
+            record = cur.fetchall()
         elif type(areas) == int:
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area=?', (areas,))
             record = cur.fetchone()

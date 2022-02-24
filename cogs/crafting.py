@@ -330,7 +330,7 @@ class craftingCog(commands.Cog):
             itemname_replaced = global_data.item_aliases[itemname_replaced]
 
         try:
-            item: database.Item = await database.get_item(ctx, itemname_replaced)
+            item: database.Item = await database.get_item(itemname_replaced)
         except database.NoDataFound:
             await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
             return
@@ -349,7 +349,7 @@ class craftingCog(commands.Cog):
         else:
             message = f'To craft {amount:,} {item.emoji} `{item.name}` you need:'
         for ingredient in item.ingredients:
-            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            ingredient_item: database.Item = await database.get_item(ingredient.name)
             message = f'{message}\n> {ingredient.amount * amount:,} {ingredient_item.emoji} `{ingredient_item.name}`'
 
         if item.requirements is not None:
@@ -402,7 +402,7 @@ class craftingCog(commands.Cog):
             itemname = global_data.item_aliases[itemname]
 
         try:
-            item: database.Item = await database.get_item(ctx, itemname)
+            item: database.Item = await database.get_item(itemname)
         except database.NoDataFound:
             await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
             return
@@ -417,7 +417,7 @@ class craftingCog(commands.Cog):
         else:
             message = f'By dismantling {amount:,} {item.emoji} `{item.name}` you get:'
         for ingredient in item.ingredients:
-            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            ingredient_item: database.Item = await database.get_item(ingredient.name)
             message = f'{message}\n> {int(ingredient.amount * amount * 0.8):,} {ingredient_item.emoji} `{ingredient_item.name}`'
 
         if breakdown_totals != '':
@@ -891,7 +891,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
     base_totals = {}
 
     for ingredient in item.ingredients:
-        ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+        ingredient_item: database.Item = await database.get_item(ingredient.name)
         if ingredient.name == 'wooden log':
             log_total += ingredient.amount * amount * multiplier
         elif ingredient.name == 'normie fish':
@@ -914,7 +914,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
                 fish_total += current_amount
             elif current_ingredient.name == 'apple':
                 apple_total += current_amount
-            sub_item: database.Item = await database.get_item(ctx, current_ingredient.name)
+            sub_item: database.Item = await database.get_item(current_ingredient.name)
             if current_breakdown == '':
                 current_breakdown = f'> {int(current_amount):,} {sub_item.emoji}'
             else:

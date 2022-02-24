@@ -437,32 +437,31 @@ async def design_field_trades(area_no, ascended='not ascended'):
     return (field_value)
 
 
-async def design_field_rec_stats(dungeon_data, short_version: bool = False) -> str:
+async def design_field_rec_stats(dungeon, short_version: bool = False) -> str:
     """Design field "Recommended Stats" for areas & dungeons. NEEDS REFACTORING"""
-    if 16 <= dungeon_data.dungeon_no <= 21:
+    if 16 <= dungeon.dungeon_no <= 21:
         return f'{emojis.BP} Currently unknown'
 
-    if dungeon_data.dungeon_no != 15.2:
-        dungeon_no = int(dungeon_data.dungeon_no)
+    if dungeon.dungeon_no.is_integer(): dungeon_no = int(dungeon.dungeon_no)
 
     life_boost = ''
-    if not short_version and dungeon_data.life_boost_needed:
+    if not short_version and dungeon.life_boost_needed:
         if dungeon_no < 11:
             life_boost = '(buy boost if necessary)'
         else:
             life_boost = '(buy boost and cook food if necessary)'
 
     player_carry_def = ''
-    if dungeon_data.player_carry_def is not None:
+    if dungeon.player_carry_def is not None:
         if not short_version:
-            player_carry_def = f'({dungeon_data.player_carry_def}+ to carry)'
+            player_carry_def = f'({dungeon.player_carry_def}+ to carry)'
         else:
-            player_carry_def = f'({dungeon_data.player_carry_def})'
+            player_carry_def = f'({dungeon.player_carry_def})'
 
-    player_at = '-' if dungeon_data.player_at is None else f'{dungeon_data.player_at:,}'
-    player_def = '-' if dungeon_data.player_def is None else f'{dungeon_data.player_def:,}'
-    player_level = '-' if dungeon_data.player_level is None else f'{dungeon_data.player_level:,}'
-    player_life = '-' if dungeon_data.player_life is None else f'{dungeon_data.player_life:,}'
+    player_at = '-' if dungeon.player_at is None else f'{dungeon.player_at:,}'
+    player_def = '-' if dungeon.player_def is None else f'{dungeon.player_def:,}'
+    player_level = '-' if dungeon.player_level is None else f'{dungeon.player_level:,}'
+    player_life = '-' if dungeon.player_life is None else f'{dungeon.player_life:,}'
 
     if not short_version:
         field_value = (

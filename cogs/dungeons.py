@@ -75,8 +75,8 @@ class dungeonsCog(commands.Cog):
                     if dungeon_no == 151: dungeon_no = 15
                     if dungeon_no == 152: dungeon_no = 15.2
                     if 1 <= dungeon_no <= 21 or dungeon_no == 15.2:
-                        dungeon_data = await database.get_dungeon(ctx, dungeon_no)
-                        dungeon_embed = await embed_dungeon(dungeon_data, ctx.prefix)
+                        dungeon_data = await database.get_dungeon(dungeon_no)
+                        dungeon_embed = await embed_dungeon(ctx, dungeon_data)
                         if dungeon_embed[0] == '':
                             await ctx.send(embed=dungeon_embed[1])
                         else:
@@ -101,8 +101,8 @@ class dungeonsCog(commands.Cog):
                 if dungeon_no == 151: dungeon_no = 15
                 if dungeon_no == 152: dungeon_no = 15.2
                 if 1 <= dungeon_no <= 21 or dungeon_no == 15.2:
-                    dungeon_data = await database.get_dungeon(ctx, dungeon_no)
-                    dungeon_embed = await embed_dungeon(dungeon_data, ctx.prefix)
+                    dungeon_data = await database.get_dungeon(dungeon_no)
+                    dungeon_embed = await embed_dungeon(ctx, dungeon_data)
                     if dungeon_embed[0] == '':
                         await ctx.send(embed=dungeon_embed[1])
                     else:
@@ -120,50 +120,55 @@ class dungeonsCog(commands.Cog):
     @commands.command(aliases=('dstats','ds',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def dungeonstats(self, ctx):
-        rec_stats_data = await database.get_rec_stats_data(ctx)
-        embed = await embed_dungeon_rec_stats(rec_stats_data, ctx.prefix)
+        dungeons = await database.get_all_dungeons()
+        embed = await embed_dungeon_rec_stats(ctx, dungeons)
         await ctx.send(embed=embed)
 
     # Command "dungeongear" - Returns recommended gear for all dungeons
-    @commands.command(aliases=('dgear','dg','dg1','dg2',))
+    @commands.command(aliases=('dgear','dg','dg1','dg2','dg3'))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def dungeongear(self, ctx, *args):
 
         invoked = ctx.message.content
         invoked = invoked.lower()
+        syntax = (
+            f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-3]` '
+            f'or `{ctx.prefix}dg1`-`{ctx.prefix}dg3`'
+        )
 
         if args:
             if len(args)>1:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
+                await ctx.send(syntax)
                 return
             elif len(args)==1:
                 page = args[0]
                 if page.isnumeric():
-                        page = int(page)
-                        if page in (1,2):
-                            rec_gear_data = await database.get_rec_gear_data(ctx, page)
-                            embed = await embed_dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
-                            return
+                    page = int(page)
+                    if page in (1,2,3):
+                        dungeons = await database.get_all_dungeons()
+                        embed = await embed_dungeon_rec_gear(ctx, dungeons,page)
+                        await ctx.send(embed=embed)
+                    else:
+                        await ctx.send(syntax)
+                        return
                 else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
+                    await ctx.send(syntax)
                     return
         else:
-            page = invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','').replace(f'{ctx.prefix}dg','')
+            page = (invoked.replace(f'{ctx.prefix}dungeongear','').replace(f'{ctx.prefix}dgear','')
+                    .replace(f'{ctx.prefix}dg',''))
             if page.isnumeric():
                 page = int(page)
-                rec_gear_data = await database.get_rec_gear_data(ctx, page)
-                embed = await embed_dungeon_rec_gear(rec_gear_data, ctx.prefix, page)
+                dungeons = await database.get_all_dungeons()
+                embed = await embed_dungeon_rec_gear(ctx, dungeons, page)
                 await ctx.send(embed=embed)
             else:
                 if page == '':
-                    rec_gear_data = await database.get_rec_gear_data(ctx, 1)
-                    embed = await embed_dungeon_rec_gear(rec_gear_data, ctx.prefix, 1)
+                    dungeons = await database.get_all_dungeons()
+                    embed = await embed_dungeon_rec_gear(ctx, dungeons, 1)
                     await ctx.send(embed=embed)
                 else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with}`, `{ctx.prefix}{ctx.invoked_with} [1-2]` or `{ctx.prefix}dg1`-`{ctx.prefix}dg2`')
+                    await ctx.send(syntax)
                     return
 
     # Command "dungeoncheck" - Checks user stats against recommended stats
@@ -484,19 +489,19 @@ guide_stats = '`{prefix}ds` : Recommended stats (all dungeons)'
 
 
 # --- Functions ---
-async def function_design_field_rec_gear(dungeon_data: database.Dungeon) -> str:
+async def function_design_field_rec_gear(dungeon: database.Dungeon) -> str:
     """Create field "Recommended gear. May return None."""
-    player_armor_enchant = '' if dungeon_data.player_armor_enchant is None else f'[{dungeon_data.player_armor_enchant}]'
-    player_sword_enchant = '' if dungeon_data.player_sword_enchant is None else f'[{dungeon_data.player_sword_enchant}]'
+    player_armor_enchant = '' if dungeon.player_armor_enchant is None else f'[{dungeon.player_armor_enchant}]'
+    player_sword_enchant = '' if dungeon.player_sword_enchant is None else f'[{dungeon.player_sword_enchant}]'
 
     field_value = ''
-    if dungeon_data.player_sword is not None:
+    if dungeon.player_sword is not None:
         field_value = (
-            f'{emojis.BP} {dungeon_data.player_sword.emoji} {dungeon_data.player_sword.name} {player_sword_enchant}'
+            f'{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name} {player_sword_enchant}'
         )
-    if dungeon_data.player_armor is not None:
+    if dungeon.player_armor is not None:
         field_value = (
-            f'{field_value}\n{emojis.BP} {dungeon_data.player_armor.emoji} {dungeon_data.player_armor.name} '
+            f'{field_value}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name} '
             f'{player_armor_enchant}'
         )
 
@@ -855,46 +860,46 @@ async def embed_dungeons_menu(ctx):
     return embed
 
 
-async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[discord.File, discord.Embed]:
+async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tuple[discord.File, discord.Embed]:
     """Creates dungeon guide embed"""
-
+    prefix = ctx.prefix
     img_dungeon = image_url = image_name = None
     boss_life = time_limit = player_amount = key_price = description = requirements = strategy = tips = rewards = None
 
-    if dungeon_data.boss_life is not None:
-        boss_life = int(dungeon_data.boss_life) if dungeon_data.boss_life.is_integer() else dungeon_data.boss_life
-    dungeon_no = int(dungeon_data.dungeon_no) if dungeon_data.dungeon_no.is_integer() else dungeon_data.dungeon_no
+    if dungeon.boss_life is not None:
+        boss_life = int(dungeon.boss_life) if dungeon.boss_life.is_integer() else dungeon.boss_life
+    dungeon_no = dungeon.dungeon_no
 
-    field_rec_stats = await global_data.design_field_rec_stats(dungeon_data)
-    field_rec_gear = await function_design_field_rec_gear(dungeon_data)
+    field_rec_stats = await global_data.design_field_rec_stats(dungeon)
+    field_rec_gear = await function_design_field_rec_gear(dungeon)
 
     # Time limit
-    if dungeon_data.time_limit is not None:
-        time_limit = format_timespan(dungeon_data.time_limit)
+    if dungeon.time_limit is not None:
+        time_limit = format_timespan(dungeon.time_limit)
         if 1 <= dungeon_no <= 9:
             time_limit = f'{time_limit} per player'
 
     # Amount of players and boss stats
-    if dungeon_data.player_amount[0] == dungeon_data.player_amount[1]:
-        player_amount = f'{emojis.BP} {dungeon_data.player_amount[0]}'
+    if dungeon.player_amount[0] == dungeon.player_amount[1]:
+        player_amount = f'{emojis.BP} {dungeon.player_amount[0]}'
         boss_life = '-' if boss_life is None else f'{boss_life:,}'
     else:
-        player_amount = f'{emojis.BP} {dungeon_data.player_amount[0]}-{dungeon_data.player_amount[1]}'
+        player_amount = f'{emojis.BP} {dungeon.player_amount[0]}-{dungeon.player_amount[1]}'
         boss_life = f'{boss_life:,} per player'
-    boss_at = '-' if dungeon_data.boss_at is None else f'~{dungeon_data.boss_at:,}'
+    boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
     if 16 <= dungeon_no <= 21:
         boss_at = 'Currently unknown'
         if dungeon_no == 21: boss_life = 'Currently unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
-    if dungeon_data.key_price is not None:
-        key_price = f'{dungeon_data.key_price:,} coins'
+    if dungeon.key_price is not None:
+        key_price = f'{dungeon.key_price:,} coins'
     else:
         key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse.'
 
     # Description
-    description = dungeon_data.description
+    description = dungeon.description
     if dungeon_no == 15:
         description = f'{description}\nTo see part 2 of this dungeon, use `{prefix}d15-2`'
     elif dungeon_no == 15.2:
@@ -906,9 +911,9 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
     if dungeon_no in (10, 11, 13, 15, 15.2, 21):
-        requirements = f'{requirements}\n{emojis.BP} {dungeon_data.player_sword.emoji} {dungeon_data.player_sword.name}'
+        requirements = f'{requirements}\n{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name}'
     if dungeon_no in (10, 12, 14, 15):
-        requirements = f'{requirements}\n{emojis.BP} {dungeon_data.player_armor.emoji} {dungeon_data.player_armor.name}'
+        requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
     if dungeon_no in (15, 15.2):
         requirements = (
             f'{requirements}\n'
@@ -916,8 +921,8 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
             f'{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n'
             f'{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet'
         )
-    if dungeon_data.tt is not None:
-        if dungeon_data.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon_data.tt}+'
+    if dungeon.tt is not None:
+        if dungeon.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon.tt}+'
     if dungeon_no == 15.2:
         requirements = f'{requirements}\n{emojis.BP} {emojis.STAT_COOLNESS} 2,000+ coolness'
 
@@ -963,19 +968,19 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
 
     # Rewards
     if 1 <= dungeon_no <= 14:
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1}'
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g}'
     elif dungeon_no == 15:
         rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
         rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks \'The TOP\''
     elif 16 <= dungeon_no <= 19:
         rewards = (
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to jump to area {dungeon_no + 1} (if it\'s unsealed)'
+            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to go to area {dungeon_no + 1:g} (if it\'s unsealed)'
         )
     elif dungeon_no == 21:
         rewards = (
-            f'{emojis.BP} Allows you to access areas 16-20 if they are unsealed.\n'
-            f'{emojis.BLANK} This reward is permanent, you don\'t have to redo this dungeon.'
+            f'{emojis.BP} Unlocks the content after the TOP (areas 16-20).\n'
+            f'{emojis.BLANK} This reward is permanent, you only have to beat this dungeon once.'
         )
 
 
@@ -989,7 +994,8 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
         image_url = 'attachment://dungeon13.png'
         image_name = 'WALKTHROUGH'
 
-    title = f'DUNGEON {str(dungeon_no).replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+    dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
+    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
 
     guides = (
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
@@ -1005,7 +1011,7 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='BOSS', value=f'{emojis.BP} {dungeon_data.boss_emoji} {dungeon_data.boss_name}', inline=False)
+    embed.add_field(name='BOSS', value=f'{emojis.BP} {dungeon.boss_emoji} {dungeon.boss_name}', inline=False)
     if player_amount is not None:
         embed.add_field(name='PLAYERS', value=player_amount, inline=False)
     if time_limit is not None:
@@ -1039,9 +1045,10 @@ async def embed_dungeon(dungeon_data: database.Dungeon, prefix: str) -> Tuple[di
 
     return (img_dungeon, embed)
 
-# Recommended stats for all dungeons
-async def embed_dungeon_rec_stats(rec_stats_data, prefix):
 
+async def embed_dungeon_rec_stats(ctx: commands.Context, dungeons: Tuple[database.Dungeon]) -> discord.Embed:
+    # Embed with recommended stats for all dungeons
+    prefix = ctx.prefix
     guides = (
         f'{emojis.BP} {guide_check_all.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
@@ -1056,32 +1063,36 @@ async def embed_dungeon_rec_stats(rec_stats_data, prefix):
 
     embed.set_footer(text=await global_data.default_footer(prefix))
 
-    for dung_x in rec_stats_data:
-        dungeon_no = dung_x[6]
-        if dungeon_no == 15:
-            dungeon_no = '15-1'
-        elif dungeon_no == 15.2:
-            dungeon_no = '15-2'
-
-        if isinstance(dungeon_no, float):
-            dungeon_no = f'{dungeon_no:g}'
-
-        field_rec_stats = await global_data.design_field_rec_stats(dung_x, True)
-        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_stats, inline=True)
+    for dungeon in dungeons:
+        dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+        field_rec_stats = await global_data.design_field_rec_stats(dungeon, True)
+        embed.add_field(name=field_name, value=field_rec_stats, inline=True)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
 
-# Recommended gear for all dungeons
-async def embed_dungeon_rec_gear(rec_gear_data, prefix, page):
+
+async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database.Dungeon], page: int) -> discord.Embed:
+    """Embed with recommended gear for all dungeons"""
+    prefix = ctx.prefix
+    page_1 = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
+    page_2 = f'➜ See `{prefix}dg2` for dungeons 10 to 15.'
+    page_3 = f'➜ See `{prefix}dg3` for dungeons 16 to 20 and the "FINAL" dungeon.'
 
     if page == 1:
         title_value = 'RECOMMENDED GEAR FOR DUNGEONS 1 TO 9'
-        description_value = f'➜ See `{prefix}dg2` for dungeons 10 to 15.'
+        description_value = f'{page_2}\n{page_3}'
+        listed_dungeons = dungeons[:9]
     elif page == 2:
         title_value = 'RECOMMENDED GEAR FOR DUNGEONS 10 TO 15'
-        description_value = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
+        description_value = f'{page_1}\n{page_3}'
+        listed_dungeons = dungeons[9:16]
+    elif page == 3:
+        title_value = 'RECOMMENDED GEAR FOR DUNGEONS 16 TO 20'
+        description_value = f'{page_1}\n{page_2}'
+        listed_dungeons = dungeons[16:]
 
     guides = (
         f'{emojis.BP} {guide_dungeon.format(prefix=prefix)}\n'
@@ -1097,16 +1108,13 @@ async def embed_dungeon_rec_gear(rec_gear_data, prefix, page):
 
     embed.set_footer(text=await global_data.default_footer(prefix))
 
-    for dung_x in rec_gear_data:
-        dungeon_no = dung_x[6]
-        if dungeon_no == 15:
-            dungeon_no = '15-1'
-        elif dungeon_no == 15.2:
-            dungeon_no = '15-2'
-        field_rec_gear = await function_design_field_rec_gear(dung_x)
-        if isinstance(dungeon_no, float):
-            dungeon_no = f'{dungeon_no:g}'
-        embed.add_field(name=f'DUNGEON {dungeon_no}', value=field_rec_gear, inline=False)
+
+    for dungeon in listed_dungeons:
+        dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+        field_rec_gear = await function_design_field_rec_gear(dungeon)
+        if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
+        embed.add_field(name=field_name, value=field_rec_gear, inline=False)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
