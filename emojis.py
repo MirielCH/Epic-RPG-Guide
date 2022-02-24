@@ -168,6 +168,9 @@ HORSESHOE_GOLDEN = '<:erg_goldenhorseshoe:877789493443321898>'
 PET_PONY = '<:erg_petpony:879246534183632927>'
 STEEL = '<:erg_steel:879416298931617792>'
 
+# Event: Returning
+COIN_SMOL = '<:erg_smolcoin:946313388164780043>'
+
 # Event: Valentine
 COIN_LOVE = '<:erg_lovecoin:809306526678253589>'
 MOB_PINK_WOLF = '<:erg_pinkwolf:941033952611811378>'
@@ -282,6 +285,7 @@ CD_REWARDS = ':gift:'
 CD_EXPERIENCe = '<:erg_sword_at:770327166952538153>'
 CD_PROGRESS = ':sparkles:'
 GODLY_HORSE_TOKEN = '<:erg_godlyhorsetoken:877789907001683998>'
+EPIC_RPG_LOGO = '<:erg_epicrpg:946329210488758282>'
 LIFE_POTION = '<:erg_lifepotion:770327166956601425>'
 LOTTERY_TICKET = '<:erg_lotteryticket:770327167044419624>'
 TIME_TRAVEL = ':cyclone:'
