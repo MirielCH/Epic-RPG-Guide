@@ -70,7 +70,7 @@ class MainCog(commands.Cog):
             embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
             await ctx.send(embed=embed)
 
-        if isinstance(error, (commands.CommandNotFound, database.FirstTimeUser, commands.NotOwner)):
+        if isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
             return
         elif isinstance(error, commands.DisabledCommand):
             await ctx.send(f'Command `{ctx.command.qualified_name}` is temporarily disabled.')
@@ -84,6 +84,18 @@ class MainCog(commands.Cog):
                 await ctx.send(error)
             else:
                 await send_error()
+        elif isinstance(error, database.FirstTimeUser):
+            await ctx.send(
+                f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+                f'I have set your progress to **TT 0**, **not ascended**.\n\n'
+                f'** --> Please use `{ctx.prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
+                f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. '
+                f'Check out `{ctx.prefix}tt` for some details.\n'
+                f'• If you are in a higher TT, please use `{ctx.prefix}setprogress` (or `{ctx.prefix}sp`) '
+                f'to change your settings.\n\n'
+                f'These settings are used by some guides (like the area guides) to only show you what is relevant '
+                f'to your current progress.'
+            )
         else:
             await database.log_error(ctx, error)
             if global_data.DEBUG_MODE == 'ON': await send_error()

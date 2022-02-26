@@ -1,6 +1,7 @@
 # monsters.py
 
 import asyncio
+from typing import Tuple
 
 import discord
 from discord.ext import commands
@@ -26,9 +27,9 @@ class monstersCog(commands.Cog):
 
         prefix = ctx.prefix
         error_area = f'This is not a valid area. The syntax is `{prefix}mobs [area]`. The area has to be between 1 and 20.'
-        info_area_16 = (
-            f'Area 16 (aka The TOP) does not have its own monsters.\n'
-            f'Instead the EPIC NPC poses as a random monster which can be any monster from areas 1~20.'
+        info_top = (
+            f'The TOP does not have its own monsters.\n'
+            f'Instead the EPIC NPC poses as a random monster which can be any monster from areas 1~15.'
         )
         error_syntax = ( #Temporary solution because buttons use a shit ton of cpu for some reason
             f'This command shows all mobs in an area.\n'
@@ -36,19 +37,19 @@ class monstersCog(commands.Cog):
         )
 
         if args:
-            area = args[0].lower().replace('a','')
-            if area.isnumeric():
+            area_no = args[0].lower().replace('a','')
+            if area_no.isnumeric():
                 try:
-                    area = int(area)
+                    area_no = int(area_no)
                 except:
                     await ctx.send(error_area)
                     return
-                if not 1 <= area <= 20:
+                if not 1 <= area_no <= 20:
                     await ctx.send(error_area)
                     return
             else:
-                if 'top' in area:
-                    await ctx.send(info_area_16)
+                if 'top' in area_no:
+                    await ctx.send(info_top)
                     return
                 else:
                     await ctx.send(error_area)
@@ -58,8 +59,8 @@ class monstersCog(commands.Cog):
             return
             # area = 1
 
-        mobs_data = await database.get_mob_data(ctx, (1,20))
-        embed = await embed_mobs(prefix, mobs_data, area)
+        monsters = await database.get_monster_by_area(area_no, area_no)
+        embed = await embed_mobs(ctx, monsters, area_no)
         await ctx.send(embed=embed)
 
     # Daily mob lookup
@@ -104,23 +105,22 @@ class monstersCog(commands.Cog):
                 await ctx.send(f'Wrong input. Aborting.')
                 return
 
-            mob = await database.get_mob_by_name(ctx, daily_mob)
-
-            if mob:
-                mob_name = mob[0]
-                mob_emoji = getattr(emojis, mob[1])
-                mob_area_from = mob[2]
-                mob_area_until = mob[3]
-                mob_activity = mob[4]
-
-                if mob_area_from == mob_area_until:
-                    await ctx.send(f'{mob_emoji} **{mob_name}** can be found in **area {mob_area_from}** by using `rpg {mob_activity}`.')
-                else:
-                    await ctx.send(f'{mob_emoji} **{mob_name}** can be found in **areas {mob_area_from}-{mob_area_until}** by using `rpg {mob_activity}`.')
-            else:
+            try:
+                monster: database.Monster = await database.get_monster_by_name(daily_mob)
+            except database.NoDataFound:
                 await ctx.send(f'Couldn\'t find the mob **{daily_mob}**, sorry.')
-                global_data.logger.info(f'Daily mob detection: Could not find daily mob "{daily_mob}" in the database.')
-        except asyncio.TimeoutError as error:
+                return
+            if monster.areas[0] == monster.areas[1]:
+                await ctx.send(
+                    f'{monster.emoji} **{monster.name}** can be found in **area {monster.areas[0]}** '
+                    f'by using `rpg {monster.activity}`.'
+                )
+            else:
+                await ctx.send(
+                    f'{monster.emoji} **{monster.name}** can be found in **areas {monster.areas[0]}-{monster.areas[1]}** '
+                    f'by using `rpg {monster.activity}`.'
+                )
+        except asyncio.TimeoutError:
             await ctx.send(f'**{ctx.author.name}**, couldn\'t find the daily monster, RIP.')
             return
 
@@ -139,9 +139,9 @@ guide_mob_daily = '`{prefix}dailymob` : Where to find the daily monster'
 
 
 # --- Embeds ---
-# Mobs list
-async def embed_mobs(prefix, mobs_data, area):
-
+async def embed_mobs(ctx: commands.Context, monsters: Tuple[database.Monster], area_no: int):
+    """Mobs list"""
+    prefix = ctx.prefix
     guides = (
         #f'{emojis.BP} {guide_mobs_all.format(prefix=prefix)}\n'
         #f'{emojis.BP} {guide_mobs_area.format(prefix=prefix)}\n'
@@ -150,38 +150,24 @@ async def embed_mobs(prefix, mobs_data, area):
 
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
-        title = f'MONSTERS IN AREA {area}'
+        title = f'MONSTERS IN AREA {area_no}'
     )
 
     embed.set_footer(text=await global_data.default_footer(prefix))
 
-    mobs_hunt = ''
-    mobs_adventure = ''
+    field_monsters_hunt = field_monsters_adv = ''
+    for monster in monsters:
+        if monster.activity == 'hunt':
+            field_monsters_hunt = f'{field_monsters_hunt}\n{emojis.BP} {monster.emoji} {monster.name}'
+            if monster.drop_emoji is not None:
+                field_monsters_hunt = f'{field_monsters_hunt} (drops {monster.drop_emoji})'
+        elif monster.activity == 'adventure':
+            field_monsters_adv = f'{field_monsters_adv}\n{emojis.BP} {monster.emoji} {monster.name}'
 
-    for mob in mobs_data:
-        mob_area_from = mob[2]
-        mob_area_until = mob[3]
-
-        if mob_area_from <= area <= mob_area_until:
-            mob_name = mob[0]
-            mob_emoji = getattr(emojis, mob[1])
-            mob_activity = mob[4]
-            if mob[5]:
-                mob_drop_emoji = getattr(emojis, mob[5])
-            else:
-                mob_drop_emoji = None
-            if mob_activity == 'hunt':
-                mobs_hunt = f'{mobs_hunt}\n{emojis.BP} {mob_emoji} **{mob_name}**'
-                if mob_drop_emoji:
-                    mobs_hunt = f'{mobs_hunt} (drops {mob_drop_emoji})'
-            if mob_activity == 'adventure':
-                mobs_adventure = f'{mobs_adventure}\n{emojis.BP} {mob_emoji} **{mob_name}**'
-
-    if not mobs_hunt == '':
-        embed.add_field(name='HUNT', value=mobs_hunt, inline=False)
-    if not mobs_adventure == '':
-        embed.add_field(name='ADVENTURE', value=mobs_adventure, inline=False)
-
+    if field_monsters_hunt != '':
+        embed.add_field(name='HUNT', value=field_monsters_hunt, inline=False)
+    if field_monsters_adv != '':
+        embed.add_field(name='ADVENTURE', value=field_monsters_adv, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed

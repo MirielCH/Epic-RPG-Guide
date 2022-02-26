@@ -489,26 +489,6 @@ guide_stats = '`{prefix}ds` : Recommended stats (all dungeons)'
 
 
 # --- Functions ---
-async def function_design_field_rec_gear(dungeon: database.Dungeon) -> str:
-    """Create field "Recommended gear. May return None."""
-    player_armor_enchant = '' if dungeon.player_armor_enchant is None else f'[{dungeon.player_armor_enchant}]'
-    player_sword_enchant = '' if dungeon.player_sword_enchant is None else f'[{dungeon.player_sword_enchant}]'
-
-    field_value = ''
-    if dungeon.player_sword is not None:
-        field_value = (
-            f'{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name} {player_sword_enchant}'
-        )
-    if dungeon.player_armor is not None:
-        field_value = (
-            f'{field_value}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name} '
-            f'{player_armor_enchant}'
-        )
-
-    if field_value == '': field_value = None
-    return field_value
-
-
 # Create field "Check dungeon stats" for areas and dungeons
 async def function_design_field_check_stats(field_check_stats_data, user_data, prefix, short_version):
 
@@ -865,13 +845,14 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     prefix = ctx.prefix
     img_dungeon = image_url = image_name = None
     boss_life = time_limit = player_amount = key_price = description = requirements = strategy = tips = rewards = None
+    notes = None
 
     if dungeon.boss_life is not None:
         boss_life = int(dungeon.boss_life) if dungeon.boss_life.is_integer() else dungeon.boss_life
     dungeon_no = dungeon.dungeon_no
 
     field_rec_stats = await global_data.design_field_rec_stats(dungeon)
-    field_rec_gear = await function_design_field_rec_gear(dungeon)
+    field_rec_gear = await global_data.design_field_rec_gear(dungeon)
 
     # Time limit
     if dungeon.time_limit is not None:
@@ -973,9 +954,12 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
         rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks \'The TOP\''
-    elif 16 <= dungeon_no <= 19:
+    elif 16 <= dungeon_no <= 20:
         rewards = (
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to go to area {dungeon_no + 1:g} (if it\'s unsealed)'
+            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to areas 16-20 (if unsealed) from a lower area.\n'
+            f'{emojis.BLANK} Note: You can not have more than 1 in your inventory.\n'
+            f'{emojis.BP} Unlocks the ability to get 2 additional {emojis.TIME_TRAVEL} TTs every {21 - dungeon_no:g} TTs.\n'
+            f'{emojis.BLANK} This reward is permanent.'
         )
     elif dungeon_no == 21:
         rewards = (
@@ -983,6 +967,12 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             f'{emojis.BLANK} This reward is permanent, you only have to beat this dungeon once.'
         )
 
+
+    # Notes
+    if 16 <= dungeon_no <= 20:
+        notes = (
+            f'{emojis.BP} You can redo this dungeon as long as you are in area {dungeon_no:g}\n'
+        )
 
     # Images
     if dungeon_no == 11:
@@ -1030,14 +1020,11 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         ),
             inline=False
     )
-    if field_rec_gear is not None:
-        embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
-    if field_rec_stats is not None:
-        embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
-    if strategy is not None:
-        embed.add_field(name='STRATEGY', value=strategy, inline=False)
-    if tips is not None:
-        embed.add_field(name='TIPS', value=tips, inline=False)
+    if field_rec_gear is not None: embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
+    if field_rec_stats is not None: embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
+    if strategy is not None: embed.add_field(name='STRATEGY', value=strategy, inline=False)
+    if tips is not None: embed.add_field(name='TIPS', value=tips, inline=False)
+    if notes is not None: embed.add_field(name='NOTE', value=notes, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     if image_url is not None:
         embed.set_image(url=image_url)
@@ -1112,7 +1099,7 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
     for dungeon in listed_dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
         field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
-        field_rec_gear = await function_design_field_rec_gear(dungeon)
+        field_rec_gear = await global_data.design_field_rec_gear(dungeon)
         if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
         embed.add_field(name=field_name, value=field_rec_gear, inline=False)
 

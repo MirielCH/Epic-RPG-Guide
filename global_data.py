@@ -66,22 +66,19 @@ logger.addHandler(handler)
 
 #--- Data accessed by multiple cogs ---
 item_aliases = {
-    'ed sw': 'chad sword',
-    'edgy sw': 'chad sword',
-    'chad sw': 'chad sword',
+    'ed sw': 'edgy sword',
+    'edgy sw': 'edgy sword',
     'omega sw': 'omega sword',
     'o sw': 'omega sword',
-    'ed sword': 'chad sword',
-    'ed armor': 'chad armor',
-    'ue sw': 'ultra-chad sword',
-    'uc sw': 'ultra-chad sword',
-    'ultra-edgy sw': 'ultra-chad sword',
-    'ultra-chad sw': 'ultra-chad sword',
-    'ue sword': 'ultra-chad sword',
-    'uc sword': 'ultra-chad sword',
+    'ed sword': 'edgy sword',
+    'ed armor': 'edgy armor',
+    'ue sw': 'ultra-edgy sword',
+    'ultra-edgy sw': 'ultra-edgy sword',
+    'ultraedgy sw': 'ultra-edgy sword',
+    'ue sword': 'ultra-edgy sword',
     'ultra-omega sw': 'ultra-omega sword',
-    'ue armor': 'ultra-chad armor',
-    'uc armor': 'ultra-chad armor',
+    'ultraomega sw': 'ultra-omega sword',
+    'ue armor': 'ultra-edgy armor',
     'godly sw': 'godly sword',
     'g sword': 'godly sword',
     'g sw': 'godly sword',
@@ -285,13 +282,13 @@ item_aliases = {
 item_columns_names = {
     'apple': 'apple',
     'armor_basic': 'Basic Armor',
-    'armor_chad': 'CHAD Armor',
+    'armor_edgy': 'EDGY Armor',
     'armor_coin': 'Coin Armor',
     'armor_fish': 'Fish Armor',
     'armor_lootbox': 'Lootbox Armor',
     'armor_omega': 'OMEGA Armor',
     'armor_super': 'SUPER Armor',
-    'armor_giga_chad': 'GIGA-CHAD Armor',
+    'armor_ultra_edgy': 'ULTRA-EDGY Armor',
     'armor_ultra_omega': 'ULTRA-OMEGA Armor',
     'banana': 'banana',
     'bread': 'bread',
@@ -329,11 +326,11 @@ item_columns_names = {
     'ruby': 'ruby',
     'unicorn_horn': 'unicorn horn',
     'sword_basic': 'Basic Sword',
-    'sword_chad': 'CHAD Sword',
+    'sword_edgy': 'EDGY Sword',
     'sword_electronical': 'Electronical Sword',
     'sword_godly': 'GODLY Sword',
     'sword_omega': 'OMEGA Sword',
-    'sword_giga_chad': 'GIGA-CHAD Sword',
+    'sword_ultra_edgy': 'ULTRA_EDGY Sword',
     'sword_ultra_omega': 'ULTRA-OMEGA Sword',
     'time_dragon_essence': 'TIME dragon essence',
     'time_travel': 'time travel',
@@ -345,29 +342,30 @@ item_columns_names = {
 
 #--- Functions accessed by multiple cogs ----
 # Create field "trade rates" for area & trading
-async def design_field_traderate(traderate_data):
+async def design_field_traderate(area) -> str:
 
-    field_value = f'{emojis.BP} 1 {emojis.FISH} ⇄ {emojis.LOG} {traderate_data[1]}'
-    if not traderate_data[2] == 0:
-        field_value = f'{field_value}\n{emojis.BP} 1 {emojis.APPLE} ⇄ {emojis.LOG} {traderate_data[2]}'
-        if not traderate_data[3] == 0:
-            field_value = f'{field_value}\n{emojis.BP} 1 {emojis.RUBY} ⇄ {emojis.LOG} {traderate_data[3]}'
+    field_value = f'{emojis.BP} 1 {emojis.FISH} ⇄ {emojis.LOG} {area.trade_fish_log}'
+    if area.trade_apple_log > 0:
+        field_value = f'{field_value}\n{emojis.BP} 1 {emojis.APPLE} ⇄ {emojis.LOG} {area.trade_apple_log}'
+    if area.trade_ruby_log > 0:
+        field_value = f'{field_value}\n{emojis.BP} 1 {emojis.RUBY} ⇄ {emojis.LOG} {area.trade_ruby_log}'
 
-    return (field_value)
+    return field_value
 
-# Trade for area X for area & trading
-async def design_field_trades(area_no, ascended='not ascended'):
 
-    if int(area_no) in (1,2,4,6,12,13,14):
+async def design_field_trades(area, user) -> str:
+    """Trades for area X for area & trading"""
+
+    if area.area_no in (1,2,4,6,12,13,14,16,17,18,19,20,21):
         field_value = f'{emojis.BP} None'
-    elif int(area_no) == 3:
+    elif area.area_no == 3:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
             f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
             f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
             f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
         )
-    elif int(area_no) == 5:
+    elif area.area_no == 5:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below\n'
             f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
@@ -375,55 +373,49 @@ async def design_field_trades(area_no, ascended='not ascended'):
             f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
             f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
         )
-    elif int(area_no) == 7:
+    elif area.area_no == 7:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
             f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)'
         )
-    elif int(area_no) == 8:
-        if ascended == 'ascended':
-            field_value = (
-                f'{emojis.BP} Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
-                f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
-                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
-            )
+    elif area.area_no == 8:
+        if user.ascended:
+            field_value = f'{emojis.BP} Dismantle {emojis.LOG_HYPER} HYPER logs and below'
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_MEGA} MEGA logs and below\n'
-                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
-                f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
-                f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
+                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below'
             )
-    elif int(area_no) == 9:
-        if ascended == 'ascended':
-            field_value = (
-                f'{emojis.BP} Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
-                f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
-                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
-            )
+        field_value = (
+            f'{field_value}\n'
+            f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+            f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.APPLE} apples (D)'
+        )
+    elif area.area_no == 9:
+        if user.ascended:
+            field_value = f'{emojis.BP} Dismantle {emojis.LOG_SUPER} SUPER logs and below'
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_EPIC} EPIC logs\n'
-                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
-                f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
-                f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
-                f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
-                f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
+                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_SUPER} SUPER logs and below'
             )
-    elif int(area_no) == 10:
+        field_value = (
+            f'{field_value}\n'
+            f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
+            f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
+            f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)\n'
+            f'{emojis.BP} Trade {emojis.LOG} logs to {emojis.FISH} fish (B)'
+        )
+    elif area.area_no == 10:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
             f'{emojis.BP} Trade {emojis.APPLE} apples to {emojis.LOG} logs (C)'
         )
-    elif int(area_no) == 11:
+    elif area.area_no == 11:
         field_value = f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)'
-    elif int(area_no) == 15:
+    elif area.area_no == 15:
         field_value = (
             f'{emojis.BP} Dismantle {emojis.FISH_GOLDEN} golden fish and below\n'
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
@@ -434,7 +426,27 @@ async def design_field_trades(area_no, ascended='not ascended'):
     else:
         field_value = f'{emojis.BP} N/A'
 
-    return (field_value)
+    return field_value
+
+
+async def design_field_rec_gear(dungeon) -> str:
+    """Create field "Recommended gear. May return None."""
+    player_armor_enchant = '' if dungeon.player_armor_enchant is None else f'[{dungeon.player_armor_enchant}]'
+    player_sword_enchant = '' if dungeon.player_sword_enchant is None else f'[{dungeon.player_sword_enchant}]'
+
+    field_value = ''
+    if dungeon.player_sword is not None:
+        field_value = (
+            f'{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name} {player_sword_enchant}'
+        )
+    if dungeon.player_armor is not None:
+        field_value = (
+            f'{field_value}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name} '
+            f'{player_armor_enchant}'
+        )
+
+    if field_value == '': field_value = None
+    return field_value
 
 
 async def design_field_rec_stats(dungeon, short_version: bool = False) -> str:
@@ -443,13 +455,6 @@ async def design_field_rec_stats(dungeon, short_version: bool = False) -> str:
         return f'{emojis.BP} Currently unknown'
 
     if dungeon.dungeon_no.is_integer(): dungeon_no = int(dungeon.dungeon_no)
-
-    life_boost = ''
-    if not short_version and dungeon.life_boost_needed:
-        if dungeon_no < 11:
-            life_boost = '(buy boost if necessary)'
-        else:
-            life_boost = '(buy boost and cook food if necessary)'
 
     player_carry_def = ''
     if dungeon.player_carry_def is not None:
@@ -467,14 +472,14 @@ async def design_field_rec_stats(dungeon, short_version: bool = False) -> str:
         field_value = (
             f'{emojis.BP} {emojis.STAT_AT} **AT**: {player_at}\n'
             f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life} {life_boost}\n'
+            f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life}\n'
             f'{emojis.BP} {emojis.STAT_LEVEL} **LEVEL**: {player_level}'
         )
     else:
         field_value = (
             f'{emojis.STAT_AT} **AT**: {player_at}\n'
             f'{emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.STAT_LIFE} **LIFE**: {player_life} {life_boost}\n'
+            f'{emojis.STAT_LIFE} **LIFE**: {player_life}\n'
             f'{emojis.STAT_LEVEL} **LEVEL**: {player_level}\n{emojis.BLANK}'
         )
 

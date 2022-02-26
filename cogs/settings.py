@@ -46,14 +46,7 @@ class SettingsCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def settings(self, ctx: commands.Context) -> None:
         """Returns current user progress settings"""
-        try:
-            embed = await embed_user_settings(ctx)
-        except Exception as error:
-            if isinstance(error, database.FirstTimeUser):
-                return
-            else:
-                await ctx.send(global_data.MSG_ERROR)
-                return
+        embed = await embed_user_settings(ctx)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=('sp','setpr','setp',))
@@ -63,36 +56,19 @@ class SettingsCog(commands.Cog):
         def check(m):
             return (m.author == ctx.author) and (m.channel == ctx.channel)
 
+        user = await database.get_user(ctx.author.id)
         user_name = ctx.author.name
-
-        async def set_progress(new_tt: int, new_ascended: str) -> None:
-            """Sends new settings to the database"""
-            await database.set_progress(ctx, new_tt, new_ascended)
-            try:
-                user_settings = await database.get_user_settings(ctx)
-            except Exception as error:
-                if isinstance(error, database.FirstTimeUser):
-                    return
-                else:
-                    await ctx.send(global_data.MSG_ERROR)
-                    return
-            user_tt, user_ascended = user_settings
-            await ctx.send(
-                f'Alright **{user_name}**, your progress is now set to **TT {user_tt}**, '
-                f'**{user_ascended}**.'
-            )
-
         prefix = ctx.prefix
         invoked = ctx.invoked_with
         ascension = {
-                    'ascended': 'ascended',
-                    'asc': 'ascended',
-                    'yes': 'ascended',
-                    'y': 'ascended',
-                    'no': 'not ascended',
-                    'not': 'not ascended',
-                    'n': 'not ascended'
-                    }
+            'ascended': True,
+            'asc': True,
+            'yes': True,
+            'y': True,
+            'no': False,
+            'not': False,
+            'n': False
+        }
         message_syntax = (
             f'The command syntax is `{prefix}{invoked} [0-999]` or `{prefix}{invoked} [0-999] asc` '
             f'if you\'re ascended.\n'
@@ -117,44 +93,49 @@ class SettingsCog(commands.Cog):
                 if new_ascended is None:
                     await ctx.send(message_syntax)
                     return
-                if (new_ascended == 'ascended') and (new_tt == 0):
+                if new_ascended and new_tt == 0:
                     await ctx.send(f'**{user_name}**, you can not ascend in TT 0.')
                     return
             else:
-                new_ascended = 'not ascended'
-            await set_progress(new_tt, new_ascended)
-            return
-        try:
-            await ctx.send(
-                f'**{user_name}**, what **TT** are you currently in? '
-                f'`[0-999]` (type `abort` to abort).'
-            )
-            answer_tt = await self.bot.wait_for('message', check=check, timeout=30)
-            answer_tt = answer_tt.content.lower()
-            if answer_tt in ('abort', 'cancel'):
-                await ctx.send(global_data.MSG_ABORTING)
-                return
+                new_ascended = False
+        if not args:
             try:
-                new_tt = int(answer_tt)
-            except:
                 await ctx.send(
-                    f'**{user_name}**, you didn\'t answer with a valid number. Aborting.'
+                    f'**{user_name}**, what **TT** are you currently in? '
+                    f'`[0-999]` (type `abort` to abort).'
                 )
-                return
-            if new_tt not in range(0, 1000):
+                answer_tt = await self.bot.wait_for('message', check=check, timeout=30)
+                answer_tt = answer_tt.content.lower()
+                if answer_tt in ('abort', 'cancel'):
+                    await ctx.send(global_data.MSG_ABORTING)
+                    return
+                try:
+                    new_tt = int(answer_tt)
+                except:
+                    await ctx.send(
+                        f'**{user_name}**, you didn\'t answer with a valid number. Aborting.'
+                    )
+                    return
+                if new_tt not in range(0, 1000):
+                    await ctx.send(
+                        f'**{user_name}**, you didn\'t enter a number from 0 to 999. Aborting.'
+                    )
+                    return
                 await ctx.send(
-                    f'**{user_name}**, you didn\'t enter a number from 0 to 999. Aborting.'
+                    f'**{user_name}**, are you **ascended**? `[yes/no]` '
+                    f'(type `abort` to abort )'
                 )
-                return
-            await ctx.send(
-                f'**{user_name}**, are you **ascended**? `[yes/no]` '
-                f'(type `abort` to abort)'
-            )
-            answer_ascended = await self.bot.wait_for('message', check=check, timeout=30)
-            answer_ascended = answer_ascended.content.lower()
-            if answer_ascended in ('abort', 'cancel'):
-                await ctx.send(global_data.MSG_ABORTING)
-                return
+                answer_ascended = await self.bot.wait_for('message', check=check, timeout=30)
+                answer_ascended = answer_ascended.content.lower()
+                if answer_ascended in ('abort', 'cancel'):
+                    await ctx.send(global_data.MSG_ABORTING)
+                    return
+            except asyncio.TimeoutError:
+                await ctx.send(
+                    f'**{user_name}**, you took too long to answer, RIP.\n\n'
+                    f'Tip: You can also use `{prefix}{invoked} [0-999]` or '
+                    f'`{prefix}{invoked} [0-999] asc` if you\'re ascended.'
+                )
             new_ascended = ascension.get(answer_ascended, None)
             if new_ascended is None:
                 await ctx.send(
@@ -162,14 +143,14 @@ class SettingsCog(commands.Cog):
                     f'Aborting.'
                 )
                 return
-            await set_progress(new_tt, new_ascended)
-            return
-        except asyncio.TimeoutError as error:
+        await user.update(tt=new_tt, ascended=new_ascended)
+        if user.tt == new_tt and user.ascended == new_ascended:
             await ctx.send(
-                f'**{user_name}**, you took too long to answer, RIP.\n\n'
-                f'Tip: You can also use `{prefix}{invoked} [0-999]` or '
-                f'`{prefix}{invoked} [0-999] asc` if you\'re ascended.'
+                f'Alright **{user_name}**, your progress is now set to **TT {user.tt}**, '
+                f'**{"ascended" if user.ascended else "not ascended"}**.'
             )
+        else:
+            await ctx.send('Welp, something went wrong here.')
             return
 
 
@@ -184,17 +165,15 @@ async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
 
     Raises
     ------
-    FirstTimeUser if no settings are stored.
     sqlite3.Error if something happened during the query.
     """
     try:
-        user_settings = await database.get_user_settings(ctx)
+        user = await database.get_user(ctx.author.id)
     except:
         raise
-    user_tt, user_ascension = user_settings
     settings_field = (
-        f'{emojis.BP} Current run: **TT {user_tt}**\n'
-        f'{emojis.BP} Ascension: **{user_ascension.capitalize()}**'
+        f'{emojis.BP} Current run: **TT {user.tt}**\n'
+        f'{emojis.BP} Ascension: **{"Ascended" if user.ascended else "Not ascended"}**'
     )
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,

@@ -124,15 +124,8 @@ class petsCog(commands.Cog):
                     await ctx.send(syntax)
                     return
                 else:
-                    try:
-                        user_settings = await database.get_user_settings(ctx)
-                        user_tt, _ = user_settings
-                    except Exception as error:
-                        if isinstance(error, database.FirstTimeUser):
-                            return
-                        else:
-                            await ctx.send(global_data.MSG_ERROR)
-                            return
+                    user = await database.get_user(ctx.author.id)
+                    user_tt = user.tt
                 embed = await embed_fuse(ctx, pet_tier, user_tt)
                 await ctx.send(embed=embed)
             else:
@@ -180,6 +173,9 @@ async def embed_pets_overview(prefix):
     tier = (
         f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
+        f'{emojis.BLANK} Tier I and higher has a chance of returning up to 1 ULTRA log\n'
+        f'{emojis.BLANK} Tier X and higher has a chance of returning up to 2 ULTRA logs\n'
+        f'{emojis.BLANK} Tier XX has a chance of returning up to 3 ULTRA logs\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see `{prefix}pet fusion`)'

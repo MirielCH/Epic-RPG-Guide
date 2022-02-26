@@ -498,12 +498,13 @@ async def embed_badges(prefix):
         f'{emojis.BP} {emojis.BADGE_A75} : Unlocked with 75 achievements\n'
         f'{emojis.BP} {emojis.BADGE_A125} : Unlocked with 125 achievements\n'
         f'{emojis.BP} {emojis.BADGE_A175} : Unlocked with 175 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A225} : Unlocked with 225 achievements\n'
     )
 
     badges_other = (
-        f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
+        f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by defeating the EPIC NPC in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by defeating the "final" dungeon in the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )
@@ -515,7 +516,7 @@ async def embed_badges(prefix):
     )
 
     note = (
-        f'{emojis.BP} You can have several badges active at the same time\n'
+        f'{emojis.BP} You can have 3 badges active (5 with a {emojis.HORSE_T10} T10 horse)\n'
         f'{emojis.BP} You can only claim badges you have unlocked\n'
         f'{emojis.BP} If you don\'t know how to get coolness, see `{prefix}coolness`'
     )

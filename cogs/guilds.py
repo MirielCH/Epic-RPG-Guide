@@ -313,9 +313,8 @@ async def embed_guild_stats(prefix):
     stealth = (
         f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
         f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
-        f'{emojis.BP} Maximum amount is 100\n'
-        f'{emojis.BP} Guilds at 100 stealth are immune to being raided\n'
-        f'{emojis.BP} Each upgrade gives you 0~4 stealth'
+        f'{emojis.BP} Maximum amount is 95\n'
+        f'{emojis.BP} Each upgrade gives you 0~4 stealth' # Apparently he changed this or low guild stealth
     )
 
     energy = (

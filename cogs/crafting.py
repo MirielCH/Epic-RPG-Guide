@@ -73,7 +73,7 @@ class craftingCog(commands.Cog):
                     await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
                     return
 
-                tt_chance = (49+user_tt)*user_tt/2/100
+                tt_chance = (49 + user_tt) * user_tt / 2 / 100
 
                 horse_tier_chance = {
                     1: 1,
@@ -92,14 +92,14 @@ class craftingCog(commands.Cog):
         if not args:
             try:
                 try:
-                    user_settings = await database.get_user_settings(ctx)
+                    user = await database.get_user(ctx.author.id)
                 except Exception as error:
                     if isinstance(error, database.FirstTimeUser):
                         return
                     else:
                         await ctx.send(global_data.MSG_ERROR)
                         return
-                user_tt, _ = user_settings
+                user_tt = user.tt
                 tt_chance = (49 + user_tt) * user_tt / 2 / 100
 
                 await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
