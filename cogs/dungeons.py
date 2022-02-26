@@ -315,7 +315,7 @@ class dungeonsCog(commands.Cog):
 
     # Command "dungeoncheckX" - Checks user stats against recommended stats of a specific dungeon
     dungeon_check_aliases = ['dcheck1','check1','dungcheck1','dc1','dcheck15-1','check15-1','dungcheck15-1','dc15-1','dcheck151','check151','dungcheck151','dc151','dcheck15-2','check15-2','dungcheck15-2','dc15-2','dcheck152','check152','dungcheck152','dc152',]
-    for x in range(2,16):
+    for x in range(2,21):
         dungeon_check_aliases.append(f'dcheck{x}')
         dungeon_check_aliases.append(f'check{x}')
         dungeon_check_aliases.append(f'dungeoncheck{x}')
@@ -689,7 +689,10 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
         field_value =   f'{field_value}\n{bulletpoint} {check_life}'
     field_value = field_value.strip()
     if field_value == '':
-        field_value = f'{bulletpoint}Stats irrelevant'
+        if dungeon_no <= 15.2:
+            field_value = f'{bulletpoint} Stats irrelevant'
+        else:
+            field_value = f'{bulletpoint} Stats unknown'
     if short_version == True:
         field_value =   f'{field_value}\n{emojis.BLANK}'
 
@@ -781,7 +784,8 @@ async def function_design_field_check_stats(field_check_stats_data, user_data, p
                 if (user_life_check_result == 'passC'):
                     check_results = f'{check_results}\n{emojis.BP} Note: You need a {emojis.LIFE_BOOST} LIFE boost C to reach recommended **LIFE**'
             check_results = f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see `{prefix}d{dungeon_no}`)'
-
+        elif 16 <= dungeon_no <= 20:
+            check_results = f'{emojis.BP} Stats for this dungeon are currently unknown'
         else:
             if user_carry_def_check_result == 'pass':
                 check_results = f'{emojis.BP} You are ready **and** can carry other players'
@@ -964,7 +968,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     elif dungeon_no == 21:
         rewards = (
             f'{emojis.BP} Unlocks the content after the TOP (areas 16-20).\n'
-            f'{emojis.BLANK} This reward is permanent, you only have to beat this dungeon once.'
+            f'{emojis.BLANK} This reward is permanent.'
         )
 
 
@@ -991,8 +995,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}'
     )
-    if dungeon_no <= 15:
-        guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=dungeon_no)}\n{guides}'
+    if dungeon_no != 21:
+        guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=f"{dungeon_no:g}")}\n{guides}'
 
     embed = discord.Embed(
         color = global_data.EMBED_COLOR,
@@ -1122,8 +1126,9 @@ async def embed_dungeon_check_stats(dungeon_check_data, user_stats, ctx):
 
     notes = (
         f'{emojis.BP} You can ignore this check for D1-D9 if you get carried\n'
+        f'{emojis.BP} You can **not** get carried in D16-D20, the boss gets stronger if someone dies!\n'
         f'{emojis.BP} This only checks stats, you may still need certain gear for D10+!\n'
-        f'{emojis.BP} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for individual checks with more details'
+        f'{emojis.BP} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc20` for individual checks with more details'
     )
 
     guides = (
@@ -1156,15 +1161,20 @@ async def embed_dungeon_check_stats_dungeon_specific(dungeon_check_data, user_st
 
     prefix = ctx.prefix
 
-    legend =    f'{emojis.BP} {emojis.CHECK_OK} : Stat is above recommendation\n'\
-                f'{emojis.BP} {emojis.CHECK_FAIL} : Stat is below recommendation\n'\
-                f'{emojis.BP} {emojis.CHECK_IGNORE} : Stat is below rec. but you are above carry DEF\n'\
-                f'{emojis.BP} {emojis.CHECK_WARN} : Stat is below rec. but with a lot of luck it _might_ work\n'\
-                f'{emojis.BP} {emojis.LIFE_BOOST} : LIFE boost you have to buy to reach recommendation'
+    legend = (
+        f'{emojis.BP} {emojis.CHECK_OK} : Stat is above recommendation\n'
+        f'{emojis.BP} {emojis.CHECK_FAIL} : Stat is below recommendation\n'
+        f'{emojis.BP} {emojis.CHECK_IGNORE} : Stat is below rec. but you are above carry DEF\n'
+        f'{emojis.BP} {emojis.CHECK_WARN} : Stat is below rec. but with a lot of luck it _might_ work\n'
+        f'{emojis.BP} {emojis.LIFE_BOOST} : LIFE boost you have to buy to reach recommendation'
+    )
 
-    notes =     f'{emojis.BP} You can ignore this check for D1-D9 if you get carried\n'\
-                f'{emojis.BP} This check does **not** take into account required gear for D10+!\n'\
-                f'{emojis.BP} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for a few more details'
+    notes = (
+        f'{emojis.BP} You can ignore this check for D1-D9 if you get carried\n'
+        f'{emojis.BP} You can **not** get carried in D16-D20, the boss gets stronger if someone dies!\n'
+        f'{emojis.BP} This check does **not** take into account required gear for D10+!\n'
+        f'{emojis.BP} Use `{ctx.prefix}dc1`-`{ctx.prefix}dc15` for a few more details'
+    )
 
     guides = (
         f'{emojis.BP} {guide_check_all.format(prefix=prefix)}\n'

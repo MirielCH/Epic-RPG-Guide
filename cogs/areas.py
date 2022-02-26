@@ -761,9 +761,10 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     dungeon_no_str = 'THE "FINAL" DUNGEON' if area.area_no == 21 else f'D{area.dungeon_no}'
 
     # Note
+    guide_area = 'top' if area.area_no == 21 else area.area_no
     note = (
-        f'{emojis.BP} To see the guide for another TT, use `{prefix}a{area.area_no} [tt]` '
-        f'or `{prefix}a{area.area_no} [tt] asc`\n'
+        f'{emojis.BP} To see the guide for another TT, use `{prefix}a{guide_area} [tt]` '
+        f'or `{prefix}a{guide_area} [tt] asc`\n'
         f'{emojis.BP} To change your personal TT settings, use `{prefix}setprogress`.'
     )
 

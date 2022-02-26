@@ -439,7 +439,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
     try:
         cur=ERG_DB.cursor()
         if dungeon_no == 0:
-            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 15')
+            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 20')
             record = cur.fetchall()
         else:
             cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
