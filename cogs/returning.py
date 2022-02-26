@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import functions
 
 
 # Returning commands (cog)
@@ -57,7 +57,7 @@ async def embed_returning_overview(prefix: str) -> discord.Embed:
         title = f'RETURNING EVENT {emojis.EPIC_RPG_LOGO}',
         description = 'Oh hi, nice to see you again'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)

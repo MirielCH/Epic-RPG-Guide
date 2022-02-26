@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # easter event commands (cog)
@@ -70,12 +71,12 @@ async def embed_easter_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'EASTER EVENT 2021 {emojis.EASTER_EGG}',
         description = 'Hope you like eggs.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='WHAT TO DO', value=whattodo, inline=False)

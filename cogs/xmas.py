@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # XMAS commands (cog)
@@ -344,13 +345,13 @@ async def embed_xmas_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CHRISTMAS EVENT 2021',
         description = 'Time to decorate.'
     )
 
     embed.add_field(name='TL;DR GUIDE', value=guide, inline=False)
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ALL ACTIVITIES', value=whattodo, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     #embed.add_field(name='WHAT TO DO WITH PRESENTS', value=present, inline=False)
@@ -365,7 +366,7 @@ async def embed_xmas_item(prefix, item):
     items = await function_xmas_get_item(prefix,item)
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CHRISTMAS ITEMS',
     )
 
@@ -418,7 +419,7 @@ async def embed_xmas_item_overview(prefix):
     items_value.strip()
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CHRISTMAS ITEMS OVERVIEW',
         description = (
             f'This page lists the names of all christmas items.\n'
@@ -459,7 +460,7 @@ async def embed_xmas_area(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CHRISTMAS AREA (AREA 0)',
         description = 'This is a special christmas themed area that will only be accessible during the christmas event.'
 

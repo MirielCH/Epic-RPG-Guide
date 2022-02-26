@@ -7,7 +7,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions, strings
 
 
 # crafting commands (cog)
@@ -105,7 +106,7 @@ class craftingCog(commands.Cog):
                     if isinstance(error, database.FirstTimeUser):
                         return
                     else:
-                        await ctx.send(global_data.MSG_ERROR)
+                        await ctx.send(strings.MSG_ERROR)
                         return
                 user_tt = user.tt
                 tt_chance = (49 + user_tt) * user_tt / 2 / 100
@@ -122,7 +123,7 @@ class craftingCog(commands.Cog):
                         horse_tier = 0
                         horse_emoji = ''
                     except:
-                        await ctx.send(global_data.MSG_ERROR)
+                        await ctx.send(strings.MSG_ERROR)
                         return
                     if 'Tier** - III' in horse_stats:
                         horse_chance = 1
@@ -250,7 +251,7 @@ class craftingCog(commands.Cog):
                 f'Time travel: {emojis.TIME_TRAVEL} **{user_tt}**\n'
                 f'Horse: {horse_emoji} **T{horse_tier}**'
             ),
-            color = global_data.EMBED_COLOR
+            color = settings.EMBED_COLOR
         )
         embed.add_field(
             name=(
@@ -332,8 +333,8 @@ class craftingCog(commands.Cog):
             .replace('apples','apple')
             .replace('oranges','orange')
         )
-        if itemname_replaced in global_data.item_aliases:
-            itemname_replaced = global_data.item_aliases[itemname_replaced]
+        if itemname_replaced in strings.item_aliases:
+            itemname_replaced = strings.item_aliases[itemname_replaced]
 
         try:
             item: database.Item = await database.get_item(itemname_replaced)
@@ -404,8 +405,8 @@ class craftingCog(commands.Cog):
             await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
             return
 
-        if itemname in global_data.item_aliases:
-            itemname = global_data.item_aliases[itemname]
+        if itemname in strings.item_aliases:
+            itemname = strings.item_aliases[itemname]
 
         try:
             item: database.Item = await database.get_item(itemname)
@@ -497,8 +498,8 @@ class craftingCog(commands.Cog):
                         await ctx.send(f'There is no area {area}.')
                         return
                 original_item = item
-                if item in global_data.item_aliases:
-                    item = global_data.item_aliases[item]
+                if item in strings.item_aliases:
+                    item = strings.item_aliases[item]
 
                 if not item in items:
                     await ctx.send(f'This command does not support an item called `{original_item}`, sorry.')
@@ -525,28 +526,28 @@ class craftingCog(commands.Cog):
                 except:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-                fish = await global_data.inventory_get(inventory, 'normie fish')
-                fishgolden = await global_data.inventory_get(inventory, 'golden fish')
-                fishepic = await global_data.inventory_get(inventory, 'epic fish')
-                log = await global_data.inventory_get(inventory, 'wooden log')
-                logepic = await global_data.inventory_get(inventory, 'epic log')
-                logsuper = await global_data.inventory_get(inventory, 'super log')
-                logmega = await global_data.inventory_get(inventory, 'mega log')
-                loghyper = await global_data.inventory_get(inventory, 'hyper log')
-                logultra = await global_data.inventory_get(inventory, 'ultra log')
-                apple = await global_data.inventory_get(inventory, 'apple')
-                banana = await global_data.inventory_get(inventory, 'banana')
-                ruby = await global_data.inventory_get(inventory, 'ruby')
-                potato = await global_data.inventory_get(inventory, 'potato')
-                carrot = await global_data.inventory_get(inventory, 'carrot')
-                bread = await global_data.inventory_get(inventory, 'bread')
-                cookie = await global_data.inventory_get(inventory, 'arena cookie')
-                wolfskin = await global_data.inventory_get(inventory, 'wolf skin')
-                zombieeye = await global_data.inventory_get(inventory, 'zombie eye')
-                unicornhorn = await global_data.inventory_get(inventory, 'unicorn horn')
-                mermaidhair = await global_data.inventory_get(inventory, 'mermaid hair')
-                chip = await global_data.inventory_get(inventory, 'chip')
-                dragonscale = await global_data.inventory_get(inventory, 'dragon scale')
+                fish = await functions.inventory_get(inventory, 'normie fish')
+                fishgolden = await functions.inventory_get(inventory, 'golden fish')
+                fishepic = await functions.inventory_get(inventory, 'epic fish')
+                log = await functions.inventory_get(inventory, 'wooden log')
+                logepic = await functions.inventory_get(inventory, 'epic log')
+                logsuper = await functions.inventory_get(inventory, 'super log')
+                logmega = await functions.inventory_get(inventory, 'mega log')
+                loghyper = await functions.inventory_get(inventory, 'hyper log')
+                logultra = await functions.inventory_get(inventory, 'ultra log')
+                apple = await functions.inventory_get(inventory, 'apple')
+                banana = await functions.inventory_get(inventory, 'banana')
+                ruby = await functions.inventory_get(inventory, 'ruby')
+                potato = await functions.inventory_get(inventory, 'potato')
+                carrot = await functions.inventory_get(inventory, 'carrot')
+                bread = await functions.inventory_get(inventory, 'bread')
+                cookie = await functions.inventory_get(inventory, 'arena cookie')
+                wolfskin = await functions.inventory_get(inventory, 'wolf skin')
+                zombieeye = await functions.inventory_get(inventory, 'zombie eye')
+                unicornhorn = await functions.inventory_get(inventory, 'unicorn horn')
+                mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
+                chip = await functions.inventory_get(inventory, 'chip')
+                dragonscale = await functions.inventory_get(inventory, 'dragon scale')
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
                 return
@@ -994,7 +995,7 @@ async def embed_enchants(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ENCHANTS',
         description = (
             f'Enchants buff either AT or DEF (sword enchants buff AT, armor enchants buff DEF). Enchants buff your **overall** stats.\n'
@@ -1003,7 +1004,7 @@ async def embed_enchants(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='POSSIBLE ENCHANTS', value=buffs, inline=False)
     embed.add_field(name='HOW ENCHANTING WORKS', value=how_enchanting_works, inline=False)
     embed.add_field(name='COMMAND TIERS', value=commands_tiers, inline=False)
@@ -1077,7 +1078,7 @@ async def embed_drops(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
             f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'
@@ -1086,7 +1087,7 @@ async def embed_drops(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'WOLF SKIN {emojis.WOLF_SKIN}', value=wolfskin, inline=True)
     embed.add_field(name=f'ZOMBIE EYE {emojis.ZOMBIE_EYE}', value=zombieeye, inline=True)
     embed.add_field(name=f'UNICORN HORN {emojis.UNICORN_HORN}', value=unicornhorn, inline=True)

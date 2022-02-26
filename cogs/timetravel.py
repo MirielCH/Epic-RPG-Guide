@@ -10,7 +10,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # time travel commands (cog)
@@ -178,40 +179,40 @@ class timetravelCog(commands.Cog):
                 except:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-                fish = await global_data.inventory_get(inventory, 'normie fish')
-                fishgolden = await global_data.inventory_get(inventory, 'golden fish')
-                fishepic = await global_data.inventory_get(inventory, 'epic fish')
-                log = await global_data.inventory_get(inventory, 'wooden log')
-                logepic = await global_data.inventory_get(inventory, 'epic log')
-                logsuper = await global_data.inventory_get(inventory, 'super log')
-                logmega = await global_data.inventory_get(inventory, 'mega log')
-                loghyper = await global_data.inventory_get(inventory, 'hyper log')
-                logultra = await global_data.inventory_get(inventory, 'ultra log')
-                apple = await global_data.inventory_get(inventory, 'apple')
-                banana = await global_data.inventory_get(inventory, 'banana')
-                ruby = await global_data.inventory_get(inventory, 'ruby')
-                wolfskin = await global_data.inventory_get(inventory, 'wolf skin')
-                zombieeye = await global_data.inventory_get(inventory, 'zombie eye')
-                unicornhorn = await global_data.inventory_get(inventory, 'unicorn horn')
-                mermaidhair = await global_data.inventory_get(inventory, 'mermaid hair')
-                chip = await global_data.inventory_get(inventory, 'chip')
-                dragonscale = await global_data.inventory_get(inventory, 'dragon scale')
-                lbcommon = await global_data.inventory_get(inventory, 'common lootbox')
-                lbuncommon = await global_data.inventory_get(inventory, 'uncommon lootbox')
-                lbrare = await global_data.inventory_get(inventory, 'rare lootbox')
-                lbepic = await global_data.inventory_get(inventory, 'epic lootbox')
-                lbedgy = await global_data.inventory_get(inventory, 'edgy lootbox')
-                lbomega = await global_data.inventory_get(inventory, 'omega lootbox')
-                lbgodly = await global_data.inventory_get(inventory, 'godly lootbox')
-                lifepotion = await global_data.inventory_get(inventory, 'life potion')
-                potato = await global_data.inventory_get(inventory, 'potato')
-                carrot = await global_data.inventory_get(inventory, 'carrot')
-                bread = await global_data.inventory_get(inventory, 'bread')
-                seed = await global_data.inventory_get(inventory, 'seed')
-                seed_bread = await global_data.inventory_get(inventory, 'bread seed')
-                seed_carrot = await global_data.inventory_get(inventory, 'carrot seed')
-                seed_potato = await global_data.inventory_get(inventory, 'potato seed')
-                lottery_ticket = await global_data.inventory_get(inventory, 'lottery ticket')
+                fish = await functions.inventory_get(inventory, 'normie fish')
+                fishgolden = await functions.inventory_get(inventory, 'golden fish')
+                fishepic = await functions.inventory_get(inventory, 'epic fish')
+                log = await functions.inventory_get(inventory, 'wooden log')
+                logepic = await functions.inventory_get(inventory, 'epic log')
+                logsuper = await functions.inventory_get(inventory, 'super log')
+                logmega = await functions.inventory_get(inventory, 'mega log')
+                loghyper = await functions.inventory_get(inventory, 'hyper log')
+                logultra = await functions.inventory_get(inventory, 'ultra log')
+                apple = await functions.inventory_get(inventory, 'apple')
+                banana = await functions.inventory_get(inventory, 'banana')
+                ruby = await functions.inventory_get(inventory, 'ruby')
+                wolfskin = await functions.inventory_get(inventory, 'wolf skin')
+                zombieeye = await functions.inventory_get(inventory, 'zombie eye')
+                unicornhorn = await functions.inventory_get(inventory, 'unicorn horn')
+                mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
+                chip = await functions.inventory_get(inventory, 'chip')
+                dragonscale = await functions.inventory_get(inventory, 'dragon scale')
+                lbcommon = await functions.inventory_get(inventory, 'common lootbox')
+                lbuncommon = await functions.inventory_get(inventory, 'uncommon lootbox')
+                lbrare = await functions.inventory_get(inventory, 'rare lootbox')
+                lbepic = await functions.inventory_get(inventory, 'epic lootbox')
+                lbedgy = await functions.inventory_get(inventory, 'edgy lootbox')
+                lbomega = await functions.inventory_get(inventory, 'omega lootbox')
+                lbgodly = await functions.inventory_get(inventory, 'godly lootbox')
+                lifepotion = await functions.inventory_get(inventory, 'life potion')
+                potato = await functions.inventory_get(inventory, 'potato')
+                carrot = await functions.inventory_get(inventory, 'carrot')
+                bread = await functions.inventory_get(inventory, 'bread')
+                seed = await functions.inventory_get(inventory, 'seed')
+                seed_bread = await functions.inventory_get(inventory, 'bread seed')
+                seed_carrot = await functions.inventory_get(inventory, 'carrot seed')
+                seed_potato = await functions.inventory_get(inventory, 'potato seed')
+                lottery_ticket = await functions.inventory_get(inventory, 'lottery ticket')
 
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
@@ -512,7 +513,7 @@ async def embed_timetravel_overview(ctx: commands.Context) -> discord.Embed:
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
         description = (
             f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
@@ -522,7 +523,7 @@ async def embed_timetravel_overview(ctx: commands.Context) -> discord.Embed:
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS FOR TIME TRAVEL', value=where, inline=False)
     embed.add_field(name='WHAT YOU KEEP', value=keptitems, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -671,12 +672,12 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'TIME TRAVEL {tt.tt}',
         description = embed_description
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
     if not mytt and tt.tt != 0:
@@ -728,7 +729,7 @@ async def embed_stt(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL',
         description = (
             f'Super time travel is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have to use `super time travel` to reach the next TT.\n'
@@ -738,7 +739,7 @@ async def embed_stt(prefix):
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='STARTER BONUSES', value=starter_bonuses, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -821,7 +822,7 @@ async def embed_stt_score(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL SCORE',
         description = (
             f'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.\n'
@@ -829,7 +830,7 @@ async def embed_stt_score(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='BASE SCORE', value=base, inline=False)
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)

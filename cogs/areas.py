@@ -5,7 +5,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # area commands (cog)
@@ -607,12 +608,12 @@ async def embed_areas_menu(ctx):
     drops = f'{emojis.BP} `{prefix}drops` : Monster drops'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'AREA GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='AREAS', value=area_guide, inline=False)
     embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='MONSTER DROPS', value=drops, inline=False)
@@ -681,10 +682,10 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     debuffs = await design_field_debuffs(area)
 
     # Recommended dungeon stats
-    field_rec_stats = await global_data.design_field_rec_stats(dungeon)
+    field_rec_stats = await functions.design_field_rec_stats(dungeon)
 
     # Recommended gear
-    field_rec_gear = await global_data.design_field_rec_gear(dungeon)
+    field_rec_gear = await functions.design_field_rec_gear(dungeon)
     if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
     if area.area_no in (7,8):
         field_rec_gear = (
@@ -734,14 +735,14 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         materials = f'{emojis.BP} 30 {emojis.MERMAID_HAIR} mermaid hairs\n'
 
     # Trades
-    trades = await global_data.design_field_trades(area, user)
+    trades = await functions.design_field_trades(area, user)
     trades_name = 'TRADES BEFORE LEAVING'
     if area.area_no == 15: trades_name = f'{trades_name} (IF YOU DO D15-2)'
 
     # Trade rates
-    traderates = await global_data.design_field_traderate(area)
+    traderates = await functions.design_field_traderate(area)
     if next_area is not None:
-        traderates_next_area = await global_data.design_field_traderate(next_area)
+        traderates_next_area = await functions.design_field_traderate(next_area)
 
     # Monsters
     field_monsters_hunt = ''
@@ -774,7 +775,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     # Create embed
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = title,
         description = description
     )

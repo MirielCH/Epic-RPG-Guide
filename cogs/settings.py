@@ -8,7 +8,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import strings
 
 
 class SettingsCog(commands.Cog):
@@ -24,7 +25,7 @@ class SettingsCog(commands.Cog):
         """Gets/sets new server prefix"""
         prefix = await database.get_prefix(ctx)
         message_syntax = (
-            f'{global_data.MSG_SYNTAX.format(syntax=f"{prefix}setprefix [prefix]")}\n\n'
+            f'{strings.MSG_SYNTAX.format(syntax=f"{prefix}setprefix [prefix]")}\n\n'
             f'Tip: If you want to include a space, use "".\n'
             f'Example: `{prefix}setprefix "guide "`'
         )
@@ -107,7 +108,7 @@ class SettingsCog(commands.Cog):
                 answer_tt = await self.bot.wait_for('message', check=check, timeout=30)
                 answer_tt = answer_tt.content.lower()
                 if answer_tt in ('abort', 'cancel'):
-                    await ctx.send(global_data.MSG_ABORTING)
+                    await ctx.send(strings.MSG_ABORTING)
                     return
                 try:
                     new_tt = int(answer_tt)
@@ -128,7 +129,7 @@ class SettingsCog(commands.Cog):
                 answer_ascended = await self.bot.wait_for('message', check=check, timeout=30)
                 answer_ascended = answer_ascended.content.lower()
                 if answer_ascended in ('abort', 'cancel'):
-                    await ctx.send(global_data.MSG_ABORTING)
+                    await ctx.send(strings.MSG_ABORTING)
                     return
             except asyncio.TimeoutError:
                 await ctx.send(
@@ -176,7 +177,7 @@ async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
         f'{emojis.BP} Ascension: **{"Ascended" if user.ascended else "Not ascended"}**'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'USER SETTINGS',
         description = (
             f'Hey there, **{ctx.author.name}**.\n'

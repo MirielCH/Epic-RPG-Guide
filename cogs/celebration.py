@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # Celebration commands (cog)
@@ -59,11 +60,11 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} 50% to get coins with `fish` commands\n'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'500K CELEBRATION EVENT 2022 {emojis.COIN_CELEBRATION}',
         description = 'Yo hey, may I interest you in a godly lootbox?'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)

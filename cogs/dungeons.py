@@ -9,7 +9,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # dungeon commands (cog)
@@ -832,12 +833,12 @@ async def embed_dungeons_menu(ctx):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'DUNGEON GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='DUNGEONS', value=dungeon_guide, inline=False)
     embed.add_field(name='STATS CHECK', value=statscheck, inline=False)
 
@@ -855,8 +856,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         boss_life = int(dungeon.boss_life) if dungeon.boss_life.is_integer() else dungeon.boss_life
     dungeon_no = dungeon.dungeon_no
 
-    field_rec_stats = await global_data.design_field_rec_stats(dungeon)
-    field_rec_gear = await global_data.design_field_rec_gear(dungeon)
+    field_rec_stats = await functions.design_field_rec_stats(dungeon)
+    field_rec_gear = await functions.design_field_rec_gear(dungeon)
 
     # Time limit
     if dungeon.time_limit is not None:
@@ -980,11 +981,11 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
 
     # Images
     if dungeon_no == 11:
-        img_dungeon = discord.File(global_data.IMG_DUNGEON_11, filename='dungeon11.png')
+        img_dungeon = discord.File(settings.IMG_DUNGEON_11, filename='dungeon11.png')
         image_url = 'attachment://dungeon11.png'
         image_name = 'MOVEMENT BEHAVIOUR'
     elif dungeon_no == 13:
-        img_dungeon = discord.File(global_data.IMG_DUNGEON_13, filename='dungeon13.png')
+        img_dungeon = discord.File(settings.IMG_DUNGEON_13, filename='dungeon13.png')
         image_url = 'attachment://dungeon13.png'
         image_name = 'WALKTHROUGH'
 
@@ -999,12 +1000,12 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=f"{dungeon_no:g}")}\n{guides}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = title,
         description = description
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='BOSS', value=f'{emojis.BP} {dungeon.boss_emoji} {dungeon.boss_name}', inline=False)
     if player_amount is not None:
         embed.add_field(name='PLAYERS', value=player_amount, inline=False)
@@ -1047,17 +1048,17 @@ async def embed_dungeon_rec_stats(ctx: commands.Context, dungeons: Tuple[databas
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'RECOMMENDED STATS FOR ALL DUNGEONS',
         description = f'\u200b'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     for dungeon in dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
         field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
-        field_rec_stats = await global_data.design_field_rec_stats(dungeon, True)
+        field_rec_stats = await settings.design_field_rec_stats(dungeon, True)
         embed.add_field(name=field_name, value=field_rec_stats, inline=True)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -1092,18 +1093,18 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = title_value,
         description = description_value
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
 
     for dungeon in listed_dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
         field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
-        field_rec_gear = await global_data.design_field_rec_gear(dungeon)
+        field_rec_gear = await settings.design_field_rec_gear(dungeon)
         if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
         embed.add_field(name=field_name, value=field_rec_gear, inline=False)
 
@@ -1137,12 +1138,12 @@ async def embed_dungeon_check_stats(dungeon_check_data, user_stats, ctx):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'DUNGEON STATS CHECK',
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
     )
 
-    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+    embed.set_footer(text=await functions.default_footer(ctx.prefix))
 
     for dung_x in dungeon_check_data:
         dungeon_no = dung_x[4]
@@ -1197,12 +1198,12 @@ async def embed_dungeon_check_stats_dungeon_specific(dungeon_check_data, user_st
     field_check_stats = await function_design_field_check_stats(dungeon_check_data, user_stats, prefix, False)
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = embed_title,
         description = f'**{ctx.author.name}**, here\'s your check for **{user_stats[0]} AT**, **{user_stats[1]} DEF** and **{user_stats[2]} LIFE.**'
     )
 
-    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+    embed.set_footer(text=await functions.default_footer(ctx.prefix))
     embed.add_field(name='CHECK RESULT', value=field_check_stats[0], inline=False)
     embed.add_field(name='DETAILS', value=field_check_stats[1], inline=False)
     #embed.add_field(name=f'LEGEND', value=legend, inline=False)

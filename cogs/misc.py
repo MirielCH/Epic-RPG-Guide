@@ -8,7 +8,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # Miscellaneous commands (cog)
@@ -245,7 +246,7 @@ class miscCog(commands.Cog):
             tip = await database.get_tip(ctx)
 
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'TIP',
             description = tip[0]
         )
@@ -386,12 +387,12 @@ async def embed_duels(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'DUELS',
         description = 'Winning a duel depends on the chosen weapon and some luck.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
@@ -422,7 +423,7 @@ async def embed_codes(prefix, codes):
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
         description = (
             f'Use these codes with `rpg code` to get some free goodies.\n'
@@ -430,7 +431,7 @@ async def embed_codes(prefix, codes):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     if not temporary_value == '':
         embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
@@ -468,12 +469,12 @@ async def embed_coolness(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'COOLNESS {emojis.STAT_COOLNESS}',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='REQUIREMENTS', value=req, inline=False)
     embed.add_field(name='HOW TO GET COOLNESS', value=howtoget, inline=False)
@@ -526,12 +527,12 @@ async def embed_badges(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BADGES',
         description = 'Badges are cosmetic only profile decorations.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ACHIEVEMENT BADGES', value=badges_achievements, inline=False)
     embed.add_field(name='COOLNESS BADGES', value=badges_coolness, inline=False)
     embed.add_field(name='OTHER BADGES', value=badges_other, inline=False)
@@ -598,12 +599,12 @@ async def embed_farm(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'FARMING',
         description = f'It ain\'t much, but it\'s honest work.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
     embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
@@ -654,12 +655,12 @@ async def embed_start(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'STARTER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
     embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
@@ -709,7 +710,7 @@ async def embed_ultraining(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ULTRAINING',
         description = (
             f'Ultraining is a higher tier of training that is unlocked in area 12. It rewards coolness in addition to XP.\n'
@@ -717,7 +718,7 @@ async def embed_ultraining(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='HOW IT WORKS', value=how_it_works, inline=False)
     embed.add_field(name='ATTACK, BLOCK OR ATTLOCK?', value=which_command, inline=False)
     embed.add_field(name='WHEN TO DO ULTRAINING', value=when, inline=False)

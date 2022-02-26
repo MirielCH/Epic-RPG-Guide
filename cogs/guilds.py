@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # Guild commands (cog)
@@ -172,13 +173,13 @@ async def embed_guild_overview(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD',
         description = 'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENT', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
     embed.add_field(name='HOW TO JOIN A GUILD', value=how_to_join, inline=False)
@@ -218,7 +219,7 @@ async def embed_guild_cmd(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD HIERARCHY & COMMANDS',
         description = (
             f'Every guild has 1 owner and up to 9 members.\n'
@@ -226,7 +227,7 @@ async def embed_guild_cmd(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='OWNER COMMANDS', value=owner, inline=False)
     embed.add_field(name='MEMBER COMMANDS', value=member, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -259,13 +260,13 @@ async def embed_guild_progress(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD LEVELS AND BONUSES',
         description = 'You can level up your guild to get an increasing duel bonus.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='LEVEL / BONUS', value=level_bonus, inline=False)
     embed.add_field(name='HOW TO GET GUILD XP', value=guild_xp, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -293,7 +294,7 @@ async def embed_guild_shop(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD SHOP',
         description = (
             f'All items in the guild shop cost {emojis.GUILD_COIN} guild coins which you get by getting high enough {emojis.GUILD_ENERGY} energy in the weekly guild event.\n'
@@ -301,7 +302,7 @@ async def embed_guild_shop(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='AVAILABLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -334,13 +335,13 @@ async def embed_guild_stats(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD STATS',
         description = 'The guild stats are used to get the weekly rewards.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'STEALTH {emojis.GUILD_STEALTH}', value=stealth, inline=False)
     embed.add_field(name=f'ENERGY {emojis.GUILD_ENERGY}', value=energy, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
@@ -377,7 +378,7 @@ async def embed_guild_weekly(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'WEEKLY GUILD REWARDS',
         description = (
             f'Once a week, you get rewards based on your {emojis.GUILD_ENERGY} energy. After that, your stats reset and you start over.\n'
@@ -386,7 +387,7 @@ async def embed_guild_weekly(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='WEEKLY REWARDS', value=rewards, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
     embed.add_field(name='STRATEGY', value=strategy, inline=False)
@@ -435,7 +436,7 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'WEEKLY GUILD TASKS',
         description = (
             f'Weekly tasks can be completed once a week.\n'
@@ -445,7 +446,7 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='POSSIBLE TASKS', value=all_tasks, inline=False)
     embed.add_field(name='REWARDS (PER TASK)', value=rewards, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)

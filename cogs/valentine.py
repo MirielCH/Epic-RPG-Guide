@@ -4,8 +4,7 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
-
+from resources import functions
 
 # Valentine commands (cog)
 class ValentineCog(commands.Cog):
@@ -79,7 +78,7 @@ async def embed_valentine_overview(prefix: str) -> discord.Embed:
         title = f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}',
         description = 'Voulez-vous trinquer avec moi, ce soir ?'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='TITLES', value=titles, inline=False)

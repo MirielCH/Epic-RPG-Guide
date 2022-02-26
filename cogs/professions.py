@@ -8,7 +8,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # profession commands (cog)
@@ -1583,7 +1584,7 @@ async def embed_professions_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PROFESSIONS',
         description = (
             f'There are 5 professions you can increase to get increasing bonuses.\n'
@@ -1592,7 +1593,7 @@ async def embed_professions_overview(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'WORKER {emojis.PR_WORKER}', value=worker, inline=False)
     embed.add_field(name=f'CRAFTER {emojis.PR_CRAFTER}', value=crafter, inline=False)
     embed.add_field(name=f'LOOTBOXER {emojis.PR_LOOTBOXER}', value=lootboxer, inline=False)
@@ -1675,7 +1676,7 @@ async def embed_professions_leveling(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LEVELING UP PROFESSIONS',
         description = (
             f'This guide shows you how to level up professions to reach ascension (level 100).\n'
@@ -1683,7 +1684,7 @@ async def embed_professions_leveling(prefix):
             f'Thus, unless you can reach ascension easily, always time travel again instead of staying and farming.'
         )
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'1. CRAFTER {emojis.PR_CRAFTER}', value=crafter, inline=False)
     embed.add_field(name=f'2. MERCHANT {emojis.PR_MERCHANT}', value=merchant, inline=False)
     embed.add_field(name=f'3. WORKER {emojis.PR_WORKER}', value=worker, inline=False)
@@ -1723,11 +1724,11 @@ async def embed_professions_crafter(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CRAFTER PROFESSION'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
@@ -1794,11 +1795,11 @@ async def embed_professions_enchanter(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ENCHANTER PROFESSION'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
@@ -1851,11 +1852,11 @@ async def embed_professions_lootboxer(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LOOTBOXER PROFESSION'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
@@ -1900,11 +1901,11 @@ async def embed_professions_merchant(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MERCHANT PROFESSION'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
@@ -1958,11 +1959,11 @@ async def embed_professions_worker(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'WORKER PROFESSION'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
@@ -1998,7 +1999,7 @@ async def embed_ascension(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ASCENSION',
         description = (
             f'Ascension allows you to use **all** game commands you ever unlocked in **every** area.\n'
@@ -2006,7 +2007,7 @@ async def embed_ascension(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
     embed.add_field(name='NOTES', value=notes, inline=False)

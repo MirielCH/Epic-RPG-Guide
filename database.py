@@ -9,11 +9,11 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import logs, settings, strings
 
 
 # Set name of database file
-DB_FILE = global_data.DB_FILE
+DB_FILE = settings.DB_FILE
 
 # Open connection to the local database
 ERG_DB = sqlite3.connect(DB_FILE, isolation_level=None)
@@ -336,8 +336,8 @@ async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
         if record:
             (prefix,) = record
         else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.DEFAULT_PREFIX,))
-            prefix = global_data.DEFAULT_PREFIX
+            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, settings.DEFAULT_PREFIX,))
+            prefix = settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
         await log_error(ctx, error)
 
@@ -351,9 +351,9 @@ async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> st
         cur=ERG_DB.cursor()
         cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (guild_id,))
         record = cur.fetchone()
-        prefix = record[0] if record else global_data.DEFAULT_PREFIX
+        prefix = record[0] if record else settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx_or_guild, error)
 
     return prefix
@@ -451,7 +451,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
             await log_error(ctx, 'No recommended dungeon check data found in database.')
 
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return dungeon_check_data
@@ -472,7 +472,7 @@ async def get_area_data(ctx, area):
         else:
             await log_error(ctx, 'No area data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return area_data
@@ -608,7 +608,7 @@ async def get_mats_data(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_mats data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return mats_data
@@ -654,7 +654,7 @@ async def get_item(name: str) -> Item:
     for name, amount in record.items():
         ingredient = Ingredient(
             amount = amount,
-            name = global_data.item_columns_names[name]
+            name = strings.item_columns_names[name]
         )
         ingredients.append(ingredient)
     ingredients.sort(key=lambda ingredient: ingredient.amount)
@@ -684,7 +684,7 @@ async def get_tt_unlocks(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_unlock data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return tt_unlock_data
@@ -713,7 +713,7 @@ async def get_traderate_data(ctx, areas):
         else:
             await log_error(ctx, 'No trade rate data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return traderate_data
@@ -743,7 +743,7 @@ async def get_profession_levels(ctx, profession, levelrange):
         else:
             await log_error(ctx, 'No profession data data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return profession_levels
@@ -765,7 +765,7 @@ async def get_tip(ctx, id=0):
         else:
             tip = ('There is no tip with that ID.',)
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return tip
@@ -874,7 +874,7 @@ async def get_codes(ctx):
         else:
             await log_error(ctx, 'No codes data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return codes
@@ -892,7 +892,7 @@ async def get_user_number(ctx):
         else:
             await log_error(ctx, 'No user data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return user_number
@@ -1052,7 +1052,7 @@ async def set_prefix(ctx, new_prefix):
         else:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
 
@@ -1104,15 +1104,15 @@ async def log_error(error: Union[Exception, str], ctx: Optional[commands.Context
         user_input = ctx.message.content
         try:
             user = await get_user(ctx.author.id)
-            settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
+            user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
         except:
-            settings = 'N/A'
+            user_settings = 'N/A'
     else:
-        settings = 'N/A'
+        user_settings = 'N/A'
         timestamp = datetime.utcnow()
         user_input = 'N/A'
     try:
         cur=ERG_DB.cursor()
-        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), settings))
+        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), user_settings))
     except sqlite3.Error as db_error:
-        global_data.logger.error(f'Error inserting error (ha) into database:\n{db_error}')
+        logs.logger.error(f'Error inserting error (ha) into database:\n{db_error}')

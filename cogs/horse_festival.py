@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # easter event commands (cog)
@@ -62,11 +63,11 @@ async def embed_festival_overview(prefix: str) -> discord.Embed:
         f'GODLY horse token which you can use whenever you want'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'HORSE FESTIVAL EVENT 2021 {emojis.HORSE_T10}',
         description = 'Neigh.'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='WHAT TO DO FIRST', value=whattodo, inline=False)
@@ -120,12 +121,12 @@ async def embed_megarace(prefix: str) -> discord.Embed:
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MEGARACE',
         description = 'Hgien.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='OVERVIEW', value=overview, inline=False)
     embed.add_field(name='SHORTEST ANSWERS (1)', value=best_answers_1, inline=False)
     embed.add_field(name='SHORTEST ANSWERS (2)', value=best_answers_2, inline=False)

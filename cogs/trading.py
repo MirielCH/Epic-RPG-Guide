@@ -8,7 +8,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # trading commands (cog)
@@ -235,12 +236,12 @@ async def embed_trading_menu(ctx):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADING GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TRADING', value=trading, inline=False)
 
     return embed
@@ -253,9 +254,9 @@ async def embed_trades_area_specific(ctx, user, area):
         if user.tt == 0:
             description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
         else:
-            description = await global_data.design_field_trades(area, user)
+            description = await functions.design_field_trades(area, user)
     else:
-        description = await global_data.design_field_trades(area, user)
+        description = await functions.design_field_trades(area, user)
     guides = (
         f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_traderates.format(prefix=prefix)}\n'
@@ -270,7 +271,7 @@ async def embed_trades_area_specific(ctx, user, area):
         description = description
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
@@ -296,7 +297,7 @@ async def embed_trades_all_areas(ctx, user):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     areas = await database.get_all_areas()
     for area in areas:
@@ -309,7 +310,7 @@ async def embed_trades_all_areas(ctx, user):
                         inline=False
                     )
             else:
-                field_value = await global_data.design_field_trades(area, user)
+                field_value = await functions.design_field_trades(area, user)
                 embed.add_field(name=area_no_str, value=field_value, inline=False)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -326,12 +327,12 @@ async def embed_traderates(traderate_data, prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADE RATES',
         description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.BLANK}'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     previous_area = [0,0,0,0]
     actual_areas = []
@@ -553,12 +554,12 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         area_name_description = f'Area {original_area}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADE CALCULATOR',
         description = f'If you have **{original_amount:,}** {original_emoji} in **{area_name_description}** and follow all the trades correctly, this amounts to the following:'
         )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     previous_area = [0,0,]
     previous_area_trade_rates = [0,0,0,0]

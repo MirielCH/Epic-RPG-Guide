@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # events commands (cog)
@@ -272,7 +273,7 @@ async def embed_events_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'EVENTS',
         description = (
             f'This page lists the names of all possible events.\n'
@@ -280,7 +281,7 @@ async def embed_events_overview(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     #embed.add_field(name=f'CHRISTMAS {emojis.XMAS_TREE}', value=xmas_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
@@ -309,7 +310,7 @@ async def embed_event_enchant(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ENCHANT EVENT',
         description = 'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
     )
@@ -348,7 +349,7 @@ async def embed_event_epicguard(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'EPIC GUARD EVENT',
         description = 'This is a random captcha event to prevent autotyping.'
     )
@@ -380,7 +381,7 @@ async def embed_event_farm(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'FAILED SEED EVENT',
         description = 'This is a random personal event in which your planted seed won\'t grow as expected.'
     )
@@ -411,7 +412,7 @@ async def embed_event_heal(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'HEAL EVENT',
         description = 'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )
@@ -443,7 +444,7 @@ async def embed_event_lootbox(prefix):
     note = f'{emojis.BP} {events_personal}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LOOTBOX EVENT',
         description = 'This is a rare random personal event in which a lootboxes refuses to open.'
     )
@@ -484,7 +485,7 @@ async def embed_event_rubydragon(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'THE RUBY DRAGON EVENT',
         description = 'This is a random personal event in which you don\'t find any materials when working... but a ruby dragon instead.'
     )
@@ -533,7 +534,7 @@ async def embed_event_arena(prefix):
     whichone = f'{emojis.BP} `big arena` has higher rewards than `arena`'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ARENA EVENT',
         description =   f'This is a multiplayer event in which up to 10 players fight each other.'
     )
@@ -568,7 +569,7 @@ async def embed_event_coinrain(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'COIN RAIN EVENT',
         description = 'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
     )
@@ -602,7 +603,7 @@ async def embed_event_epictree(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'EPIC TREE EVENT',
         description = 'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
     )
@@ -636,7 +637,7 @@ async def embed_event_god(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GOD EVENT',
         description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
     )
@@ -666,7 +667,7 @@ async def embed_event_legendary(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LEGENDARY BOSS EVENT',
         description = 'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 players can defeat it.'
     )
@@ -699,7 +700,7 @@ async def embed_event_lootboxsummoning(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LOOTBOX SUMMONING EVENT',
         description = 'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 players can help to do so.'
     )
@@ -733,7 +734,7 @@ async def embed_event_megalodon(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MEGALODON EVENT',
         description = 'This is a multiplayer event in which a megalodon spawns in the river and up to 20 players can get some fish.'
     )
@@ -782,7 +783,7 @@ async def embed_event_miniboss(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MINIBOSS EVENT',
         description = 'This is a multiplayer event in which you fight a miniboss to get coins.'
     )
@@ -823,7 +824,7 @@ async def embed_event_specialtrade(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SPECIAL TRADE EVENT',
         description = 'This is a random multiplayer event in which the epic NPC appears and offers one player a (very good) trade.'
     )
@@ -861,7 +862,7 @@ async def embed_event_bigarena(prefix):
     whichone = f'{emojis.BP} `big arena` has higher rewards than unboosted `arena`'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BIG ARENA EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
@@ -899,7 +900,7 @@ async def embed_event_horserace(prefix):
     whichone = f'{emojis.BP} Unless your horse is {emojis.HORSE_T10} T10, breed instead'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'HORSE RACE EVENT',
         description = 'This is a global event which takes place every 2 hours.'
     )
@@ -935,7 +936,7 @@ async def embed_event_pettournamnent(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PET TOURNAMENT EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
@@ -968,7 +969,7 @@ async def embed_event_lottery(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'LOTTERY EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
@@ -1003,7 +1004,7 @@ async def embed_event_notsominiboss(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'NOT SO MINI BOSS EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
@@ -1039,7 +1040,7 @@ async def embed_event_hunt(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ZOMBIE HORDE EVENT',
         description = 'This is a rare random personal event in which you encounter a zombie horde.'
     )
@@ -1079,7 +1080,7 @@ async def embed_event_snowball(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SNOWBALL FIGHT EVENT',
         description =   f'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
     )
@@ -1119,7 +1120,7 @@ async def embed_event_bunny(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BUNNY EVENT',
         description = 'This is a random personal easter event in which a bunny appears for you to tame.'
     )
@@ -1161,7 +1162,7 @@ async def embed_event_bunnyboss(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BUNNY BOSS EVENT',
         description = 'This is a multiplayer easter event in which you fight a bunny boss.'
     )
@@ -1196,7 +1197,7 @@ async def embed_event_slime(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BAT SLIME EVENT',
         description = (
             f'This is a random personal halloween event in which you spawn three {emojis.HAL_BAT_SLIME} bat slimes.'
@@ -1238,7 +1239,7 @@ async def embed_event_scroll_boss(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PUMPKIN BAT BOSS (SCROLL BOSS) EVENT',
         description = (
             f'This is a personal halloween event in which you spawn a {emojis.HAL_BOSS} pumpkin bat boss.\n'

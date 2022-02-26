@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import database
-import global_data
+from resources import settings
 
 
 intents = discord.Intents.none()
@@ -41,4 +41,4 @@ if __name__ == '__main__':
     for extension in COG_EXTENSIONS:
         bot.load_extension(extension)
 
-bot.run(global_data.TOKEN)
+bot.run(settings.TOKEN)

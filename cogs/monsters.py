@@ -9,7 +9,8 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # monsters commands (cog)
@@ -149,11 +150,11 @@ async def embed_mobs(ctx: commands.Context, monsters: Tuple[database.Monster], a
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'MONSTERS IN AREA {area_no}'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     field_monsters_hunt = field_monsters_adv = ''
     for monster in monsters:

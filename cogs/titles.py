@@ -8,7 +8,7 @@ from discord.ext import commands
 
 import database
 import emojis
-import global_data
+from resources import settings
 
 
 class TitlesCog(commands.Cog):
@@ -67,7 +67,7 @@ async def embed_titles(prefix: str, search_string: str, titles: Tuple[database.T
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TITLE SEARCH',
         description = description
     )

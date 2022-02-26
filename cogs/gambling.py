@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 
 import emojis
-import global_data
+from resources import settings
+from resources import functions
 
 
 # gambling commands (cog)
@@ -124,12 +125,12 @@ async def embed_gambling_menu(ctx):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GAMBLING GUIDES',
         description = f'Hey **{ctx.author.name}**, stop gambling.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='GAMBLING', value=trading, inline=False)
 
     return embed
@@ -175,12 +176,12 @@ async def embed_blackjack(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BLACKJACK',
         description = f'\"Blackjack is very scientific. There\'s always a right answer and wrong answer.\"'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='CARD VALUES', value=card_values, inline=False)
@@ -225,12 +226,12 @@ async def embed_coinflip(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'COINFLIP',
         description = f'\"Ah. Fortune smiles. Another day of wine and roses. Or, in your case, beer and pizza!\"'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -267,12 +268,12 @@ async def embed_cups(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CUPS',
         description = 'These ain\'t coffee cups.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -315,12 +316,12 @@ async def embed_dice(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'DICE',
         description = 'Dice, dice, baby.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -362,12 +363,12 @@ async def embed_multidice(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MULTIDICE',
         description = 'Someone wins. Someone loses. Such is life.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -422,12 +423,12 @@ async def embed_slots(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SLOTS',
         description = 'Keep rollin\', rollin\', rollin\', rollin\'.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='5-OF-THE-SAME WINNINGS', value=rewards_five, inline=False)
@@ -477,12 +478,12 @@ async def embed_wheel(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'WHEEL',
         description = 'What you gonna tell your dad?'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SYNTAX', value=syntax, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
