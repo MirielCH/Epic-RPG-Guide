@@ -258,7 +258,7 @@ async def embed_pets_catch(prefix):
         f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
         f'{emojis.BP} Example: `feed feed pat pat pat`\n'
         f'{emojis.BP} You can use up to 6 commands\n'
-        f'{emojis.BP} If you use less than 6 commands, you have a 25% chance at getting skills on the pet\n'
+        f'{emojis.BP} If you use less than 6 commands, you have a 25% chance at getting skills\n'
         f'{emojis.BP} The less commands you use, the higher the chance to get rarer skills\n'
     )
 
@@ -391,7 +391,8 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} **You will lose all other skills when ascending**\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} You can **not** rank up this skill with adventures\n'
-        f'{emojis.BP} To rank up the skill, get all other skills to SS+ and ascend again'
+        f'{emojis.BP} To rank up the skill, either ascend again or fuse with other ascended pets\n'
+        f'{emojis.BP} Fusing ascended pets combines the ascended skills into one (e.g. F+E=D)\n'
     )
 
     fighter = (

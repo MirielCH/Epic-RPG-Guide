@@ -51,6 +51,14 @@ class craftingCog(commands.Cog):
             return m.author.id == 555955826880413696 and m.channel == ctx.channel and correct_embed
 
         if args:
+            if len(args) != 2:
+                await ctx.send(
+                    f'The command syntax is `{ctx.prefix}dropchance [tt] [horse tier]`\n'
+                    f'You can also omit all parameters to use your current TT and horse tier for the calculation.\n\n'
+                    f'Examples: `{ctx.prefix}dropchance 25 7` or `{ctx.prefix}dropchance tt7 t5` '
+                    f'or `{ctx.prefix}dropchance`'
+                )
+                return
             if len(args) == 2:
                 user_tt, horse_tier = args
                 user_tt = user_tt.lower().replace('tt','')
@@ -310,9 +318,7 @@ class craftingCog(commands.Cog):
 
         itemname_replaced = (
             itemname.replace('logs','log')
-            .replace('ultra edgy','ultra-chad')
-            .replace('ultra chad','ultra-chad')
-            .replace('edgy','chad')
+            .replace('ultra edgy','ultra-edgy')
             .replace('ultra omega','ultra-omega')
             .replace('uo ','ultra-omega ')
             .replace('creatures','creature')
@@ -900,7 +906,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
             apple_total += ingredient.amount * amount * multiplier
         if not ingredient_item.ingredients:
             if ingredient_item.item_type not in ('log', 'fish', 'fruit'):
-                base_totals[ingredient.name] = (ingredient.amount, ingredient_item.emoji)
+                base_totals[ingredient.name] = (ingredient.amount * amount, ingredient_item.emoji)
             continue
         if ingredient_item.item_type not in ('log', 'fish', 'fruit'): continue
         current_ingredient = ingredient
@@ -955,8 +961,8 @@ async def embed_enchants(prefix):
         f'{emojis.BP} **Hyper** - 70% buff\n'
         f'{emojis.BP} **Ultimate** - 80% buff\n'
         f'{emojis.BP} **Perfect** - 90% buff\n'
-        f'{emojis.BP} **CHAD** - 95% buff\n'
-        f'{emojis.BP} **ULTRA-CHAD** - 100% buff\n'
+        f'{emojis.BP} **EDGY** - 95% buff\n'
+        f'{emojis.BP} **ULTRA-EDGY** - 100% buff\n'
         f'{emojis.BP} **OMEGA** - 125% buff, unlocked in {emojis.TIME_TRAVEL} TT 1\n'
         f'{emojis.BP} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.TIME_TRAVEL} TT 3\n'
         f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5\n'

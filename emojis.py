@@ -135,6 +135,9 @@ SWORD_ZOMBIE = '<:erg_zombiesword:770326606941913118>'
 # Event: Shared Items
 SLEEPY_POTION = '<:erg_sleepypotion:782200523776458772>'
 
+# Event: Celebration
+COIN_CELEBRATION = '<:erg_celebrationcoin:936912877791629312>'
+
 # Event: Christmas
 CANDY_CANE = '<:erg_candycane:782200523713544242>'
 CANDY_DRAGON = '<:erg_candydragon:914796294126587905>'
@@ -202,11 +205,14 @@ HORSESHOE_GOLDEN = '<:erg_goldenhorseshoe:877789493443321898>'
 PET_PONY = '<:erg_petpony:879246534183632927>'
 STEEL = '<:erg_steel:879416298931617792>'
 
-# Event: Return
+# Event: Returning
 COIN_SMOL = '<:erg_smolcoin:946313388164780043>'
 
 # Event: Valentine
+COIN_LOVE = '<:erg_lovecoin:809306526678253589>'
+MOB_PINK_WOLF = '<:erg_pinkwolf:941033952611811378>'
 PET_PINK_FISH = '<:erg_petpinkfish:817872571420114995>'
+TOKEN_LOVE = '<:erg_lovetoken:941033952653766707>'
 
 # Food
 FOOD_APPLE_JUICE = '<:erg_applejuice:770325211513487380>'
@@ -317,10 +323,11 @@ CD_EXPERIENCe = '<:erg_sword_at:770327166952538153>'
 CD_PROGRESS = ':sparkles:'
 EPIC_JUMP = '<:erg_epicjump:945209478209470585>'
 GODLY_HORSE_TOKEN = '<:erg_godlyhorsetoken:877789907001683998>'
+EPIC_RPG_LOGO = '<:erg_epicrpg:946329210488758282>'
 LIFE_POTION = '<:erg_lifepotion:770327166956601425>'
 LOTTERY_TICKET = '<:erg_lotteryticket:770327167044419624>'
 TIME_TRAVEL = '<:erg_tt:945071893420060722>'
-BLANK = '<:blank:771777870498234378>'
+BLANK = '<:b:771777870498234378>'
 ASCENSION = ':star2:'
 LIFE_BOOST = ':sparkles:'
 WAIT_WHAT = '<:waitwhat:781624799037489152>'

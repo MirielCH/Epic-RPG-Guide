@@ -330,7 +330,7 @@ item_columns_names = {
     'sword_electronical': 'Electronical Sword',
     'sword_godly': 'GODLY Sword',
     'sword_omega': 'OMEGA Sword',
-    'sword_ultra_edgy': 'ULTRA_EDGY Sword',
+    'sword_ultra_edgy': 'ULTRA-EDGY Sword',
     'sword_ultra_omega': 'ULTRA-OMEGA Sword',
     'time_dragon_essence': 'TIME dragon essence',
     'time_travel': 'time travel',

@@ -901,19 +901,19 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
         f'{emojis.BP} Everytime you don\'t tier up, you increase your fail count by 1\n'
         f'{emojis.BP} After a certain amount of fails, you will unlock an increased tier up chance\n'
         f'{emojis.BP} If you still don\'t tier up, you will unlock a guaranteed tier up at some point\n'
-        f'{emojis.BP} The exact fail count needed depends on the horse tier and is unknown\n'
+        f'{emojis.BP} The exact fail count needed depends on the horse tier\n'
         f'{emojis.BP} A {emojis.GODLY_HORSE_TOKEN} GODLY horse token increases the fail count by 50\n'
         f'{emojis.BP} This token can be earned in certain seasonal events\n'
     )
     chances = (
         f'{emojis.BP} T1 ➜ T2: 100% chance\n'
-        f'{emojis.BP} T2 ➜ T3: 60% chance (guaranteed at 2 attempts)\n'
-        f'{emojis.BP} T3 ➜ T4: 30% chance (guaranteed at 4 attempts)\n'
-        f'{emojis.BP} T4 ➜ T5: 15% chance (guaranteed at 8 attempts)\n'
-        f'{emojis.BP} T5 ➜ T6: 5% chance (guaranteed at 24 attempts)\n'
-        f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed at 60 attempts)\n'
-        f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed at 120 attempts)\n'
-        f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed at 360 attempts)\n'
+        f'{emojis.BP} T2 ➜ T3: 60% chance (guaranteed after 2 attempts)\n'
+        f'{emojis.BP} T3 ➜ T4: 30% chance (guaranteed after 4 attempts)\n'
+        f'{emojis.BP} T4 ➜ T5: 15% chance (guaranteed after 8 attempts)\n'
+        f'{emojis.BP} T5 ➜ T6: 5% chance (guaranteed after 24 attempts)\n'
+        f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed after 60 attempts)\n'
+        f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed after 120 attempts)\n'
+        f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed after 360 attempts)\n'
         f'{emojis.BP} T9 ➜ T10: chance & attempts unknown\n'
     )
     horse_level = (

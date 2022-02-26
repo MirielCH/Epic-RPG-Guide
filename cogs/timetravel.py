@@ -62,7 +62,7 @@ class timetravelCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True)
     async def tt1000(self, ctx):
 
-        await ctx.send('https://tenor.com/view/davidtennant-fangirls-dr-who-scared-oh-crap-gif-6092368')
+        await ctx.send('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
 
     # Command "mytt" - Information about user's TT
     @commands.command(aliases=('mytimetravel',))

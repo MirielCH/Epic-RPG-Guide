@@ -172,6 +172,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'{emojis.BP} `{prefix}codes` : Redeemable codes\n'
         f'{emojis.BP} `{prefix}duel` : Duelling weapons\n'
         f'{emojis.BP} `{prefix}farm` : Farming guide\n'
+        f'{emojis.BP} `{prefix}returning` : Returning event guide\n'
         f'{emojis.BP} `{prefix}tip` : A handy dandy random tip\n'
         f'{emojis.BP} `{prefix}title` / `{prefix}t`  : Titles / Achievements\n'
     )
@@ -191,7 +192,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    #embed.add_field(name=f'CHRISTMAS 2021 {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)

@@ -1562,7 +1562,7 @@ async def embed_professions_overview(prefix):
 
     merchant = (
         f'{emojis.BP} Increases the amount of coins you get when selling items\n'
-        f'{emojis.BP} Level 101+: Adds a chance to get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
+        f'{emojis.BP} Level 101+: You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
         f'{emojis.BP} For more details see `{prefix}pr merchant`'
     )
 
@@ -1649,7 +1649,7 @@ async def embed_professions_leveling(prefix):
     )
 
     ascended = (
-        f'{emojis.BP} Increase crafter to 101, then focus exclusively on worker\n'
+        f'{emojis.BP} Increase crafter and merchant to 101, then focus exclusively on worker\n'
     )
 
     calculators = (
@@ -1874,8 +1874,9 @@ async def embed_professions_merchant(prefix):
     )
 
     level_101 =(
-        f'{emojis.BP} Adds a chance to get a {emojis.DRAGON_SCALE} dragon scale when selling a mob drop\n'
-        f'{emojis.BP} The chance is 2% at level 101 and increases by 2% for every level\n'
+        f'{emojis.BP} You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
+        f'{emojis.BP} You get 1 dragon scale per 50 mob drops at level 101 (2%)\n'
+        f'{emojis.BP} This increases by 2% for every level\n'
     )
 
     how_to_get_xp = (
