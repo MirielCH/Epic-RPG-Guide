@@ -866,16 +866,18 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             time_limit = f'{time_limit} per player'
 
     # Amount of players and boss stats
-    if dungeon.player_amount[0] == dungeon.player_amount[1]:
-        player_amount = f'{emojis.BP} {dungeon.player_amount[0]}'
+    player_amount = f'{emojis.BP} {dungeon.player_amount[0]}'
+    if dungeon.player_amount[0] != dungeon.player_amount[1]:
+        player_amount = f'{player_amount}-{dungeon.player_amount[1]}'
+    if dungeon.player_amount in ((1,1),(2,2)):
         boss_life = '-' if boss_life is None else f'{boss_life:,}'
     else:
-        player_amount = f'{emojis.BP} {dungeon.player_amount[0]}-{dungeon.player_amount[1]}'
-        boss_life = f'{boss_life:,} per player'
+        boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
     if 16 <= dungeon_no <= 21:
         boss_at = 'Currently unknown'
-        if dungeon_no == 21: boss_life = 'Currently unknown'
+        if dungeon_no == 21:
+            boss_life = 'Currently unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
@@ -956,11 +958,16 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
 
     # Rewards
     if 1 <= dungeon_no <= 14:
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g}'
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see `{prefix}a{dungeon_no + 1}`)'
     elif dungeon_no == 15:
         rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
-        rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks \'The TOP\''
+        rewards = (
+            f'{emojis.BP} Unlocks the TOP (see `{prefix}top`)\n'
+            f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n'
+            f'{emojis.BLANK} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie (see `{prefix}dtop`)\n'
+            f'{emojis.BLANK} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump (see `{prefix}a16`)\n'
+        )
     elif 16 <= dungeon_no <= 20:
         rewards = (
             f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area {dungeon_no + 1:g} (if unsealed)\n'
@@ -1029,8 +1036,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         ),
             inline=False
     )
-    if field_rec_gear is not None: embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=False)
-    if field_rec_stats is not None: embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=False)
+    if field_rec_gear is not None: embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=True)
+    if field_rec_stats is not None: embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=True)
     if strategy is not None: embed.add_field(name='STRATEGY', value=strategy, inline=False)
     if tips is not None: embed.add_field(name='TIPS', value=tips, inline=False)
     if notes is not None: embed.add_field(name='NOTE', value=notes, inline=False)

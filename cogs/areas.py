@@ -622,7 +622,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     dungeon: database.Dungeon = await database.get_dungeon(area.dungeon_no)
     tt_no = 25 if user.tt > 25 else user.tt
     tt: database.TimeTravel = await database.get_time_travel(tt_no)
-    area_locked = new_commands = traderates_next_area = materials = next_area = area_sealed = None
+    area_locked = new_commands = traderates_next_area = materials = next_area = area_req = None
     time_traveler_prepare = True if tt.tt_area == area.area_no else False
     if area.area_no == 15:
         next_area = await database.get_area(21)
@@ -630,7 +630,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         next_area = await database.get_area(area.area_no + 1)
 
     # Footer
-    footer = f'Tip: Use {prefix}d{dungeon.dungeon_no:g} for details about the next dungeon.'
+    guide_dungeon = 'top' if area.area_no == 21 else f'{area.dungeon_no:g}'
+    footer = f'Tip: Use {prefix}d{guide_dungeon} for details about the next dungeon.'
 
     # Description
     description = f'{area.description}'
@@ -643,7 +644,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             )
         footer = f'Tip: See {prefix}tt for details about time traveling'
 
-    # Area sealed
+    # Area requirements
     unseal_time = {
         16: 15,
         17: 10,
@@ -651,23 +652,38 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         19: 3,
         20: 2
     } # area: days
-    if area.area_no == 16:
-        area_sealed = (
+    if 2 <= area.area_no <= 15:
+        area_req = (
+            f'{emojis.BP} Complete dungeon {area.area_no - 1} (see `{prefix}d{area.area_no - 1}`)'
+        )
+    elif area.area_no == 21:
+        area_req = (
+            f'{emojis.BP} Complete dungeon 15-2 (see `{prefix}d15-2`)\n'
+        )
+    elif area.area_no == 16:
+        area_req = (
+            f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP\n'
-            f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
+            f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} You need an {emojis.EPIC_JUMP} EPIC jump to move to this area from a lower area\n'
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jumps can be bought from the `shop` or by doing dungeons 16-20\n'
+            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jump can be bought from the `shop`\n'
         )
     elif 17 <= area.area_no <= 20:
-        area_sealed = (
+        area_req = (
+            f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
             f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} You need an {emojis.EPIC_JUMP} EPIC jump to move to this area from a lower area\n'
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jumps can be bought from the `shop` or by doing dungeons 16-20\n'
+            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps can be bought from the `shop` or by doing dungeons 16-20\n'
+        )
+    if area.unlocked_in_tt > 0:
+        area_req = (
+            f'{emojis.BP} {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt}+\n'
+            f'{area_req}'
         )
 
     # Guick guide
@@ -779,8 +795,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     if area_locked is not None:
         embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
-    if area_sealed is not None:
-        embed.add_field(name='AREA SEALED', value=area_sealed, inline=False)
+    if area_req is not None:
+        embed.add_field(name='AREA REQUIREMENTS', value=area_req, inline=False)
     if debuffs is not None:
         embed.add_field(name='AREA DEBUFFS', value=debuffs, inline=False)
     embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)

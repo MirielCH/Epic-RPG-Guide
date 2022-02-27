@@ -7,6 +7,7 @@ import sys
 
 from discord.ext import commands
 
+import database
 import emojis
 
 
@@ -154,6 +155,18 @@ class DevCog(commands.Cog):
     async def test(self, ctx, tt: int):
         multiplier = round((tt ** 2 / 64) + (7 * tt / 73) + (19 / 35))
         await ctx.send(f'Enchant multiplier for TT {tt} is {multiplier}')
+
+    @dev.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def migrate_users(self, ctx: commands.Context) -> None:
+        """Migrate user settings to new format
+        Old: ascended / not ascended
+        New: O / 1 (boolean)"""
+        users = await database.get_all_users()
+        for user in users:
+            await user.update(ascended=user.ascended)
+        await ctx.send(f'Updated {len(users)} records.')
 
 
 # Initialization

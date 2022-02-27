@@ -98,7 +98,7 @@ class MainCog(commands.Cog):
             )
         else:
             await database.log_error(ctx, error)
-            if settings.DEBUG_MODE: await send_error()
+            if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()
 
 
     @commands.Cog.listener()

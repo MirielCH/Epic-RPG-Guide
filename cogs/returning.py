@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import emojis
-from resources import functions
+from resources import functions, settings
 
 
 # Returning commands (cog)
@@ -53,7 +53,7 @@ async def embed_returning_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} This is a personal event with no fixed schedule\n'
     )
     embed = discord.Embed(
-        color = 0xED04F5,
+        color = settings.EMBED_COLOR,
         title = f'RETURNING EVENT {emojis.EPIC_RPG_LOGO}',
         description = 'Oh hi, nice to see you again'
     )

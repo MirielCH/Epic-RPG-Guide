@@ -1,5 +1,6 @@
 # database.py
 
+from aifc import Error
 from dataclasses import dataclass
 from datetime import datetime
 import sqlite3
@@ -934,6 +935,43 @@ async def get_user(user_id: int) -> User:
     )
 
     return user
+
+
+async def get_all_users() -> Tuple[User]:
+    """Returns all user settings from table "users".
+    This is only used for migration, can be deleted afterwards.
+
+    Returns:
+        Tuple with User objects
+
+    Raises:
+        FirstTimeUser if there are no settings stored.
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'users'
+    function_name = 'get_user'
+    sql = f'SELECT * FROM {table}'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    users = []
+    for record in records:
+        if record['ascended'] not in ('ascended', 'not ascended'): raise Error('Already migrated.')
+        user = User(
+            ascended = True if record['ascended'] == 'ascended' else False,
+            tt = record['tt'],
+            user_id = record['user_id'],
+        )
+        users.append(user)
+
+    return tuple(users)
 
 
 async def get_monster_by_name(name: str) -> Monster:

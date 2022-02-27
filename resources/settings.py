@@ -24,11 +24,10 @@ IMG_THUMBNAIL = os.path.join(BOT_DIR, 'images/erg.png')
 IMG_DUNGEON_11 = os.path.join(BOT_DIR, 'images/dungeon11.png')
 IMG_DUNGEON_13 = os.path.join(BOT_DIR, 'images/dungeon13.png')
 
-# Prefix
 DEFAULT_PREFIX = '$'
 
-# EPIC RPG user id
 EPIC_RPG_ID = 555955826880413696
 
-# Embed color
 EMBED_COLOR = 0x8914FF
+
+OWNER_ID = 619879176316649482
