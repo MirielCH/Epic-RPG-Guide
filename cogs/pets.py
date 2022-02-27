@@ -502,6 +502,15 @@ async def embed_pets_skills_special(prefix):
         f'{emojis.BP} This pet is a reward in the horse festival'
     )
 
+    resetter = (
+        f'{emojis.BP} If the pet also has the {emojis.SKILL_TRAVELER} time traveler skill and it triggers, '
+        f'it has a chance to reset **all** pets on an adventure\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_VOIDOG} VOIDog pet\n'
+        f'{emojis.BP} This pet can drop in dungeons 16 to 20.\n'
+        f'{emojis.BLANK} The drop chance increases with higher dungeons.\n'
+        f'{emojis.BLANK} You can get multiple, but each time you get one, the drop chance lowers.\n'
+    )
+
     skillranks = f'{emojis.BP} Special skills can not be ranked up'
 
     guides = (
@@ -522,13 +531,14 @@ async def embed_pets_skills_special(prefix):
     )
 
     embed.set_footer(text=await functions.default_footer(prefix))
+    embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
     embed.add_field(name=f'COMPETITIVE {emojis.SKILL_COMPETITIVE}', value=competitive, inline=False)
     embed.add_field(name=f'FARMER {emojis.SKILL_FARMER}', value=farmer, inline=False)
-    embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'FASTER {emojis.SKILL_FASTER}', value=faster, inline=False)
+    embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'GIFTER {emojis.SKILL_GIFTER}', value=gifter, inline=False)
     embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
-    embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
+    embed.add_field(name=f'RESETTER {emojis.SKILL_RESETTER}', value=resetter, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 

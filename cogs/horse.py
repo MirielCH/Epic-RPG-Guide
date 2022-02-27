@@ -801,11 +801,13 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     defender = (
         f'{emojis.BP} Increases overall DEF\n'
         f'{emojis.BP} The higher the horse level, the higher the DEF bonus\n'
+        f'{emojis.BP} This type is better than MAGIC if you use EDGY or lower enchants\n'
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     strong = (
         f'{emojis.BP} Increases overall AT\n'
         f'{emojis.BP} The higher the horse level, the higher the AT bonus\n'
+        f'{emojis.BP} This type is better than MAGIC if you use EDGY or lower enchants\n'
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     tank = (
@@ -835,6 +837,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     magic = (
         f'{emojis.BP} Increases the effectiveness of enchantments\n'
         f'{emojis.BP} The higher the horse level, the higher the increase\n'
+        f'{emojis.BP} This type is better than DEFENDER / STRONG if you use ULTRA-EDGY or higher enchants\n'
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     festive = (
@@ -850,8 +853,8 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     )
     besttype = (
         f'{emojis.BP} SPECIAL or SUPER SPECIAL if you are in {emojis.TIME_TRAVEL} TT 0-1\n'
-        f'{emojis.BP} DEFENDER or STRONG if you are in {emojis.TIME_TRAVEL} TT 2+\n'
-        #f'{emojis.BP} MAGIC if you get ULTRA-OMEGA or GODLY enchants'
+        f'{emojis.BP} DEFENDER or STRONG if you are {emojis.TIME_TRAVEL} TT 2+, not ascended\n'
+        f'{emojis.BP} MAGIC if you are {emojis.TIME_TRAVEL} TT 2+, ascended\n'
     )
     calculators = (
         f'{emojis.BP} {CALC_TYPE.format(prefix=prefix)}\n'

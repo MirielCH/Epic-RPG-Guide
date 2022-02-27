@@ -218,12 +218,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
         quick_guide = f'{quick_guide}\n{quick_guide_sword}{quick_guide_enchant_sword}'
     if quick_guide_armor != '' or quick_guide_enchant_armor != '':
         quick_guide = f'{quick_guide}\n{quick_guide_armor}{quick_guide_enchant_armor}'
-    if area.area_no == 7:
-        quick_guide = (
-            f'{quick_guide}\n'
-            f'{emojis.BLANK} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or cook '
-            f'{emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
-        )
+        if area.area_no == 7: quick_guide = f'{quick_guide} **(*)**'
     quick_guide = f'{quick_guide}\n{emojis.BP} Check below to see which lootboxes to buy, keep or open'
     if area.area_no in (3,5,7,9,10,11) and tt.tt_area != area.area_no:
         quick_guide = f'{quick_guide}\n{emojis.BP} Trade before leaving (see trades below)'
@@ -687,12 +682,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     # Recommended gear
     field_rec_gear = await functions.design_field_rec_gear(dungeon)
     if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
-    if area.area_no in (7,8):
-        field_rec_gear = (
-            f'{field_rec_gear}\n'
-            f'{emojis.BLANK} **Note**: This armor is expensive. If you don\'t want to craft it, find a carry or '
-            f'cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
-        )
+    if area.area_no in (7,8): field_rec_gear = f'{field_rec_gear} **(*)**'
 
     # New commands
     new_commands = ''
@@ -768,6 +758,12 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         f'or `{prefix}a{guide_area} [tt] asc`\n'
         f'{emojis.BP} To change your personal TT settings, use `{prefix}setprogress`.'
     )
+    if area.area_no in (7,8):
+        note = (
+            f'{note}\n'
+            f'{emojis.BP} **(*)** This armor is expensive. If you don\'t want to craft it, find a carry or '
+            f'cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
+        )
 
     # Title
     title = f'{area_no_str}  •  TT {user.tt}'

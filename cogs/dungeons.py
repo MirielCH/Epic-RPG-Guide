@@ -896,8 +896,10 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_1} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
-    if dungeon_no in (10, 11, 13, 15, 15.2, 21):
+    if dungeon_no in (10, 11, 13, 15, 15.2):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name}'
+    if dungeon_no == 21:
+        requirements = f'{requirements}\n{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`use` it so start the dungeon)'
     if dungeon_no in (10, 12, 14, 15):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
     if dungeon_no in (15, 15.2):
@@ -961,13 +963,15 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         rewards = f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n{emojis.BP} Unlocks \'The TOP\''
     elif 16 <= dungeon_no <= 20:
         rewards = (
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to areas 16-20 (if unsealed) from a lower area.\n'
+            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area {dungeon_no + 1:g} (if unsealed)\n'
             f'{emojis.BLANK} Note: You can not have more than 1 in your inventory.\n'
             f'{emojis.BP} Unlocks the ability to get 2 additional {emojis.TIME_TRAVEL} TTs every {21 - dungeon_no:g} TTs.\n'
-            f'{emojis.BLANK} This reward is permanent.'
+            f'{emojis.BLANK} This reward is permanent.\n'
+            f'{emojis.BP} Chance to get a {emojis.PET_VOIDOG} VOIDog pet\n'
         )
     elif dungeon_no == 21:
         rewards = (
+            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area 16 (if unsealed)\n'
             f'{emojis.BP} Unlocks the content after the TOP (areas 16-20).\n'
             f'{emojis.BLANK} This reward is permanent.'
         )

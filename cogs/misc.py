@@ -93,7 +93,7 @@ class miscCog(commands.Cog):
         npc_def_base = 6 * (stage ** 1.25)
 
         answer = (
-            f'Estimated trainer stats at stage **{stage:,}**:\n'
+            f'Estimated EPIC NPC stats at stage **{stage:,}**:\n'
             f'{emojis.STAT_AT} AT: **{round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}**\n'
             f'{emojis.STAT_DEF} DEF: **{round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}**\n'
         )
@@ -348,9 +348,9 @@ class miscCog(commands.Cog):
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-        coin_cap = pow(user_tt, 4) * 500_000_000 if user_tt > 0 else 'unknown'
+        coin_cap = f'{pow(user_tt, 4) * 500_000_000:,}' if user_tt > 0 else 'unknown'
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap:,}** {emojis.COIN} coins.\n'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
             f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
@@ -692,8 +692,8 @@ async def embed_ultraining(prefix):
     )
 
     preparation = (
-        f'{emojis.BP} Get GODLY enchants\n'
-        f'{emojis.BP} Get a STRONG or DEFENDER horse (or MAGIC **if** you have GODLY enchants)\n'
+        f'{emojis.BP} Get VOID enchants\n'
+        f'{emojis.BP} Get a MAGIC horse\n'
         f'{emojis.BP} Craft as many {emojis.FOOD_APPLE_JUICE} apple juice and {emojis.FOOD_ORANGE_JUICE} orange juice '
         f'you need to reach your desired stage\n'
         f'{emojis.BP} Duel on cooldown to increase your level\n'
