@@ -298,6 +298,19 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
     """Returns the best work commands for the area embed"""
 
     work_commands = None
+
+    if 16 <= area.area_no <= 20:
+        if area.area_no in (16,18):
+            work_commands = (
+                f'{emojis.BP} `bigboat` if you need {emojis.FISH_SUPER} SUPER fish\n'
+                f'{emojis.BP} `chainsaw` otherwise'
+            )
+        elif area.area_no in (17,20):
+            work_commands = f'{emojis.BP} `chainsaw`'
+        elif area.area_no == 19:
+            work_commands = None
+        return work_commands
+
     if user.tt in (0,1):
         money_nohorse = area.money_tt1_nohorse
         money_t6horse = area.money_tt1_t6horse
@@ -368,13 +381,6 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
         elif area.area_no == 11:
             work_commands = (
                 f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                f'{emojis.BP} `chainsaw` otherwise'
-            )
-        elif area.area_no == 19:
-            work_commands = None
-        else:
-            work_commands = (
-                f'{emojis.BP} `dynamite` if you need coins\n'
                 f'{emojis.BP} `chainsaw` otherwise'
             )
 

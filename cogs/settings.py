@@ -88,17 +88,20 @@ class SettingsCog(commands.Cog):
             if not 0 <= new_tt <= 999:
                 await ctx.send(message_syntax)
                 return
-            if arg_ascended:
-                arg_ascended, *_ = arg_ascended
-                new_ascended = ascension.get(arg_ascended, None)
-                if new_ascended is None:
-                    await ctx.send(message_syntax)
-                    return
-                if new_ascended and new_tt == 0:
-                    await ctx.send(f'**{user_name}**, you can not ascend in TT 0.')
-                    return
+            if new_tt >= 25:
+                new_ascended = True
             else:
-                new_ascended = False
+                if arg_ascended:
+                    arg_ascended, *_ = arg_ascended
+                    new_ascended = ascension.get(arg_ascended, None)
+                    if new_ascended is None:
+                        await ctx.send(message_syntax)
+                        return
+                    if new_ascended and new_tt == 0:
+                        await ctx.send(f'**{user_name}**, you can not ascend in TT 0.')
+                        return
+                else:
+                    new_ascended = False
         if not args:
             try:
                 await ctx.send(
@@ -122,28 +125,31 @@ class SettingsCog(commands.Cog):
                         f'**{user_name}**, you didn\'t enter a number from 0 to 999. Aborting.'
                     )
                     return
-                await ctx.send(
-                    f'**{user_name}**, are you **ascended**? `[yes/no]` '
-                    f'(type `abort` to abort )'
-                )
-                answer_ascended = await self.bot.wait_for('message', check=check, timeout=30)
-                answer_ascended = answer_ascended.content.lower()
-                if answer_ascended in ('abort', 'cancel'):
-                    await ctx.send(strings.MSG_ABORTING)
-                    return
+                if new_tt >= 25:
+                    new_ascended = True
+                else:
+                    await ctx.send(
+                        f'**{user_name}**, are you **ascended**? `[yes/no]` '
+                        f'(type `abort` to abort )'
+                    )
+                    answer_ascended = await self.bot.wait_for('message', check=check, timeout=30)
+                    answer_ascended = answer_ascended.content.lower()
+                    if answer_ascended in ('abort', 'cancel'):
+                        await ctx.send(strings.MSG_ABORTING)
+                        return
+                    new_ascended = ascension.get(answer_ascended, None)
+                    if new_ascended is None:
+                        await ctx.send(
+                            f'**{user_name}**, you didn\'t answer with `yes` or `no`. '
+                            f'Aborting.'
+                        )
+                        return
             except asyncio.TimeoutError:
                 await ctx.send(
                     f'**{user_name}**, you took too long to answer, RIP.\n\n'
                     f'Tip: You can also use `{prefix}{invoked} [0-999]` or '
                     f'`{prefix}{invoked} [0-999] asc` if you\'re ascended.'
                 )
-            new_ascended = ascension.get(answer_ascended, None)
-            if new_ascended is None:
-                await ctx.send(
-                    f'**{user_name}**, you didn\'t answer with `yes` or `no`. '
-                    f'Aborting.'
-                )
-                return
         await user.update(tt=new_tt, ascended=new_ascended)
         if user.tt == new_tt and user.ascended == new_ascended:
             await ctx.send(
