@@ -177,27 +177,37 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     prefix = ctx.prefix
     quick_guide_sword = quick_guide_armor = quick_guide_enchant_sword = quick_guide_enchant_armor = quick_guide = ''
 
+    action = 'Craft' if area.area_no < 11 else 'Forge'
     if area.upgrade_sword:
-        quick_guide_sword = f'{emojis.BP} Craft {dungeon.player_sword.emoji} {dungeon.player_sword.name}'
+        quick_guide_sword = f'{emojis.BP} {action} {dungeon.player_sword.emoji} {dungeon.player_sword.name}'
     if area.upgrade_armor:
-        quick_guide_armor = f'{emojis.BP} Craft {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
+        quick_guide_armor = f'{emojis.BP} {action} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
     if dungeon.player_sword_enchant is not None:
         if area.upgrade_sword:
-            quick_guide_enchant_sword = f' and enchant to [{dungeon.player_sword_enchant}+]'
+            quick_guide_enchant_sword = f' and enchant to {dungeon.player_sword_enchant}'
         elif area.upgrade_sword_enchant:
                 quick_guide_enchant_sword = (
                     f'{emojis.BP} Enchant {dungeon.player_sword.emoji} {dungeon.player_sword.name} '
-                    f'to [{dungeon.player_sword_enchant}+]'
+                    f'to {dungeon.player_sword_enchant}'
                 )
+        if dungeon.player_sword_enchant != 'VOID':
+            quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
 
     if dungeon.player_armor_enchant is not None:
         if area.upgrade_armor:
-            quick_guide_enchant_armor = f' and enchant to [{dungeon.player_armor_enchant}+]'
+            quick_guide_enchant_armor = f' and enchant to {dungeon.player_armor_enchant}'
         elif area.upgrade_armor_enchant:
                 quick_guide_enchant_armor = (
                     f'{emojis.BP} Enchant {dungeon.player_armor.emoji} {dungeon.player_armor.name} to '
-                    f'[{dungeon.player_armor_enchant}+]'
+                    f'{dungeon.player_armor_enchant}'
                 )
+        if dungeon.player_armor_enchant != 'VOID':
+            quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
+
+    if area.area_no == 21:
+        quick_guide_sword = (
+            f'{emojis.BP} Craft {emojis.SWORD_GODLYCOOKIE} GODLY cookie if you want to do the "final" dungeon'
+        )
 
     if tt.tt_area == area.area_no:
         quick_guide = f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel (see `{prefix}tt{user.tt + 1}`)'
@@ -207,7 +217,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
         quick_guide = f'{emojis.BP} Farm the materials mentioned below'
 
     if dungeon.player_level is not None:
-        quick_guide = f'{quick_guide}\n{emojis.BP} Reach level {dungeon.player_level}'
+        quick_guide = f'{quick_guide}\n{emojis.BP} Reach level {dungeon.player_level:,}'
     if area.area_no == 9:
         quick_guide = (
             f'{quick_guide}\n'
@@ -229,31 +239,40 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
 async def design_field_debuffs(area: database.Area) -> str:
     """Returns the debuffs for the area embed"""
     if area.area_no < 16 or area.area_no > 20: return None
+
+    all_area_caps = {
+        16: ('~17k AT, ~11k DEF, 25k LIFE, level 1.5k'),
+        17: ('~72k AT, ~52k DEF, 60k LIFE, level 2.5k'),
+        18: ('~288k AT, ~230k DEF, 300k LIFE, level 4k'),
+        19: ('~1m AT, ~1m DEF, 1.45m LIFE, level 6.5k'),
+        20: ('~4.3m AT, ~4.3m DEF, 10m LIFE, level 10k'),
+    }
+
     if area.area_no == 16:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
+            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
             f'{emojis.BP} Every command drains 1% LIFE\n'
             f'{emojis.BP} `heal` reduces max LIFE\n'
             f'{emojis.BP} Lootboxes contain no items\n'
         )
     elif area.area_no == 17:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
-            f'{emojis.BP} Every command drains 1% of your levels\n'
+            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{emojis.BP} Every command drains 0.75% of your levels\n'
             f'{emojis.BP} `farm` has a high chance to give no items\n'
             f'{emojis.BP} `craft`, `dismantle`, `forge`, `cook`, `eat`, `withdraw` and `deposit` can fail.\n'
             f'{emojis.BLANK }If this happens, you will lose the items from that command.'
         )
     elif area.area_no == 18:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
+            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
             f'{emojis.BP} Monsters can drop a negative amount of items\n'
             f'{emojis.BP} Command cooldowns are randomized when the area is unsealed\n'
             f'{emojis.BP} `cook` has a chance to have the opposite effect\n'
         )
     elif area.area_no == 19:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
+            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
             f'{emojis.BP} Items have a chance to randomly vanish from inventory\n'
             f'{emojis.BP} `dice` and `coinflip` do not work properly\n'
             f'{emojis.BP} `heal`, `cook`, `farm` and all work commands do not work at all\n'
@@ -261,7 +280,7 @@ async def design_field_debuffs(area: database.Area) -> str:
         )
     elif area.area_no == 20:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
+            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
             f'{emojis.BP} Every command drains 500 profession XP from a random profession\n'
             f'{emojis.BP} Every command has a chance of removing 1 {emojis.TIME_TRAVEL} TT\n'
             f'{emojis.BP} Your horse has a chance of losing levels\n'
@@ -271,42 +290,6 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} While this area is unsealed, A20 monsters have a 0.01% chance of appearing in all areas '
             f'down to A1\n'
         )
-
-    return debuffs
-
-
-async def design_field_sealed(area: database.Area) -> str:
-    """Returns the seal requirements for the area embed"""
-    if area.area_no < 16 or area.area_no > 20: return None
-
-    elif area.area_no == 18:
-        debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
-            f'{emojis.BP} Monsters can drop a negative amount of items\n'
-            f'{emojis.BP} Command cooldowns are randomized when the area is unsealed\n'
-            f'{emojis.BP} `cook` has a chance to have the opposite effect\n'
-        )
-    elif area.area_no == 19:
-        debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
-            f'{emojis.BP} Items have a chance to randomly vanish from inventory\n'
-            f'{emojis.BP} `dice` and `coinflip` do not work properly\n'
-            f'{emojis.BP} `heal`, `cook`, `farm` and all work commands do not work at all\n'
-            f'{emojis.BP} Your horse buff is not available\n'
-        )
-    elif area.area_no == 20:
-        debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and levels are capped\n'
-            f'{emojis.BP} Every command drains 500 profession XP from a random profession\n'
-            f'{emojis.BP} Every command has a chance of removing 1 {emojis.TIME_TRAVEL} TT\n'
-            f'{emojis.BP} Your horse has a chance of losing levels\n'
-            f'{emojis.BP} Recently obtained pets (up to T5) have a chance of losing a tier or vanishing\n'
-            f'{emojis.BP} `time travel` and `super time travel` do not work\n'
-            f'{emojis.BP} Command cooldowns can randomly change and be displayed wrong\n'
-            f'{emojis.BP} While this area is unsealed, A20 monsters have a 0.01% chance of appearing in all areas '
-            f'down to A1\n'
-        )
-
 
     return debuffs
 
@@ -663,22 +646,22 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     elif area.area_no == 16:
         area_req = (
             f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
-            f'{emojis.BP} This area needs to be unsealed by players from the TOP\n'
-            f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
+            f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
-            f'{emojis.BP} Check `void` to see the current status and requirements\n'
-            f'{emojis.BP} You need an {emojis.EPIC_JUMP} EPIC jump to move to this area from a lower area\n'
-            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jump can be bought from the `shop`\n'
+            #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
+            #f'{emojis.BP} Check `void` to see the current status and requirements\n'
+            f'{emojis.BP} Requires {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
+            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
             f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
-            f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}\n'
+            f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
-            f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
-            f'{emojis.BP} Check `void` to see the current status and requirements\n'
-            f'{emojis.BP} You need an {emojis.EPIC_JUMP} EPIC jump to move to this area from a lower area\n'
-            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps can be bought from the `shop` or by doing dungeons 16-20\n'
+            #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
+            #f'{emojis.BP} Check `void` to see the current status and requirements\n'
+            f'{emojis.BP} Requires {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
+            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     if area.unlocked_in_tt > 0:
         area_req = (
@@ -795,11 +778,11 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     if area_locked is not None:
         embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
+    embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
     if area_req is not None:
         embed.add_field(name='AREA REQUIREMENTS', value=area_req, inline=False)
     if debuffs is not None:
         embed.add_field(name='AREA DEBUFFS', value=debuffs, inline=False)
-    embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN HUNT', value=field_monsters_hunt, inline=True)
     if field_monsters_hunt != '':

@@ -853,7 +853,7 @@ async def embed_horses_types(prefix: str) -> discord.Embed:
     )
     besttype = (
         f'{emojis.BP} SPECIAL or SUPER SPECIAL if you are in {emojis.TIME_TRAVEL} TT 0-1\n'
-        f'{emojis.BP} DEFENDER or STRONG if you are {emojis.TIME_TRAVEL} TT 2+, not ascended\n'
+        f'{emojis.BP} DEFENDER if you are {emojis.TIME_TRAVEL} TT 2+, not ascended\n'
         f'{emojis.BP} MAGIC if you are {emojis.TIME_TRAVEL} TT 2+, ascended\n'
     )
     calculators = (

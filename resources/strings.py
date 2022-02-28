@@ -168,6 +168,7 @@ item_aliases = {
     'watermelonsw': 'watermelon sword',
     'watermelonsw': 'watermelon sword',
     'melonsw': 'watermelon sword',
+    'wm sw': 'watermelon sword',
     'melon sword': 'watermelon sword',
     'watermelonsword': 'watermelon sword',
     'wm sword': 'watermelon sword',

@@ -874,10 +874,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     else:
         boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
-    if 16 <= dungeon_no <= 21:
-        boss_at = 'Currently unknown'
-        if dungeon_no == 21:
-            boss_life = 'Currently unknown'
+    if 16 <= dungeon_no <= 21: boss_at = 'Unknown'
+    if dungeon_no == 21: boss_life = 'Unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
@@ -894,8 +892,10 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         description = f'{description}\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
 
     # Requirements
-    if 1 <= dungeon_no <= 14:
+    if 1 <= dungeon_no <= 9:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_1} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
+    elif 10 <= dungeon_no <= 14:
+        requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
     if dungeon_no in (10, 11, 13, 15, 15.2):
@@ -951,6 +951,13 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.1'
     elif dungeon_no == 15.2:
         strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
+    elif 16 <= dungeon_no <= 19:
+        strategy = f'{emojis.BP} Use `power`'
+    elif dungeon_no <= 20:
+        strategy = (
+            f'{emojis.BP} Use `power` if you can survive the damage\n'
+            f'{emojis.BP} Use `sacrifice` if you are about to die'
+        )
 
     # Tips
     if dungeon_no == 11:
@@ -973,7 +980,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
 
     # Rewards
     if 1 <= dungeon_no <= 14:
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see `{prefix}a{dungeon_no + 1}`)'
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see `{prefix}a{dungeon_no + 1:g}`)'
     elif dungeon_no == 15:
         rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock super time travel (see `{prefix}stt`)'
     elif dungeon_no == 15.2:
@@ -998,10 +1005,10 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             f'{emojis.BLANK} This reward is permanent.'
         )
 
-
     # Notes
     if 16 <= dungeon_no <= 20:
         notes = (
+            f'{emojis.BP} Carrying is not possible in this dungeon\n'
             f'{emojis.BP} You can redo this dungeon as long as you are in area {dungeon_no:g}\n'
         )
 

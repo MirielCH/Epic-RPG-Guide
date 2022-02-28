@@ -111,12 +111,9 @@ async def design_field_rec_gear(dungeon: database.Dungeon) -> str:
 
 async def design_field_rec_stats(dungeon: database.Dungeon, short_version: bool = False) -> str:
     """Design field "Recommended Stats" for areas & dungeons. NEEDS REFACTORING"""
-    if 16 <= dungeon.dungeon_no <= 21:
-        return f'{emojis.BP} Currently unknown'
-
-    if dungeon.dungeon_no.is_integer(): dungeon_no = int(dungeon.dungeon_no)
 
     player_carry_def = ''
+
     if dungeon.player_carry_def is not None:
         if not short_version:
             player_carry_def = f'({dungeon.player_carry_def}+ to carry)'
