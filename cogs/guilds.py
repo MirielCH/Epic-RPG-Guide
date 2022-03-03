@@ -438,9 +438,9 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'WEEKLY GUILD TASKS',
+        title = 'GUILD TASKS',
         description = (
-            f'Weekly tasks can be completed once a week.\n'
+            f'Guild tasks can be completed once a week.\n'
             f'Every guild gets 4 random tasks every week after the reset.\n'
             f'All guild members can contribute to these tasks.'
         )

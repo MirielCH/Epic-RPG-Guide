@@ -151,6 +151,7 @@ class areasCog(commands.Cog):
         user: database.User = await database.get_user(ctx.author.id)
         if arg_tt is not None:
             user.tt = arg_tt
+            if arg_tt >= 25: arg_asc = True
             if arg_asc:
                 if arg_tt == 0:
                     await ctx.send(f'**{ctx.author.name}**, you can not ascend in TT 0.')
@@ -216,7 +217,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     if ((area.area_no == 3 and tt.a3_fish > 0) or (area.area_no == 5 and tt.a5_apple > 0)):
         quick_guide = f'{emojis.BP} Farm the materials mentioned below'
 
-    if dungeon.player_level is not None:
+    if dungeon.player_level is not None and dungeon.dungeon_no <= 15.2:
         quick_guide = f'{quick_guide}\n{emojis.BP} Reach level {dungeon.player_level:,}'
     if area.area_no == 9:
         quick_guide = (
@@ -241,38 +242,42 @@ async def design_field_debuffs(area: database.Area) -> str:
     if area.area_no < 16 or area.area_no > 20: return None
 
     all_area_caps = {
-        16: ('~17k AT, ~11k DEF, 25k LIFE, level 1.5k'),
-        17: ('~72k AT, ~52k DEF, 60k LIFE, level 2.5k'),
-        18: ('~288k AT, ~230k DEF, 300k LIFE, level 4k'),
-        19: ('~1m AT, ~1m DEF, 1.45m LIFE, level 6.5k'),
-        20: ('~4.3m AT, ~4.3m DEF, 10m LIFE, level 10k'),
-    }
+        16: ('17292 AT, 11528 DEF, 25k LIFE'),
+        17: ('72050 AT, 48994 DEF, 60k LIFE'),
+        18: ('288200 AT, 201740 DEF, 300k LIFE'),
+        19: ('1m AT, 600k DEF, 1.5m LIFE'),
+        20: ('4.323m AT, 4.323m DEF, 10m LIFE'),
+    } # Including VOID enchants and horse
 
+    debuffs = (
+        f'{emojis.BP} AT, DEF and LIFE are capped\n'
+        f'{emojis.BLANK} Equipment ignores this cap'
+    )
     if area.area_no == 16:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{debuffs}\n'
             f'{emojis.BP} Every command drains 1% LIFE\n'
             f'{emojis.BP} `heal` reduces max LIFE\n'
             f'{emojis.BP} Lootboxes contain no items\n'
         )
     elif area.area_no == 17:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{debuffs}\n'
             f'{emojis.BP} Every command drains 0.75% of your levels\n'
             f'{emojis.BP} `farm` has a high chance to give no items\n'
-            f'{emojis.BP} `craft`, `dismantle`, `forge`, `cook`, `eat`, `withdraw` and `deposit` can fail.\n'
-            f'{emojis.BLANK }If this happens, you will lose the items from that command.'
+            f'{emojis.BP} `craft`, `dismantle`, `forge`, `cook`, `eat`, `withdraw` and `deposit` can fail\n'
+            f'{emojis.BLANK }If this happens, you will lose the items from that command'
         )
     elif area.area_no == 18:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{debuffs}\n'
             f'{emojis.BP} Monsters can drop a negative amount of items\n'
             f'{emojis.BP} Command cooldowns are randomized when the area is unsealed\n'
             f'{emojis.BP} `cook` has a chance to have the opposite effect\n'
         )
     elif area.area_no == 19:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{debuffs}\n'
             f'{emojis.BP} Items have a chance to randomly vanish from inventory\n'
             f'{emojis.BP} `dice` and `coinflip` do not work properly\n'
             f'{emojis.BP} `heal`, `cook`, `farm` and all work commands do not work at all\n'
@@ -280,7 +285,7 @@ async def design_field_debuffs(area: database.Area) -> str:
         )
     elif area.area_no == 20:
         debuffs = (
-            f'{emojis.BP} AT, DEF, LIFE and level are capped\n'
+            f'{debuffs}\n'
             f'{emojis.BP} Every command drains 500 profession XP from a random profession\n'
             f'{emojis.BP} Every command has a chance of removing 1 {emojis.TIME_TRAVEL} TT\n'
             f'{emojis.BP} Your horse has a chance of losing levels\n'
@@ -656,8 +661,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
-            f'{emojis.BP} Requires {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
-            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
+            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
@@ -666,8 +671,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
-            f'{emojis.BP} Requires {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
-            f'{emojis.BLANK} {emojis.EPIC_JUMP} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
+            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     if area.unlocked_in_tt > 0:
         area_req = (
@@ -686,7 +691,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     # Recommended gear
     field_rec_gear = await functions.design_field_rec_gear(dungeon)
-    if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
+    if field_rec_gear is None: field_rec_gear = f'{emojis.BP} None'
     if area.area_no in (7,8): field_rec_gear = f'{field_rec_gear} **(*)**'
 
     # New commands

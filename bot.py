@@ -32,7 +32,6 @@ COG_EXTENSIONS = [
     'cogs.monsters',
     'cogs.pets',
     'cogs.professions',
-    'cogs.returning',
     'cogs.settings',
     'cogs.timetravel',
     'cogs.titles',

@@ -36,6 +36,7 @@ class eventsCog(commands.Cog):
         'lootboxsummoning','lootbox-summoning','summoning','lbsummoning','lb-summoning','lb-summon','lbsummon','lootbox-summon','lootboxsummon','summon',
         'ruby','rubydragon','working','work','nothing',
         'failedseed','farmevent',
+        'returning','ret',
     )
 
     # Command "events"
@@ -115,7 +116,7 @@ class eventsCog(commands.Cog):
                 await ctx.send(embed=embed)
                 return
         elif (invoked.find('pet') > -1) or (invoked.find('tournament') > -1):
-            embed = await embed_event_pettournamnent(ctx.prefix)
+            embed = await embed_event_pettournament(ctx.prefix)
             await ctx.send(embed=embed)
             return
         elif (invoked.find('summon') > -1):
@@ -132,6 +133,10 @@ class eventsCog(commands.Cog):
             return
         elif (invoked.find('failedseed') > -1) or (invoked.find('farm') > -1):
             embed = await embed_event_farm(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
+        elif (invoked.find('ret') > -1):
+            embed = await embed_event_returning(ctx.prefix)
             await ctx.send(embed=embed)
             return
         else:
@@ -196,7 +201,7 @@ class eventsCog(commands.Cog):
                     embed = await embed_event_notsominiboss(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif (event_name.find('pet') > -1) or (event_name.find('tournament') > -1):
-                    embed = await embed_event_pettournamnent(ctx.prefix)
+                    embed = await embed_event_pettournament(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif event_name.find('summon') > -1:
                     embed = await embed_event_lootboxsummoning(ctx.prefix)
@@ -206,6 +211,9 @@ class eventsCog(commands.Cog):
                     await ctx.send(embed=embed)
                 elif (event_name.find('failed') > -1) or (event_name.find('farm') > -1) or (event_name.find('seed') > -1):
                     embed = await embed_event_farm(ctx.prefix)
+                    await ctx.send(embed=embed)
+                elif (event_name.find('ret') > -1):
+                    embed = await embed_event_returning(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')
@@ -248,6 +256,7 @@ async def embed_events_overview(prefix):
         f'{emojis.BP} `epic guard`\n'
         f'{emojis.BP} `heal`\n'
         f'{emojis.BP} `lootbox`\n'
+        f'{emojis.BP} `returning`\n'
         f'{emojis.BP} `ruby dragon` / `work`\n'
         f'{emojis.BP} `zombie horde` / `hunt`'
     )
@@ -915,7 +924,7 @@ async def embed_event_horserace(prefix):
     return embed
 
 # Pet tournament event
-async def embed_event_pettournamnent(prefix):
+async def embed_event_pettournament(prefix):
 
     schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
 
@@ -1253,4 +1262,43 @@ async def embed_event_scroll_boss(prefix):
     embed.add_field(name='REWARDS IF YOU WIN', value=rewards_win, inline=False)
     embed.add_field(name='REWARDS IF YOU LOSE', value=rewards_lose, inline=False)
 
+    return embed
+
+
+async def embed_event_returning(prefix: str) -> discord.Embed:
+    """Returning event"""
+    activities = (
+        f'{emojis.BP} Get {emojis.COIN_SMOL} smol coins in `hunt`, `adventure` and all work commands\n'
+        f'{emojis.BP} Complete the event quest to get several rewards (see `rpg ret quest`)\n'
+        f'{emojis.BP} Claim a reward from the super-daily every day (see `rpg ret superdaily`)\n'
+        f'{emojis.BP} Buy various rewards in the `rpg ret shop`\n'
+    )
+    bonuses = (
+        f'{emojis.BP} All command cooldowns except `vote` and `guild` are reduced by 33%\n'
+        f'{emojis.BP} You can enter all dungeons without buying a dungeon key\n'
+        f'{emojis.BP} The drop chance of mob drops is doubled (see `{prefix}drops`)\n'
+    )
+    schedule = (
+        f'{emojis.BP} Event starts when you use a command after being inactive for at least 2 months\n'
+        f'{emojis.BP} Event ends 7 days after it started\n'
+    )
+    tldr_guide = (
+        f'{emojis.BP} Make sure to use `rpg ret superdaily` every day\n'
+        f'{emojis.BP} Play the game (welcome back!)\n'
+    )
+    note = (
+        f'{emojis.BP} No, it\'s not worth going afk for 2 months to trigger this event\n'
+        f'{emojis.BP} This is a personal event with no fixed schedule\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'RETURNING EVENT {emojis.EPIC_RPG_LOGO}',
+        description = f'The returning event is an event for people that haven\'t played for at least 2 months'
+    )
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
+    embed.add_field(name='ACTIVITIES', value=activities, inline=False)
+    embed.add_field(name='BONUSES', value=bonuses, inline=False)
+    embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     return embed

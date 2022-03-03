@@ -858,6 +858,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
 
     field_rec_stats = await functions.design_field_rec_stats(dungeon)
     field_rec_gear = await functions.design_field_rec_gear(dungeon)
+    if field_rec_gear is None: field_rec_gear = f'{emojis.BP} None'
 
     # Time limit
     if dungeon.time_limit is not None:
@@ -882,7 +883,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     if dungeon.key_price is not None:
         key_price = f'{dungeon.key_price:,} coins'
     else:
-        key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse.'
+        key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse'
 
     # Description
     description = dungeon.description
@@ -896,12 +897,17 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_1} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif 10 <= dungeon_no <= 14:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
+    elif dungeon_no == 21:
+        requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 **highly** recommended)'
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
     if dungeon_no in (10, 11, 13, 15, 15.2):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_sword.emoji} {dungeon.player_sword.name}'
     if dungeon_no == 21:
-        requirements = f'{requirements}\n{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`use` it so start the dungeon)'
+        requirements = (
+            f'{requirements}\n'
+            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`use` it so start the fight)'
+        )
     if dungeon_no in (10, 12, 14, 15):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
     if dungeon_no in (15, 15.2):
@@ -991,8 +997,16 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             f'{emojis.BLANK} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump (see `{prefix}a16`)\n'
         )
     elif 16 <= dungeon_no <= 20:
+        if 16 <= dungeon_no <= 19:
+            rewards = (
+                f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area {dungeon_no + 1:g} (if unsealed)'
+            )
+        else:
+            rewards = (
+                f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump'
+            )
         rewards = (
-            f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area {dungeon_no + 1:g} (if unsealed)\n'
+            f'{rewards}\n'
             f'{emojis.BLANK} Note: You can not have more than 1 in your inventory.\n'
             f'{emojis.BP} Unlocks the ability to get 2 additional {emojis.TIME_TRAVEL} TTs every {21 - dungeon_no:g} TTs.\n'
             f'{emojis.BLANK} This reward is permanent.\n'
@@ -1058,8 +1072,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         ),
             inline=False
     )
-    if field_rec_gear is not None: embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=True)
-    if field_rec_stats is not None: embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=True)
+    embed.add_field(name='RECOMMENDED GEAR', value=field_rec_gear, inline=True)
+    embed.add_field(name='RECOMMENDED STATS', value=field_rec_stats, inline=True)
     if strategy is not None: embed.add_field(name='STRATEGY', value=strategy, inline=False)
     if tips is not None: embed.add_field(name='TIPS', value=tips, inline=False)
     if notes is not None: embed.add_field(name='NOTE', value=notes, inline=False)
@@ -1091,7 +1105,7 @@ async def embed_dungeon_rec_stats(ctx: commands.Context, dungeons: Tuple[databas
     for dungeon in dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
         field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
-        field_rec_stats = await settings.design_field_rec_stats(dungeon, True)
+        field_rec_stats = await functions.design_field_rec_stats(dungeon, True)
         embed.add_field(name=field_name, value=field_rec_stats, inline=True)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -1137,8 +1151,8 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
     for dungeon in listed_dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
         field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
-        field_rec_gear = await settings.design_field_rec_gear(dungeon)
-        if field_rec_gear is None: field_rec_gear = f'{emojis.BP} Currently unknown'
+        field_rec_gear = await functions.design_field_rec_gear(dungeon)
+        if field_rec_gear is None: field_rec_gear = f'{emojis.BP} None'
         embed.add_field(name=field_name, value=field_rec_gear, inline=False)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)

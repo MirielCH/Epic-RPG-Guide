@@ -385,7 +385,7 @@ async def embed_pets_skills(prefix):
 
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
-        f'{emojis.BP} The chance is 11.11...% per rank (100% at SS+)\n'
+        f'{emojis.BLANK} The chance is 11.11...% per rank (100% at SS+)\n'
         f'{emojis.BP} This skill has to be unlocked with `pets ascend`\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
@@ -399,7 +399,7 @@ async def embed_pets_skills(prefix):
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
         f'{emojis.BP} You have a 20% base chance to get an essence after the dungeon\n'
-        f'{emojis.BP} This chance increases with skill rank\n'
+        f'{emojis.BLANK} This chance increases with skill rank\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
@@ -407,14 +407,14 @@ async def embed_pets_skills(prefix):
 
     master = (
         f'{emojis.BP} Increases the tier of pets found with the {emojis.SKILL_ASCENDED} ascended skill\n'
-        f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier XX\n'
+        f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier XV\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
-        f'{emojis.BP} This skill can currently not be ranked up\n'
+        f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
     )
 
     skillranks = (
         f'{emojis.BP} Every skill has 9 possible ranks\n'
-        f'{emojis.BP} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
+        f'{emojis.BLANK} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
         f'{emojis.BP} To rank up skills, do adventures (see `{prefix}pet adv`)\n'
         f'{emojis.BP} Higher ranks increase the skill bonus\n'
         f'{emojis.BP} Higher ranks increase the chance to keep a skill when fusing'

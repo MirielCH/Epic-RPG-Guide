@@ -114,12 +114,12 @@ class tradingCog(commands.Cog):
             amount = None
             mat = ''
             if area.find('top') > -1:
-                    area = 16
+                area = 21
             else:
                 area = area.lower().replace('a','')
                 if area.isnumeric():
                     area = int(area)
-                    if not 1 <= area <= 16:
+                    if not 1 <= area <= 20:
                         await ctx.send(f'There is no area {area}.')
                         return
                 else:
@@ -548,7 +548,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         f'{emojis.BP} {guide_traderates.format(prefix=prefix)}'
     )
 
-    if original_area == 16:
+    if original_area == 21:
         area_name_description = 'The TOP'
     else:
         area_name_description = f'Area {original_area}'

@@ -509,7 +509,7 @@ async def embed_badges(prefix):
     badges_other = (
         f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by defeating the "final" dungeon in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the "final" dungeon in the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )
@@ -562,7 +562,6 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.SWORD_HAIR} `Hair Sword` ➜ 4 {emojis.MERMAID_HAIR} + **220** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} `Electronical Armor` ➜ 12 {emojis.CHIP} + 1 {emojis.LOG_HYPER} + **180** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ **1** {emojis.BREAD} + 160 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **25** {emojis.BREAD}\n'
         f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
@@ -571,7 +570,6 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_ORANGE_JUICE} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.POTATO} + **80** {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **30** {emojis.CARROT}\n'
         f'{emojis.BP} Can be sold for 2,500 coins and 3 merchant XP\n'
         f'{emojis.BP} Can be used to change the horse name with `rpg horse feed`'
     )
@@ -580,9 +578,15 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.SWORD_RUBY} `Ruby Sword` ➜ 4 {emojis.RUBY} + 1 {emojis.LOG_MEGA} + **36** {emojis.POTATO}\n'
         f'{emojis.BP} {emojis.ARMOR_RUBY} `Ruby Armor` ➜ 7 {emojis.RUBY} + 4 {emojis.UNICORN_HORN} + **120** {emojis.POTATO} + 2 {emojis.LOG_MEGA}\n'
         f'{emojis.BP} {emojis.SWORD_ELECTRONICAL} `Electronical Sword` ➜ 8 {emojis.CHIP} + 1 {emojis.LOG_MEGA} + **140** {emojis.POTATO}\n'
+        f'{emojis.BP} {emojis.SWORD_WATERMELON} `Watermelon Sword` ➜ 1 {emojis.WATERMELON} + **10** {emojis.POTATO}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.POTATO} + 80 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **35** {emojis.POTATO}\n'
         f'{emojis.BP} Can be sold for 2,000 coins and 3 merchant XP'
+    )
+
+    stt_score = (
+        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score\n'
+        f'{emojis.BP} 30 {emojis.CARROT} carrots = 1 score\n'
+        f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
     )
 
     what_to_plant = (
@@ -610,6 +614,7 @@ async def embed_farm(prefix):
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
     embed.add_field(name='CARROT USAGE', value=usage_carrot, inline=False)
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
+    embed.add_field(name='STT SCORE', value=stt_score, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 

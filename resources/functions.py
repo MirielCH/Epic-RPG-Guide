@@ -113,31 +113,27 @@ async def design_field_rec_stats(dungeon: database.Dungeon, short_version: bool 
     """Design field "Recommended Stats" for areas & dungeons. NEEDS REFACTORING"""
 
     player_carry_def = ''
-
     if dungeon.player_carry_def is not None:
-        if not short_version:
-            player_carry_def = f'({dungeon.player_carry_def}+ to carry)'
-        else:
+        if short_version:
             player_carry_def = f'({dungeon.player_carry_def})'
+        else:
+            player_carry_def = f'({dungeon.player_carry_def}+ to carry)'
 
     player_at = '-' if dungeon.player_at is None else f'{dungeon.player_at:,}'
     player_def = '-' if dungeon.player_def is None else f'{dungeon.player_def:,}'
     player_level = '-' if dungeon.player_level is None else f'{dungeon.player_level:,}'
     player_life = '-' if dungeon.player_life is None else f'{dungeon.player_life:,}'
 
-    if not short_version:
+    field_value = (
+        f'{emojis.BP} {emojis.STAT_AT} **AT**: {player_at}\n'
+        f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
+        f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life}\n'
+        f'{emojis.BP} {emojis.STAT_LEVEL} **LEVEL**: {player_level}'
+    )
+    if 16 <= dungeon.dungeon_no <= 20:
         field_value = (
-            f'{emojis.BP} {emojis.STAT_AT} **AT**: {player_at}\n'
-            f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life}\n'
-            f'{emojis.BP} {emojis.STAT_LEVEL} **LEVEL**: {player_level}'
-        )
-    else:
-        field_value = (
-            f'{emojis.STAT_AT} **AT**: {player_at}\n'
-            f'{emojis.STAT_DEF} **DEF**: {player_def} {player_carry_def}\n'
-            f'{emojis.STAT_LIFE} **LIFE**: {player_life}\n'
-            f'{emojis.STAT_LEVEL} **LEVEL**: {player_level}\n{emojis.BLANK}'
+            f'{field_value}\n'
+            f'{emojis.BP} _To be balanced!_'
         )
 
     return field_value
