@@ -8,7 +8,7 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
+from resources import emojis
 from resources import settings
 from resources import functions
 

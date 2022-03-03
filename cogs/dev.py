@@ -8,7 +8,7 @@ import sys
 from discord.ext import commands
 
 import database
-import emojis
+from resources import emojis
 
 
 class DevCog(commands.Cog):

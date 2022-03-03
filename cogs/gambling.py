@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 
-import emojis
+from resources import emojis
 from resources import settings
 from resources import functions
 

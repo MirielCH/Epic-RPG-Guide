@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands, tasks
 
 import database
-import emojis
+from resources import emojis
 from resources import logs, settings
 
 

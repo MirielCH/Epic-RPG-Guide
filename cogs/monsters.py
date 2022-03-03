@@ -8,7 +8,7 @@ from discord.ext import commands
 # from discord_components import Button, ButtonStyle, InteractionType
 
 import database
-import emojis
+from resources import emojis
 from resources import settings
 from resources import functions
 

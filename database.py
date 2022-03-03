@@ -9,7 +9,7 @@ from typing import NamedTuple, Optional, Tuple, Union
 import discord
 from discord.ext import commands
 
-import emojis
+from resources import emojis
 from resources import logs, settings, strings
 
 
@@ -22,6 +22,7 @@ ERG_DB = sqlite3.connect(DB_FILE, isolation_level=None)
 # Internal errors
 INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunction: {function}\nSQL: {sql}'
 INTERNAL_ERROR_NO_ARGUMENTS = 'You need to specify at least one keyword argument.\nTable: {table}\nFunction: {function}'
+INTERNAL_ERROR_INVALID_ARGUMENTS = 'Invalid value {value} for argument {argument}.\nTable: {table}\nFunction: {function}'
 INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: {function}\nRecord: {record}\n'
 INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\SQL: {sql}'
 
@@ -124,6 +125,30 @@ class Area(NamedTuple):
     work_cmd_ascended: str
 
 
+@dataclass
+class Profession():
+    """Container for profession data"""
+    name: str
+    xp: dict
+
+    async def refresh(self) -> None:
+        """Refreshes profession data from the database."""
+        new_settings: Profession = await get_profession(self.name)
+        self.xp = new_settings.xp
+
+    async def update_level(self, level: int, xp: int) -> None:
+        """Updates a profession level in the record in the database. Also calls refresh().
+
+        Arguments
+        ---------
+        level: int - level to update
+        xp: int - new xp for this level
+
+        """
+        await _update_profession_level(self, level, xp)
+        await self.refresh()
+
+
 class TimeTravel(NamedTuple):
     """Container for timetravel data"""
     a3_fish: int
@@ -172,7 +197,6 @@ class User():
 
     async def update(self, **kwargs) -> None:
         """Updates the user record in the database. Also calls refresh().
-        If user_donor_tier is updated and a partner is set, the partner's partner_donor_tier is updated as well.
 
         Arguments
         ---------
@@ -551,6 +575,55 @@ async def get_all_areas() -> Tuple[Area]:
         areas.append(area)
 
     return tuple(areas)
+
+
+async def get_profession(name: str) -> Profession:
+    """Returns a record from table "professions".
+
+    Returns:
+       Profession object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    xp_columns = {
+        'enchanter': 'enchanter_xp',
+        'lootboxer': 'lootboxer_xp',
+        'merchant': 'merchant_xp',
+        'worker': 'worker_xp',
+    }
+    table = 'professions'
+    function_name = 'get_profession'
+    column = xp_columns.get(name, None)
+    if column == None: raise NoDataFound(f'Unknown profession "{name}".')
+    sql = f'SELECT level, {column} FROM professions ORDER BY level ASC'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'No data found in database for profession {name}.')
+    profession_xp = {}
+    for record in records:
+        record = dict(record)
+        profession_xp[record['level']] = record[column]
+
+    profession = Profession(
+        name = name,
+        xp = profession_xp
+    )
+
+    return profession
 
 
 async def get_time_travel(tt_no: int) -> TimeTravel:
@@ -1096,7 +1169,6 @@ async def set_prefix(ctx, new_prefix):
 
 async def _update_user(user: User, **kwargs) -> None:
     """Updates user record. Use User.update() to trigger this function.
-    If user_donor_tier is updated and a partner is set, the partner's partner_donor_tier is updated as well.
 
     Arguments
     ---------
@@ -1127,6 +1199,51 @@ async def _update_user(user: User, **kwargs) -> None:
         kwargs['user_id'] = user.user_id
         sql = f'{sql} WHERE user_id = :user_id'
         cur.execute(sql, kwargs)
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def _update_profession_level(profession: Profession, level: int, xp: int) -> None:
+    """Updates profession record. Use Profession.update_level() to trigger this function.
+
+    Arguments
+    ---------
+    level: int
+    kwargs (column=value):
+        ascended: bool
+        tt: int
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    NoArgumentsError if no kwargs are passed (need to pass at least one)
+    Also logs all errors to the database.
+    """
+    table = 'professions'
+    function_name = '_update_profession_level'
+    if not 1 <= level <= 200:
+        await log_error(
+            INTERNAL_ERROR_INVALID_ARGUMENTS.format(value=level, argument='level', table=table, function=function_name)
+        )
+        raise NoArgumentsError(f'Invalid profession level ({level}).')
+    if xp < 0:
+        await log_error(
+            INTERNAL_ERROR_INVALID_ARGUMENTS.format(value=xp, argument='xp', table=table, function=function_name)
+        )
+        raise NoArgumentsError(f'Invalid profession xo ({xp}).')
+    try:
+        cur = ERG_DB.cursor()
+        xp_columns = {
+            'enchanter': 'enchanter_xp',
+            'lootboxer': 'lootboxer_xp',
+            'merchant': 'merchant_xp',
+            'worker': 'worker_xp',
+        }
+        sql = f'UPDATE {table} SET {xp_columns[profession.name]} = ? WHERE level = ?'
+        cur.execute(sql, (xp, level))
     except sqlite3.Error as error:
         await log_error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)

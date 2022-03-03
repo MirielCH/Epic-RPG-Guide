@@ -1,7 +1,7 @@
 # functions.py
 
 import database
-import emojis
+from resources import emojis
 
 async def design_field_traderate(area: database.Area) -> str:
     """Create field "trade rates" for area & trading"""
