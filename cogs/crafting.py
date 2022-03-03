@@ -869,8 +869,6 @@ class craftingCog(commands.Cog):
             result_value = ruby_calc
             result_item = f'{emojis.RUBY} rubies'
 
-
-
         if area in (1,2):
             await ctx.send(
                 f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'

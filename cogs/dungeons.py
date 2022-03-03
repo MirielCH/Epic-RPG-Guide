@@ -895,7 +895,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     # Requirements
     if 1 <= dungeon_no <= 9:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_1} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
-    elif 10 <= dungeon_no <= 14:
+    elif 10 <= dungeon_no <= 15.2:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif dungeon_no == 21:
         requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 **highly** recommended)'
