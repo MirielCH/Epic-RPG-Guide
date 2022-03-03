@@ -873,16 +873,24 @@ class craftingCog(commands.Cog):
 
         if area in (1,2):
             await ctx.send(
-                f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.\n\n'
-                f'Note that apples and rubies were included in the calculation but can not be traded in this area.'
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.\n\n'
+                f'Apples and rubies are included in the calculation as follows:\n'
+                f'{emojis.BP} 1 {emojis.APPLE} = 3 {emojis.LOG} (trade value in A3)\n'
+                f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} (trade value in A5)\n'
             )
         elif area in (3,4):
             await ctx.send(
-                f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.\n\n'
-                f'Note that rubies were included in the calculation but can not be traded in this area.'
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.\n\n'
+                f'Rubies are included in the calculation as follows:\n'
+                f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} (trade value in A5)\n'
             )
         else:
-            await ctx.send(f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.')
+            await ctx.send(
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.'
+            )
 
 # Initialization
 def setup(bot):

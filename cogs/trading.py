@@ -146,6 +146,12 @@ class tradingCog(commands.Cog):
                         found_number = True
                     except:
                         found_number = False
+                elif arg.endswith('b'):
+                    try:
+                        amount = int(float(arg.replace('b','')) * 1_000_000_000)
+                        found_number = True
+                    except:
+                        found_number = False
                 else:
                     try:
                         amount = int(arg)

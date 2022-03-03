@@ -273,6 +273,7 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{debuffs}\n'
             f'{emojis.BP} Monsters can drop a negative amount of items\n'
             f'{emojis.BP} Command cooldowns are randomized when the area is unsealed\n'
+            f'{emojis.BP} Enchants may randomly disappear / reappear\n'
             f'{emojis.BP} `cook` has a chance to have the opposite effect\n'
         )
     elif area.area_no == 19:

@@ -191,7 +191,7 @@ class professionsCog(commands.Cog):
                         enchanter_level_xp = profession_data.xp[enchanter_level_no]
                         if enchanter_level_xp is None:
                             output = (
-                                f'{output}\n{emojis.BP} Level {enchanter_level_no-1}+: No data yet'
+                                f'{output}\n{emojis.BP} Level {enchanter_level_no}+: No data yet'
                             )
                             break
                         actual_xp = enchanter_level_xp - xp_rest
@@ -315,7 +315,7 @@ class professionsCog(commands.Cog):
                         worker_level_xp = profession_data.xp[worker_level_no]
                         if worker_level_xp is None:
                             output = (
-                                f'{output}\n{emojis.BP} Level {worker_level_no-1}+: No data yet'
+                                f'{output}\n{emojis.BP} Level {worker_level_no}+: No data yet'
                             )
                             break
                         actual_xp = worker_level_xp - xp_rest
@@ -431,7 +431,7 @@ class professionsCog(commands.Cog):
                         merchant_level_xp = profession_data.xp[merchant_level_no]
                         if merchant_level_xp is None:
                             output = (
-                                f'{output}\n{emojis.BP} Level {merchant_level_no-1}+: No data yet'
+                                f'{output}\n{emojis.BP} Level {merchant_level_no}+: No data yet'
                             )
                             break
                         logs = merchant_level_xp * 5
@@ -546,7 +546,7 @@ class professionsCog(commands.Cog):
                         worker_level_xp = profession_data.xp[worker_level_no]
                         if worker_level_xp is None:
                             output = (
-                                f'{output}\n{emojis.BP} Level {worker_level_no-1}+: No data yet'
+                                f'{output}\n{emojis.BP} Level {worker_level_no}+: No data yet'
                             )
                             break
                         actual_xp = worker_level_xp - xp_rest
