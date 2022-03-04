@@ -89,6 +89,7 @@ class AbortView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
         return True
 
     async def on_timeout(self) -> None:

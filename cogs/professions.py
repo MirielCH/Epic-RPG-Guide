@@ -32,7 +32,7 @@ class ProfessionsCog(commands.Cog):
         "Profession commands",
     )
 
-    @cmd_professions.command(name='guide')
+    @cmd_professions.command(name='guide', description='All you need to know about professions')
     async def professions_guide(
         self,
         ctx: discord.ApplicationContext,
@@ -58,14 +58,14 @@ class ProfessionsCog(commands.Cog):
         await interaction.edit_original_message(view=None)
 
 
-    @cmd_professions.command(name='calculator')
+    @cmd_professions.command(name='calculator', description='Calculates what you need to level up your professions')
     @commands.has_permissions(view_channel=True)
     async def professions_calculator(
         self,
         ctx: discord.ApplicationContext,
-        profession: Option(str, 'The profession you want to calculate for. Asks for game input if empty.',
+        profession: Option(str, 'The profession you want to calculate for. Reads from EPIC RPG if empty.',
                            choices=strings.PROFESSIONS, default=None),
-        from_level: Option(int, 'The profession level you want to calculate from. Asks for game input if empty.',
+        from_level: Option(int, 'The profession level you want to calculate from. Reads from EPIC RPG if empty.',
                            min_value = 2, max_value = 200, default=None),
         to_level: Option(int, 'The profession level you want to calculate a total for. Uses 100 if empty.',
                          min_value = 2, max_value = 200, default=100),
@@ -99,7 +99,7 @@ class ProfessionsCog(commands.Cog):
         if profession_data.xp[next_level] is None and needed_xp is not None:
             await profession_data.update_level(next_level, needed_xp)
 
-        description = f'**{profession.capitalize()}** from level **{from_level}**'
+        description = f'**{profession.capitalize()}** level **{from_level}**'
         if to_level > from_level:
             description = f'{description} to **{to_level}**'
         embed = discord.Embed(
@@ -299,7 +299,7 @@ class ProfessionsCog(commands.Cog):
             embed.add_field(name='NEXT LEVELS', value=output, inline=False)
             if output_total is not None:
                 embed.add_field(
-                    name=f'TOTAL FROM LEVEL {from_level} - {to_level}', value=output_total, inline=False
+                    name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
 
         await ctx.respond(embed=embed)
