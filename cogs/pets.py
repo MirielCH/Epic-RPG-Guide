@@ -4,8 +4,9 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # pets commands (cog)
@@ -124,15 +125,8 @@ class petsCog(commands.Cog):
                     await ctx.send(syntax)
                     return
                 else:
-                    try:
-                        user_settings = await database.get_user_settings(ctx)
-                        user_tt, _ = user_settings
-                    except Exception as error:
-                        if isinstance(error, database.FirstTimeUser):
-                            return
-                        else:
-                            await ctx.send(global_data.MSG_ERROR)
-                            return
+                    user = await database.get_user(ctx.author.id)
+                    user_tt = user.tt
                 embed = await embed_fuse(ctx, pet_tier, user_tt)
                 await ctx.send(embed=embed)
             else:
@@ -178,8 +172,11 @@ async def embed_pets_overview(prefix):
 
 
     tier = (
-        f'{emojis.BP} Tiers range from I to XV (1 to 15)\n'
+        f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
+        f'{emojis.BLANK} Tier I and higher has a chance of returning up to 1 ULTRA log\n'
+        f'{emojis.BLANK} Tier X and higher has a chance of returning up to 2 ULTRA logs\n'
+        f'{emojis.BLANK} Tier XX has a chance of returning up to 3 ULTRA logs\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see `{prefix}pet fusion`)'
@@ -223,7 +220,7 @@ async def embed_pets_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PETS',
         description = (
             f'Pets have tiers, types and skills and can be sent on adventures to find stuff for you.\n'
@@ -231,7 +228,7 @@ async def embed_pets_overview(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='WHAT TO DO WITH PETS', value=whattodo, inline=False)
     embed.add_field(name='TIER', value=tier, inline=False)
@@ -275,12 +272,12 @@ async def embed_pets_catch(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'CATCHING PETS',
         description = f'With the exception of event and giveaway pets you can only find and catch pets in {emojis.TIME_TRAVEL} TT 2+'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name='HOW TO CATCH PETS', value=catch, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -342,12 +339,12 @@ async def embed_pets_fusion(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PET FUSION',
         description = 'You can fuse pets to tier them up and/or find or transfer normal skills.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='HOW TO FUSE', value=general, inline=False)
     embed.add_field(name='TIERING UP', value=tiers, inline=False)
     embed.add_field(name='HOW TO GET (AND KEEP) SKILLS', value=skills, inline=False)
@@ -388,7 +385,7 @@ async def embed_pets_skills(prefix):
 
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
-        f'{emojis.BP} The chance is 11.11...% per rank (100% at SS+)\n'
+        f'{emojis.BLANK} The chance is 11.11...% per rank (100% at SS+)\n'
         f'{emojis.BP} This skill has to be unlocked with `pets ascend`\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
@@ -402,15 +399,22 @@ async def embed_pets_skills(prefix):
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
         f'{emojis.BP} You have a 20% base chance to get an essence after the dungeon\n'
-        f'{emojis.BP} This chance increases with skill rank\n'
+        f'{emojis.BLANK} This chance increases with skill rank\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
+        f'{emojis.BP} You can **not** lose this skill when fusing\n'
+        f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
+    )
+
+    master = (
+        f'{emojis.BP} Increases the tier of pets found with the {emojis.SKILL_ASCENDED} ascended skill\n'
+        f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier XV\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
     )
 
     skillranks = (
         f'{emojis.BP} Every skill has 9 possible ranks\n'
-        f'{emojis.BP} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
+        f'{emojis.BLANK} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
         f'{emojis.BP} To rank up skills, do adventures (see `{prefix}pet adv`)\n'
         f'{emojis.BP} Higher ranks increase the skill bonus\n'
         f'{emojis.BP} Higher ranks increase the chance to keep a skill when fusing'
@@ -425,7 +429,7 @@ async def embed_pets_skills(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PET SKILLS',
         description = (
             f'Overview of all **normal** pet skills. See `{prefix}pet` on how to get these skills.\n'
@@ -434,7 +438,7 @@ async def embed_pets_skills(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'NORMIE {emojis.SKILL_NORMIE}', value=normie, inline=False)
     embed.add_field(name=f'FAST {emojis.SKILL_FAST}', value=fast, inline=False)
     embed.add_field(name=f'HAPPY {emojis.SKILL_HAPPY}', value=happy, inline=False)
@@ -445,6 +449,7 @@ async def embed_pets_skills(prefix):
     embed.add_field(name=f'EPIC {emojis.SKILL_EPIC}', value=epic, inline=False)
     embed.add_field(name=f'ASCENDED {emojis.SKILL_ASCENDED}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.SKILL_FIGHTER}', value=fighter, inline=False)
+    embed.add_field(name=f'MASTER {emojis.SKILL_MASTER}', value=master, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -497,6 +502,15 @@ async def embed_pets_skills_special(prefix):
         f'{emojis.BP} This pet is a reward in the horse festival'
     )
 
+    resetter = (
+        f'{emojis.BP} If the pet also has the {emojis.SKILL_TRAVELER} time traveler skill and it triggers, '
+        f'it has a chance to reset **all** pets on an adventure\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_VOIDOG} VOIDog pet\n'
+        f'{emojis.BP} This pet can drop in dungeons 16 to 20.\n'
+        f'{emojis.BLANK} The drop chance increases with higher dungeons.\n'
+        f'{emojis.BLANK} You can get multiple, but each time you get one, the drop chance lowers.\n'
+    )
+
     skillranks = f'{emojis.BP} Special skills can not be ranked up'
 
     guides = (
@@ -508,7 +522,7 @@ async def embed_pets_skills_special(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SPECIAL PET SKILLS',
         description = (
             f'Overview of all **special** pet skills. Each special skill is unique to a certain special pet and can **not** be lost.\n'
@@ -516,14 +530,15 @@ async def embed_pets_skills_special(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
+    embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
     embed.add_field(name=f'COMPETITIVE {emojis.SKILL_COMPETITIVE}', value=competitive, inline=False)
     embed.add_field(name=f'FARMER {emojis.SKILL_FARMER}', value=farmer, inline=False)
-    embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'FASTER {emojis.SKILL_FASTER}', value=faster, inline=False)
+    embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'GIFTER {emojis.SKILL_GIFTER}', value=gifter, inline=False)
     embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
-    embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
+    embed.add_field(name=f'RESETTER {emojis.SKILL_RESETTER}', value=resetter, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -582,12 +597,12 @@ async def embed_pets_adventures(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'PET ADVENTURES',
         description = 'You can send pets on adventures to find items or coins or to rank up their skills.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name='ADVENTURE TYPES', value=types, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -625,12 +640,12 @@ async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> disc
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'TIER {pet_tier} PET FUSIONS • TT {user_tt}',
         description = 'This guide lists the minimum recommended fusions for a decent tier up chance.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+    embed.set_footer(text=await functions.default_footer(ctx.prefix))
     embed.add_field(name=f'FUSION TO GET A T{pet_tier} PET', value=how_to_get_tier, inline=False)
     embed.add_field(name=f'FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)

@@ -4,8 +4,8 @@
 import discord
 from discord.ext import commands
 
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
 
 
 class FunCog(commands.Cog):
@@ -78,7 +78,7 @@ class FunCog(commands.Cog):
     async def brandon(self, ctx: commands.Context) -> None:
         """Only three people will get this"""
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'WHAT TO DO WITH BRANDON',
             description = 'Don\'t even _think_ about dismantling him. You monster.'
         )

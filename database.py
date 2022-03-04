@@ -1,24 +1,30 @@
 # database.py
 
+from aifc import Error
+from dataclasses import dataclass
 from datetime import datetime
 import sqlite3
-from typing import NamedTuple, Tuple, Union
+from typing import NamedTuple, Optional, Tuple, Union
 
 import discord
 from discord.ext import commands
 
-import emojis
-import global_data
+from resources import emojis
+from resources import logs, settings, strings
 
 
 # Set name of database file
-DB_FILE = global_data.DB_FILE
+DB_FILE = settings.DB_FILE
 
 # Open connection to the local database
 ERG_DB = sqlite3.connect(DB_FILE, isolation_level=None)
 
 # Internal errors
-INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunction: {function}\nSELECT: {select}'
+INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunction: {function}\nSQL: {sql}'
+INTERNAL_ERROR_NO_ARGUMENTS = 'You need to specify at least one keyword argument.\nTable: {table}\nFunction: {function}'
+INTERNAL_ERROR_INVALID_ARGUMENTS = 'Invalid value {value} for argument {argument}.\nTable: {table}\nFunction: {function}'
+INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: {function}\nRecord: {record}\n'
+INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\SQL: {sql}'
 
 
 class FirstTimeUser(commands.CommandError):
@@ -27,7 +33,11 @@ class FirstTimeUser(commands.CommandError):
 
 
 class NoDataFound(Exception):
-    """Exception when no data is returned from the database"""
+    """Custom exception when no data is returned from the database"""
+    pass
+
+class NoArgumentsError(Exception):
+    """Custom exception for when no arguments are passed to a function"""
     pass
 
 
@@ -57,14 +67,103 @@ class Item(NamedTuple):
     item_type: str
     dismanteable: bool
     emoji: str
+    requirements: str
     ingredients: Tuple[Ingredient]
     name: str
     stat_at: int
     stat_def: int
 
 
+class Dungeon(NamedTuple):
+    """Container for dungeon data"""
+    boss_at: int
+    boss_emoji: str
+    boss_life: float
+    boss_name: str
+    description: str
+    dungeon_no: float
+    key_price: int
+    life_boost_needed: bool
+    player_armor: Item
+    player_armor_enchant: str
+    player_at: int
+    player_def: int
+    player_carry_def: int
+    player_level: int
+    player_life: int
+    player_sword: Item
+    player_sword_enchant: str
+    player_amount: Tuple[int, int] # min, max
+    time_limit: int # seconds
+    tt: int
+
+
+class Area(NamedTuple):
+    """Container for area data"""
+    area_no: int
+    description: str
+    dungeon_no: float
+    new_commands: Tuple[str, str, str]
+    money_tt1_nohorse: int
+    money_tt1_t6horse: int
+    money_tt3_nohorse: int
+    money_tt3_t6horse: int
+    money_tt5_nohorse: int
+    money_tt5_t6horse: int
+    money_tt10_nohorse: int
+    money_tt10_t6horse: int
+    trade_apple_log: int
+    trade_fish_log: int
+    trade_ruby_log: int
+    unlocked_in_tt: int
+    upgrade_armor: bool
+    upgrade_armor_enchant: bool
+    upgrade_sword: bool
+    upgrade_sword_enchant: bool
+    work_cmd_poor: str
+    work_cmd_rich: str
+    work_cmd_ascended: str
+
+
+@dataclass
+class Profession():
+    """Container for profession data"""
+    name: str
+    xp: dict
+
+    async def refresh(self) -> None:
+        """Refreshes profession data from the database."""
+        new_settings: Profession = await get_profession(self.name)
+        self.xp = new_settings.xp
+
+    async def update_level(self, level: int, xp: int) -> None:
+        """Updates a profession level in the record in the database. Also calls refresh().
+
+        Arguments
+        ---------
+        level: int - level to update
+        xp: int - new xp for this level
+
+        """
+        await _update_profession_level(self, level, xp)
+        await self.refresh()
+
+
+class TimeTravel(NamedTuple):
+    """Container for timetravel data"""
+    a3_fish: int
+    a5_apple: int
+    tt: int
+    tt_area: int
+    unlock_area: int
+    unlock_dungeon: int
+    unlock_enchant: str
+    unlock_misc: str
+    unlock_title: str
+
+
 class Title(NamedTuple):
-    """Conatiner for title data"""
+    """Container for title data"""
     achievement_id: int
     command: str
     requirements: str
@@ -72,6 +171,179 @@ class Title(NamedTuple):
     source: str
     tip: str
     title: str
+
+
+class Monster(NamedTuple):
+    """Container for monster data"""
+    activity: str
+    areas: Tuple[int, int]
+    drop_emoji: str
+    emoji: str
+    name: str
+
+
+@dataclass
+class User():
+    """Container for user data"""
+    ascended: bool
+    tt: int
+    user_id: int
+
+    async def refresh(self) -> None:
+        """Refreshes user data from the database."""
+        new_settings: User = await get_user(self.user_id)
+        self.tt = new_settings.tt
+        self.ascended = new_settings.ascended
+
+    async def update(self, **kwargs) -> None:
+        """Updates the user record in the database. Also calls refresh().
+
+        Arguments
+        ---------
+        kwargs (column=value):
+            ascended: bool
+            tt: int
+        """
+        await _update_user(self, **kwargs)
+        await self.refresh()
+
+
+# Miscellaneous functions
+async def _dict_to_dungeon(record: dict) -> Dungeon:
+    """Creates a Dungeon object from a database record
+
+    Arguments
+    ---------
+    record: Database record from table "dungeons" as a dict.
+
+    Returns
+    -------
+    Dungeon object.
+
+    Raises
+    ------
+    LookupError if something goes wrong reading the dict. Also logs this error to the database.
+    """
+    function_name = '_dict_to_dungeon'
+    try:
+        player_armor = player_sword = None
+        if record['player_armor_name'] is not None:
+            player_armor = await get_item(record['player_armor_name'])
+        if record['player_sword_name'] is not None:
+            player_sword = await get_item(record['player_sword_name'])
+        dungeon = Dungeon(
+            boss_at = record['boss_at'],
+            boss_emoji = getattr(emojis, record['boss_emoji']) if record['boss_emoji'] is not None else None,
+            boss_life = record['boss_life'],
+            boss_name = record['boss_name'],
+            description = record['description'],
+            dungeon_no = record['dungeon'],
+            key_price = record['key_price'],
+            life_boost_needed = bool(record['life_boost_needed']),
+            player_armor = player_armor,
+            player_armor_enchant = record['player_armor_enchant'],
+            player_at = record['player_at'],
+            player_carry_def = record['player_carry_def'],
+            player_def = record['player_def'],
+            player_level = record['player_level'],
+            player_life = record['player_life'],
+            player_sword = player_sword,
+            player_sword_enchant = record['player_sword_enchant'],
+            player_amount = (record['min_players'], record['max_players']),
+            time_limit = record['time_limit_s'],
+            tt = record['tt']
+        )
+    except Exception as error:
+        await log_error(
+            INTERNAL_ERROR_DICT_TO_OBJECT.format(function=function_name, record=record)
+        )
+        raise LookupError(error)
+
+    return dungeon
+
+
+async def _dict_to_area(record: dict) -> Area:
+    """Creates an Area object from a database record
+
+    Arguments
+    ---------
+    record: Database record from table "areas" as a dict.
+
+    Returns
+    -------
+    Area object.
+
+    Raises
+    ------
+    LookupError if something goes wrong reading the dict. Also logs this error to the database.
+    """
+    function_name = '_dict_to_area'
+    try:
+        area = Area(
+            area_no = record['area'],
+            description = record['description'],
+            dungeon_no = record['dungeon'],
+            new_commands = (record['new_cmd_1'], record['new_cmd_2'], record['new_cmd_3']),
+            money_tt1_nohorse = record['money_tt1_nohorse'],
+            money_tt1_t6horse = record['money_tt1_t6horse'],
+            money_tt3_nohorse = record['money_tt3_nohorse'],
+            money_tt3_t6horse = record['money_tt3_t6horse'],
+            money_tt5_nohorse = record['money_tt5_nohorse'],
+            money_tt5_t6horse = record['money_tt5_t6horse'],
+            money_tt10_nohorse = record['money_tt10_nohorse'],
+            money_tt10_t6horse = record['money_tt10_t6horse'],
+            trade_apple_log = record['trade_apple_log'],
+            trade_fish_log = record['trade_fish_log'],
+            trade_ruby_log = record['trade_ruby_log'],
+            unlocked_in_tt = record['unlocked_in_tt'],
+            upgrade_armor = bool(record['upgrade_armor']),
+            upgrade_armor_enchant = bool(record['upgrade_armor_enchant']),
+            upgrade_sword = bool(record['upgrade_sword']),
+            upgrade_sword_enchant = bool(record['upgrade_sword_enchant']),
+            work_cmd_poor = record['work_cmd_poor'],
+            work_cmd_rich = record['work_cmd_rich'],
+            work_cmd_ascended = record['work_cmd_asc'],
+        )
+    except Exception as error:
+        await log_error(
+            INTERNAL_ERROR_DICT_TO_OBJECT.format(function=function_name, record=record)
+        )
+        raise LookupError(error)
+
+    return area
+
+
+async def _dict_to_monster(record: dict) -> Monster:
+    """Creates a Monster object from a database record
+
+    Arguments
+    ---------
+    record: Database record from table "monsters" as a dict.
+
+    Returns
+    -------
+    Monster object.
+
+    Raises
+    ------
+    LookupError if something goes wrong reading the dict. Also logs this error to the database.
+    """
+    function_name = '_dict_to_monster'
+    try:
+        monster = Monster(
+            activity = record['activity'],
+            areas = (record['area_from'], record['area_until']),
+            drop_emoji = getattr(emojis, record['drop_emoji']) if record['drop_emoji'] is not None else None,
+            emoji = getattr(emojis, record['emoji']),
+            name = record['name'],
+        )
+    except Exception as error:
+        await log_error(
+            INTERNAL_ERROR_DICT_TO_OBJECT.format(function=function_name, record=record)
+        )
+        raise LookupError(error)
+
+    return monster
 
 
 # --- Get Data ---
@@ -89,8 +361,8 @@ async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
         if record:
             (prefix,) = record
         else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, global_data.DEFAULT_PREFIX,))
-            prefix = global_data.DEFAULT_PREFIX
+            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, settings.DEFAULT_PREFIX,))
+            prefix = settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
         await log_error(ctx, error)
 
@@ -104,73 +376,87 @@ async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> st
         cur=ERG_DB.cursor()
         cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (guild_id,))
         record = cur.fetchone()
-        prefix = record[0] if record else global_data.DEFAULT_PREFIX
+        prefix = record[0] if record else settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx_or_guild, error)
 
     return prefix
 
-# Get dungeon data for the dungeon commands
-async def get_dungeon_data(ctx, dungeon):
 
-    if dungeon == 151:
-        dungeon = 15
-    elif dungeon == 152:
-        dungeon = 15.2
+async def get_dungeon(dungeon_no: float) -> Dungeon:
+    """Returns a dungeon from table "dungeons".
 
+    Returns:
+       Dungeon object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    table = 'dungeons'
+    function_name = 'get_dungeon'
+    sql = f'SELECT * FROM {table} WHERE dungeon=?'
     try:
+        ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute('SELECT dungeons.*, i1.emoji, i2.emoji FROM dungeons INNER JOIN items i1 ON i1.name = dungeons.player_sword_name INNER JOIN items i2 ON i2.name = dungeons.player_armor_name WHERE dungeons.dungeon=?', (dungeon,))
+        cur.execute(sql,(dungeon_no,))
         record = cur.fetchone()
-
-        if record:
-            dungeon_data = record
-        else:
-            await log_error(ctx, 'No dungeon data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'Dungeon {dungeon_no} not found in database.')
+    dungeon = await _dict_to_dungeon(dict(record))
 
-    return dungeon_data
+    return dungeon
 
-# Get dungeon data for the recommended stats of all dungeons
-async def get_rec_stats_data(ctx):
 
+async def get_all_dungeons() -> Tuple[Dungeon]:
+    """Gets all dungeons from the table "dungeons".
+
+    Returns
+    -------
+    Tuple[Dungeon]
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no dungeons were found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'dungeons'
+    function_name = 'get_all_dungeons'
+    sql = f'SELECT * FROM {table}'
     try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.dungeon FROM dungeons d WHERE dungeon BETWEEN 1 AND 16')
-        record = cur.fetchall()
-
-        if record:
-            rec_stats_data = record
-        else:
-            await log_error(ctx, 'No recommended dungeon stats data found in database.')
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
     except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
 
-    return rec_stats_data
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No dungeons found in database.')
+    dungeons = []
+    for record in records:
+        dungeon = await _dict_to_dungeon(dict(record))
+        dungeons.append(dungeon)
 
-# Get dungeon data for the recommended gear of all dungeons
-async def get_rec_gear_data(ctx, page):
+    return tuple(dungeons)
 
-    try:
-        cur=ERG_DB.cursor()
-        if page == 1:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 1 and 9')
-        elif page == 2:
-            cur.execute('SELECT d.player_sword_name, d.player_sword_enchant, i1.emoji, d.player_armor_name, d.player_armor_enchant, i2.emoji, d.dungeon FROM dungeons d INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE d.dungeon BETWEEN 10 and 16')
-        record = cur.fetchall()
-
-        if record:
-            rec_gear_data = record
-        else:
-            await log_error(ctx, 'No recommended dungeon gear data found in database.')
-    except sqlite3.Error as error:
-        await log_error(ctx, error)
-
-    return rec_gear_data
 
 # Get dungeon data for the dungeon check command
 async def get_dungeon_check_data(ctx, dungeon_no=0):
@@ -178,7 +464,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
     try:
         cur=ERG_DB.cursor()
         if dungeon_no == 0:
-            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 15')
+            cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon BETWEEN 1 AND 20')
             record = cur.fetchall()
         else:
             cur.execute('SELECT player_at, player_def, player_carry_def, player_life, dungeon FROM dungeons WHERE dungeon=?',(dungeon_no,))
@@ -190,7 +476,7 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
             await log_error(ctx, 'No recommended dungeon check data found in database.')
 
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return dungeon_check_data
@@ -211,10 +497,178 @@ async def get_area_data(ctx, area):
         else:
             await log_error(ctx, 'No area data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return area_data
+
+
+async def get_area(area_no: int) -> Area:
+    """Returns an area from table "areas".
+
+    Returns:
+       Area object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    table = 'areas'
+    function_name = 'get_area'
+    sql = f'SELECT * FROM areas WHERE area=?'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (area_no,))
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'Area {area_no} not found in database.')
+    area = await _dict_to_area(dict(record))
+
+    return area
+
+
+async def get_all_areas() -> Tuple[Area]:
+    """Gets all areas from the table "areas".
+
+    Returns
+    -------
+    Tuple[Area]
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no dungeons were found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'areas'
+    function_name = 'get_all_areas'
+    sql = f'SELECT * FROM {table}'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No areas found in database.')
+    areas = []
+    for record in records:
+        area = await _dict_to_area(dict(record))
+        areas.append(area)
+
+    return tuple(areas)
+
+
+async def get_profession(name: str) -> Profession:
+    """Returns a record from table "professions".
+
+    Returns:
+       Profession object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    xp_columns = {
+        'enchanter': 'enchanter_xp',
+        'lootboxer': 'lootboxer_xp',
+        'merchant': 'merchant_xp',
+        'worker': 'worker_xp',
+    }
+    table = 'professions'
+    function_name = 'get_profession'
+    column = xp_columns.get(name, None)
+    if column == None: raise NoDataFound(f'Unknown profession "{name}".')
+    sql = f'SELECT level, {column} FROM professions ORDER BY level ASC'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'No data found in database for profession {name}.')
+    profession_xp = {}
+    for record in records:
+        record = dict(record)
+        profession_xp[record['level']] = record[column]
+
+    profession = Profession(
+        name = name,
+        xp = profession_xp
+    )
+
+    return profession
+
+
+async def get_time_travel(tt_no: int) -> TimeTravel:
+    """Returns a record from table "timetravels".
+
+    Returns:
+       TimeTravel object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    table = 'timetravels'
+    function_name = 'get_time_travel'
+    sql = f'SELECT * FROM timetravels WHERE tt=?'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (tt_no,))
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'Time travel {tt_no} not found in database.')
+    record = dict(record)
+    tt = TimeTravel(
+        a3_fish = record['a3_fish'],
+        a5_apple = record['a5_apple'],
+        tt = tt_no,
+        tt_area = record['tt_area'],
+        unlock_area = record['unlock_area'],
+        unlock_dungeon = record['unlock_dungeon'],
+        unlock_enchant = record['unlock_enchant'],
+        unlock_misc = record['unlock_misc'],
+        unlock_title = record['unlock_title'],
+    )
+
+    return tt
+
 
 # Get mats data for the needed mats of area 3 and 5
 async def get_mats_data(ctx, user_tt):
@@ -228,13 +682,13 @@ async def get_mats_data(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_mats data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return mats_data
 
 
-async def get_item(ctx: commands.Context, name: str) -> Item:
+async def get_item(name: str) -> Item:
     """Returns an item from table "items".
 
     Returns:
@@ -242,7 +696,7 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
 
     Raises:
         sqlite3.Error if something goes wrong.
-        NoDataFound if no data was found. This also logs an error.
+        NoDataFound if no data was found.
     """
     try:
         ERG_DB.row_factory = sqlite3.Row
@@ -260,6 +714,8 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
     record.pop('emoji')
     item_type = record['type']
     record.pop('type')
+    requirements = record['requirements']
+    record.pop('requirements')
     item_at = int(record['at'])
     record.pop('at')
     item_def = int(record['def'])
@@ -272,7 +728,7 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
     for name, amount in record.items():
         ingredient = Ingredient(
             amount = amount,
-            name = global_data.item_columns_names[name]
+            name = strings.item_columns_names[name]
         )
         ingredients.append(ingredient)
     ingredients.sort(key=lambda ingredient: ingredient.amount)
@@ -280,6 +736,7 @@ async def get_item(ctx: commands.Context, name: str) -> Item:
         item_type = item_type,
         dismanteable = item_dismantleable,
         emoji = item_emoji,
+        requirements = requirements,
         ingredients = ingredients,
         name = item_name,
         stat_at = item_at,
@@ -301,7 +758,7 @@ async def get_tt_unlocks(ctx, user_tt):
         else:
             await log_error(ctx, 'No tt_unlock data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return tt_unlock_data
@@ -330,7 +787,7 @@ async def get_traderate_data(ctx, areas):
         else:
             await log_error(ctx, 'No trade rate data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return traderate_data
@@ -360,7 +817,7 @@ async def get_profession_levels(ctx, profession, levelrange):
         else:
             await log_error(ctx, 'No profession data data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return profession_levels
@@ -382,7 +839,7 @@ async def get_tip(ctx, id=0):
         else:
             tip = ('There is no tip with that ID.',)
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return tip
@@ -491,7 +948,7 @@ async def get_codes(ctx):
         else:
             await log_error(ctx, 'No codes data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return codes
@@ -501,7 +958,7 @@ async def get_user_number(ctx):
 
     try:
         cur=ERG_DB.cursor()
-        cur.execute('SELECT COUNT(*) FROM settings_user')
+        cur.execute('SELECT COUNT(*) FROM users')
         record = cur.fetchone()
 
         if record:
@@ -509,82 +966,148 @@ async def get_user_number(ctx):
         else:
             await log_error(ctx, 'No user data found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
     return user_number
 
 
-async def get_user_settings(ctx: commands.Context) -> tuple:
-    """Check database for user settings.
-    If none is found, the default settings TT0 and not ascended are
-    stored and an error is raised. There is NO return when this happens.
+async def get_user(user_id: int) -> User:
+    """Returns user settings from table "users".
+    If none is found, a new record with the default settings TT0 and not ascended is
+    inserted and an error is raised.
 
     Returns:
-        List: [TT, Ascension].
+        User object
 
     Raises:
-        FirstTimeUser if there are no settings stored. This also sends the welcome message.
+        FirstTimeUser if there are no settings stored.
         sqlite3.Error if something happened within the database. Also logs it to the database.
     """
+    table = 'users'
+    function_name = 'get_user'
+    sql = f'SELECT * FROM {table} WHERE user_id = ?'
     try:
+        ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        user_id = ctx.author.id
-        cur.execute('SELECT timetravel, ascended FROM settings_user where user_id=?', (user_id,))
+        cur.execute(sql, (user_id,))
         record = cur.fetchone()
-        if record:
-            user_settings = record
-        else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (user_id, 0, 'not ascended'))
-            await first_time_user(ctx)
-            raise FirstTimeUser
     except sqlite3.Error as error:
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
         raise
+    if not record:
+        cur.execute(f'INSERT INTO {table} VALUES (?, ?, ?)', (user_id, 0, False))
+        raise FirstTimeUser
+    record = dict(record)
+    user = User(
+        ascended = bool(record['ascended']),
+        tt = record['tt'],
+        user_id = record['user_id'],
+    )
 
-    return list(user_settings)
+    return user
 
-# Get monster data by areas
-async def get_mob_data(ctx, areas):
+
+async def get_all_users() -> Tuple[User]:
+    """Returns all user settings from table "users".
+    This is only used for migration, can be deleted afterwards.
+
+    Returns:
+        Tuple with User objects
+
+    Raises:
+        FirstTimeUser if there are no settings stored.
+        sqlite3.Error if something happened within the database. Also logs it to the database.
     """
-    areas: tuple/list that contains two areas: from_area and until_area.
-    Example: get_mob_data(ctx, (1,4,)) returns the mobs for areas 1, 2, 3 and 4
-    """
-
+    table = 'users'
+    function_name = 'get_user'
+    sql = f'SELECT * FROM {table}'
     try:
+        ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE area_from >= ? and area_until <= ?', (areas[0],areas[1],))
-        record = cur.fetchall()
-
-
-        if record:
-            mob_data = record
-        else:
-            await log_error(ctx, 'No mob data found in database.')
+        cur.execute(sql)
+        records = cur.fetchall()
     except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    users = []
+    for record in records:
+        if record['ascended'] not in ('ascended', 'not ascended'): raise Error('Already migrated.')
+        user = User(
+            ascended = True if record['ascended'] == 'ascended' else False,
+            tt = record['tt'],
+            user_id = record['user_id'],
+        )
+        users.append(user)
 
-    return mob_data
+    return tuple(users)
 
-# Get monster by name
-async def get_mob_by_name(ctx, name):
 
+async def get_monster_by_name(name: str) -> Monster:
+    """Returns a monster from table "monsters".
+
+    Returns:
+        Monster object
+
+    Raises:
+        NoDataFound is no monster is found.
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'monsters'
+    function_name = 'get_monster_by_name'
+    sql = f'SELECT * FROM {table} WHERE name = ? COLLATE NOCASE'
     try:
+        ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute('SELECT name, emoji, area_from, area_until, activity, drop_emoji FROM monsters WHERE name = ? COLLATE NOCASE', (name,))
+        cur.execute(sql, (name,))
         record = cur.fetchone()
-
-        if record:
-            mob = record
-        else:
-            mob = None
-            await log_error(ctx, 'No mob found in database.')
     except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'No monster {name} found in database.')
+    monster = await _dict_to_monster(dict(record))
 
-    return mob
+    return monster
+
+
+async def get_monster_by_area(area_from: int, area_until: int) -> Tuple[Monster]:
+    """Returns monsters from table "users".
+
+    Returns:
+        Tuple with Monster objects
+
+    Raises:
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'monsters'
+    function_name = 'get_monster_by_area'
+    sql = f'SELECT * FROM {table} WHERE area_from <= ? AND area_until >= ?'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (area_from, area_until))
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    monsters = []
+    for record in records:
+        monster = await _dict_to_monster(dict(record))
+        monsters.append(monster)
+
+    return tuple(monsters)
 
 
 async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
@@ -601,7 +1124,6 @@ async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
     cur=ERG_DB.cursor()
     if search_string.isnumeric():
         cur.execute('SELECT * FROM titles WHERE id=?', (search_string,))
-    else:
         search_string = search_string.replace(' ','%').replace("'",'_').replace('’','_')
         search_string = f'%{search_string}%'
         sql = f"SELECT * FROM titles WHERE title LIKE ? or requirements LIKE ?"
@@ -640,69 +1162,111 @@ async def set_prefix(ctx, new_prefix):
         else:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
-        global_data.logger.error(error)
+        logs.logger.error(error)
         await log_error(ctx, error)
 
-# Set progress settings
-async def set_progress(ctx, new_tt, new_ascended):
 
+async def _update_user(user: User, **kwargs) -> None:
+    """Updates user record. Use User.update() to trigger this function.
+
+    Arguments
+    ---------
+    user_id: int
+    kwargs (column=value):
+        ascended: bool
+        tt: int
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    NoArgumentsError if no kwargs are passed (need to pass at least one)
+    Also logs all errors to the database.
+    """
+    table = 'users'
+    function_name = '_update_user'
+    if not kwargs:
+        await log_error(
+            INTERNAL_ERROR_NO_ARGUMENTS.format(table=table, function=function_name)
+        )
+        raise NoArgumentsError('You need to specify at least one keyword argument.')
     try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM settings_user where user_id=?', (ctx.author.id,))
-        record = cur.fetchone()
-
-        if record:
-            cur.execute('UPDATE settings_user SET timetravel = ?, ascended = ? where user_id = ?', (new_tt, new_ascended, ctx.author.id,))
-        else:
-            cur.execute('INSERT INTO settings_user VALUES (?, ?, ?)', (ctx.author.id, new_tt, new_ascended,))
+        cur = ERG_DB.cursor()
+        sql = f'UPDATE {table} SET'
+        for kwarg in kwargs:
+            sql = f'{sql} {kwarg} = :{kwarg},'
+        sql = sql.strip(",")
+        kwargs['user_id'] = user.user_id
+        sql = f'{sql} WHERE user_id = :user_id'
+        cur.execute(sql, kwargs)
     except sqlite3.Error as error:
-        global_data.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def _update_profession_level(profession: Profession, level: int, xp: int) -> None:
+    """Updates profession record. Use Profession.update_level() to trigger this function.
+
+    Arguments
+    ---------
+    level: int
+    kwargs (column=value):
+        ascended: bool
+        tt: int
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    NoArgumentsError if no kwargs are passed (need to pass at least one)
+    Also logs all errors to the database.
+    """
+    table = 'professions'
+    function_name = '_update_profession_level'
+    if not 1 <= level <= 200:
+        await log_error(
+            INTERNAL_ERROR_INVALID_ARGUMENTS.format(value=level, argument='level', table=table, function=function_name)
+        )
+        raise NoArgumentsError(f'Invalid profession level ({level}).')
+    if xp < 0:
+        await log_error(
+            INTERNAL_ERROR_INVALID_ARGUMENTS.format(value=xp, argument='xp', table=table, function=function_name)
+        )
+        raise NoArgumentsError(f'Invalid profession xo ({xp}).')
+    try:
+        cur = ERG_DB.cursor()
+        xp_columns = {
+            'enchanter': 'enchanter_xp',
+            'lootboxer': 'lootboxer_xp',
+            'merchant': 'merchant_xp',
+            'worker': 'worker_xp',
+        }
+        sql = f'UPDATE {table} SET {xp_columns[profession.name]} = ? WHERE level = ?'
+        cur.execute(sql, (xp, level))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
 
 
 # --- Error Logging ---
-async def log_error(ctx_or_guild: Union[commands.Context, discord.Guild], error: Union[Exception, str]):
+async def log_error(error: Union[Exception, str], ctx: Optional[commands.Context] = None):
     """Logs an error to the database and the logfile"""
-    if isinstance(ctx_or_guild, commands.Context):
-        ctx = ctx_or_guild
+    if isinstance(ctx, commands.Context):
         timestamp = ctx.message.created_at
         user_input = ctx.message.content
         try:
-            user_settings = await get_user_settings(ctx)
-            user_tt, user_ascended = user_settings
-            settings = f'TT{user_tt}, {user_ascended}'
+            user = await get_user(ctx.author.id)
+            user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
         except:
-            settings = 'N/A'
+            user_settings = 'N/A'
     else:
-        settings = 'N/A'
+        user_settings = 'N/A'
         timestamp = datetime.utcnow()
-        user_input = 'Error when joining a new guild'
+        user_input = 'N/A'
     try:
         cur=ERG_DB.cursor()
-        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), settings))
+        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), user_settings))
     except sqlite3.Error as db_error:
-        global_data.logger.error(f'Error inserting error (ha) into database:\n{db_error}')
-
-
-# --- First Time User ---
-async def first_time_user(ctx: commands.Context) -> None:
-    """Welcome message to inform the user of his/her initial settings"""
-    try:
-        user_settings = await get_user_settings(ctx)
-    except Exception as error:
-        if isinstance(error, FirstTimeUser):
-            return
-        else:
-            await ctx.send(global_data.MSG_ERROR)
-            return
-    user_tt, user_ascension = user_settings
-    prefix = ctx.prefix
-
-    await ctx.send(
-        f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
-        f'I have set your progress to **TT {user_tt}**, **{user_ascension}**.\n\n'
-        f'** --> Please use `{prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
-        f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. Check out `{prefix}tt` for some details.\n'
-        f'• If you are in a higher TT, please use `{prefix}setprogress` (or `{prefix}sp`) to change your settings.\n\n'
-        f'These settings are used by some guides (like the area guides) to only show you what is relevant to your current progress.'
-    )
+        logs.logger.error(f'Error inserting error (ha) into database:\n{db_error}')

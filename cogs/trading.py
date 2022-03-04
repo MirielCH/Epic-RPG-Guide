@@ -7,8 +7,9 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # trading commands (cog)
@@ -24,8 +25,8 @@ class tradingCog(commands.Cog):
         await ctx.send(embed=embed)
 
     # Command "trades" - Returns recommended trades of one area or all areas
-    trades_aliases = ['tr','trade',]
-    for x in range(1,16):
+    trades_aliases = ['tr','trade','trtop','tradetop']
+    for x in range(1,21):
         trades_aliases.append(f'tr{x}')
         trades_aliases.append(f'trades{x}')
         trades_aliases.append(f'trade{x}')
@@ -34,67 +35,64 @@ class tradingCog(commands.Cog):
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def trades(self, ctx, *args):
 
-        try:
-            user_settings = await database.get_user_settings(ctx)
-        except Exception as error:
-            if isinstance(error, database.FirstTimeUser):
-                return
-            else:
-                await ctx.send(global_data.MSG_ERROR)
-                return
+        user = await database.get_user(ctx.author.id)
         invoked = ctx.message.content
         invoked = invoked.lower()
         prefix = ctx.prefix
         prefix = prefix.lower()
 
+        syntax = (
+            f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr20`\n'
+            f'Or you can use `{prefix}trade` to see the trades of all areas.'
+        )
+
         if args:
             if len(args)>1:
-                await ctx.send(
-                    f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\n'
-                    f'Or you can use `{prefix}trade` to see the trades of all areas.'
-                )
+                await ctx.send(syntax)
                 return
             elif len(args)==1:
                 area_no = args[0]
                 if area_no.isnumeric():
                     area_no = int(area_no)
-                    if 1 <= area_no <= 15:
-                        embed = await embed_trades_area_specific(user_settings, area_no, ctx.prefix)
+                    if 1 <= area_no <= 20:
+                        area = await database.get_area(area_no)
+                        embed = await embed_trades_area_specific(ctx, user, area)
                         await ctx.send(embed=embed)
                     else:
                         await ctx.send(f'There is no area {area_no}, lol.')
                         return
                 else:
-                    await ctx.send(
-                        f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\n'
-                        f'Or you can use `{prefix}trade` to see the trades of all areas.'
-                    )
-                    return
+                    if 'top' in area_no:
+                        area = await database.get_area(21)
+                        embed = await embed_trades_area_specific(ctx, user, area)
+                        await ctx.send(embed=embed)
+                    else:
+                        await ctx.send(syntax)
+                        return
             else:
-                await ctx.send(
-                    f'The command syntax is `{prefix}{ctx.invoked_with} [#]` or `{prefix}tr1`-`{prefix}tr15`\n'
-                    f'Or you can use `{prefix}trade` to see the trades of all areas.'
-                )
+                await ctx.send(syntax)
                 return
         else:
             area_no = invoked.replace(f'{prefix}trades','').replace(f'{prefix}trade','').replace(f'{prefix}tr','')
             if area_no.isnumeric():
                 area_no = int(area_no)
-                if 1 <= area_no <= 15:
-                    embed = await embed_trades_area_specific(user_settings, area_no, ctx.prefix)
+                if 1 <= area_no <= 20:
+                    area = await database.get_area(area_no)
+                    embed = await embed_trades_area_specific(ctx, user, area)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'There is no area {area_no}, lol.')
                     return
             else:
                 if area_no == '':
-                    embed = await embed_trades_all_areas(user_settings, ctx.prefix)
+                    embed = await embed_trades_all_areas(ctx, user)
+                    await ctx.send(embed=embed)
+                elif 'top' in area_no:
+                    area = await database.get_area(21)
+                    embed = await embed_trades_area_specific(ctx, user, area)
                     await ctx.send(embed=embed)
                 else:
-                    await ctx.send(
-                        f'The command syntax is `{prefix}trade [#]` or `{prefix}tr1`-`{prefix}tr15`\n'
-                        f'Or you can use `{prefix}trade` to see the trades of all areas.'
-                    )
+                    await ctx.send(syntax)
 
     # Command "traderates" - Returns trade rates of all areas
     @commands.command(aliases=('trr','rates','rate','traderate',))
@@ -116,12 +114,12 @@ class tradingCog(commands.Cog):
             amount = None
             mat = ''
             if area.find('top') > -1:
-                    area = 16
+                area = 21
             else:
                 area = area.lower().replace('a','')
                 if area.isnumeric():
                     area = int(area)
-                    if not 1 <= area <= 16:
+                    if not 1 <= area <= 20:
                         await ctx.send(f'There is no area {area}.')
                         return
                 else:
@@ -145,6 +143,12 @@ class tradingCog(commands.Cog):
                 elif arg.endswith('m'):
                     try:
                         amount = int(float(arg.replace('m','')) * 1_000_000)
+                        found_number = True
+                    except:
+                        found_number = False
+                elif arg.endswith('b'):
+                    try:
+                        amount = int(float(arg.replace('b','')) * 1_000_000_000)
                         found_number = True
                     except:
                         found_number = False
@@ -218,7 +222,7 @@ def setup(bot):
 # --- Redundancies ---
 # Guides
 guide_trades_all = '`{prefix}tr` : Trades (all areas)'
-guide_trades_specific = '`{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15'
+guide_trades_specific = '`{prefix}tr1`-`{prefix}tr20` : Trades in area 1~20'
 guide_traderates = '`{prefix}trr` : Trade rates'
 guide_tradecalc = '`{prefix}trc`  : Trade calculator'
 
@@ -231,54 +235,57 @@ async def embed_trading_menu(ctx):
     prefix = ctx.prefix
 
     trading = (
-        f'{emojis.BP} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr15` : Trades in area 1~15\n'
+        f'{emojis.BP} `{prefix}trades [#]` / `{prefix}tr1`-`{prefix}tr20` : Trades in area 1~20\n'
         f'{emojis.BP} `{prefix}trades` / `{prefix}tr` : Trades (all areas)\n'
         f'{emojis.BP} `{prefix}traderates` / `{prefix}trr` : Trade rates\n'
         f'{emojis.BP} `{prefix}tradecalc` / `{prefix}trc` : Trade calculator'
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADING GUIDES',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TRADING', value=trading, inline=False)
 
     return embed
 
-# Trades before leaving area X
-async def embed_trades_area_specific(user_settings, area_no, prefix):
 
-    user_tt, user_ascended = user_settings
-    if area_no==11:
-        if user_tt == 0:
+async def embed_trades_area_specific(ctx, user, area):
+    """Trades before leaving area X"""
+    prefix = ctx.prefix
+    if area.area_no==11:
+        if user.tt == 0:
             description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
         else:
-            description = await global_data.design_field_trades(area_no, user_ascended)
+            description = await functions.design_field_trades(area, user)
     else:
-        description = await global_data.design_field_trades(area_no, user_ascended)
+        description = await functions.design_field_trades(area, user)
     guides = (
         f'{emojis.BP} {guide_trades_all.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_traderates.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_tradecalc.format(prefix=prefix)}'
     )
 
+    area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
+
     embed = discord.Embed(
         color = 8983807,
-        title = f'TRADES BEFORE LEAVING AREA {area_no}',
+        title = f'TRADES BEFORE LEAVING {area_no_str}',
         description = description
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
 
 
-# Trades before leaving all areas
-async def embed_trades_all_areas(user_settings, prefix):
+async def embed_trades_all_areas(ctx, user):
+    """Trades before leaving all areas"""
+    prefix = ctx.prefix
 
     guides = (
         f'{emojis.BP} {guide_trades_specific.format(prefix=prefix)}\n'
@@ -296,25 +303,21 @@ async def embed_trades_all_areas(user_settings, prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
-    for x in range(1,16):
-        if x not in (1,2,4,6,12,13,14):
-            if x==11:
-                if user_settings[0]==0:
-                    embed.add_field(name=f'AREA {x}', value=f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel', inline=False)
-                else:
-                    field_value = await global_data.design_field_trades(x, user_settings[1])
-                    embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
-            elif x==15:
-                if user_settings[0]<25:
-                    embed.add_field(name=f'AREA {x}', value=f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel', inline=False)
-                else:
-                    field_value = await global_data.design_field_trades(x, user_settings[1])
-                    embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
+    areas = await database.get_all_areas()
+    for area in areas:
+        area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
+        if area.area_no not in (1,2,4,6,12,13,14,16,17,18,19,20,21):
+            if (area.area_no == 11 and user.tt == 0) or (area.area_no == 15 and user.tt < 25):
+                    embed.add_field(
+                        name=area_no_str,
+                        value=f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel',
+                        inline=False
+                    )
             else:
-                field_value = await global_data.design_field_trades(x, user_settings[1])
-                embed.add_field(name=f'AREA {x}', value=field_value, inline=False)
+                field_value = await functions.design_field_trades(area, user)
+                embed.add_field(name=area_no_str, value=field_value, inline=False)
 
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -330,24 +333,25 @@ async def embed_traderates(traderate_data, prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADE RATES',
         description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.BLANK}'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     previous_area = [0,0,0,0]
     actual_areas = []
-    for area_x in traderate_data:
+    for area_x in traderate_data[:-1]:
         if not (area_x[1] == previous_area[1]) or not (area_x[2] == previous_area[2]) or not (area_x[3] == previous_area[3]):
             actual_areas.append(list(area_x))
         previous_area = area_x
+    actual_areas.append(list(traderate_data[-1]))
 
     counter = 0
     for index, area_x in enumerate(actual_areas):
         counter = counter + 1
-        if not area_x[0] == counter:
+        if not area_x[0] == counter or area_x[0] == 21:
             actual_areas[index-1][0] = f'{actual_areas[index-1][0]}-{area_x[0]-1}'
         counter = area_x[0]
 
@@ -358,7 +362,7 @@ async def embed_traderates(traderate_data, prefix):
         if not area_x[3] == 0:
             area_value = f'{area_value}\n1 {emojis.RUBY} ⇄ {emojis.LOG} {area_x[3]}'
 
-        if area_x[0] == 16:
+        if area_x[0] == 21:
             embed.add_field(name='THE TOP', value=f'{area_value}\n{emojis.BLANK}', inline=True)
         else:
             embed.add_field(name=f'AREA {area_x[0]}', value=f'{area_value}\n{emojis.BLANK}', inline=True)
@@ -550,18 +554,18 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         f'{emojis.BP} {guide_traderates.format(prefix=prefix)}'
     )
 
-    if original_area == 16:
+    if original_area == 21:
         area_name_description = 'The TOP'
     else:
         area_name_description = f'Area {original_area}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TRADE CALCULATOR',
         description = f'If you have **{original_amount:,}** {original_emoji} in **{area_name_description}** and follow all the trades correctly, this amounts to the following:'
         )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     previous_area = [0,0,]
     previous_area_trade_rates = [0,0,0,0]
@@ -573,6 +577,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
         if not (area_trade_rates[1] == previous_area_trade_rates[1]) or not (area_trade_rates[2] == previous_area_trade_rates[2]) or not (area_trade_rates[3] == previous_area_trade_rates[3]):
             actual_areas.append(list(area_x))
         previous_area = area_x
+    actual_areas.append(list(areas_log_amounts[-1]))
 
     counter = 0
     for index, area_x in enumerate(actual_areas):
@@ -632,7 +637,7 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
             else:
                 area_mats = f'{emojis.BP} N/A'
 
-        if area_name == '16':
+        if area_name == '21':
             area_name = 'THE TOP'
         else:
             area_name = f'AREA {area_name}'

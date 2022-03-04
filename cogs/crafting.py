@@ -6,8 +6,9 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions, strings
 
 
 # crafting commands (cog)
@@ -82,7 +83,7 @@ class craftingCog(commands.Cog):
                     await ctx.send(f'`{args[0]}` doesn\'t look like a valid TT to me :thinking:')
                     return
 
-                tt_chance = (49+user_tt)*user_tt/2/100
+                tt_chance = (49 + user_tt) * user_tt / 2 / 100
 
                 horse_tier_chance = {
                     1: 1,
@@ -101,14 +102,14 @@ class craftingCog(commands.Cog):
         if not args:
             try:
                 try:
-                    user_settings = await database.get_user_settings(ctx)
+                    user = await database.get_user(ctx.author.id)
                 except Exception as error:
                     if isinstance(error, database.FirstTimeUser):
                         return
                     else:
-                        await ctx.send(global_data.MSG_ERROR)
+                        await ctx.send(strings.MSG_ERROR)
                         return
-                user_tt, _ = user_settings
+                user_tt = user.tt
                 tt_chance = (49 + user_tt) * user_tt / 2 / 100
 
                 await ctx.send(f'**{ctx.author.name}**, please type `rpg horse` (or `abort` to abort)')
@@ -123,7 +124,7 @@ class craftingCog(commands.Cog):
                         horse_tier = 0
                         horse_emoji = ''
                     except:
-                        await ctx.send(global_data.MSG_ERROR)
+                        await ctx.send(strings.MSG_ERROR)
                         return
                     if 'Tier** - III' in horse_stats:
                         horse_chance = 1
@@ -172,23 +173,16 @@ class craftingCog(commands.Cog):
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your horse information, RIP.')
                 return
 
-        drop_chance = 4*(1+tt_chance)*horse_chance
-        drop_chance_worldbuff = 4*(1+tt_chance)*horse_chance*1.2
-        drop_chance_daily = 4*(1+tt_chance)*horse_chance*1.1
-        drop_chance_worldbuff_daily = 4*(1+tt_chance)*horse_chance*1.3
-        drop_chance_hm = drop_chance * 1.7
-        drop_chance_worldbuff_hm = drop_chance_worldbuff * 1.7
-        drop_chance_daily_hm = drop_chance_daily * 1.7
-        drop_chance_worldbuff_daily_hm = drop_chance_worldbuff_daily * 1.7
-        drop_chance = round(drop_chance,1)
-        drop_chance_worldbuff = round(drop_chance_worldbuff,1)
-        drop_chance_daily = round(drop_chance_daily,1)
-        drop_chance_worldbuff_daily = round(drop_chance_worldbuff_daily,1)
-        drop_chance_hm = round(drop_chance_hm,1)
-        drop_chance_worldbuff_hm = round(drop_chance_worldbuff_hm,1)
-        drop_chance_daily_hm = round(drop_chance_daily_hm,1)
-        drop_chance_worldbuff_daily_hm = round(drop_chance_worldbuff_daily_hm,1)
-
+        # Dropchance for all mob drops except dark energy
+        drop_chance = 4 * (1 + tt_chance) * horse_chance
+        drop_chance_worldbuff = round(drop_chance * 1.2, 1)
+        drop_chance_daily = round(drop_chance * 1.1, 1)
+        drop_chance_worldbuff_daily = round(drop_chance * 1.3, 1)
+        drop_chance_hm = round(drop_chance * 1.7, 1)
+        drop_chance_worldbuff_hm = round(drop_chance * 1.2 * 1.7, 1)
+        drop_chance_daily_hm = round(drop_chance * 1.1 * 1.7, 1)
+        drop_chance_worldbuff_daily_hm = round(drop_chance * 1.3 * 1.7, 1)
+        drop_chance = round(drop_chance, 1)
         if drop_chance >= 100: drop_chance = 100
         if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
         if drop_chance_daily >= 100: drop_chance_daily = 100
@@ -197,6 +191,25 @@ class craftingCog(commands.Cog):
         if drop_chance_worldbuff_hm >= 100: drop_chance_worldbuff_hm = 100
         if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
         if drop_chance_worldbuff_daily_hm >= 100: drop_chance_worldbuff_daily_hm = 100
+
+        # Dropchance for dark energy
+        drop_chance_energy = 0.1 * (1 + tt_chance) * horse_chance
+        drop_chance_energy_worldbuff = round(drop_chance_energy * 1.2, 1)
+        drop_chance_energy_daily = round(drop_chance_energy * 1.1, 1)
+        drop_chance_energy_worldbuff_daily = round(drop_chance_energy * 1.3, 1)
+        drop_chance_energy_hm = round(drop_chance_energy * 1.7, 1)
+        drop_chance_energy_worldbuff_hm = round(drop_chance_energy * 1.2 * 1.7, 1)
+        drop_chance_energy_daily_hm = round(drop_chance_energy * 1.1 * 1.7, 1)
+        drop_chance_energy_worldbuff_daily_hm = round(drop_chance_energy * 1.3 * 1.7, 1)
+        drop_chance_energy = round(drop_chance_energy, 1)
+        if drop_chance_energy >= 100: drop_chance_energy = 100
+        if drop_chance_energy_worldbuff >= 100: drop_chance_energy_worldbuff = 100
+        if drop_chance_energy_daily >= 100: drop_chance_energy_daily = 100
+        if drop_chance_energy_worldbuff_daily >= 100: drop_chance_energy_worldbuff_daily = 100
+        if drop_chance_energy_hm >= 100: drop_chance_energy_hm = 100
+        if drop_chance_energy_worldbuff_hm >= 100: drop_chance_energy_worldbuff_hm = 100
+        if drop_chance_energy_daily_hm >= 100: drop_chance_energy_daily_hm = 100
+        if drop_chance_energy_worldbuff_daily_hm >= 100: drop_chance_energy_worldbuff_daily_hm = 100
 
         horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
 
@@ -207,11 +220,25 @@ class craftingCog(commands.Cog):
             f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily:g}%__\n'
         )
 
+        field_drop_chance_energy = (
+            f'{emojis.BP} Base chance: __{drop_chance_energy:g}%__\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_energy_worldbuff:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_energy_daily:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_energy_worldbuff_daily:g}%__\n'
+        )
+
         field_drop_chance_hardmode = (
             f'{emojis.BP} Base chance: __{drop_chance_hm:g}__%\n'
             f'{emojis.BP} With active world buff: __{drop_chance_worldbuff_hm:g}%__\n'
             f'{emojis.BP} If mob is daily mob: __{drop_chance_daily_hm:g}%__\n'
             f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_worldbuff_daily_hm:g}%__\n'
+        )
+
+        field_drop_chance_energy_hardmode = (
+            f'{emojis.BP} Base chance: __{drop_chance_energy_hm:g}__%\n'
+            f'{emojis.BP} With active world buff: __{drop_chance_energy_worldbuff_hm:g}%__\n'
+            f'{emojis.BP} If mob is daily mob: __{drop_chance_energy_daily_hm:g}%__\n'
+            f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_energy_worldbuff_daily_hm:g}%__\n'
         )
 
         field_hunting_chance = (
@@ -225,10 +252,35 @@ class craftingCog(commands.Cog):
             description = (
                 f'Time travel: {emojis.TIME_TRAVEL} **{user_tt}**\n'
                 f'Horse: {horse_emoji} **T{horse_tier}**'
-            )
+            ),
+            color = settings.EMBED_COLOR
         )
-        embed.add_field(name='DROP CHANCES', value=field_drop_chance, inline=False)
-        embed.add_field(name='HARDMODE DROP CHANCES', value=field_drop_chance_hardmode, inline=False)
+        embed.add_field(
+            name=(
+                f'DROP CHANCES FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
+                f'{emojis.CHIP}{emojis.DRAGON_SCALE}'
+            ),
+            value=field_drop_chance,
+            inline=False
+        )
+        embed.add_field(
+            name=(
+                f'HARDMODE DROP CHANCES FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}'
+                f'{emojis.MERMAID_HAIR}{emojis.CHIP}{emojis.DRAGON_SCALE}'
+            ),
+            value=field_drop_chance_hardmode,
+            inline=False
+        )
+        embed.add_field(
+            name=f'DROP CHANCES FOR {emojis.DARK_ENERGY}',
+            value=field_drop_chance_energy,
+            inline=False
+        )
+        embed.add_field(
+            name=f'HARDMODE DROP CHANCES FOR {emojis.DARK_ENERGY}',
+            value=field_drop_chance_energy_hardmode,
+            inline=False
+        )
         embed.add_field(name='NOTES', value=field_hunting_chance, inline=False)
         await ctx.send(embed=embed)
 
@@ -283,15 +335,11 @@ class craftingCog(commands.Cog):
             .replace('apples','apple')
             .replace('oranges','orange')
         )
-        if itemname_replaced in global_data.item_aliases:
-            itemname_replaced = global_data.item_aliases[itemname_replaced]
-
-        if itemname_replaced in ('ultimate log', 'super fish', 'watermelon'):
-            await ctx.send(':shushing_face:')
-            return
+        if itemname_replaced in strings.item_aliases:
+            itemname_replaced = strings.item_aliases[itemname_replaced]
 
         try:
-            item: database.Item = await database.get_item(ctx, itemname_replaced)
+            item: database.Item = await database.get_item(itemname_replaced)
         except database.NoDataFound:
             await ctx.send(f'Uhm, I don\'t know a recipe to craft `{itemname}`, sorry.')
             return
@@ -300,7 +348,7 @@ class craftingCog(commands.Cog):
             await ctx.send(f'You can only craft 1 {item.emoji} `{item.name}`.')
             return
         if not item.ingredients:
-            await ctx.send(f'{item.emoji} `{item.name}` is not craftable.')
+            await ctx.send(f'{item.emoji} `{item.name}` can not be crafted.')
             return
 
         breakdown_totals = await get_item_breakdown(ctx, item, amount)
@@ -310,8 +358,11 @@ class craftingCog(commands.Cog):
         else:
             message = f'To craft {amount:,} {item.emoji} `{item.name}` you need:'
         for ingredient in item.ingredients:
-            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            ingredient_item: database.Item = await database.get_item(ingredient.name)
             message = f'{message}\n> {ingredient.amount * amount:,} {ingredient_item.emoji} `{ingredient_item.name}`'
+
+        if item.requirements is not None:
+            message = f'{message}\n\nRequirements\n> {item.requirements}'
 
         if breakdown_totals != '':
             message = f'{message}\n\n{breakdown_totals}'
@@ -356,15 +407,11 @@ class craftingCog(commands.Cog):
             await ctx.send('I WILL NEVER ALLOW THAT. YOU MONSTER.')
             return
 
-        if itemname in global_data.item_aliases:
-            itemname = global_data.item_aliases[itemname]
-
-        if itemname in ('ultimate log', 'super fish', 'watermelon'):
-            await ctx.send(':shushing_face:')
-            return
+        if itemname in strings.item_aliases:
+            itemname = strings.item_aliases[itemname]
 
         try:
-            item: database.Item = await database.get_item(ctx, itemname)
+            item: database.Item = await database.get_item(itemname)
         except database.NoDataFound:
             await ctx.send(f'Uhm, I don\'t know an item called `{itemname}`, sorry.')
             return
@@ -379,7 +426,7 @@ class craftingCog(commands.Cog):
         else:
             message = f'By dismantling {amount:,} {item.emoji} `{item.name}` you get:'
         for ingredient in item.ingredients:
-            ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+            ingredient_item: database.Item = await database.get_item(ingredient.name)
             message = f'{message}\n> {int(ingredient.amount * amount * 0.8):,} {ingredient_item.emoji} `{ingredient_item.name}`'
 
         if breakdown_totals != '':
@@ -453,8 +500,8 @@ class craftingCog(commands.Cog):
                         await ctx.send(f'There is no area {area}.')
                         return
                 original_item = item
-                if item in global_data.item_aliases:
-                    item = global_data.item_aliases[item]
+                if item in strings.item_aliases:
+                    item = strings.item_aliases[item]
 
                 if not item in items:
                     await ctx.send(f'This command does not support an item called `{original_item}`, sorry.')
@@ -481,28 +528,28 @@ class craftingCog(commands.Cog):
                 except:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-                fish = await global_data.inventory_get(inventory, 'normie fish')
-                fishgolden = await global_data.inventory_get(inventory, 'golden fish')
-                fishepic = await global_data.inventory_get(inventory, 'epic fish')
-                log = await global_data.inventory_get(inventory, 'wooden log')
-                logepic = await global_data.inventory_get(inventory, 'epic log')
-                logsuper = await global_data.inventory_get(inventory, 'super log')
-                logmega = await global_data.inventory_get(inventory, 'mega log')
-                loghyper = await global_data.inventory_get(inventory, 'hyper log')
-                logultra = await global_data.inventory_get(inventory, 'ultra log')
-                apple = await global_data.inventory_get(inventory, 'apple')
-                banana = await global_data.inventory_get(inventory, 'banana')
-                ruby = await global_data.inventory_get(inventory, 'ruby')
-                potato = await global_data.inventory_get(inventory, 'potato')
-                carrot = await global_data.inventory_get(inventory, 'carrot')
-                bread = await global_data.inventory_get(inventory, 'bread')
-                cookie = await global_data.inventory_get(inventory, 'arena cookie')
-                wolfskin = await global_data.inventory_get(inventory, 'wolf skin')
-                zombieeye = await global_data.inventory_get(inventory, 'zombie eye')
-                unicornhorn = await global_data.inventory_get(inventory, 'unicorn horn')
-                mermaidhair = await global_data.inventory_get(inventory, 'mermaid hair')
-                chip = await global_data.inventory_get(inventory, 'chip')
-                dragonscale = await global_data.inventory_get(inventory, 'dragon scale')
+                fish = await functions.inventory_get(inventory, 'normie fish')
+                fishgolden = await functions.inventory_get(inventory, 'golden fish')
+                fishepic = await functions.inventory_get(inventory, 'epic fish')
+                log = await functions.inventory_get(inventory, 'wooden log')
+                logepic = await functions.inventory_get(inventory, 'epic log')
+                logsuper = await functions.inventory_get(inventory, 'super log')
+                logmega = await functions.inventory_get(inventory, 'mega log')
+                loghyper = await functions.inventory_get(inventory, 'hyper log')
+                logultra = await functions.inventory_get(inventory, 'ultra log')
+                apple = await functions.inventory_get(inventory, 'apple')
+                banana = await functions.inventory_get(inventory, 'banana')
+                ruby = await functions.inventory_get(inventory, 'ruby')
+                potato = await functions.inventory_get(inventory, 'potato')
+                carrot = await functions.inventory_get(inventory, 'carrot')
+                bread = await functions.inventory_get(inventory, 'bread')
+                cookie = await functions.inventory_get(inventory, 'arena cookie')
+                wolfskin = await functions.inventory_get(inventory, 'wolf skin')
+                zombieeye = await functions.inventory_get(inventory, 'zombie eye')
+                unicornhorn = await functions.inventory_get(inventory, 'unicorn horn')
+                mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
+                chip = await functions.inventory_get(inventory, 'chip')
+                dragonscale = await functions.inventory_get(inventory, 'dragon scale')
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
                 return
@@ -824,20 +871,26 @@ class craftingCog(commands.Cog):
             result_value = ruby_calc
             result_item = f'{emojis.RUBY} rubies'
 
-
-
         if area in (1,2):
             await ctx.send(
-                f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.\n\n'
-                f'Note that apples and rubies were included in the calculation but can not be traded in this area.'
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.\n\n'
+                f'Apples and rubies are included in the calculation as follows:\n'
+                f'{emojis.BP} 1 {emojis.APPLE} = 3 {emojis.LOG} (trade value in A3)\n'
+                f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} (trade value in A5)\n'
             )
         elif area in (3,4):
             await ctx.send(
-                f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.\n\n'
-                f'Note that rubies were included in the calculation but can not be traded in this area.'
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.\n\n'
+                f'Rubies are included in the calculation as follows:\n'
+                f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} (trade value in A5)\n'
             )
         else:
-            await ctx.send(f'**{ctx.author.name}**, your inventory (assuming you are in area **{area}** now) equals **{result_value:,}** {result_item}.')
+            await ctx.send(
+                f'**{ctx.author.name}**, your inventory equals **{result_value:,}** {result_item}.\n'
+                f'This calculation assumes you are in area **{area}** now.'
+            )
 
 # Initialization
 def setup(bot):
@@ -853,7 +906,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
     base_totals = {}
 
     for ingredient in item.ingredients:
-        ingredient_item: database.Item = await database.get_item(ctx, ingredient.name)
+        ingredient_item: database.Item = await database.get_item(ingredient.name)
         if ingredient.name == 'wooden log':
             log_total += ingredient.amount * amount * multiplier
         elif ingredient.name == 'normie fish':
@@ -876,7 +929,7 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
                 fish_total += current_amount
             elif current_ingredient.name == 'apple':
                 apple_total += current_amount
-            sub_item: database.Item = await database.get_item(ctx, current_ingredient.name)
+            sub_item: database.Item = await database.get_item(current_ingredient.name)
             if current_breakdown == '':
                 current_breakdown = f'> {int(current_amount):,} {sub_item.emoji}'
             else:
@@ -889,10 +942,10 @@ async def get_item_breakdown(ctx: commands.Context, item: database.Item, amount:
     message = ''
     if '➜' in breakdown:
         if dismantle:
-            message = f'**Full breakdown**\n{breakdown.strip()}'
+            message = f'Full breakdown\n{breakdown.strip()}'
             return message.strip()
-        message = f'**Ingredients breakdown**\n{breakdown.strip()}'
-        message = f'{message}\n\n**Base materials total**'
+        message = f'Ingredients breakdown\n{breakdown.strip()}'
+        message = f'{message}\n\nBase materials total'
         message = message.strip()
         if (log_total > 0 or fish_total > 0 or apple_total > 0) and not dismantle:
             if apple_total > 0: base_totals['apple'] = (apple_total, emojis.APPLE)
@@ -921,7 +974,8 @@ async def embed_enchants(prefix):
         f'{emojis.BP} **ULTRA-EDGY** - 100% buff\n'
         f'{emojis.BP} **OMEGA** - 125% buff, unlocked in {emojis.TIME_TRAVEL} TT 1\n'
         f'{emojis.BP} **ULTRA-OMEGA** - 150% buff, unlocked in {emojis.TIME_TRAVEL} TT 3\n'
-        f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5'
+        f'{emojis.BP} **GODLY** - 200% buff, unlocked in {emojis.TIME_TRAVEL} TT 5\n'
+        f'{emojis.BP} **VOID** - 300% buff, unlocked in {emojis.TIME_TRAVEL} TT 15\n'
     )
 
     commands_tiers = (
@@ -949,7 +1003,7 @@ async def embed_enchants(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ENCHANTS',
         description = (
             f'Enchants buff either AT or DEF (sword enchants buff AT, armor enchants buff DEF). Enchants buff your **overall** stats.\n'
@@ -958,7 +1012,7 @@ async def embed_enchants(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='POSSIBLE ENCHANTS', value=buffs, inline=False)
     embed.add_field(name='HOW ENCHANTING WORKS', value=how_enchanting_works, inline=False)
     embed.add_field(name='COMMAND TIERS', value=commands_tiers, inline=False)
@@ -979,35 +1033,43 @@ async def embed_drops(prefix):
     zombieeye = (
         f'{emojis.BP} Areas: 3~4\n'
         f'{emojis.BP} Source: {emojis.MOB_ZOMBIE}\n'
-        f'{emojis.BP} Value: 2\'000\n'
+        f'{emojis.BP} Value: 2,000\n'
         f'{emojis.BLANK}'
     )
 
     unicornhorn = (
         f'{emojis.BP} Areas: 5~6\n'
         f'{emojis.BP} Source: {emojis.MOB_UNICORN}\n'
-        f'{emojis.BP} Value: 7\'500\n'
+        f'{emojis.BP} Value: 7,500\n'
         f'{emojis.BLANK}'
     )
 
     mermaidhair = (
         f'{emojis.BP} Areas: 7~8\n'
         f'{emojis.BP} Source: {emojis.MOB_MERMAID}\n'
-        f'{emojis.BP} Value: 30\'000\n'
+        f'{emojis.BP} Value: 30,000\n'
         f'{emojis.BLANK}'
     )
 
     chip = (
         f'{emojis.BP} Areas: 9~10\n'
         f'{emojis.BP} Source: {emojis.MOB_KILLER_ROBOT}\n'
-        f'{emojis.BP} Value: 100\'000\n'
+        f'{emojis.BP} Value: 100,000\n'
         f'{emojis.BLANK}'
     )
 
     dragonscale = (
         f'{emojis.BP} Areas: 11~15\n'
         f'{emojis.BP} Source: {emojis.MOB_BABY_DRAGON}{emojis.MOB_TEEN_DRAGON}{emojis.MOB_ADULT_DRAGON}{emojis.MOB_OLD_DRAGON}\n'
-        f'{emojis.BP} Value: 250\'000\n'
+        f'{emojis.BP} Value: 250,000\n'
+        f'{emojis.BLANK}'
+    )
+
+    dark_energy = (
+        f'{emojis.BP} Areas: 16~20\n'
+        f'{emojis.BP} Source: {emojis.MOB_VOID_SHARD}{emojis.MOB_ABYSS_BUG}{emojis.MOB_CORRUPTED_UNICORN}'
+        f'{emojis.MOB_NEUTRON_STAR}{emojis.MOB_TIME_ALTERATION}\n'
+        f'{emojis.BP} Value: 5,000,000\n'
         f'{emojis.BLANK}'
     )
 
@@ -1024,7 +1086,7 @@ async def embed_drops(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
             f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'
@@ -1033,13 +1095,14 @@ async def embed_drops(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'WOLF SKIN {emojis.WOLF_SKIN}', value=wolfskin, inline=True)
     embed.add_field(name=f'ZOMBIE EYE {emojis.ZOMBIE_EYE}', value=zombieeye, inline=True)
     embed.add_field(name=f'UNICORN HORN {emojis.UNICORN_HORN}', value=unicornhorn, inline=True)
     embed.add_field(name=f'MERMAID HAIR {emojis.MERMAID_HAIR}', value=mermaidhair, inline=True)
     embed.add_field(name=f'CHIP {emojis.CHIP}', value=chip, inline=True)
     embed.add_field(name=f'DRAGON SCALE {emojis.DRAGON_SCALE}', value=dragonscale, inline=True)
+    embed.add_field(name=f'DARK ENERGY {emojis.DARK_ENERGY}', value=dark_energy, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
 
     return embed

@@ -4,8 +4,9 @@
 import discord
 from discord.ext import commands
 
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # Links
@@ -30,14 +31,14 @@ class LinksCog(commands.Cog):
     async def invite(self, ctx: commands.Context) -> None:
         """Sends the invite link"""
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'NEED A GUIDE?',
             description = (
                 f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
                 f'You can invite me [here]({LINK_INVITE}).'
             )
         )
-        embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+        embed.set_footer(text=await functions.default_footer(ctx.prefix))
         await ctx.send(embed=embed)
 
     @commands.command(aliases=('supportserver','server',))
@@ -45,11 +46,11 @@ class LinksCog(commands.Cog):
     async def support(self, ctx: commands.Context) -> None:
         """Link to the support server"""
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'NEED BOT SUPPORT?',
             description = f'You can visit the support server [here]({LINK_SUPPORT_SERVER}).'
         )
-        embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+        embed.set_footer(text=await functions.default_footer(ctx.prefix))
         await ctx.send(embed=embed)
 
     @commands.command(aliases=('link','wiki',))
@@ -66,11 +67,11 @@ class LinksCog(commands.Cog):
             f'{emojis.BP} [Official Server]({LINK_EROS})'
         )
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'SOME HELPFUL LINKS',
             description = 'There\'s a whole world out there.'
         )
-        embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+        embed.set_footer(text=await functions.default_footer(ctx.prefix))
         embed.add_field(name='EPIC RPG GUIDE', value=epic_rpg_guide, inline=False)
         embed.add_field(name='EPIC RPG', value=epic_rpg, inline=False)
         await ctx.send(embed=embed)
@@ -80,14 +81,14 @@ class LinksCog(commands.Cog):
     async def vote(self, ctx: commands.Context) -> None:
         """Link to the top.gg voting page"""
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'FEEL LIKE VOTING?',
             description = (
                 f'That\'s nice of you, **{ctx.author.name}**, thanks!\n'
                 f'You can vote for me [here]({LINK_VOTE}).'
                 )
             )
-        embed.set_footer(text=await global_data.default_footer(ctx.prefix))
+        embed.set_footer(text=await functions.default_footer(ctx.prefix))
         await ctx.send(embed=embed)
 
     @commands.command()

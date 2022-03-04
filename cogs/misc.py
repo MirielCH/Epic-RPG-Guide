@@ -7,8 +7,9 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # Miscellaneous commands (cog)
@@ -92,7 +93,7 @@ class miscCog(commands.Cog):
         npc_def_base = 6 * (stage ** 1.25)
 
         answer = (
-            f'Estimated trainer stats at stage **{stage:,}**:\n'
+            f'Estimated EPIC NPC stats at stage **{stage:,}**:\n'
             f'{emojis.STAT_AT} AT: **{round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}**\n'
             f'{emojis.STAT_DEF} DEF: **{round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}**\n'
         )
@@ -245,7 +246,7 @@ class miscCog(commands.Cog):
             tip = await database.get_tip(ctx)
 
         embed = discord.Embed(
-            color = global_data.EMBED_COLOR,
+            color = settings.EMBED_COLOR,
             title = 'TIP',
             description = tip[0]
         )
@@ -284,9 +285,9 @@ class miscCog(commands.Cog):
         prefix = ctx.prefix
 
         error_syntax = (
-            f'The command syntax is `{prefix}coincap [tt] [area]`\n'
+            f'The command syntax is `{prefix}coincap [tt]`\n'
             f'You can also use `{prefix}coincap` and let me read your profile.\n'
-            f'Examples: `{prefix}coincap tt5 a12`, `{prefix}coincap 8 10`'
+            f'Examples: `{prefix}coincap tt5`, `{prefix}coincap 8`'
         )
 
         user_tt = None
@@ -300,40 +301,15 @@ class miscCog(commands.Cog):
                 arg1 = args[0]
                 arg1 = arg1.lower()
                 arg1 = arg1.replace('tt','')
-                if arg1.isnumeric():
-                    user_tt = int(arg1)
-                    if 0 <= user_tt <= 999:
-                        if len(args) > 1:
-                            arg2 = args[1]
-                            arg2 = arg2.lower()
-                            arg2 = arg2.replace('a','')
-                            if arg1.isnumeric():
-                                try:
-                                    user_area = int(arg2)
-                                except:
-                                    await ctx.send(error_syntax)
-                                    return
-                                if 1 <= user_area <= 15:
-                                    if ((user_area == 12) and (user_tt < 1)) or ((user_area == 13) and (user_tt < 3)) or ((user_area == 14) and (user_tt < 5)) or ((user_area == 15) and (user_tt < 10)):
-                                        await ctx.send(f'You can not reach area {user_area} in TT {user_tt}.')
-                                        return
-                                else:
-                                    await ctx.send('Sure, send me a postcard from that totally legit area.')
-                                    return
-                            else:
-                                await ctx.send(error_syntax)
-                                return
-                        else:
-                            await ctx.send(error_syntax)
-                            return
-                    else:
-                        await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
-                        return
-                else:
+                if not arg1.isnumeric():
                     await ctx.send(error_syntax)
                     return
+                user_tt = int(arg1)
+                if not 0 <= user_tt <= 999:
+                    await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
+                    return
 
-        if user_tt == None:
+        if user_tt is None:
             try:
                 await ctx.send(
                     f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
@@ -353,14 +329,9 @@ class miscCog(commands.Cog):
                         except:
                             await ctx.send(
                                 f'Whelp, something went wrong here, sorry.\n'
-                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt] [max area]` instead.'
+                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt]` instead.'
                             )
                             return
-
-                    start_area = profile.find('(Max:') + 6
-                    end_area = profile.find(')', start_area)
-                    user_area = profile[start_area:end_area]
-                    user_area = int(user_area)
                     if profile.find('Time travels') > -1:
                         start_tt = profile.find('Time travels**') + 16
                         end_tt = profile.find('\',', start_tt)
@@ -374,14 +345,12 @@ class miscCog(commands.Cog):
                 else:
                     await ctx.send('Wrong input. Aborting.')
                     return
-
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-
-        coin_cap = round(pow(user_tt,2.5)*10000000000+(user_area*2500000))
+        coin_cap = f'{pow(user_tt, 4) * 500_000_000:,}' if user_tt > 0 else 'unknown'
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {user_area}** is **{coin_cap:,}** {emojis.COIN} coins.\n'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
             f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
         )
@@ -418,12 +387,12 @@ async def embed_duels(prefix):
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'DUELS',
         description = 'Winning a duel depends on the chosen weapon and some luck.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
@@ -454,7 +423,7 @@ async def embed_codes(prefix, codes):
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
         description = (
             f'Use these codes with `rpg code` to get some free goodies.\n'
@@ -462,7 +431,7 @@ async def embed_codes(prefix, codes):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
 
     if not temporary_value == '':
         embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
@@ -500,12 +469,12 @@ async def embed_coolness(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'COOLNESS {emojis.STAT_COOLNESS}',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='REQUIREMENTS', value=req, inline=False)
     embed.add_field(name='HOW TO GET COOLNESS', value=howtoget, inline=False)
@@ -516,15 +485,33 @@ async def embed_coolness(prefix):
 # Badges
 async def embed_badges(prefix):
 
-    badges = (
-        f'{emojis.BP} {emojis.BADGE_1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_A15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL}TT 10)\n'
+    badges_coolness = (
+        f'{emojis.BP} {emojis.BADGE_C1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C2000} : Unlocked with 2,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C5000} : Unlocked with 5,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C10000} : Unlocked with 10,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C20000} : Unlocked with 20,000 {emojis.STAT_COOLNESS} coolness\n'
+    )
+
+    badges_achievements = (
+        f'{emojis.BP} {emojis.BADGE_A10} : Unlocked with 10 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A25} : Unlocked with 25 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A75} : Unlocked with 75 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A125} : Unlocked with 125 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A175} : Unlocked with 175 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A225} : Unlocked with 225 achievements\n'
+    )
+
+    badges_other = (
+        f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the "final" dungeon in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
+        f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )
 
     howtouse = (
@@ -534,19 +521,21 @@ async def embed_badges(prefix):
     )
 
     note = (
-        f'{emojis.BP} You can have several badges active at the same time\n'
+        f'{emojis.BP} You can have 3 badges active (5 with a {emojis.HORSE_T10} T10 horse)\n'
         f'{emojis.BP} You can only claim badges you have unlocked\n'
         f'{emojis.BP} If you don\'t know how to get coolness, see `{prefix}coolness`'
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'BADGES',
         description = 'Badges are cosmetic only profile decorations.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
-    embed.add_field(name='AVAILABLE BADGES', value=badges, inline=False)
+    embed.set_footer(text=await functions.default_footer(prefix))
+    embed.add_field(name='ACHIEVEMENT BADGES', value=badges_achievements, inline=False)
+    embed.add_field(name='COOLNESS BADGES', value=badges_coolness, inline=False)
+    embed.add_field(name='OTHER BADGES', value=badges_other, inline=False)
     embed.add_field(name='HOW TO USE', value=howtouse, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 
@@ -573,7 +562,6 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.SWORD_HAIR} `Hair Sword` ➜ 4 {emojis.MERMAID_HAIR} + **220** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} `Electronical Armor` ➜ 12 {emojis.CHIP} + 1 {emojis.LOG_HYPER} + **180** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ **1** {emojis.BREAD} + 160 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **25** {emojis.BREAD}\n'
         f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
@@ -582,7 +570,6 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_ORANGE_JUICE} `Orange Juice` (+3 AT, +3 DEF) ➜ **320** {emojis.CARROT}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.POTATO} + **80** {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **30** {emojis.CARROT}\n'
         f'{emojis.BP} Can be sold for 2,500 coins and 3 merchant XP\n'
         f'{emojis.BP} Can be used to change the horse name with `rpg horse feed`'
     )
@@ -591,9 +578,15 @@ async def embed_farm(prefix):
         f'{emojis.BP} {emojis.SWORD_RUBY} `Ruby Sword` ➜ 4 {emojis.RUBY} + 1 {emojis.LOG_MEGA} + **36** {emojis.POTATO}\n'
         f'{emojis.BP} {emojis.ARMOR_RUBY} `Ruby Armor` ➜ 7 {emojis.RUBY} + 4 {emojis.UNICORN_HORN} + **120** {emojis.POTATO} + 2 {emojis.LOG_MEGA}\n'
         f'{emojis.BP} {emojis.SWORD_ELECTRONICAL} `Electronical Sword` ➜ 8 {emojis.CHIP} + 1 {emojis.LOG_MEGA} + **140** {emojis.POTATO}\n'
+        f'{emojis.BP} {emojis.SWORD_WATERMELON} `Watermelon Sword` ➜ 1 {emojis.WATERMELON} + **10** {emojis.POTATO}\n'
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ **80** {emojis.POTATO} + 80 {emojis.CARROT}\n'
-        f'{emojis.BP} 1 STT score per **35** {emojis.POTATO}\n'
         f'{emojis.BP} Can be sold for 2,000 coins and 3 merchant XP'
+    )
+
+    stt_score = (
+        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score\n'
+        f'{emojis.BP} 30 {emojis.CARROT} carrots = 1 score\n'
+        f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
     )
 
     what_to_plant = (
@@ -610,17 +603,18 @@ async def embed_farm(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'FARMING',
         description = f'It ain\'t much, but it\'s honest work.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
     embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
     embed.add_field(name='CARROT USAGE', value=usage_carrot, inline=False)
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
+    embed.add_field(name='STT SCORE', value=stt_score, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 
@@ -666,12 +660,12 @@ async def embed_start(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'STARTER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
     embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
@@ -703,8 +697,8 @@ async def embed_ultraining(prefix):
     )
 
     preparation = (
-        f'{emojis.BP} Get GODLY enchants\n'
-        f'{emojis.BP} Get a STRONG or DEFENDER horse (or MAGIC **if** you have GODLY enchants)\n'
+        f'{emojis.BP} Get VOID enchants\n'
+        f'{emojis.BP} Get a MAGIC horse\n'
         f'{emojis.BP} Craft as many {emojis.FOOD_APPLE_JUICE} apple juice and {emojis.FOOD_ORANGE_JUICE} orange juice '
         f'you need to reach your desired stage\n'
         f'{emojis.BP} Duel on cooldown to increase your level\n'
@@ -721,7 +715,7 @@ async def embed_ultraining(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'ULTRAINING',
         description = (
             f'Ultraining is a higher tier of training that is unlocked in area 12. It rewards coolness in addition to XP.\n'
@@ -729,7 +723,7 @@ async def embed_ultraining(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='HOW IT WORKS', value=how_it_works, inline=False)
     embed.add_field(name='ATTACK, BLOCK OR ATTLOCK?', value=which_command, inline=False)
     embed.add_field(name='WHEN TO DO ULTRAINING', value=when, inline=False)

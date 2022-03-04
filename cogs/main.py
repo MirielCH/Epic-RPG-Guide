@@ -9,8 +9,8 @@ import discord
 from discord.ext import commands, tasks
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import logs, settings
 
 
 class MainCog(commands.Cog):
@@ -23,18 +23,18 @@ class MainCog(commands.Cog):
     async def update_stats(self):
         """Updates top.gg guild count"""
         try:
-            if global_data.DBL_TOKEN != 'none':
+            if settings.DBL_TOKEN != 'none':
                 guilds = len(list(self.bot.guilds))
                 guild_count = {'server_count':guilds}
-                header = {'Authorization':global_data.DBL_TOKEN}
+                header = {'Authorization':settings.DBL_TOKEN}
                 async with aiohttp.ClientSession() as session:
                     async with session.post('https://top.gg/api/bots/770199669141536768/stats',
                                             data=guild_count,headers=header) as request:
-                        global_data.logger.info(
+                        logs.logger.info(
                             f'Posted server count ({guilds}), status code: {request.status}'
                             )
         except Exception as error:
-            global_data.logger.error(f'Failed to post server count: {error}')
+            logs.logger.error(f'Failed to post server count: {error}')
 
 
     # Commands
@@ -70,7 +70,7 @@ class MainCog(commands.Cog):
             embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
             await ctx.send(embed=embed)
 
-        if isinstance(error, (commands.CommandNotFound, database.FirstTimeUser, commands.NotOwner)):
+        if isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
             return
         elif isinstance(error, commands.DisabledCommand):
             await ctx.send(f'Command `{ctx.command.qualified_name}` is temporarily disabled.')
@@ -84,8 +84,22 @@ class MainCog(commands.Cog):
                 await ctx.send(error)
             else:
                 await send_error()
+        elif isinstance(error, database.FirstTimeUser):
+            await ctx.send(
+                f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+                f'I have set your progress to **TT 0**, **not ascended**.\n\n'
+                f'** --> Please use `{ctx.prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
+                f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. '
+                f'Check out `{ctx.prefix}tt` for some details.\n'
+                f'• If you are in a higher TT, please use `{ctx.prefix}setprogress` (or `{ctx.prefix}sp`) '
+                f'to change your settings.\n\n'
+                f'These settings are used by some guides (like the area guides) to only show you what is relevant '
+                f'to your current progress.'
+            )
         else:
             await database.log_error(ctx, error)
+            if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()
+
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
@@ -94,7 +108,7 @@ class MainCog(commands.Cog):
 
         startup_info = f'{self.bot.user.name} has connected to Discord!'
         print(startup_info)
-        global_data.logger.info(startup_info)
+        logs.logger.info(startup_info)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
                                                                  name='your questions'))
         if not self.update_stats.is_running(): await self.update_stats.start()
@@ -167,18 +181,18 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'{emojis.BP} `{prefix}support` : Visit the support server\n'
         f'{emojis.BP} `{prefix}links` : EPIC RPG wiki & support'
     )
-    settings = (
+    field_settings = (
         f'{emojis.BP} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
         f'{emojis.BP} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
         f'{emojis.BP} `{prefix}prefix` : Check/set the prefix'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'EPIC RPG GUIDE',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -190,7 +204,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     embed.add_field(name='GAMBLING', value=gambling_overview, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
-    embed.add_field(name='SETTINGS', value=settings, inline=False)
+    embed.add_field(name='SETTINGS', value=field_settings, inline=False)
     return embed
 
 
@@ -225,7 +239,7 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
         f'{emojis.BP} You can find this bot\'s privacy policy [here]'
         f'(https://docs.google.com/document/d/1CStt8k902m5s5CUb2RyPTTN-dmb-N2FAONfxzm7eAio/edit?usp=sharing).\n'
     )
-    embed = discord.Embed(color = global_data.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
+    embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)

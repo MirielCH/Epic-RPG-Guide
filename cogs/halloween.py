@@ -3,8 +3,9 @@
 import discord
 from discord.ext import commands
 
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # Additional guides
@@ -102,11 +103,11 @@ async def embed_halloween_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_ERPG}'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'HALLOWEEN EVENT 2021 {emojis.HAL_PUMPKIN}',
         description = 'Boo.'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
@@ -131,7 +132,7 @@ async def embed_halloween_item_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_EPRG_ITEMS}\n'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'HALLOWEEN ITEM OVERVIEW',
         description = (
             f'Use `{prefix}hal [item name]` to see details about a listed item.\n'
@@ -139,7 +140,7 @@ async def embed_halloween_item_overview(prefix: str) -> discord.Embed:
         )
 
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='ITEM NAMES', value=items_value, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
     return embed
@@ -246,10 +247,10 @@ async def embed_halloween_item(prefix: str, item: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_EPRG_ITEMS}\n'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = f'HALLOWEEN ITEM: {titles[item]}'
     )
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='SOURCE', value=sources[item], inline=False)
     embed.add_field(name='WHAT TO DO WITH IT', value=usages[item], inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -284,12 +285,12 @@ async def embed_halloween_chances(prefix: str) -> discord.Embed:
         f'{emojis.BP} {GUIDE_ERPG}'
     )
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'HALLOWEEN SPAWN AND DROP CHANCES',
         description = 'This page lists all known spawn and drop chances.'
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'BAT SLIME {emojis.HAL_BAT_SLIME}', value=bat_slime, inline=False)
     embed.add_field(name=f'MONSTER SOUL {emojis.HAL_MONSTER_SOUL}', value=monster_soul, inline=False)
     embed.add_field(name=f'SLEEPY JACK O\'LANTERN {emojis.HAL_JACK_O_LANTERN}', value=miniboss, inline=False)

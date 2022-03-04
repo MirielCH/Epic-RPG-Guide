@@ -9,8 +9,9 @@ import discord
 from discord.ext import commands
 
 import database
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # time travel commands (cog)
@@ -31,52 +32,31 @@ class timetravelCog(commands.Cog):
         invoked = ctx.message.content
         invoked = invoked.lower()
 
+        syntax = f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`'
+
         if args:
             if len(args) > 1:
-                await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
+                await ctx.send(syntax)
                 return
-            else:
-                tt_no = args[0]
-                if tt_no.isnumeric():
-                    tt_no = int(tt_no)
-                    if 1 <= tt_no <= 999:
-                        if 1 <= tt_no <= 25:
-                            tt_data = await database.get_tt_unlocks(ctx, tt_no)
-                        else:
-                            tt_data = (tt_no, 0, 0, '', '', '')
-                    elif tt_no == 1000:
-                        await ctx.send('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
-                        return
-                    else:
-                        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                        return
+            tt_no = args[0]
 
-                    embed = await embed_timetravel_specific(tt_data, ctx.prefix)
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-        else:
+        if not args:
             tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
-
             if tt_no == '':
-                embed = await embed_timetravel_overview(ctx.prefix)
+                embed = await embed_timetravel_overview(ctx)
                 await ctx.send(embed=embed)
-            else:
-                if tt_no.isnumeric():
-                    tt_no = int(tt_no)
-                    if 1 <= tt_no <= 999:
-                        if 1 <= tt_no <= 25:
-                            tt_data = await database.get_tt_unlocks(ctx, int(tt_no))
-                        else:
-                            tt_data = (tt_no, 0, 0, '', '', '')
-                        embed = await embed_timetravel_specific(tt_data, ctx.prefix)
-                        await ctx.send(embed=embed)
-                    else:
-                        await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                        return
-                else:
-                    await ctx.send(f'The command syntax is `{ctx.prefix}{ctx.invoked_with} [1-999]` or `{ctx.prefix}tt1`-`{ctx.prefix}tt999`')
-                    return
+                return
+
+        if not tt_no.isnumeric():
+            await ctx.send(syntax)
+            return
+        tt_no = int(tt_no)
+        if not 1 <= tt_no <= 999:
+            await ctx.send(syntax)
+            return
+        tt: database.TimeTravel = await database.get_time_travel(tt_no)
+        embed = await embed_timetravel_specific(ctx, tt)
+        await ctx.send(embed=embed)
 
     # Command "tt1000" - Because they will try
     @commands.command(aliases=('timetravel1000',))
@@ -90,20 +70,9 @@ class timetravelCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def mytt(self, ctx):
 
-        try:
-            user_settings = await database.get_user_settings(ctx)
-        except Exception as error:
-            if isinstance(error, database.FirstTimeUser):
-                return
-            else:
-                await ctx.send(global_data.MSG_ERROR)
-                return
-        user_tt, _ = user_settings
-        if 1 <= user_tt <= 25:
-            tt_data = await database.get_tt_unlocks(ctx, user_tt)
-        else:
-            tt_data = (user_tt,0,0,'','','')
-        embed = await embed_timetravel_specific(tt_data, ctx.prefix, True)
+        user = await database.get_user(ctx.author.id)
+        tt: database.TimeTravel = await database.get_time_travel(user.tt)
+        embed = await embed_timetravel_specific(ctx, tt, mytt=True)
         await ctx.send(embed=embed)
 
     # Command "supertimetravel" - Information about super time travel
@@ -180,12 +149,12 @@ class timetravelCog(commands.Cog):
                 area = args[0]
                 area = area.lower()
                 if area.find('top') > -1:
-                    area = 16
+                    area = 21
                 else:
                     area = area.lower().replace('a','')
                     if area.isnumeric():
                         area = int(area)
-                        if not 1 <= area <= 16:
+                        if not 1 <= area <= 21:
                             await ctx.send(f'There is no area {area}.')
                             return
                     else:
@@ -210,40 +179,40 @@ class timetravelCog(commands.Cog):
                 except:
                     await ctx.send('Whelp, something went wrong here, sorry.')
                     return
-                fish = await global_data.inventory_get(inventory, 'normie fish')
-                fishgolden = await global_data.inventory_get(inventory, 'golden fish')
-                fishepic = await global_data.inventory_get(inventory, 'epic fish')
-                log = await global_data.inventory_get(inventory, 'wooden log')
-                logepic = await global_data.inventory_get(inventory, 'epic log')
-                logsuper = await global_data.inventory_get(inventory, 'super log')
-                logmega = await global_data.inventory_get(inventory, 'mega log')
-                loghyper = await global_data.inventory_get(inventory, 'hyper log')
-                logultra = await global_data.inventory_get(inventory, 'ultra log')
-                apple = await global_data.inventory_get(inventory, 'apple')
-                banana = await global_data.inventory_get(inventory, 'banana')
-                ruby = await global_data.inventory_get(inventory, 'ruby')
-                wolfskin = await global_data.inventory_get(inventory, 'wolf skin')
-                zombieeye = await global_data.inventory_get(inventory, 'zombie eye')
-                unicornhorn = await global_data.inventory_get(inventory, 'unicorn horn')
-                mermaidhair = await global_data.inventory_get(inventory, 'mermaid hair')
-                chip = await global_data.inventory_get(inventory, 'chip')
-                dragonscale = await global_data.inventory_get(inventory, 'dragon scale')
-                lbcommon = await global_data.inventory_get(inventory, 'common lootbox')
-                lbuncommon = await global_data.inventory_get(inventory, 'uncommon lootbox')
-                lbrare = await global_data.inventory_get(inventory, 'rare lootbox')
-                lbepic = await global_data.inventory_get(inventory, 'epic lootbox')
-                lbedgy = await global_data.inventory_get(inventory, 'edgy lootbox')
-                lbomega = await global_data.inventory_get(inventory, 'omega lootbox')
-                lbgodly = await global_data.inventory_get(inventory, 'godly lootbox')
-                lifepotion = await global_data.inventory_get(inventory, 'life potion')
-                potato = await global_data.inventory_get(inventory, 'potato')
-                carrot = await global_data.inventory_get(inventory, 'carrot')
-                bread = await global_data.inventory_get(inventory, 'bread')
-                seed = await global_data.inventory_get(inventory, 'seed')
-                seed_bread = await global_data.inventory_get(inventory, 'bread seed')
-                seed_carrot = await global_data.inventory_get(inventory, 'carrot seed')
-                seed_potato = await global_data.inventory_get(inventory, 'potato seed')
-                lottery_ticket = await global_data.inventory_get(inventory, 'lottery ticket')
+                fish = await functions.inventory_get(inventory, 'normie fish')
+                fishgolden = await functions.inventory_get(inventory, 'golden fish')
+                fishepic = await functions.inventory_get(inventory, 'epic fish')
+                log = await functions.inventory_get(inventory, 'wooden log')
+                logepic = await functions.inventory_get(inventory, 'epic log')
+                logsuper = await functions.inventory_get(inventory, 'super log')
+                logmega = await functions.inventory_get(inventory, 'mega log')
+                loghyper = await functions.inventory_get(inventory, 'hyper log')
+                logultra = await functions.inventory_get(inventory, 'ultra log')
+                apple = await functions.inventory_get(inventory, 'apple')
+                banana = await functions.inventory_get(inventory, 'banana')
+                ruby = await functions.inventory_get(inventory, 'ruby')
+                wolfskin = await functions.inventory_get(inventory, 'wolf skin')
+                zombieeye = await functions.inventory_get(inventory, 'zombie eye')
+                unicornhorn = await functions.inventory_get(inventory, 'unicorn horn')
+                mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
+                chip = await functions.inventory_get(inventory, 'chip')
+                dragonscale = await functions.inventory_get(inventory, 'dragon scale')
+                lbcommon = await functions.inventory_get(inventory, 'common lootbox')
+                lbuncommon = await functions.inventory_get(inventory, 'uncommon lootbox')
+                lbrare = await functions.inventory_get(inventory, 'rare lootbox')
+                lbepic = await functions.inventory_get(inventory, 'epic lootbox')
+                lbedgy = await functions.inventory_get(inventory, 'edgy lootbox')
+                lbomega = await functions.inventory_get(inventory, 'omega lootbox')
+                lbgodly = await functions.inventory_get(inventory, 'godly lootbox')
+                lifepotion = await functions.inventory_get(inventory, 'life potion')
+                potato = await functions.inventory_get(inventory, 'potato')
+                carrot = await functions.inventory_get(inventory, 'carrot')
+                bread = await functions.inventory_get(inventory, 'bread')
+                seed = await functions.inventory_get(inventory, 'seed')
+                seed_bread = await functions.inventory_get(inventory, 'bread seed')
+                seed_carrot = await functions.inventory_get(inventory, 'carrot seed')
+                seed_potato = await functions.inventory_get(inventory, 'potato seed')
+                lottery_ticket = await functions.inventory_get(inventory, 'lottery ticket')
 
             elif (answer == 'abort') or (answer == 'cancel'):
                 await ctx.send('Aborting.')
@@ -418,10 +387,7 @@ class timetravelCog(commands.Cog):
         score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_a15
         score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_a16
 
-        if original_area == 16:
-            message_area = 'The TOP'
-        else:
-            message_area = original_area
+        message_area = 'The TOP' if original_area == 21 else original_area
 
         field_lootboxes = (
             f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
@@ -461,12 +427,12 @@ class timetravelCog(commands.Cog):
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
             f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
-            f'{emojis.BP} Total in the TOP: **{score_a16:,.2f}**\n'
+            f'{emojis.BP} Total in A16-A20 and the TOP: **{score_a16:,.2f}**\n'
         )
 
         field_totals = (
             f'{emojis.BP} Total in A15: **{score_total_a15:,.2f}**\n'
-            f'{emojis.BP} Total in the TOP: **{score_total_a16:,.2f}**\n'
+            f'{emojis.BP} Total in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
         )
 
         notes = (
@@ -480,7 +446,7 @@ class timetravelCog(commands.Cog):
             description = (
                 f'Your current area: **{message_area}**\n'
                 f'Total score in A15: **{score_total_a15:,.2f}**\n'
-                f'Total score in the TOP: **{score_total_a16:,.2f}**\n'
+                f'Total score in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
             )
         )
         embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)
@@ -511,9 +477,9 @@ guide_stt_score_calc = '`{prefix}scorecalc` / `{prefix}sc` : STT score calculato
 
 
 # --- Embeds ---
-# Time travel overview
-async def embed_timetravel_overview(prefix):
-
+async def embed_timetravel_overview(ctx: commands.Context) -> discord.Embed:
+    """Time travel overview"""
+    prefix = ctx.prefix
     where = (
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 0: Beat dungeon 10, reach area 11\n'
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 1-2: Beat dungeon 11, reach area 12\n'
@@ -547,7 +513,7 @@ async def embed_timetravel_overview(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
         description = (
             f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
@@ -557,37 +523,31 @@ async def embed_timetravel_overview(prefix):
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS FOR TIME TRAVEL', value=where, inline=False)
     embed.add_field(name='WHAT YOU KEEP', value=keptitems, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
 
-# Time travel guide for specific area
-async def embed_timetravel_specific(tt_data, prefix, mytt=False):
 
-    tt_no = int(tt_data[0])
-    unlock_dungeon = int(tt_data[1])
-    unlock_area = int(tt_data[2])
-    unlock_enchant = tt_data[3]
-    unlock_title = tt_data[4]
-    unlock_misc = tt_data[5]
-
-    bonus_xp = (99+tt_no)*tt_no/2
-    bonus_duel_xp = (99+tt_no)*tt_no/4
-    bonus_drop_chance = (49+tt_no)*tt_no/2
-    dynamite_rubies = 1+(bonus_drop_chance / 100)
+async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTravel, mytt=False):
+    """Time travel guide for specific area"""
+    prefix = ctx.prefix
+    bonus_xp = (99 + tt.tt) * tt.tt / 2
+    bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
+    bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
+    dynamite_rubies = 1 + (bonus_drop_chance / 100)
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
     tt_enchant_multipliers = {
         15: 6,
     }
-    if tt_no in tt_enchant_multipliers:
-        enchant_multiplier = tt_enchant_multipliers[tt_no]
+    if tt.tt in tt_enchant_multipliers:
+        enchant_multiplier = tt_enchant_multipliers[tt.tt]
     else:
-        enchant_multiplier = round((tt_no**2/64) + (7*tt_no/73) + (19/35))
+        enchant_multiplier = round((tt.tt ** 2 / 64) + (7 * tt.tt / 73) + (19 / 35))
 
     bonus_xp = f'{bonus_xp:,g}'
     bonus_duel_xp = f'{bonus_duel_xp:,g}'
@@ -603,30 +563,35 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
 
     unlocks = ''
 
-    if not unlock_misc == '':
-        unlocks = f'{emojis.BP} Unlocks **{unlock_misc}**\n'
+    if tt.unlock_misc is not None:
+        unlocks = f'{emojis.BP} Unlocks **{tt.unlock_misc}**\n'
 
-    if not unlock_dungeon == 0:
-        unlocks = f'{unlocks}{emojis.BP} Unlocks **dungeon {unlock_dungeon}**\n'
+    if tt.unlock_dungeon is not None:
+        unlocks = f'{unlocks}{emojis.BP} Unlocks **dungeon {tt.unlock_dungeon}**\n'
 
-    if not unlock_area == 0:
-        unlocks = f'{unlocks}{emojis.BP} Unlocks **area {unlock_area}**\n'
+    if tt.unlock_area is not None:
+        unlocks = f'{unlocks}{emojis.BP} Unlocks **area {tt.unlock_area}**\n'
 
-    if not unlock_enchant == '':
-        unlocks = f'{unlocks}{emojis.BP} Unlocks the **{unlock_enchant}** enchant\n'
+    if tt.unlock_enchant is not None:
+        unlocks = f'{unlocks}{emojis.BP} Unlocks the **{tt.unlock_enchant}** enchant\n'
 
-    if not unlock_title == '':
-        unlocks = f'{unlocks}{emojis.BP} Unlocks the title **{unlock_title}**\n'
+    if tt.unlock_title is not None:
+        unlocks = f'{unlocks}{emojis.BP} Unlocks the title **{tt.unlock_title}**\n'
 
     unlocks = (
         f"{unlocks}{emojis.BP} **{bonus_xp} %** increased **XP** from everything except duels\n"
         f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops** (see `{prefix}dropchance`)\n'
         f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
-        f'{emojis.BLANK} ➜ **{rubies:,}** {emojis.RUBY} rubies with `dynamite`\n'
-        f'{emojis.BLANK} ➜ **{rubies:,}** {emojis.LOG_HYPER} HYPER logs / {emojis.LOG_ULTRA} ULTRA logs with `chainsaw`\n'
         f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
         f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)\n'
+    )
+
+    work_multiplier = (
+        f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} / {emojis.LOG_ULTIMATE} with `chainsaw`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.WATERMELON} with `greenhouse`\n'
     )
 
 
@@ -674,7 +639,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_tt25 = (
@@ -688,7 +653,7 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_A15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
     )
 
     prep_stt = (
@@ -707,23 +672,24 @@ async def embed_timetravel_specific(tt_data, prefix, mytt=False):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
-        title = f'TIME TRAVEL {tt_no}',
+        color = settings.EMBED_COLOR,
+        title = f'TIME TRAVEL {tt.tt}',
         description = embed_description
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
-    if not (mytt == True) and not (tt_no == 0):
-        if 1 <= tt_no <= 3:
+    embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
+    if not mytt and tt.tt != 0:
+        if 1 <= tt.tt <= 3:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1_to_2, inline=False)
-        elif 4 <= tt_no <= 5:
+        elif 4 <= tt.tt <= 5:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt3_to_4, inline=False)
-        elif 6 <= tt_no <= 10:
+        elif 6 <= tt.tt <= 10:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt5_to_9, inline=False)
-        elif 11 <= tt_no <= 24:
+        elif 11 <= tt.tt <= 24:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt10_to_24, inline=False)
-        elif tt_no == 25:
+        elif tt.tt == 25:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt25, inline=False)
         else:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_stt, inline=False)
@@ -763,7 +729,7 @@ async def embed_stt(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL',
         description = (
             f'Super time travel is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have to use `super time travel` to reach the next TT.\n'
@@ -773,7 +739,7 @@ async def embed_stt(prefix):
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='STARTER BONUSES', value=starter_bonuses, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -856,7 +822,7 @@ async def embed_stt_score(prefix):
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'SUPER TIME TRAVEL SCORE',
         description = (
             f'The score points for the starter bonuses of super time travel are calculated based on your level, inventory and your gear.\n'
@@ -864,7 +830,7 @@ async def embed_stt_score(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='BASE SCORE', value=base, inline=False)
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)

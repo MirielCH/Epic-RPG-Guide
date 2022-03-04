@@ -3,8 +3,9 @@
 import discord
 from discord.ext import commands
 
-import emojis
-import global_data
+from resources import emojis
+from resources import settings
+from resources import functions
 
 
 # Guild commands (cog)
@@ -40,7 +41,9 @@ class guildCog(commands.Cog):
         'guildlevel',
         'guildlvl',
         'guildprogress',
-        'magicchair'
+        'magicchair',
+        'guildtask',
+        'guildtasks',
     )
 
     # Command "guild"
@@ -50,57 +53,67 @@ class guildCog(commands.Cog):
         prefix = ctx.prefix
         invoked = ctx.invoked_with
         invoked = invoked.lower().replace(prefix,'')
+        level_strings = ('level','progress','lvl')
+        stat_strings = ('stat','stealth','energy')
+        shop_strings = ('shop','omega','horse','cookie','rain','token','buff','buy')
 
         if args:
-            all_args = ''
-            for arg in args:
-                all_args = f'{all_args}{arg}'
+            args = [arg.lower() for arg in args]
+            all_args = "".join(args)
 
-            if (all_args.find('level') > -1) or (all_args.find('progress') > -1)or (all_args.find('lvl') > -1):
-                    embed = await embed_guild_progress(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (all_args.find('stat') > -1) or (all_args.find('stealth') > -1) or (all_args.find('energy') > -1):
-                    embed = await embed_guild_stats(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (all_args.find('weekly') > -1) or (all_args.find('reward') > -1):
-                    embed = await embed_guild_weekly(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (all_args.find('command') > -1) or (all_args.find('cmd') > -1):
-                    embed = await embed_guild_cmd(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (all_args.find('shop') > -1) or (all_args.find('omega') > -1) or (all_args.find('horse') > -1) or (all_args.find('cookie') > -1) or (all_args.find('rain') > -1) or (all_args.find('token') > -1) or (all_args.find('buy') > -1) or (all_args.find('buff') > -1):
-                    embed = await embed_guild_shop(prefix)
-                    await ctx.send(embed=embed)
-                    return
+            if any(string in all_args for string in level_strings):
+                embed = await embed_guild_progress(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif any(string in all_args for string in stat_strings):
+                embed = await embed_guild_stats(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'weekly' in all_args or 'reward' in all_args:
+                embed = await embed_guild_weekly(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'task' in all_args:
+                embed = await embed_guild_tasks(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'command' in all_args or 'cmd' in all_args:
+                embed = await embed_guild_cmd(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif any(string in all_args for string in shop_strings):
+                embed = await embed_guild_shop(prefix)
+                await ctx.send(embed=embed)
+                return
             else:
                 embed = await embed_guild_overview(prefix)
                 await ctx.send(embed=embed)
                 return
         else:
-            if (invoked.find('level') > -1) or (invoked.find('progress') > -1) or (invoked.find('lvl') > -1):
-                    embed = await embed_guild_progress(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (invoked.find('stat') > -1) or (invoked.find('stealth') > -1) or (invoked.find('energy') > -1):
-                    embed = await embed_guild_stats(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (invoked.find('weekly') > -1) or (invoked.find('reward') > -1):
-                    embed = await embed_guild_weekly(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (invoked.find('command') > -1) or (invoked.find('cmd') > -1):
-                    embed = await embed_guild_cmd(prefix)
-                    await ctx.send(embed=embed)
-                    return
-            elif (invoked.find('shop') > -1) or (invoked.find('omega') > -1) or (invoked.find('horse') > -1) or (invoked.find('cookie') > -1) or (invoked.find('rain') > -1) or (invoked.find('token') > -1) or (invoked.find('buy') > -1) or (invoked.find('buff') > -1):
-                    embed = await embed_guild_shop(prefix)
-                    await ctx.send(embed=embed)
-                    return
+            if any(string in invoked for string in level_strings):
+                embed = await embed_guild_progress(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif any(string in invoked for string in stat_strings):
+                embed = await embed_guild_stats(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'weekly' in invoked or 'reward' in invoked:
+                embed = await embed_guild_weekly(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'task' in invoked:
+                embed = await embed_guild_tasks(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif 'command' in invoked or 'cmd' in invoked:
+                embed = await embed_guild_cmd(prefix)
+                await ctx.send(embed=embed)
+                return
+            elif any(string in invoked for string in shop_strings):
+                embed = await embed_guild_shop(prefix)
+                await ctx.send(embed=embed)
+                return
             else:
                 embed = await embed_guild_overview(prefix)
                 await ctx.send(embed=embed)
@@ -123,11 +136,12 @@ raid_upgrade = (
 )
 
 # Additional guides
-guide_commands =    '`{prefix}guild commands` : Guild hierarchy & commands'
-guide_level =       '`{prefix}guild level` : Guild levels and bonuses'
-guide_shop =        '`{prefix}guild shop` : The guild shop and what to buy'
-guide_stats =       '`{prefix}guild stats` : Stealth and energy'
-guide_weekly =      '`{prefix}guild weekly` : Weekly rewards and strategy'
+guide_commands = '`{prefix}guild commands` : Guild hierarchy & commands'
+guide_level = '`{prefix}guild level` : Guild levels and bonuses'
+guide_shop = '`{prefix}guild shop` : The guild shop and what to buy'
+guide_stats = '`{prefix}guild stats` : Stealth and energy'
+guide_weekly = '`{prefix}guild weekly` : Weekly rewards and strategy'
+guide_tasks = '`{prefix}guild tasks` : Weekly guild tasks and rewards'
 
 
 # --- Embeds ---
@@ -138,8 +152,9 @@ async def embed_guild_overview(prefix):
 
     benefits = (
         f'{emojis.BP} A bonus on XP & coins when winning duels\n'
-        f'{emojis.BP} Access to the guild shop\n'\
-        f'{emojis.BP} Allows you to get weekly rewards based on guild stats'
+        f'{emojis.BP} Access to the guild shop\n'
+        f'{emojis.BP} Allows you to get weekly rewards based on guild stats\n'
+        f'{emojis.BP} Allows you to participate in completing weekly guild tasks\n'
     )
 
     how_to_join = (
@@ -152,18 +167,19 @@ async def embed_guild_overview(prefix):
         f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
-        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD',
         description = 'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='REQUIREMENT', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
     embed.add_field(name='HOW TO JOIN A GUILD', value=how_to_join, inline=False)
@@ -189,19 +205,21 @@ async def embed_guild_cmd(prefix):
         f'{emojis.BP} `rpg guild raid` : Start a guild raid\n'
         f'{emojis.BP} `rpg guild ranking` : Opens the global guild leaderboard\n'
         f'{emojis.BP} `rpg guild shop` : Opens the guild shop\n'
-        f'{emojis.BP} `rpg guild upgrade` : Upgrade guild {emojis.GUILD_STEALTH} stealth'
+        f'{emojis.BP} `rpg guild tasks` : Show/claim the weekly guild tasks\n'
+        f'{emojis.BP} `rpg guild upgrade` : Upgrade guild {emojis.GUILD_STEALTH} stealth\n'
     )
 
     guides = (
         f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
-        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD HIERARCHY & COMMANDS',
         description = (
             f'Every guild has 1 owner and up to 9 members.\n'
@@ -209,7 +227,7 @@ async def embed_guild_cmd(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='OWNER COMMANDS', value=owner, inline=False)
     embed.add_field(name='MEMBER COMMANDS', value=member, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -237,17 +255,18 @@ async def embed_guild_progress(prefix):
         f'{emojis.BP} {guide_commands.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
-        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD LEVELS AND BONUSES',
         description = 'You can level up your guild to get an increasing duel bonus.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='LEVEL / BONUS', value=level_bonus, inline=False)
     embed.add_field(name='HOW TO GET GUILD XP', value=guild_xp, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
@@ -269,12 +288,13 @@ async def embed_guild_shop(prefix):
         f'{emojis.BP} {guide_commands.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
-        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD SHOP',
         description = (
             f'All items in the guild shop cost {emojis.GUILD_COIN} guild coins which you get by getting high enough {emojis.GUILD_ENERGY} energy in the weekly guild event.\n'
@@ -282,7 +302,7 @@ async def embed_guild_shop(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='AVAILABLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
@@ -292,11 +312,11 @@ async def embed_guild_shop(prefix):
 async def embed_guild_stats(prefix):
 
     stealth = (
-        f'{emojis.BP} Decreases the likelihood of getting raided\n'
+        f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
         f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
-        f'{emojis.BP} Maximum amount is 100\n'
-        f'{emojis.BP} Guilds at 100 stealth are immune to being raided\n'
-        f'{emojis.BP} Each upgrade gives you 0~4 stealth'
+        f'{emojis.BP} Maximum amount is 95\n'
+        f'{emojis.BP} Each upgrade gives you 0~6 stealth\n'
+        f'{emojis.BLANK} The amount decreases the more you already have\n'
     )
 
     energy = (
@@ -310,18 +330,19 @@ async def embed_guild_stats(prefix):
         f'{emojis.BP} {guide_commands.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
-        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'GUILD STATS',
         description = 'The guild stats are used to get the weekly rewards.'
 
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name=f'STEALTH {emojis.GUILD_STEALTH}', value=stealth, inline=False)
     embed.add_field(name=f'ENERGY {emojis.GUILD_ENERGY}', value=energy, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
@@ -343,7 +364,7 @@ async def embed_guild_weekly(prefix):
     )
 
     strategy = (
-        f'{emojis.BP} First increase your {emojis.GUILD_STEALTH} stealth to 95 or more\n'
+        f'{emojis.BP} Increase your {emojis.GUILD_STEALTH} stealth to 95\n'
         f'{emojis.BP} Once your stealth is up, start raiding for the rest of the week\n'
     )
 
@@ -354,10 +375,11 @@ async def embed_guild_weekly(prefix):
         f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_tasks.format(prefix=prefix)}\n'
     )
 
     embed = discord.Embed(
-        color = global_data.EMBED_COLOR,
+        color = settings.EMBED_COLOR,
         title = 'WEEKLY GUILD REWARDS',
         description = (
             f'Once a week, you get rewards based on your {emojis.GUILD_ENERGY} energy. After that, your stats reset and you start over.\n'
@@ -366,11 +388,73 @@ async def embed_guild_weekly(prefix):
         )
     )
 
-    embed.set_footer(text=await global_data.default_footer(prefix))
+    embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='WEEKLY REWARDS', value=rewards, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
     embed.add_field(name='STRATEGY', value=strategy, inline=False)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
+
+    return embed
+
+
+async def embed_guild_tasks(prefix: str) -> discord.Embed:
+    """Weekly guild tasks"""
+    all_tasks = (
+        f'{emojis.BP} Answer 40 EPIC guard questions correctly\n' # 24 / 40 / 80
+        f'{emojis.BP} Chop 200 MEGA logs\n' # 120 / 200 / 400
+        f'{emojis.BP} Complete 20 dungeons\n' # 12 / 20 / 40
+        f'{emojis.BP} Craft 30 swords or armors\n' # 18 / 30 / 60
+        f'{emojis.BP} Collect 2,000 profession XP\n' # 1200 / 2000 / 4000
+        f'{emojis.BP} Complete 20 quests\n' # 12 / 20 / 40
+        f'{emojis.BP} Cook 75 recipes\n' # 45 / 75 / 150
+        f'{emojis.BP} Go on an adventure 120 times\n' # 72 / 120 / 240
+        f'{emojis.BP} Drop 100 lootboxes\n' # 60 / 100 / 200
+        f'{emojis.BP} Drop 100 monster items\n' # 60 / 100 / 200
+        f'{emojis.BP} Fish 20 EPIC fish\n' # 12 / 20 / 40
+        f'{emojis.BP} Gain 40 levels (outside random events)\n' # 24 / 40 / 80
+        f'{emojis.BP} Get 40 STEALTH for the guild\n' # 24 / 40 / 80
+        f'{emojis.BP} Hunt 800 times\n' # 480 / 800 / 1600
+        f'{emojis.BP} Obtain 50 special seeds\n' # 30 / 50 / 100
+        f'{emojis.BP} Open 180 lootboxes\n' # 108 / 180 / 360
+        f'{emojis.BP} Pick up 120 bananas\n' # 72 / 120 / 240
+        f'{emojis.BP} Trigger or start 30 random events\n' # 18 / 30 / 60
+        f'{emojis.BP} Vote for the bot 25 times\n' # 15 / 25 / 50
+        f'{emojis.BP} Win 90 duels\n' # 54 / 90 / 180
+    )
+
+    rewards = (
+        f'{emojis.BP} 1 {emojis.GUILD_COIN} guild coin\n'
+        f'{emojis.BP} 25 guild XP\n'
+    )
+
+    notes = (
+        f'{emojis.BP} All guild members can contribute to these tasks\n'
+        f'{emojis.BP} Guild tasks reset on monday, 00:00 UTC\n'
+    )
+
+    guides = (
+        f'{emojis.BP} {guide_commands.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_level.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_shop.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_stats.format(prefix=prefix)}\n'
+        f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
+    )
+
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'GUILD TASKS',
+        description = (
+            f'Guild tasks have 3 stages and can be completed once a week.\n'
+            f'Every guild gets 4 random tasks every week.'
+        )
+
+    )
+
+    embed.set_footer(text=await functions.default_footer(prefix))
+    embed.add_field(name='POSSIBLE TASKS', value=all_tasks, inline=False)
+    embed.add_field(name='REWARDS (PER STAGE)', value=rewards, inline=False)
+    embed.add_field(name='NOTE', value=notes, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
