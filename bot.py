@@ -10,6 +10,7 @@ from resources import settings
 intents = discord.Intents.none()
 intents.guilds = True   # for on_guild_join(), bot.guilds and everything guild related
 intents.messages = True   # for the calculators that read the game
+intents.message_content = True   # for EPIC RPG reading and message commands
 
 
 bot = commands.AutoShardedBot(command_prefix=database.get_all_prefixes, help_command=None,

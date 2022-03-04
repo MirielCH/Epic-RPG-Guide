@@ -22,17 +22,17 @@ class MainCog(commands.Cog):
     @tasks.loop(minutes=30.0)
     async def update_stats(self):
         """Updates top.gg guild count"""
+        if settings.DBL_TOKEN is None: return
+        guilds = len(list(self.bot.guilds))
+        guild_count = {'server_count':guilds}
+        header = {'Authorization':settings.DBL_TOKEN}
         try:
-            if settings.DBL_TOKEN != 'none':
-                guilds = len(list(self.bot.guilds))
-                guild_count = {'server_count':guilds}
-                header = {'Authorization':settings.DBL_TOKEN}
-                async with aiohttp.ClientSession() as session:
-                    async with session.post('https://top.gg/api/bots/770199669141536768/stats',
-                                            data=guild_count,headers=header) as request:
-                        logs.logger.info(
-                            f'Posted server count ({guilds}), status code: {request.status}'
-                            )
+            async with aiohttp.ClientSession() as session:
+                async with session.post('https://top.gg/api/bots/770199669141536768/stats',
+                                        data=guild_count,headers=header) as request:
+                    logs.logger.info(
+                        f'Posted server count ({guilds}), status code: {request.status}'
+                    )
         except Exception as error:
             logs.logger.error(f'Failed to post server count: {error}')
 
