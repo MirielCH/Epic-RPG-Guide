@@ -588,6 +588,7 @@ async def get_profession(name: str) -> Profession:
         NoDataFound if no data was found.
     """
     xp_columns = {
+        'crafter': 'crafter_xp',
         'enchanter': 'enchanter_xp',
         'lootboxer': 'lootboxer_xp',
         'merchant': 'merchant_xp',
@@ -1251,11 +1252,26 @@ async def _update_profession_level(profession: Profession, level: int, xp: int) 
 
 
 # --- Error Logging ---
-async def log_error(error: Union[Exception, str], ctx: Optional[commands.Context] = None):
-    """Logs an error to the database and the logfile"""
-    if isinstance(ctx, commands.Context):
-        timestamp = ctx.message.created_at
-        user_input = ctx.message.content
+async def log_error(error: Union[Exception, str], ctx: Optional[discord.ApplicationContext] = None):
+    """Logs an error to the database and the logfile
+
+    Arguments
+    ---------
+    error: Exception or a simple string.
+    ctx: If context is available, the function will log the user input, the message timestamp
+    and the user settings. If not, current time is used, settings and input are logged as "N/A".
+
+    Raises
+    ------
+    sqlite3.Error when something goes wrong in the database. Also logs this error to the log file.
+    """
+    table = 'errors'
+    function_name = 'log_error'
+    sql = 'INSERT INTO errors VALUES (?, ?, ?, ?, ?)'
+    timestamp = datetime.utcnow()
+    if isinstance(ctx, discord.ApplicationContext):
+        command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
+        command_data = str(ctx.interaction.data['options'])
         try:
             user = await get_user(ctx.author.id)
             user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
@@ -1263,10 +1279,14 @@ async def log_error(error: Union[Exception, str], ctx: Optional[commands.Context
             user_settings = 'N/A'
     else:
         user_settings = 'N/A'
-        timestamp = datetime.utcnow()
-        user_input = 'N/A'
+        command_name = 'N/A'
+        command_data = 'N/A'
     try:
         cur=ERG_DB.cursor()
-        cur.execute('INSERT INTO errors VALUES (?, ?, ?, ?)', (timestamp, user_input, str(error), user_settings))
-    except sqlite3.Error as db_error:
-        logs.logger.error(f'Error inserting error (ha) into database:\n{db_error}')
+        cur.execute(sql, (timestamp, command_name, command_data, str(error), user_settings))
+    except sqlite3.Error as error:
+        logs.logger.error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql),
+            ctx
+        )
+        raise

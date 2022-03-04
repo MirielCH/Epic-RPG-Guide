@@ -1,12 +1,17 @@
 # strings.py
 
 
+MSG_ABORTED = 'Aborted.'
 MSG_ABORTING = 'Aborting.'
 MSG_BOT_MESSAGE_NOT_FOUND = '**{user}**, couldn\'t find your {information} information, RIP.'
 MSG_ERROR = 'Whelp, something went wrong here, sorry.'
+MSG_INTERACTION_ERROR = 'You are not allowed to use this interaction.'
 MSG_SYNTAX = 'The command syntax is `{syntax}`'
-MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}` (or `abort` to abort)'
+MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}`'
 MSG_WRONG_INPUT = 'Wrong input. Aborting.'
+
+
+DEFAULT_FOOTER = 'Use /guide to see all available guides.'
 
 
 item_aliases = {
@@ -284,3 +289,12 @@ item_columns_names = {
     'wolf_skin': 'wolf skin',
     'zombie_eye': 'zombie eye',
 }
+
+
+PROFESSIONS = (
+    'crafter',
+    'enchanter',
+    'lootboxer',
+    'merchant',
+    'worker',
+)

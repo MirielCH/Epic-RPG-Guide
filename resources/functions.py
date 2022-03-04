@@ -1,8 +1,17 @@
 # functions.py
 
-import database
-from resources import emojis
+import asyncio
+import re
+from typing import Union, Tuple
 
+import discord
+from discord.ext import commands
+
+import database
+from resources import emojis, settings, strings, views
+
+
+# Design fields for embeds
 async def design_field_traderate(area: database.Area) -> str:
     """Create field "trade rates" for area & trading"""
     field_value = f'{emojis.BP} 1 {emojis.FISH} ⇄ {emojis.LOG} {area.trade_fish_log}'
@@ -175,3 +184,121 @@ async def default_footer(prefix):
     footer = f'Use {prefix}guide or {prefix}g to see all available guides.'
 
     return footer
+
+
+# Wait for input
+async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_task: asyncio.coroutine,
+                                command: str) -> Union[discord.Message, None]:
+    """Sends a message with an abort button that tells the user to input a command.
+    This function then waits for both view input and bot_message_task.
+    If the bot message task finishes first, the bot message is returned, otherwise return value is None.
+
+    The abort button is removed after this function finishes.
+    Make sure that the view timeout is longer than the bot message task timeout to get proper errors.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message_task: The task with the coroutine that waits for the EPIC RPG message.
+    command: The command the user is told to enter.
+
+    Returns
+    -------
+    Bot message if message task finished first.
+    None if the interaction was aborted or the view timed out first.
+
+    Raises
+    ------
+    asyncio.TimeoutError if the bot message task timed out before the view timed out.
+    This error is also logged to the database.
+    """
+    view = views.AbortView(ctx)
+    interaction = await ctx.respond(strings.MSG_WAIT_FOR_INPUT.format(user=ctx.author.name, command=command), view=view)
+    view.interaction = interaction
+    view_task = asyncio.ensure_future(view.wait())
+    done, pending = await asyncio.wait([bot_message_task, view_task], return_when=asyncio.FIRST_COMPLETED)
+    for task in pending:
+        if not task.done():
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+    if view.value in ('abort','timeout'):
+        await interaction.edit_original_message(content=strings.MSG_ABORTED, view=None)
+    elif view.value is None:
+        view.stop()
+        asyncio.ensure_future(interaction.edit_original_message(view=None))
+    bot_message = None
+    if bot_message_task.done():
+        try:
+            bot_message = bot_message_task.result()
+        except asyncio.CancelledError:
+            pass
+        except Exception as error:
+            await database.log_error(error, ctx)
+            raise
+
+    return bot_message
+
+
+async def wait_for_profession_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the profession embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            if f'{ctx_author}\'s professions' in embed_author:
+                correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+# Extract values from game embeds
+async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
+                                             bot_message: discord.Message) -> Tuple[str, int, int, int]:
+        """Extracts profession name and level from a profession embed.
+
+        Arguments
+        ---------
+        ctx: Context.
+        bot_message: Message the data is extracted from.
+
+        Returns
+        -------
+        Tuple[
+            Profession name: str,
+            level: int,
+            current xp: int,
+            xp needed for next level: int
+        ]
+
+        Raises
+        ------
+        ValueError if something goes wrong during extraction.
+        Also logs the errors to the database.
+        """
+        pr_field = bot_message.embeds[0].fields[0]
+        profession_found = None
+        for profession in strings.PROFESSIONS:
+            if profession in pr_field.name.lower():
+                profession_found = profession
+
+        level_search = re.search('level\*\*: (.+?) \(', pr_field.value.lower())
+        xp_search = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
+        try:
+            level = int(level_search.group(1))
+            current_xp = int(xp_search.group(1).replace(',',''))
+            needed_xp = int(xp_search.group(2).replace(',',''))
+        except Exception as error:
+            await database.log_error(error, ctx)
+            raise ValueError(error)
+
+        return (profession_found, level, current_xp, needed_xp)

@@ -12,85 +12,78 @@ from resources import emojis
 from resources import logs, settings
 
 
-class MainCog(commands.Cog):
+class MainOldCog(commands.Cog):
     """Cog with events and help and about commands"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # Tasks
-    @tasks.loop(minutes=30.0)
-    async def update_stats(self):
-        """Updates top.gg guild count"""
-        if settings.DBL_TOKEN is None: return
-        guilds = len(list(self.bot.guilds))
-        guild_count = {'server_count':guilds}
-        header = {'Authorization':settings.DBL_TOKEN}
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post('https://top.gg/api/bots/770199669141536768/stats',
-                                        data=guild_count,headers=header) as request:
-                    logs.logger.info(
-                        f'Posted server count ({guilds}), status code: {request.status}'
-                    )
-        except Exception as error:
-            logs.logger.error(f'Failed to post server count: {error}')
+    # Commands
+    @commands.command(name='help',aliases=('guide','g','h',))
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def main_help(self, ctx: commands.Context):
+        """Main help command"""
+        prefix = await database.get_prefix(ctx)
+        embed = await embed_main_help(ctx)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats','privacy'))
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def about(self, ctx: commands.Context):
+        """Shows some bot info"""
+        start_time = datetime.utcnow()
+        message = await ctx.send('Testing API latency...')
+        end_time = datetime.utcnow()
+        api_latency = end_time - start_time
+        embed = await embed_about(self.bot, ctx, api_latency)
+        await message.edit(content=None, embed=embed)
 
     # Events
     @commands.Cog.listener()
-    async def on_application_command_error(self, ctx: discord.ApplicationContext, error: Exception) -> None:
+    async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
         """Runs when an error occurs and handles them accordingly.
         Interesting errors get written to the database for further review.
         """
         async def send_error() -> None:
             """Sends error message as embed"""
             embed = discord.Embed(title='An error occured')
-            command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
-            embed.add_field(name='Command', value=f'`{command_name}`', inline=False)
-            embed.add_field(name='Error', value=f'```py\n{error}\n```', inline=False)
-            await ctx.respond(embed=embed, ephemeral=True)
+            embed.add_field(name='Command', value=f'`{ctx.command.qualified_name}`', inline=False)
+            embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
+            await ctx.send(embed=embed)
 
-        error = getattr(error, 'original', error)
         if isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
             return
         elif isinstance(error, commands.DisabledCommand):
-            await ctx.respond(f'Command `{ctx.command.qualified_name}` is temporarily disabled.', ephemeral=True)
+            await ctx.send(f'Command `{ctx.command.qualified_name}` is temporarily disabled.')
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
-                                commands.TooManyArguments, commands.BadArgument, commands.BotMissingPermissions)):
+                                commands.TooManyArguments, commands.BadArgument)):
             await send_error()
+        elif isinstance(error, commands.BotMissingPermissions):
+            if 'send_messages' in error.missing_permissions:
+                return
+            if 'embed_links' in error.missing_permissions:
+                await ctx.send(error)
+            else:
+                await send_error()
+        elif isinstance(error, database.FirstTimeUser):
+            await ctx.send(
+                f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+                f'I have set your progress to **TT 0**, **not ascended**.\n\n'
+                f'** --> Please use `{ctx.prefix}{ctx.invoked_with}` again to use the bot.**\n\n'
+                f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. '
+                f'Check out `{ctx.prefix}tt` for some details.\n'
+                f'• If you are in a higher TT, please use `{ctx.prefix}setprogress` (or `{ctx.prefix}sp`) '
+                f'to change your settings.\n\n'
+                f'These settings are used by some guides (like the area guides) to only show you what is relevant '
+                f'to your current progress.'
+            )
         else:
-            await database.log_error(error, ctx)
+            await database.log_error(ctx, error)
             if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()
 
-    @commands.Cog.listener()
-    async def on_ready(self) -> None:
-        """Fires when bot has finished starting"""
-        #DiscordComponents(bot)
-
-        startup_info = f'{self.bot.user.name} has connected to Discord!'
-        print(startup_info)
-        logs.logger.info(startup_info)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
-                                                                 name='your questions'))
-        if not self.update_stats.is_running(): await self.update_stats.start()
-
-    @commands.Cog.listener()
-    async def on_guild_join(self, guild: discord.Guild) -> None:
-        """Sends welcome message on guild join"""
-        try:
-            prefix = await database.get_prefix(self.bot, guild, True)
-            welcome_message = (
-                f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'
-                f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'
-                f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'
-                f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'
-            )
-            await guild.system_channel.send(welcome_message)
-        except:
-            return
 
 # Initialization
 def setup(bot):
-    bot.add_cog(MainCog(bot))
+    bot.add_cog(MainOldCog(bot))
 
 
 # --- Embeds ---
