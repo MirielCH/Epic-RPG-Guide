@@ -888,9 +888,15 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     # Description
     description = dungeon.description
     if dungeon_no == 15:
-        description = f'{description}\nTo see part 2 of this dungeon, use `{prefix}d15-2`'
+        description = (
+            f'{description}\n'
+            f'To see part 2 of this dungeon, use `{prefix}d15-2`'
+        )
     elif dungeon_no == 15.2:
-        description = f'{description}\nTo see part 1 of this dungeon, use `{prefix}d15-1`'
+        description = (
+            f'{description}\n'
+            f'To see part 1 of this dungeon, use `{prefix}d15-1`'
+        )
 
     # Requirements
     if 1 <= dungeon_no <= 9:
@@ -899,6 +905,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif dungeon_no == 21:
         requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 **highly** recommended)'
+
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
     if dungeon_no in (10, 11, 13, 15, 15.2):
@@ -913,9 +920,9 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     if dungeon_no in (15, 15.2):
         requirements = (
             f'{requirements}\n'
-            f'{emojis.BP} {emojis.PET_CAT} T4+ cat pet\n'
-            f'{emojis.BP} {emojis.PET_DOG} T4+ dog pet\n'
-            f'{emojis.BP} {emojis.PET_DRAGON} T4+ dragon pet'
+            f'{emojis.BP} {emojis.PET_CAT} T5+ cat pet\n'
+            f'{emojis.BP} {emojis.PET_DOG} T5+ dog pet\n'
+            f'{emojis.BP} {emojis.PET_DRAGON} T5+ dragon pet'
         )
     if dungeon.tt is not None:
         if dungeon.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon.tt}+'
@@ -1020,7 +1027,12 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         )
 
     # Notes
-    if 16 <= dungeon_no <= 20:
+    if dungeon_no == 15.2:
+        notes = (
+            f'{emojis.BP} To enter this dungeon, you need to equip the {emojis.SWORD_GODLY} GODLY sword and start D15.\n'
+            f'{emojis.BLANK} Once you beat part 1, part 2 will automatically start.\n'
+        )
+    elif 16 <= dungeon_no <= 20:
         notes = (
             f'{emojis.BP} Carrying is not possible in this dungeon\n'
             f'{emojis.BP} You can redo this dungeon as long as you are in area {dungeon_no:g}\n'
