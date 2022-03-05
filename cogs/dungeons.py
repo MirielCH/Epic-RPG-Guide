@@ -913,7 +913,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     if dungeon_no == 21:
         requirements = (
             f'{requirements}\n'
-            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`use` it so start the fight)'
+            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it so start the fight)'
         )
     if dungeon_no in (10, 12, 14, 15):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
