@@ -398,8 +398,8 @@ async def embed_pets_skills(prefix):
 
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
-        f'{emojis.BP} You have a 20% base chance to get an essence after the dungeon\n'
-        f'{emojis.BLANK} This chance increases with skill rank\n'
+        f'{emojis.BP} You have a 25% base chance to get an essence after the dungeon\n'
+        f'{emojis.BLANK} This chance increases by 7.5% per rank\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'

@@ -400,32 +400,36 @@ async def embed_guild_weekly(prefix):
 
 async def embed_guild_tasks(prefix: str) -> discord.Embed:
     """Weekly guild tasks"""
-    all_tasks = (
-        f'{emojis.BP} Answer 40 EPIC guard questions correctly\n' # 24 / 40 / 80
-        f'{emojis.BP} Chop 200 MEGA logs\n' # 120 / 200 / 400
-        f'{emojis.BP} Complete 20 dungeons\n' # 12 / 20 / 40
-        f'{emojis.BP} Craft 30 swords or armors\n' # 18 / 30 / 60
-        f'{emojis.BP} Collect 2,000 profession XP\n' # 1200 / 2000 / 4000
-        f'{emojis.BP} Complete 20 quests\n' # 12 / 20 / 40
-        f'{emojis.BP} Cook 75 recipes\n' # 45 / 75 / 150
-        f'{emojis.BP} Go on an adventure 120 times\n' # 72 / 120 / 240
-        f'{emojis.BP} Drop 100 lootboxes\n' # 60 / 100 / 200
-        f'{emojis.BP} Drop 100 monster items\n' # 60 / 100 / 200
-        f'{emojis.BP} Fish 20 EPIC fish\n' # 12 / 20 / 40
-        f'{emojis.BP} Gain 40 levels (outside random events)\n' # 24 / 40 / 80
-        f'{emojis.BP} Get 40 STEALTH for the guild\n' # 24 / 40 / 80
-        f'{emojis.BP} Hunt 800 times\n' # 480 / 800 / 1600
-        f'{emojis.BP} Obtain 50 special seeds\n' # 30 / 50 / 100
-        f'{emojis.BP} Open 180 lootboxes\n' # 108 / 180 / 360
-        f'{emojis.BP} Pick up 120 bananas\n' # 72 / 120 / 240
-        f'{emojis.BP} Trigger or start 30 random events\n' # 18 / 30 / 60
-        f'{emojis.BP} Vote for the bot 25 times\n' # 15 / 25 / 50
-        f'{emojis.BP} Win 90 duels\n' # 54 / 90 / 180
+    guild_tasks_1 = (
+        f'{emojis.BP} Answer 16/40/80 EPIC guard questions correctly\n'
+        f'{emojis.BP} Chop 80/200/400 MEGA logs\n'
+        f'{emojis.BP} Complete 8/20/40 dungeons\n'
+        f'{emojis.BP} Craft 12/30/60 swords or armors\n'
+        f'{emojis.BP} Collect 800/2,000/4,000 profession XP\n'
+        f'{emojis.BP} Complete 8/20/40 quests\n'
+        f'{emojis.BP} Cook 30/75/150 recipes\n'
+        f'{emojis.BP} Go on an adventure 48/120/240 times\n'
+        f'{emojis.BP} Drop 40/100/200 lootboxes\n'
+        f'{emojis.BP} Drop 40/100/200 monster items\n'
+    )
+
+    guild_tasks_2 = (
+        f'{emojis.BP} Fish 8/20/40 EPIC fish\n'
+        f'{emojis.BP} Gain 16/40/80 levels (outside random events)\n'
+        f'{emojis.BP} Get 16/40/80 STEALTH for the guild\n'
+        f'{emojis.BP} Hunt 32/800/1,600 times\n'
+        f'{emojis.BP} Obtain 20/50/100 special seeds\n'
+        f'{emojis.BP} Open 72/180/360 lootboxes\n'
+        f'{emojis.BP} Pick up 48/120/240 bananas\n'
+        f'{emojis.BP} Trigger or start 12/30/60 random events\n'
+        f'{emojis.BP} Vote for the bot 10/25/50 times\n'
+        f'{emojis.BP} Win 36/90/180 duels\n'
     )
 
     rewards = (
-        f'{emojis.BP} 1 {emojis.GUILD_COIN} guild coin\n'
-        f'{emojis.BP} 25 guild XP\n'
+        f'{emojis.BP} Stage 1: 1 {emojis.GUILD_COIN} guild coin + 25 guild XP\n'
+        f'{emojis.BP} Stage 2: 1 {emojis.GUILD_COIN} guild coin + 20 guild XP\n'
+        f'{emojis.BP} Stage 3: 1 {emojis.GUILD_COIN} guild coin + 15 guild XP\n'
     )
 
     notes = (
@@ -452,8 +456,9 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
     )
 
     embed.set_footer(text=await functions.default_footer(prefix))
-    embed.add_field(name='POSSIBLE TASKS', value=all_tasks, inline=False)
-    embed.add_field(name='REWARDS (PER STAGE)', value=rewards, inline=False)
+    embed.add_field(name='POSSIBLE TASKS (I)', value=guild_tasks_1, inline=False)
+    embed.add_field(name='POSSIBLE TASKS (II)', value=guild_tasks_2, inline=False)
+    embed.add_field(name='REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=notes, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
