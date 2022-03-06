@@ -249,7 +249,8 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s professions' in embed_author:
+            field2 = message.embeds[0].fields[1]
+            if f'{ctx_author}\'s professions' in embed_author and 'about this profession' in field2.name.lower():
                 correct_message = True
         except:
             pass

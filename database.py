@@ -1125,7 +1125,8 @@ async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
     cur=ERG_DB.cursor()
     if search_string.isnumeric():
         cur.execute('SELECT * FROM titles WHERE id=?', (search_string,))
-        search_string = search_string.replace(' ','%').replace("'",'_').replace('’','_')
+    else:
+        search_string = search_string.replace(' ','%').replace("'",'_')
         search_string = f'%{search_string}%'
         sql = f"SELECT * FROM titles WHERE title LIKE ? or requirements LIKE ?"
         cur.execute(sql, (search_string, search_string))

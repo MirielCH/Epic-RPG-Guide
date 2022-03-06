@@ -11,21 +11,31 @@ import database
 from resources import emojis, functions, settings, strings, views
 
 
+TOPIC_ASCENSION = 'Ascension'
+TOPIC_CRAFTER = 'Crafter'
+TOPIC_ENCHANTER = 'Enchanter'
+TOPIC_LEVELING = 'How to level professions'
+TOPIC_LOOTBOXER = 'Lootboxer'
+TOPIC_MERCHANT = 'Merchant'
+TOPIC_OVERVIEW = 'Overview'
+TOPIC_WORKER = 'Worker'
+
+TOPICS = {
+        TOPIC_OVERVIEW,
+        TOPIC_ASCENSION,
+        TOPIC_LEVELING,
+        TOPIC_CRAFTER,
+        TOPIC_ENCHANTER,
+        TOPIC_LOOTBOXER,
+        TOPIC_MERCHANT,
+        TOPIC_WORKER,
+    }
+
+
 # profession commands (cog)
 class ProfessionsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    topics = {
-        'Overview',
-        'Ascension',
-        'How to level professions',
-        'Crafter',
-        'Enchanter',
-        'Lootboxer',
-        'Merchant',
-        'Worker',
-    }
 
     cmd_professions = SlashCommandGroup(
         "professions",
@@ -36,20 +46,20 @@ class ProfessionsCog(commands.Cog):
     async def professions_guide(
         self,
         ctx: discord.ApplicationContext,
-        topic: Option(str, 'The topic you want to read about.',
-                           choices=topics, default='Overview'),
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                           choices=TOPICS, default=TOPIC_OVERVIEW),
     ) -> None:
-        topics_functions = {
-            'Overview': embed_professions_overview,
-            'Ascension': embed_ascension,
-            'How to level professions': embed_professions_leveling,
-            'Crafter': embed_professions_crafter,
-            'Enchanter': embed_professions_enchanter,
-            'Lootboxer': embed_professions_lootboxer,
-            'Merchant': embed_professions_merchant,
-            'Worker': embed_professions_worker,
-        }
         """Professions guides"""
+        topics_functions = {
+            TOPIC_OVERVIEW: embed_professions_overview,
+            TOPIC_ASCENSION: embed_ascension,
+            TOPIC_LEVELING: embed_professions_leveling,
+            TOPIC_CRAFTER: embed_professions_crafter,
+            TOPIC_ENCHANTER: embed_professions_enchanter,
+            TOPIC_LOOTBOXER: embed_professions_lootboxer,
+            TOPIC_MERCHANT: embed_professions_merchant,
+            TOPIC_WORKER: embed_professions_worker,
+        }
         view = views.TopicView(ctx, topics_functions, active_topic=topic)
         embed = await topics_functions[topic]()
         interaction = await ctx.respond(embed=embed, view=view)

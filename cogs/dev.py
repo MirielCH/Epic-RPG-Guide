@@ -173,6 +173,17 @@ class DevCog(commands.Cog):
             await user.update(ascended=user.ascended)
         await ctx.send(f'Updated {len(users):,} records, {ascended_over_25:,} of them where not ascended over TT 25.')
 
+    @dev.command(name='sync-commands')
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def sync_commands(self, ctx: commands.Context) -> None:
+        """Migrate user settings to new format
+        Old: ascended / not ascended
+        New: O / 1 (boolean)"""
+        await self.bot.sync_commands()
+        await ctx.send('Done')
+
+
 
 # Initialization
 def setup(bot):

@@ -10,9 +10,9 @@ MSG_SYNTAX = 'The command syntax is `{syntax}`'
 MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}`'
 MSG_WRONG_INPUT = 'Wrong input. Aborting.'
 
-
 DEFAULT_FOOTER = 'Use /guide to see all available guides.'
 
+ARGUMENT_TOPIC_DESCRIPTION = 'The topic you want to read about'
 
 item_aliases = {
     'ed sw': 'edgy sword',
@@ -184,9 +184,14 @@ item_aliases = {
     'wm armor': 'watermelon armor',
     'wmarmor': 'watermelon armor',
     'scaledarmor': 'scaled armor',
+    'scalearmor': 'scaled armor',
+    'scale armor': 'scaled armor',
     'scaledsword': 'scaled sword',
+    'scalesword': 'scaled sword',
     'scaledsw': 'scaled sword',
+    'scalesw': 'scaled sword',
     'scaled sw': 'scaled sword',
+    'scale sw': 'scaled sword',
     'banana sw': 'banana sword',
     'bananasw': 'banana sword',
     'bananasword': 'banana sword',

@@ -315,7 +315,7 @@ async def embed_guild_stats(prefix):
         f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
         f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
         f'{emojis.BP} Maximum amount is 95\n'
-        f'{emojis.BP} Each upgrade gives you 0~6 stealth\n'
+        f'{emojis.BP} Each upgrade gives you 0~7 stealth\n'
         f'{emojis.BLANK} The amount decreases the more you already have\n'
     )
 
