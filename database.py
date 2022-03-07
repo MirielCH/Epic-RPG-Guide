@@ -40,6 +40,10 @@ class NoArgumentsError(Exception):
     """Custom exception for when no arguments are passed to a function"""
     pass
 
+class DirectMessageError(Exception):
+    """Custom exception for when a user tries to use a command in direct messages"""
+    pass
+
 
 # Containers
 class PetFusion(NamedTuple):
@@ -354,6 +358,8 @@ async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
     Returns:
         A tuple with the current server prefix and the pingable bot
     """
+    if ctx.channel.type.name == 'private':
+        raise DirectMessageError("Commands not allowed in direct messages.")
     try:
         cur=ERG_DB.cursor()
         cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (ctx.guild.id,))
@@ -947,6 +953,7 @@ async def get_codes(ctx):
         if records:
             codes = records
         else:
+            codes = []
             await log_error(ctx, 'No codes data found in database.')
     except sqlite3.Error as error:
         logs.logger.error(error)

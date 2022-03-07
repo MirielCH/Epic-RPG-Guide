@@ -422,6 +422,8 @@ async def embed_codes(prefix, codes):
         else:
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
 
+    if permanent_value == '': permanent_value = f'{emojis.BP} No codes currently known'
+
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
@@ -509,7 +511,7 @@ async def embed_badges(prefix):
     badges_other = (
         f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the "final" dungeon in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the "final" fight in the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )

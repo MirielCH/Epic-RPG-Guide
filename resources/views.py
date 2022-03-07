@@ -2,12 +2,13 @@
 """Contains global interaction views"""
 
 from email import message
+from re import A
 from typing import Callable, Optional
 
 import discord
 from discord.ext import commands
 
-from resources import settings, strings
+from resources import emojis, settings, strings
 
 
 # --- Components ---
@@ -28,15 +29,14 @@ class TopicSelect(discord.ui.Select):
         options = []
         for topic in topics.keys():
             label = topic
-            if topic == active_topic: label = f'▶ {label} ◀'
-            options.append(discord.SelectOption(label=label, value=label))
+            emoji = '🔹' if topic == active_topic else emojis.BLANK
+            options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
         super().__init__(placeholder='Choose topic...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
-        active_topic = select_value.replace('◀','').replace('▶','').strip()
-        self.view.active_topic = active_topic
-        embed = await self.view.topics[active_topic]()
+        self.view.active_topic = select_value
+        embed = await self.view.topics[select_value]()
         self.view.clear_items()
         self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic))
         await interaction.message.edit(embed=embed, view=self.view)

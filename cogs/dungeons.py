@@ -28,7 +28,7 @@ class dungeonsCog(commands.Cog):
     # Dungeon guide, can be invoked with "dX", "d X", "dungeonX" and "dungeon X"
     dungeon_aliases = ['dungeon','dung','dung15-1','d15-1','dungeon15-1','dung15-2','d15-2','dungeon15-2','dung152',
                        'd152','dungeon152','dung151','d151','dungeon151','dtop','dfinal','dungtop','dungfinal',
-                       'dungeontop','dungeonfinal']
+                       'dungeontop','dungeonfinal','finalfight']
     for x in range(1,21):
         dungeon_aliases.append(f'd{x}')
         dungeon_aliases.append(f'dungeon{x}')
@@ -96,7 +96,7 @@ class dungeonsCog(commands.Cog):
         else:
             dungeon_no = (invoked.replace(f'{prefix}dungeons','').replace(f'{prefix}dungeon','')
                           .replace(f'{prefix}dung','').replace(f'{prefix}d','').replace('-','')
-                          .replace('top','21').replace('final','21'))
+                          .replace('top','21').replace(f'{prefix}finalfight','21').replace(f'{prefix}final','21'))
             if dungeon_no.isnumeric():
                 dungeon_no = int(dungeon_no)
                 if dungeon_no == 151: dungeon_no = 15
@@ -883,7 +883,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     if dungeon.key_price is not None:
         key_price = f'{dungeon.key_price:,} coins'
     else:
-        key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse'
+        if dungeon_no != 21:
+            key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse'
 
     # Description
     description = dungeon.description
@@ -1037,6 +1038,10 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             f'{emojis.BP} Carrying is not possible in this dungeon\n'
             f'{emojis.BP} You can redo this dungeon as long as you are in area {dungeon_no:g}\n'
         )
+    elif dungeon_no == 21:
+        notes = (
+            f'{emojis.BP} This fight does not need your dungeon cooldown\n'
+        )
 
     # Images
     if dungeon_no == 11:
@@ -1049,7 +1054,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         image_name = 'WALKTHROUGH'
 
     dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
 
     guides = (
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
@@ -1116,7 +1121,7 @@ async def embed_dungeon_rec_stats(ctx: commands.Context, dungeons: Tuple[databas
 
     for dungeon in dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
         field_rec_stats = await functions.design_field_rec_stats(dungeon, True)
         embed.add_field(name=field_name, value=field_rec_stats, inline=True)
 
@@ -1130,7 +1135,7 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
     prefix = ctx.prefix
     page_1 = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
     page_2 = f'➜ See `{prefix}dg2` for dungeons 10 to 15.'
-    page_3 = f'➜ See `{prefix}dg3` for dungeons 16 to 20 and the "FINAL" dungeon.'
+    page_3 = f'➜ See `{prefix}dg3` for dungeons 16 to 20 and the "final" fight.'
 
     if page == 1:
         title_value = 'RECOMMENDED GEAR FOR DUNGEONS 1 TO 9'
@@ -1162,7 +1167,7 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
 
     for dungeon in listed_dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" DUNGEON'
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
         field_rec_gear = await functions.design_field_rec_gear(dungeon)
         if field_rec_gear is None: field_rec_gear = f'{emojis.BP} None'
         embed.add_field(name=field_name, value=field_rec_gear, inline=False)

@@ -400,6 +400,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
         f'{emojis.BP} You have a 25% base chance to get an essence after the dungeon\n'
         f'{emojis.BLANK} This chance increases by 7.5% per rank\n'
+        f'{emojis.BLANK} Multiple fighter pets do not stack\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
@@ -585,7 +586,9 @@ async def embed_pets_adventures(prefix):
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
-        f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice'
+        f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
+        f'{emojis.BP} {emojis.SKILL_BOOSTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill to '
+        f'reset all pets\n'
     )
 
     guides = (

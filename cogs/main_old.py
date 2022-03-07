@@ -50,7 +50,7 @@ class MainOldCog(commands.Cog):
             embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
             await ctx.send(embed=embed)
 
-        if isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
+        if isinstance(error, (commands.CommandNotFound, commands.NotOwner, database.DirectMessageError)):
             return
         elif isinstance(error, commands.DisabledCommand):
             await ctx.send(f'Command `{ctx.command.qualified_name}` is temporarily disabled.')
