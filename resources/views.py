@@ -1,28 +1,15 @@
 # views.py
 """Contains global interaction views"""
 
-from email import message
-from re import A
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, pages
 
 from resources import emojis, settings, strings
 
 
 # --- Components ---
-class CustomButton(discord.ui.Button):
-    """Custom Button"""
-    def __init__(self, style: discord.ButtonStyle, custom_id: str, label: str,
-                 emoji: Optional[discord.PartialEmoji] = None):
-        super().__init__(style=style, custom_id=custom_id, label=label, emoji=emoji)
-
-    async def callback(self, interaction: discord.Interaction) -> None:
-        self.view.value = self.custom_id
-        self.view.stop()
-
-
 class TopicSelect(discord.ui.Select):
     """Topic Select"""
     def __init__(self, topics: dict, active_topic: str):
@@ -40,6 +27,38 @@ class TopicSelect(discord.ui.Select):
         self.view.clear_items()
         self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic))
         await interaction.message.edit(embed=embed, view=self.view)
+
+
+class PaginatorButton(discord.ui.Button):
+    """Paginator button"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.blurple, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'prev':
+            self.view.active_page -= 1
+            if self.view.active_page == 1:
+                self.disabled = True
+                for child in self.view.children:
+                    if child.custom_id == 'next':
+                        child.disabled = False
+                        break
+        elif self.custom_id == 'next':
+            self.view.active_page += 1
+            if self.view.active_page == len(self.view.pages):
+                self.disabled = True
+                for child in self.view.children:
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'pages':
+                child.label = f'{self.view.active_page}/{len(self.view.pages)}'
+                break
+        await interaction.message.edit(embed=self.view.pages[self.view.active_page-1], view=self.view)
 
 
 class AreaSelect(discord.ui.Select):
@@ -77,14 +96,16 @@ class AbortView(discord.ui.View):
     None if nothing happened yet.
     """
     def __init__(self, ctx: discord.ApplicationContext, interaction: Optional[discord.Interaction] = None):
-        super().__init__(timeout=settings.ABORT_TIMEOUT)
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
         self.interaction = interaction
         self.user = ctx.author
-        self.add_item(CustomButton(style=discord.ButtonStyle.red,
-                                   custom_id='abort',
-                                   label='Abort',
-                                   emoji = None))
+
+    @discord.ui.button(custom_id="abort", style=discord.ButtonStyle.red, label='Abort')
+    async def button_abort(self, button: discord.ui.Button, interaction: discord.Interaction):
+        """Abort button"""
+        self.value = button.custom_id
+        self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -112,19 +133,52 @@ class TopicView(discord.ui.View):
 
     Returns
     -------
-    'abort' when abort was selected.
     'timeout if timed out.
     None otherwise.
     """
     def __init__(self, ctx: discord.ApplicationContext, topics: dict, active_topic: str,
                  interaction: Optional[discord.Interaction] = None):
-        super().__init__(timeout=settings.SELECT_TIMEOUT)
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
         self.interaction = interaction
         self.user = ctx.author
         self.topics = topics
         self.active_topic = active_topic
         self.add_item(TopicSelect(self.topics, self.active_topic))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
+class PaginatorView(discord.ui.View):
+    """Paginator view with three buttons (previous, page count, next).
+
+    Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
+
+    Returns
+    -------
+    'timeout' on timeout.
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, pages = List[discord.Embed],
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.pages = pages
+        self.active_page = 1
+        self.add_item(PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
+        self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
+                                        label=f'1/{len(self.pages)}'))
+        self.add_item(PaginatorButton(custom_id='next', label='▶', emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:

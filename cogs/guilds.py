@@ -246,9 +246,8 @@ async def embed_guild_progress(prefix):
 
     guild_xp = (
         f'{emojis.BP} Participate in the weekly contest (see `{prefix}guild weekly`)\n'
-        f'{emojis.BP} Win duels against players **not** in your guild\n'
-        f'{emojis.BP} Note: Guild XP from duels is not guaranteed\n'
-        f'{emojis.BP} Note: Duel against players close to your level to have a higher chance'
+        f'{emojis.BP} Win duels against players **not** in your guild (1~3 XP)\n'
+        f'{emojis.BLANK} To get 3 XP, duel against players +/- 50% of your level\n'
     )
 
     guides = (

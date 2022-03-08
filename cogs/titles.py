@@ -4,11 +4,11 @@
 from typing import Tuple
 
 import discord
-from discord.ext import commands
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
 
 import database
-from resources import emojis
-from resources import settings
+from resources import emojis, settings, views
 
 
 class TitlesCog(commands.Cog):
@@ -16,37 +16,58 @@ class TitlesCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=('titles','achievement','achievements','ach','t'))
-    @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
-    async def title(self, ctx: commands.Context, *args: str) -> None:
+    cmd_title = SlashCommandGroup(
+        "title",
+        "Title search commands",
+    )
+
+    @cmd_title.command(name='search', description='Look up titles / achievements')
+    async def professions_guide(
+        self,
+        ctx: discord.ApplicationContext,
+        search_string: Option(str, 'Achievement ID or part of the title / achievement'),
+    ) -> None:
         """Command to search for a title/achievement"""
-        prefix = ctx.prefix
-        syntax = (
-            f'The command syntax is `{prefix}{ctx.invoked_with} [search query]`. The search query can either be part '
-            f'of the title, part of the achievement name or the ID of the title/achievement.\n'
-            f'Examples:\n'
-            f'{emojis.BP} `{prefix}{ctx.invoked_with} cool`\n'
-            f'{emojis.BP} `{prefix}{ctx.invoked_with} survive waves`\n'
-            f'{emojis.BP} `{prefix}{ctx.invoked_with} 199`'
-        )
-        if not args:
-            await ctx.send(syntax)
-            return
-        args = [arg.lower() for arg in args]
-        search_string = " ".join(args)
         if len(search_string) < 3 and not search_string.isnumeric() and search_string != 'no': # There is a title called "no"
-            await ctx.send('The search query needs to be at least 3 characters long.')
+            await ctx.respond('The search query needs to be at least 3 characters long.')
             return
         if len(search_string) > 200:
-            await ctx.send('Really.')
+            await ctx.respond('Really.')
             return
         try:
             titles = await database.get_titles(ctx, search_string)
         except database.NoDataFound:
-            await ctx.send('I didn\'t find any titles with that search query, sorry. Try searching for something else.')
+            await ctx.respond('I didn\'t find any titles with that search query, sorry. Try searching for something else.')
             return
-        embed = await embed_titles(prefix, search_string, titles)
-        await ctx.send(embed=embed)
+        embeds = []
+        chunk_amount = 0
+        for chunk in range(0, len(titles), 6):
+            titles_chunk = titles[chunk:chunk+6]
+            chunk_amount += 1
+            embed = await embed_titles(len(titles), titles_chunk)
+            embeds.append(embed)
+        if len(embeds) > 1:
+            view = views.PaginatorView(ctx, embeds)
+            interaction = await ctx.respond(embed=embeds[0], view=view)
+            view.interaction = interaction
+            await view.wait()
+            await interaction.edit_original_message(view=None)
+        else:
+            await ctx.respond(embed=embed)
+
+        """paginator = pages.Paginator(
+                pages=embeds,
+                timeout=settings.INTERACTION_TIMEOUT,
+                custom_buttons=views.PAGINATOR_BUTTONS,
+                use_default_buttons=False
+            )
+            await paginator.respond(ctx.interaction, ephemeral=False)
+            await paginator.wait()
+            paginator.clear_items()
+
+        Returns:
+            _type_: _description_
+        """
 
 
 # Initialization
@@ -55,16 +76,16 @@ def setup(bot):
 
 
 # --- Embeds ---
-async def embed_titles(prefix: str, search_string: str, titles: Tuple[database.Title]) -> discord.Embed:
-    """Embed with all search results"""
-    amount_found = len(titles)
-    description = f'Your search returned **{amount_found}** results.'
-    if amount_found > 9:
-        description = (
-            f'{description}\nThe first 9 results are shown below. To narrow down your search, please specify a less '
-            f'general query.'
-        )
+async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> discord.Embed:
+    """Embed with all search results
 
+    Arguments
+    ---------
+    search_string: String that user searched for
+    pages: current page, max page (max. 9 titles per page)
+    amount_found: total amount of titles found in the database
+    """
+    description = f'Your search returned **{amount_found}** results.'
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -82,15 +103,12 @@ async def embed_titles(prefix: str, search_string: str, titles: Tuple[database.T
         field_value = f'{field_value}\n{emojis.BP} **{ach_or_req}**: {title.requirements}'
         if title.command is not None: field_value = f'{field_value}\n{emojis.BP} **Command**: `{title.command}`'
         if title.tip is not None:
-            tip = title.tip.format(prefix=prefix) if '{prefix}' in title.tip else title.tip
-            field_value = f'{field_value}\n{emojis.BP} **Tip**: {tip}'
+            field_value = f'{field_value}\n{emojis.BP} **Tip**: {title.tip}'
         if title.requires_id is not None:
             field_value = (
                 f'{field_value}\n'
                 f'{emojis.BP} **Note**: Requires completion of achievement `{title.requires_id}` first.'
             )
         embed.add_field(name=title.title, value=field_value, inline=False)
-    if amount_found > 9:
-        embed.set_footer(text=f'Note: This is only the first 9 of {amount_found} results. Please narrow your search.')
 
     return embed

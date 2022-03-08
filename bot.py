@@ -26,20 +26,31 @@ else:
 
 
 @bot.event
-async def on_error(event: str, message: discord.Message) -> None:
+async def on_error(event: str, *args, **kwargs) -> None:
     """Runs when an error outside a command appears.
     All errors get written to the database for further review.
     """
     if not settings.DEBUG_MODE: return
-    if message.channel.type.name == 'private': return
-    embed = discord.Embed(title='An error occured')
-    error = sys.exc_info()
-    traceback_str = "".join(traceback.format_tb(error[2]))
-    traceback_message = f'{error[1]}\n{traceback_str}'
-    embed.add_field(name='Event', value=f'`{event}`', inline=False)
-    embed.add_field(name='Error', value=f'```py\n{traceback_message[:1015]}```', inline=False)
-    await database.log_error(f'Got an error in event {event}:\nError: {error[1]}\nTraceback: {traceback_str}')
-    await message.channel.send(embed=embed)
+    if event == 'on_message':
+        message, = args
+        if message.channel.type.name == 'private': return
+        embed = discord.Embed(title='An error occured')
+        error = sys.exc_info()
+        traceback_str = "".join(traceback.format_tb(error[2]))
+        traceback_message = f'{error[1]}\n{traceback_str}'
+        embed.add_field(name='Event', value=f'`{event}`', inline=False)
+        embed.add_field(name='Error', value=f'```py\n{traceback_message[:1015]}```', inline=False)
+        await database.log_error(f'Got an error in event {event}:\nError: {error[1]}\nTraceback: {traceback_str}')
+        await message.channel.send(embed=embed)
+    elif event == 'on_reaction_add':
+        reaction, user = args
+        return
+    elif event == 'on_command_error':
+        ctx, error = args
+        raise
+    else:
+        return
+
 
 COG_EXTENSIONS = [
     'cogs.areas',
@@ -62,6 +73,7 @@ COG_EXTENSIONS = [
     'cogs.settings',
     'cogs.timetravel',
     'cogs.titles',
+    'cogs.titles_old',
     'cogs.trading',
     ]
 if __name__ == '__main__':

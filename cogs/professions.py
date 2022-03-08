@@ -67,9 +67,9 @@ class ProfessionsCog(commands.Cog):
         await view.wait()
         await interaction.edit_original_message(view=None)
 
-    @commands.guild_only()
     @cmd_professions.command(name='calculator', description='Calculates what you need to level up your professions')
-    @commands.has_permissions(view_channel=True)
+    @commands.bot_has_permissions(view_channel=True)
+    @commands.guild_only()
     async def professions_calculator(
         self,
         ctx: discord.ApplicationContext,
