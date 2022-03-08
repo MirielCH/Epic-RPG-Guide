@@ -55,7 +55,7 @@ class MainCog(commands.Cog):
         elif isinstance(error, commands.DisabledCommand):
             await ctx.respond(f'Command `{ctx.command.qualified_name}` is temporarily disabled.', ephemeral=True)
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.respond('This command is not availabe in direct messages because it requires EPIC RPG input.')
+            await ctx.respond('I\'m sorry, this command is not available in direct messages.')
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
                                 commands.TooManyArguments, commands.BadArgument, commands.BotMissingPermissions)):
             await send_error()

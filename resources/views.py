@@ -16,7 +16,7 @@ class TopicSelect(discord.ui.Select):
         options = []
         for topic in topics.keys():
             label = topic
-            emoji = '🔹' if topic == active_topic else emojis.BLANK
+            emoji = '🔹' if topic == active_topic else None
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
         super().__init__(placeholder='Choose topic...', min_values=1, max_values=1, options=options)
 
@@ -26,7 +26,7 @@ class TopicSelect(discord.ui.Select):
         embed = await self.view.topics[select_value]()
         self.view.clear_items()
         self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic))
-        await interaction.message.edit(embed=embed, view=self.view)
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 
 class PaginatorButton(discord.ui.Button):
@@ -58,7 +58,7 @@ class PaginatorButton(discord.ui.Button):
             if child.custom_id == 'pages':
                 child.label = f'{self.view.active_page}/{len(self.view.pages)}'
                 break
-        await interaction.message.edit(embed=self.view.pages[self.view.active_page-1], view=self.view)
+        await interaction.response.edit_message(embed=self.view.pages[self.view.active_page-1], view=self.view)
 
 
 class AreaSelect(discord.ui.Select):
@@ -80,7 +80,7 @@ class AreaSelect(discord.ui.Select):
         area = int(select_value)
         self.view.area = area
         embed = await self.view.function(self.view.prefix, area)
-        await interaction.message.edit(embed=embed, view=self.view)
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 
 # --- Views ---
