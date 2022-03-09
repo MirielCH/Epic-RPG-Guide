@@ -400,6 +400,7 @@ async def embed_pets_skills(prefix):
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
         f'{emojis.BP} You have a 25% base chance to get an essence after the dungeon\n'
         f'{emojis.BLANK} This chance increases by 7.5% per rank\n'
+        f'{emojis.BLANK} Multiple fighter pets do not stack\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
@@ -585,7 +586,9 @@ async def embed_pets_adventures(prefix):
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
-        f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice'
+        f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
+        f'{emojis.BP} {emojis.SKILL_BOOSTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill to '
+        f'reset all pets'
     )
 
     guides = (
@@ -617,7 +620,10 @@ async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> disc
 
     pet_data: database.PetTier = await database.get_pet_tier(ctx, pet_tier, user_tt)
 
-    how_to_get_tier =f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'
+    if pet_data.fusion_to_get_tier.fusion != 'None':
+        how_to_get_tier = f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'
+    else:
+        how_to_get_tier = f'{emojis.BP} Chance too low'
 
     what_to_fuse_with_tier = ''
     for fusion in pet_data.fusions_including_tier:
@@ -625,7 +631,8 @@ async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> disc
             f'{what_to_fuse_with_tier}\n'
             f'{emojis.BP} {fusion.fusion} ➜ T{fusion.tier}'
         )
-    if what_to_fuse_with_tier == '': what_to_fuse_with_tier = f'{emojis.BP} None'
+    if what_to_fuse_with_tier == '':
+        what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None'
 
     note = (
         f'{emojis.BP} Tier up is **not** guaranteed!\n'

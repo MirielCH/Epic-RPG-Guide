@@ -594,6 +594,12 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} **{rubies:,}** {emojis.WATERMELON} with `greenhouse`\n'
     )
 
+    coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else 'unknown'
+    field_coin_cap = (
+        f'{emojis.BP} **{coin_cap}** {emojis.COIN} coins\n'
+        f'{emojis.BP} You can not receive coins from other players that exceed this cap\n'
+        f'{emojis.BP} There is also a cap for boosted minibosses which is a bit higher (but unknown)'
+    )
 
     prep_tt1_to_2 = (
         f'{emojis.BP} If your horse is T6+: Get 30m coins\n'
@@ -680,6 +686,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
+    embed.add_field(name='COIN CAP', value=field_coin_cap, inline=False)
     if not mytt and tt.tt != 0:
         if 1 <= tt.tt <= 3:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1_to_2, inline=False)

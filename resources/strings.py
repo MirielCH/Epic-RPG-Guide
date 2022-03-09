@@ -179,9 +179,14 @@ item_aliases = {
     'wm armor': 'watermelon armor',
     'wmarmor': 'watermelon armor',
     'scaledarmor': 'scaled armor',
+    'scalearmor': 'scaled armor',
+    'scale armor': 'scaled armor',
     'scaledsword': 'scaled sword',
+    'scalesword': 'scaled sword',
     'scaledsw': 'scaled sword',
+    'scalesw': 'scaled sword',
     'scaled sw': 'scaled sword',
+    'scale sw': 'scaled sword',
     'banana sw': 'banana sword',
     'bananasw': 'banana sword',
     'bananasword': 'banana sword',
@@ -222,6 +227,10 @@ item_aliases = {
     'basicsw': 'basic sword',
     'basic sw': 'basic sword',
     'basicarmor': 'basic armor',
+    'cookie sword': 'godly cookie',
+    'cookie sw': 'godly cookie',
+    'cookiesw': 'godly cookie',
+    'cookiesword': 'godly cookie',
 }
 
 item_columns_names = {

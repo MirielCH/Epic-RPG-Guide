@@ -246,9 +246,8 @@ async def embed_guild_progress(prefix):
 
     guild_xp = (
         f'{emojis.BP} Participate in the weekly contest (see `{prefix}guild weekly`)\n'
-        f'{emojis.BP} Win duels against players **not** in your guild\n'
-        f'{emojis.BP} Note: Guild XP from duels is not guaranteed\n'
-        f'{emojis.BP} Note: Duel against players close to your level to have a higher chance'
+        f'{emojis.BP} Win duels against players **not** in your guild (1~3 XP)\n'
+        f'{emojis.BLANK} To get 3 XP, duel against players +/- 50% of your level\n'
     )
 
     guides = (
@@ -315,7 +314,7 @@ async def embed_guild_stats(prefix):
         f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
         f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
         f'{emojis.BP} Maximum amount is 95\n'
-        f'{emojis.BP} Each upgrade gives you 0~6 stealth\n'
+        f'{emojis.BP} Each upgrade gives you 0~7 stealth\n'
         f'{emojis.BLANK} The amount decreases the more you already have\n'
     )
 

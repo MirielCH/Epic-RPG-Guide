@@ -352,7 +352,7 @@ class miscCog(commands.Cog):
         await ctx.send(
             f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
             f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
-            f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
+            f'There is also a cap for boosted minibosses which is a bit higher (but currently unknown).'
         )
 
 # Initialization
@@ -421,6 +421,8 @@ async def embed_codes(prefix, codes):
                     temporary_value = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
         else:
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+
+    if permanent_value == '': permanent_value = f'{emojis.BP} No codes currently known'
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

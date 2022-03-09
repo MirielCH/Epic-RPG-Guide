@@ -218,7 +218,8 @@ async def embed_coinflip(prefix):
 
     note = (
         f'{emojis.BP} There is an extremely low chance that the event fails\n'
-        f'{emojis.BP} If this happens, your coin will land in another area, and you will lose 1 coin'
+        f'{emojis.BLANK} If this happens, your coin will land in another area, and you will lose 1 coin\n'
+        f'{emojis.BP} This command doesn\'t work in area 19'
     )
 
     guides = (
@@ -311,6 +312,10 @@ async def embed_dice(prefix):
         f'{emojis.BP} Total chance to lose: ~50%'
     )
 
+    note = (
+        f'{emojis.BP} This command doesn\'t work in area 19'
+    )
+
     guides = (
         f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
     )
@@ -326,6 +331,7 @@ async def embed_dice(prefix):
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
 
     return embed
