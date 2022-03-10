@@ -314,7 +314,7 @@ class miscCog(commands.Cog):
                 await ctx.send(
                     f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
                     f'Note: This does **not** work with profile backgrounds.\n'
-                    f'Please remove your background or use `{ctx.prefix}coincap [tt] [max area]` instead.'
+                    f'Please remove your background or use `{ctx.prefix}coincap [tt]` instead.'
                 )
                 answer_user_at = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_at.content
@@ -351,8 +351,7 @@ class miscCog(commands.Cog):
         coin_cap = f'{pow(user_tt, 4) * 500_000_000:,}' if user_tt > 0 else 'unknown'
         await ctx.send(
             f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
-            f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
-            f'There is also a cap for boosted minibosses which is a bit higher (but currently unknown).'
+            f'You can not receive coins with `give`, `multidice` or `miniboss` if you would exceed this cap.'
         )
 
 # Initialization
@@ -519,7 +518,7 @@ async def embed_badges(prefix):
     howtouse = (
         f'{emojis.BP} Use `rpg badge list` to get the ID of the badges you want\n'
         f'{emojis.BP} Use `rpg badge claim [ID]` to claim a badge\n'
-        f'{emojis.BP} Use `rpg badge [ID]` to activate or deactivate a badge'
+        f'{emojis.BP} Use `rpg badge select [ID]` to activate or deactivate a badge'
     )
 
     note = (
@@ -547,7 +546,7 @@ async def embed_badges(prefix):
 async def embed_farm(prefix):
 
     planting_normal = (
-        f'{emojis.BP} Use `rpg farm` to plant {emojis.SEED} seeds. Buy seeds in the shop for 2,000 coins.\n'
+        f'{emojis.BP} Use `rpg farm` to plant {emojis.SEED} seeds. Buy seeds in the shop for 4,000 coins.\n'
         f'{emojis.BP} This gives you XP and either {emojis.BREAD} bread, {emojis.CARROT} carrots or {emojis.POTATO} potatoes\n'
         f'{emojis.BP} You have a 4% chance to receive special seeds (see below)\n'
         f'{emojis.BP} The cooldown of the command is 10m (donor reduction applies)'

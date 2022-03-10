@@ -146,8 +146,8 @@ async def inventory_get(inventory, material):
         mat_start = inventory.find(f'**{material}**:') + len(f'**{material}**:')+1
         mat_end = inventory.find(f'\\', mat_start)
         mat_end_bottom = inventory.find(f'\'', mat_start)
-        mat = inventory[mat_start:mat_end]
-        mat_bottom = inventory[mat_start:mat_end_bottom]
+        mat = inventory[mat_start:mat_end].replace(',','')
+        mat_bottom = inventory[mat_start:mat_end_bottom].replace(',','')
         if mat.isnumeric():
             mat = int(mat)
         elif mat_bottom.isnumeric():

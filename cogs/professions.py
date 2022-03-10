@@ -1701,7 +1701,8 @@ async def embed_professions_enchanter(prefix):
         f'{emojis.BP} **ULTRA-EDGY**: 9 XP\n'
         f'{emojis.BP} **OMEGA**: 10 XP\n'
         f'{emojis.BP} **ULTRA-OMEGA**: 11 XP\n'
-        f'{emojis.BP} **GODLY**: 12 XP'
+        f'{emojis.BP} **GODLY**: 12 XP\n'
+        f'{emojis.BP} **VOID**: unknown\n'
     )
 
     command_multipliers = (
@@ -1769,7 +1770,8 @@ async def embed_professions_lootboxer(prefix):
         f'{emojis.BP} {emojis.LB_EPIC} EPIC lootbox: 30 XP\n'
         f'{emojis.BP} {emojis.LB_EDGY} EDGY lootbox: 65 XP\n'
         f'{emojis.BP} {emojis.LB_OMEGA} OMEGA lootbox: 800 XP\n'
-        f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15004 XP'
+        f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15004 XP\n'
+        f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: Unknown\n'
     )
 
     calculators = (

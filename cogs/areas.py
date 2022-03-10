@@ -389,6 +389,11 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
                 f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
                 f'{emojis.BP} `chainsaw` otherwise'
             )
+        else:
+            work_commands = (
+                f'{emojis.BP} `dynamite` if you need coins\n'
+                f'{emojis.BP} `chainsaw` otherwise'
+            )
 
     return work_commands
 
@@ -476,7 +481,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -497,7 +502,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -527,7 +532,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
                 f'log for the EDGY sword\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
@@ -550,7 +555,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -563,7 +568,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         else:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -657,7 +662,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         )
     elif area.area_no == 16:
         area_req = (
-            f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
+            f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
@@ -667,7 +672,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
-            f'{emojis.BP} Complete the "final" dungeon in the TOP once (see `{prefix}dtop`)\n'
+            f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
