@@ -276,7 +276,7 @@ async def embed_guild_progress(prefix):
 async def embed_guild_shop(prefix):
 
     rewards = (
-        f'{emojis.BP} {emojis.GUILD_BUFF} **ENERGY buff**: Increases {emojis.GUILD_ENERGY} guild energy by 350  (2 {emojis.GUILD_COIN})\n'
+        f'{emojis.BP} {emojis.GUILD_BUFF} **ENERGY buff**: Increases {emojis.GUILD_ENERGY} guild energy by 400  (2 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.CD_COOLDOWN} **Cooldown reset**: Resets the guild raid/upgrade cooldown (3 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.GUILD_LOOTBOXST} **Lootboxst**: All members get a random lootbox (up to EDGY) in duels for 24h (5 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All EPIC RPG players get +20% lootbox drop chance for 45m (20 {emojis.GUILD_COIN}).\n'

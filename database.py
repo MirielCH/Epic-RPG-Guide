@@ -182,6 +182,7 @@ class Monster(NamedTuple):
     activity: str
     areas: Tuple[int, int]
     drop_emoji: str
+    drop_name: str
     emoji: str
     name: str
 
@@ -338,6 +339,7 @@ async def _dict_to_monster(record: dict) -> Monster:
             activity = record['activity'],
             areas = (record['area_from'], record['area_until']),
             drop_emoji = getattr(emojis, record['drop_emoji']) if record['drop_emoji'] is not None else None,
+            drop_name = record['drop_name'],
             emoji = getattr(emojis, record['emoji']),
             name = record['name'],
         )
@@ -1110,6 +1112,74 @@ async def get_monster_by_area(area_from: int, area_until: int) -> Tuple[Monster]
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
         )
         raise
+    monsters = []
+    for record in records:
+        monster = await _dict_to_monster(dict(record))
+        monsters.append(monster)
+
+    return tuple(monsters)
+
+
+async def get_all_monsters() -> Tuple[Monster]:
+    """Gets all monsters from the table "monsters".
+
+    Returns
+    -------
+    Tuple[Monster]
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no dungeons were found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'monsters'
+    function_name = 'get_all_monsters'
+    sql = f'SELECT * FROM {table}'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No monsters found in database.')
+    monsters = []
+    for record in records:
+        monster = await _dict_to_monster(dict(record))
+        monsters.append(monster)
+
+    return tuple(monsters)
+
+
+async def get_monsters(search_string: str) -> Tuple[Title]:
+    """Returns all monsters for a search query.
+
+    Returns:
+       Tuple with Monster objects.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    ERG_DB.row_factory = sqlite3.Row
+    cur=ERG_DB.cursor()
+    search_string = search_string.replace(' ','%').replace("'",'_')
+    search_string = f'%{search_string}%'
+    sql = "SELECT * FROM monsters WHERE name LIKE ? ORDER BY area_from ASC, area_until ASC"
+    cur.execute(sql, (search_string,))
+    records = cur.fetchall()
+    if not records:
+        raise NoDataFound
     monsters = []
     for record in records:
         monster = await _dict_to_monster(dict(record))

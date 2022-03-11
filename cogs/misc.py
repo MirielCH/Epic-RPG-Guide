@@ -285,9 +285,9 @@ class miscCog(commands.Cog):
         prefix = ctx.prefix
 
         error_syntax = (
-            f'The command syntax is `{prefix}coincap [tt]`\n'
+            f'The command syntax is `{prefix}coincap [tt] [max area]`\n'
             f'You can also use `{prefix}coincap` and let me read your profile.\n'
-            f'Examples: `{prefix}coincap tt5`, `{prefix}coincap 8`'
+            f'Examples: `{prefix}coincap tt5 a5`, `{prefix}coincap 8 2`'
         )
 
         user_tt = None
@@ -297,17 +297,22 @@ class miscCog(commands.Cog):
             if args[0].lower() == 'cap':
                 args = list(args)
                 args.pop(0)
-            if len(args) > 0:
-                arg1 = args[0]
-                arg1 = arg1.lower()
-                arg1 = arg1.replace('tt','')
-                if not arg1.isnumeric():
-                    await ctx.send(error_syntax)
-                    return
-                user_tt = int(arg1)
-                if not 0 <= user_tt <= 999:
-                    await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
-                    return
+            if len(args) != 2:
+                await ctx.send(error_syntax)
+                return
+            arg1 = args[0].lower().replace('tt','')
+            arg2 = args[1].lower().replace('a','')
+            if not arg1.isnumeric() or not arg2.isnumeric():
+                await ctx.send(error_syntax)
+                return
+            user_tt = int(arg1)
+            area_no = int(arg2)
+            if not 0 <= user_tt <= 999:
+                await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?\n\n{error_syntax}')
+                return
+            if not 1 <= area_no <= 20:
+                await ctx.send(f'What area is that supposed to be?\n\n{error_syntax}')
+                return
 
         if user_tt is None:
             try:
@@ -329,9 +334,14 @@ class miscCog(commands.Cog):
                         except:
                             await ctx.send(
                                 f'Whelp, something went wrong here, sorry.\n'
-                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt]` instead.'
+                                f'If you have a profile background, remove it or use '
+                                f'`{ctx.prefix}coincap [tt] [max area]` instead.'
                             )
                             return
+                    start_area = profile.find('(Max:') + 6
+                    end_area = profile.find(')', start_area)
+                    user_area = profile[start_area:end_area]
+                    area_no = int(user_area)
                     if profile.find('Time travels') > -1:
                         start_tt = profile.find('Time travels**') + 16
                         end_tt = profile.find('\',', start_tt)
@@ -348,11 +358,13 @@ class miscCog(commands.Cog):
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-        coin_cap = f'{pow(user_tt, 4) * 500_000_000:,}' if user_tt > 0 else 'unknown'
+        coin_cap = pow(user_tt, 4) * 500_000_000 + pow(area_no, 2) * 100_000
+        if area_no == 1: coin_cap += 1
+
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
-            f'You can not receive coins from other players using `give` or `multidice` that exceed this cap.\n'
-            f'Note that there is also a cap for coins from boosted minibosses which is a bit higher than the coin cap and currently unknown.'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {area_no}** is '
+            f'**{coin_cap:,}** {emojis.COIN} coins.\n'
+            f'You can not receive coins with `give`, `multidice` or `miniboss` if you would exceed this cap.'
         )
 
 # Initialization
@@ -519,7 +531,7 @@ async def embed_badges(prefix):
     howtouse = (
         f'{emojis.BP} Use `rpg badge list` to get the ID of the badges you want\n'
         f'{emojis.BP} Use `rpg badge claim [ID]` to claim a badge\n'
-        f'{emojis.BP} Use `rpg badge [ID]` to activate or deactivate a badge'
+        f'{emojis.BP} Use `rpg badge select [ID]` to activate or deactivate a badge'
     )
 
     note = (
@@ -547,7 +559,7 @@ async def embed_badges(prefix):
 async def embed_farm(prefix):
 
     planting_normal = (
-        f'{emojis.BP} Use `rpg farm` to plant {emojis.SEED} seeds. Buy seeds in the shop for 2,000 coins.\n'
+        f'{emojis.BP} Use `rpg farm` to plant {emojis.SEED} seeds. Buy seeds in the shop for 4,000 coins.\n'
         f'{emojis.BP} This gives you XP and either {emojis.BREAD} bread, {emojis.CARROT} carrots or {emojis.POTATO} potatoes\n'
         f'{emojis.BP} You have a 4% chance to receive special seeds (see below)\n'
         f'{emojis.BP} The cooldown of the command is 10m (donor reduction applies)'

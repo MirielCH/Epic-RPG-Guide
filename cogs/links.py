@@ -4,17 +4,11 @@
 import discord
 from discord.ext import commands
 
-from resources import emojis
-from resources import settings
-from resources import functions
+from resources import emojis, functions, settings
 
 
 # Links
 LINK_EROS = 'https://discord.gg/w5dej5m'
-LINK_INVITE = (
-    'https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope='
-    'applications.commands%20bot'
-)
 LINK_SUPPORT_SERVER = 'https://discord.gg/v7WbhnhbgN'
 LINK_VOTE = 'https://top.gg/bot/770199669141536768/vote'
 LINK_WIKI = 'https://epic-rpg.fandom.com/wiki/EPIC_RPG_Wiki'
@@ -35,7 +29,7 @@ class LinksCog(commands.Cog):
             title = 'NEED A GUIDE?',
             description = (
                 f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
-                f'You can invite me [here]({LINK_INVITE}).'
+                f'You can invite me [here]({settings.LINK_INVITE}).'
             )
         )
         embed.set_footer(text=await functions.default_footer(ctx.prefix))

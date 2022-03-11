@@ -101,7 +101,7 @@ class AbortView(discord.ui.View):
         self.interaction = interaction
         self.user = ctx.author
 
-    @discord.ui.button(custom_id="abort", style=discord.ButtonStyle.red, label='Abort')
+    @discord.ui.button(custom_id="abort", style=discord.ButtonStyle.grey, label='Abort')
     async def button_abort(self, button: discord.ui.Button, interaction: discord.Interaction):
         """Abort button"""
         self.value = button.custom_id

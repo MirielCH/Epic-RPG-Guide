@@ -116,7 +116,7 @@ class petsCog(commands.Cog):
                     if user_tt.isnumeric():
                         user_tt = int(user_tt)
                         if not 0 <= user_tt <= 999:
-                            await ctx.send(f'Please enter a TT between 0 and 999.')
+                            await ctx.send('Please enter a TT between 0 and 999.')
                             return
                     else:
                         await ctx.send(syntax)
@@ -620,7 +620,10 @@ async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> disc
 
     pet_data: database.PetTier = await database.get_pet_tier(ctx, pet_tier, user_tt)
 
-    how_to_get_tier =f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'
+    if pet_data.fusion_to_get_tier.fusion != 'None':
+        how_to_get_tier = f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'
+    else:
+        how_to_get_tier = f'{emojis.BP} Chance too low'
 
     what_to_fuse_with_tier = ''
     for fusion in pet_data.fusions_including_tier:
@@ -628,7 +631,8 @@ async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> disc
             f'{what_to_fuse_with_tier}\n'
             f'{emojis.BP} {fusion.fusion} ➜ T{fusion.tier}'
         )
-    if what_to_fuse_with_tier == '': what_to_fuse_with_tier = f'{emojis.BP} None'
+    if what_to_fuse_with_tier == '':
+        what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None'
 
     note = (
         f'{emojis.BP} Tier up is **not** guaranteed!\n'

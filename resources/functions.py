@@ -2,13 +2,22 @@
 
 import asyncio
 import re
-from typing import Union, Tuple
+from typing import Callable, List, Union, Tuple
 
 import discord
 from discord.ext import commands
 
 import database
 from resources import emojis, settings, strings, views
+
+
+def await_coroutine(coro):
+    """Function to call a coroutine outside of an async function"""
+    while True:
+        try:
+            coro.send(None)
+        except StopIteration as error:
+            return error.value
 
 
 # Design fields for embeds
@@ -155,8 +164,8 @@ async def inventory_get(inventory, material):
         mat_start = inventory.find(f'**{material}**:') + len(f'**{material}**:')+1
         mat_end = inventory.find(f'\\', mat_start)
         mat_end_bottom = inventory.find(f'\'', mat_start)
-        mat = inventory[mat_start:mat_end]
-        mat_bottom = inventory[mat_start:mat_end_bottom]
+        mat = inventory[mat_start:mat_end].replace(',','')
+        mat_bottom = inventory[mat_start:mat_end_bottom].replace(',','')
         if mat.isnumeric():
             mat = int(mat)
         elif mat_bottom.isnumeric():
@@ -262,6 +271,23 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
     return bot_message
 
 
+async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the world embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            field2 = message.embeds[0].fields[1]
+            if 'daily monster' in field2.name.lower(): correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
 # Extract values from game embeds
 async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
                                              bot_message: discord.Message) -> Tuple[str, int, int, int]:
@@ -303,3 +329,32 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
             raise ValueError(error)
 
         return (profession_found, level, current_xp, needed_xp)
+
+
+async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
+                                                bot_message: discord.Message) -> str:
+        """Extracts monster name from the world embed.
+
+        Arguments
+        ---------
+        ctx: Context.
+        bot_message: Message the data is extracted from.
+
+        Returns
+        -------
+        monster name: str
+
+        Raises
+        ------
+        ValueError if something goes wrong during extraction.
+        Also logs the errors to the database.
+        """
+        mob_field = bot_message.embeds[0].fields[1]
+        name_search = re.search('> \*\*(.+?)\*\*', mob_field.value.lower())
+        try:
+            mob_name = name_search.group(1)
+        except Exception as error:
+            await database.log_error(error, ctx)
+            raise ValueError(error)
+
+        return mob_name

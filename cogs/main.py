@@ -55,7 +55,19 @@ class MainCog(commands.Cog):
         elif isinstance(error, commands.DisabledCommand):
             await ctx.respond(f'Command `{ctx.command.qualified_name}` is temporarily disabled.', ephemeral=True)
         elif isinstance(error, commands.NoPrivateMessage):
-            await ctx.respond('I\'m sorry, this command is not available in direct messages.')
+            if ctx.guild_id is None:
+                await ctx.respond(
+                    f'I\'m sorry, this command is not available in DMs because it needs to be able to read EPIC RPG.\n\n'
+                    f'Please use this command in a server channel where you also have access to EPIC RPG.',
+                    ephemeral=True
+                )
+            else:
+                await ctx.respond(
+                    f'I\'m sorry, this command is not available in this server because it needs to be able to read EPIC RPG.\n\n'
+                    f'To allow this, the server admin needs to reinvite me with the necessary permissions.\n'
+                    f'To do that click [here]({settings.LINK_INVITE}).\n',
+                    ephemeral=True
+                )
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
                                 commands.TooManyArguments, commands.BadArgument, commands.BotMissingPermissions)):
             await send_error()

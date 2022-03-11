@@ -182,14 +182,17 @@ class timetravelCog(commands.Cog):
                 fish = await functions.inventory_get(inventory, 'normie fish')
                 fishgolden = await functions.inventory_get(inventory, 'golden fish')
                 fishepic = await functions.inventory_get(inventory, 'epic fish')
+                fishsuper = await functions.inventory_get(inventory, 'super fish')
                 log = await functions.inventory_get(inventory, 'wooden log')
                 logepic = await functions.inventory_get(inventory, 'epic log')
                 logsuper = await functions.inventory_get(inventory, 'super log')
                 logmega = await functions.inventory_get(inventory, 'mega log')
                 loghyper = await functions.inventory_get(inventory, 'hyper log')
                 logultra = await functions.inventory_get(inventory, 'ultra log')
+                logultimate = await functions.inventory_get(inventory, 'ultimate log')
                 apple = await functions.inventory_get(inventory, 'apple')
                 banana = await functions.inventory_get(inventory, 'banana')
+                watermelon = await functions.inventory_get(inventory, 'watermelon')
                 ruby = await functions.inventory_get(inventory, 'ruby')
                 wolfskin = await functions.inventory_get(inventory, 'wolf skin')
                 zombieeye = await functions.inventory_get(inventory, 'zombie eye')
@@ -339,9 +342,12 @@ class timetravelCog(commands.Cog):
             if not trade_area == len(areas_best_changes):
                 areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
 
-
-        a15 = areas_log_amounts[len(areas_log_amounts)-2]
-        a16 = areas_log_amounts[len(areas_log_amounts)-1]
+        a15 = a16 =(0,0,0)
+        for log_amount in areas_log_amounts:
+            if log_amount[0] == 15:
+                a15 = log_amount
+            elif log_amount[0] == 16:
+                a16 = log_amount
         log_a15 = a15[1]
         ruby_rate_a15 = a15[2]
         ruby_a15 = floor(log_a15 / ruby_rate_a15)
@@ -380,10 +386,13 @@ class timetravelCog(commands.Cog):
         )
         score_ruby_a15 = ruby_a15 / 25
         score_ruby_a16 = ruby_a16 / 25
+        score_logultimate = logultimate * 40
+        score_fishsuper = fishsuper * 8
+        score_watermelon = watermelon / 12
         score_lifepotion = lifepotion / 500_000 + 1 if lifepotion > 0 else 0
         score_lottery = lottery_ticket / 2
-        score_a15 = score_ruby_a15 + score_lifepotion + score_lottery
-        score_a16 = score_ruby_a16 + score_lifepotion + score_lottery
+        score_a15 = score_ruby_a15 + score_lifepotion + score_lottery + score_logultimate + score_fishsuper + score_watermelon
+        score_a16 = score_ruby_a16 + score_lifepotion + score_lottery + score_logultimate + score_fishsuper + score_watermelon
         score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_a15
         score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_a16
 
@@ -424,6 +433,9 @@ class timetravelCog(commands.Cog):
         field_materials = (
             f'{emojis.BP} {ruby_a15:,} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
             f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in the TOP = {score_ruby_a16:,.2f}\n'
+            f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
+            f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
             f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
@@ -587,6 +599,13 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)\n'
     )
 
+    coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
+    field_coin_cap = (
+        f'{emojis.BP} ~**{coin_cap}** {emojis.COIN} coins\n'
+        f'{emojis.BP} You can not receive coins from other players that exceed this cap\n'
+        f'{emojis.BP} There is also a cap for boosted minibosses which is a bit higher (but unknown)'
+    )
+
     work_multiplier = (
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} / {emojis.LOG_ULTIMATE} with `chainsaw`\n'
@@ -680,6 +699,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
+    embed.add_field(name='COIN CAP', value=field_coin_cap, inline=False)
     if not mytt and tt.tt != 0:
         if 1 <= tt.tt <= 3:
             embed.add_field(name='WHAT TO DO BEFORE YOU TIME TRAVEL', value=prep_tt1_to_2, inline=False)
@@ -773,19 +793,31 @@ async def embed_stt_score(prefix):
         f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 25 score'
     )
 
-    materials = (
-        f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score (best value)\n'
+    rubies = (
+        f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
+    )
+
+    logs = (
         f'{emojis.BP} 25,000 {emojis.LOG} wooden logs = 1 score\n'
         f'{emojis.BP} 2,500 {emojis.LOG_EPIC} EPIC logs = 1 score\n'
         f'{emojis.BP} 250 {emojis.LOG_SUPER} SUPER logs = 1 score\n'
         f'{emojis.BP} 25 {emojis.LOG_MEGA} MEGA logs = 1 score\n'
         f'{emojis.BP} 2.5 {emojis.LOG_HYPER} HYPER log = 1 score\n'
         f'{emojis.BP} 1 {emojis.LOG_ULTRA} ULTRA log = 4 score\n'
+        f'{emojis.BP} 1 {emojis.LOG_ULTIMATE} ULTIMATE log = 40 score\n'
+    )
+
+    fish = (
         f'{emojis.BP} 25,000 {emojis.FISH} normie fish = 1 score\n'
         f'{emojis.BP} 1,250 {emojis.FISH_GOLDEN} golden fish = 1 score\n'
         f'{emojis.BP} 12.5 {emojis.FISH_EPIC} EPIC fish = 1 score\n'
+        f'{emojis.BP} 1 {emojis.FISH_SUPER} SUPER fish = 8 score\n'
+    )
+
+    fruit = (
         f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
         f'{emojis.BP} 250 {emojis.BANANA} bananas = 1 score\n'
+        f'{emojis.BP} 12 {emojis.WATERMELON} watermelons = 1 score\n'
     )
 
     farming = (
@@ -835,7 +867,10 @@ async def embed_stt_score(prefix):
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
-    embed.add_field(name='MATERIALS', value=materials, inline=False)
+    embed.add_field(name='RUBIES', value=rubies, inline=False)
+    embed.add_field(name='LOGS', value=logs, inline=False)
+    embed.add_field(name='FISH', value=fish, inline=False)
+    embed.add_field(name='FRUIT', value=fruit, inline=False)
     embed.add_field(name='FARM ITEMS', value=farming, inline=False)
     embed.add_field(name='MOB DROPS', value=mobdrops, inline=False)
     embed.add_field(name='OTHER ITEMS', value=misc, inline=False)

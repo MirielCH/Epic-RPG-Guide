@@ -5,7 +5,7 @@ from typing import Tuple
 
 import discord
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands, pages
+from discord.ext import commands
 
 import database
 from resources import emojis, settings, views
@@ -94,7 +94,7 @@ async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> disc
     )
 
     title = type(database.Title)
-    for title in titles[:9]:
+    for title in titles:
         ach_or_req = 'Achievement' if title.source == 'Achievement' else 'Requirement'
         if title.source != 'Achievement':
             field_value = f'{emojis.BP} **Source**: {title.source}'

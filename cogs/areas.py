@@ -186,24 +186,28 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     if dungeon.player_sword_enchant is not None:
         if area.upgrade_sword:
             quick_guide_enchant_sword = f' and enchant to {dungeon.player_sword_enchant}'
+            if dungeon.player_sword_enchant != 'VOID':
+                quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
         elif area.upgrade_sword_enchant:
                 quick_guide_enchant_sword = (
                     f'{emojis.BP} Enchant {dungeon.player_sword.emoji} {dungeon.player_sword.name} '
                     f'to {dungeon.player_sword_enchant}'
                 )
-        if dungeon.player_sword_enchant != 'VOID':
-            quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
+                if dungeon.player_sword_enchant != 'VOID':
+                    quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
 
     if dungeon.player_armor_enchant is not None:
         if area.upgrade_armor:
             quick_guide_enchant_armor = f' and enchant to {dungeon.player_armor_enchant}'
+            if dungeon.player_armor_enchant != 'VOID':
+                quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
         elif area.upgrade_armor_enchant:
                 quick_guide_enchant_armor = (
                     f'{emojis.BP} Enchant {dungeon.player_armor.emoji} {dungeon.player_armor.name} to '
                     f'{dungeon.player_armor_enchant}'
                 )
-        if dungeon.player_armor_enchant != 'VOID':
-            quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
+                if dungeon.player_armor_enchant != 'VOID':
+                    quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
 
     if area.area_no == 21:
         quick_guide_sword = (
@@ -389,6 +393,11 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
                 f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
                 f'{emojis.BP} `chainsaw` otherwise'
             )
+        else:
+            work_commands = (
+                f'{emojis.BP} `dynamite` if you need coins\n'
+                f'{emojis.BP} `chainsaw` otherwise'
+            )
 
     return work_commands
 
@@ -476,7 +485,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -497,7 +506,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -527,7 +536,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
                 f'log for the EDGY sword\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
@@ -550,7 +559,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -563,7 +572,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         else:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Keep: 15 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -617,7 +626,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     dungeon: database.Dungeon = await database.get_dungeon(area.dungeon_no)
     tt_no = 25 if user.tt > 25 else user.tt
     tt: database.TimeTravel = await database.get_time_travel(tt_no)
-    area_locked = new_commands = traderates_next_area = materials = next_area = area_req = None
+    area_locked = traderates_next_area = next_area = area_req = None
+    materials = new_commands = ''
     time_traveler_prepare = True if tt.tt_area == area.area_no else False
     if area.area_no == 15:
         next_area = await database.get_area(21)
@@ -696,11 +706,20 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     if area.area_no in (7,8): field_rec_gear = f'{field_rec_gear} **(*)**'
 
     # New commands
-    new_commands = ''
-    for new_command in area.new_commands:
-        if new_command is not None:
-            new_commands = f'{new_commands}, `{new_command}`'
-    if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
+    show_new_commands = False
+    if not user.ascended:
+        show_new_commands = True
+    else:
+        if area.area_no >= 12 and user.tt == 1: show_new_commands = True
+        elif area.area_no >= 13 and user.tt in (2,3): show_new_commands = True
+        elif area.area_no >= 14 and user.tt in (4,5): show_new_commands = True
+        elif area.area_no >= 15 and 6 <= user.tt <= 10: show_new_commands = True
+        elif area.area_no == 21: show_new_commands = True
+    if show_new_commands:
+        for new_command in area.new_commands:
+            if new_command is not None:
+                new_commands = f'{new_commands}, `{new_command}`'
+        if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command
     work_commands = await design_field_work_commands(area, user)
@@ -792,14 +811,14 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
     embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
     if area_req is not None:
-        embed.add_field(name='AREA REQUIREMENTS', value=area_req, inline=False)
+        embed.add_field(name=f'HOW TO REACH {area_no_str}', value=area_req, inline=False)
     if debuffs is not None:
         embed.add_field(name='AREA DEBUFFS', value=debuffs, inline=False)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN HUNT', value=field_monsters_hunt, inline=True)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN ADVENTURE', value=field_monsters_adv, inline=True)
-    if new_commands != '':
+    if show_new_commands and new_commands != '':
         embed.add_field(name='NEW COMMANDS', value=new_commands, inline=False)
     if work_commands is not None:
         embed.add_field(name='BEST WORK COMMAND', value=work_commands, inline=False)
@@ -807,7 +826,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
         embed.add_field(name=f'RECOMMENDED GEAR FOR {dungeon_no_str}', value=field_rec_gear, inline=True)
         embed.add_field(name=f'RECOMMENDED STATS FOR {dungeon_no_str}', value=field_rec_stats, inline=True)
-    if materials is not None:
+    if materials != '':
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveler_prepare:
         embed.add_field(name=trades_name, value=trades, inline=False)
