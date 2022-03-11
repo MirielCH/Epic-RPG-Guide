@@ -933,6 +933,23 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     # Strategy
     if 1 <= dungeon_no <= 9:
         strategy = f'{emojis.BP} Use `stab` or `power`'
+    elif dungeon_no == 10:
+         strategy = (
+            f'{emojis.BP} The player that starts the dungeon gets the attacker role\n'
+            f'{emojis.BP} The other player gets the defender role\n'
+            f'{emojis.BP} Attacker command sequence:\n'
+            f'{emojis.BLANK} `charge edgy sword` x20\n'
+            f'{emojis.BLANK} `attack`\n'
+            f'{emojis.BP} Defender command sequence:\n'
+            f'{emojis.BLANK} `weakness spell`\n'
+            f'{emojis.BLANK} `protect` x3\n'
+            f'{emojis.BLANK} `charge edgy armor` x2\n'
+            f'{emojis.BLANK} `protect`\n'
+            f'{emojis.BLANK} `invulnerability`\n'
+            f'{emojis.BLANK} `healing spell`\n'
+            f'{emojis.BLANK} `protect` x8\n'
+            f'{emojis.BP} Note: The defender will die before the boss does'
+        )
     elif dungeon_no == 13:
         strategy = (
             f'{emojis.BP} You start in room 1, 2 or 3\n'

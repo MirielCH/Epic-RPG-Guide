@@ -1702,7 +1702,7 @@ async def embed_professions_enchanter(prefix):
         f'{emojis.BP} **OMEGA**: 10 XP\n'
         f'{emojis.BP} **ULTRA-OMEGA**: 11 XP\n'
         f'{emojis.BP} **GODLY**: 12 XP\n'
-        f'{emojis.BP} **VOID**: unknown\n'
+        f'{emojis.BP} **VOID**: 13 XP\n'
     )
 
     command_multipliers = (

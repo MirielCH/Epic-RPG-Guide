@@ -285,9 +285,9 @@ class miscCog(commands.Cog):
         prefix = ctx.prefix
 
         error_syntax = (
-            f'The command syntax is `{prefix}coincap [tt]`\n'
+            f'The command syntax is `{prefix}coincap [tt] [max area]`\n'
             f'You can also use `{prefix}coincap` and let me read your profile.\n'
-            f'Examples: `{prefix}coincap tt5`, `{prefix}coincap 8`'
+            f'Examples: `{prefix}coincap tt5 a5`, `{prefix}coincap 8 2`'
         )
 
         user_tt = None
@@ -297,24 +297,29 @@ class miscCog(commands.Cog):
             if args[0].lower() == 'cap':
                 args = list(args)
                 args.pop(0)
-            if len(args) > 0:
-                arg1 = args[0]
-                arg1 = arg1.lower()
-                arg1 = arg1.replace('tt','')
-                if not arg1.isnumeric():
-                    await ctx.send(error_syntax)
-                    return
-                user_tt = int(arg1)
-                if not 0 <= user_tt <= 999:
-                    await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?')
-                    return
+            if len(args) != 2:
+                await ctx.send(error_syntax)
+                return
+            arg1 = args[0].lower().replace('tt','')
+            arg2 = args[1].lower().replace('a','')
+            if not arg1.isnumeric() or not arg2.isnumeric():
+                await ctx.send(error_syntax)
+                return
+            user_tt = int(arg1)
+            area_no = int(arg2)
+            if not 0 <= user_tt <= 999:
+                await ctx.send(f'Uuuuhhhhhh..... you sure about that time travel count?\n\n{error_syntax}')
+                return
+            if not 1 <= area_no <= 20:
+                await ctx.send(f'What area is that supposed to be?\n\n{error_syntax}')
+                return
 
         if user_tt is None:
             try:
                 await ctx.send(
                     f'**{ctx.author.name}**, please type `rpg p` (or `abort` to abort).\n\n'
                     f'Note: This does **not** work with profile backgrounds.\n'
-                    f'Please remove your background or use `{ctx.prefix}coincap [tt]` instead.'
+                    f'Please remove your background or use `{ctx.prefix}coincap [tt] [max area]` instead.'
                 )
                 answer_user_at = await self.bot.wait_for('message', check=check, timeout = 30)
                 answer = answer_user_at.content
@@ -329,9 +334,14 @@ class miscCog(commands.Cog):
                         except:
                             await ctx.send(
                                 f'Whelp, something went wrong here, sorry.\n'
-                                f'If you have a profile background, remove it or use `{ctx.prefix}coincap [tt]` instead.'
+                                f'If you have a profile background, remove it or use '
+                                f'`{ctx.prefix}coincap [tt] [max area]` instead.'
                             )
                             return
+                    start_area = profile.find('(Max:') + 6
+                    end_area = profile.find(')', start_area)
+                    user_area = profile[start_area:end_area]
+                    area_no = int(user_area)
                     if profile.find('Time travels') > -1:
                         start_tt = profile.find('Time travels**') + 16
                         end_tt = profile.find('\',', start_tt)
@@ -348,9 +358,11 @@ class miscCog(commands.Cog):
             except asyncio.TimeoutError as error:
                 await ctx.send(f'**{ctx.author.name}**, couldn\'t find your profile, RIP.')
                 return
-        coin_cap = f'{pow(user_tt, 4) * 500_000_000:,}' if user_tt > 0 else 'unknown'
+        coin_cap = pow(user_tt, 4) * 500_000_000 + pow(area_no, 2) * 100_000
+        if area_no == 1: coin_cap += 1
         await ctx.send(
-            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}** is **{coin_cap}** {emojis.COIN} coins.\n'
+            f'**{ctx.author.name}**, the coin cap for **TT {user_tt}**, **area {area_no}** is '
+            f'**{coin_cap:,}** {emojis.COIN} coins.\n'
             f'You can not receive coins with `give`, `multidice` or `miniboss` if you would exceed this cap.'
         )
 

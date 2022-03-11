@@ -342,9 +342,12 @@ class timetravelCog(commands.Cog):
             if not trade_area == len(areas_best_changes):
                 areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
 
-
-        a15 = areas_log_amounts[len(areas_log_amounts)-2]
-        a16 = areas_log_amounts[len(areas_log_amounts)-1]
+        a15 = a16 =(0,0,0)
+        for log_amount in areas_log_amounts:
+            if log_amount[0] == 15:
+                a15 = log_amount
+            elif log_amount[0] == 16:
+                a16 = log_amount
         log_a15 = a15[1]
         ruby_rate_a15 = a15[2]
         ruby_a15 = floor(log_a15 / ruby_rate_a15)
@@ -603,9 +606,9 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} **{rubies:,}** {emojis.WATERMELON} with `greenhouse`\n'
     )
 
-    coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else 'unknown'
+    coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
     field_coin_cap = (
-        f'{emojis.BP} **{coin_cap}** {emojis.COIN} coins\n'
+        f'{emojis.BP} ~**{coin_cap}** {emojis.COIN} coins\n'
         f'{emojis.BP} The coin cap affects coins from `give`, `multidice` and `miniboss`'
     )
 
@@ -812,7 +815,7 @@ async def embed_stt_score(prefix):
     fruit = (
         f'{emojis.BP} 5,000 {emojis.APPLE} apples = 1 score\n'
         f'{emojis.BP} 250 {emojis.BANANA} bananas = 1 score\n'
-        f'{emojis.BP} 12 {emojis.WATERMELON} = 1 score\n'
+        f'{emojis.BP} 12 {emojis.WATERMELON} watermelons = 1 score\n'
     )
 
     farming = (

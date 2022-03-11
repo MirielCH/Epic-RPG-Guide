@@ -186,24 +186,28 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     if dungeon.player_sword_enchant is not None:
         if area.upgrade_sword:
             quick_guide_enchant_sword = f' and enchant to {dungeon.player_sword_enchant}'
+            if dungeon.player_sword_enchant != 'VOID':
+                quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
         elif area.upgrade_sword_enchant:
                 quick_guide_enchant_sword = (
                     f'{emojis.BP} Enchant {dungeon.player_sword.emoji} {dungeon.player_sword.name} '
                     f'to {dungeon.player_sword_enchant}'
                 )
-        if dungeon.player_sword_enchant != 'VOID':
-            quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
+                if dungeon.player_sword_enchant != 'VOID':
+                    quick_guide_enchant_sword = f'{quick_guide_enchant_sword} or higher'
 
     if dungeon.player_armor_enchant is not None:
         if area.upgrade_armor:
             quick_guide_enchant_armor = f' and enchant to {dungeon.player_armor_enchant}'
+            if dungeon.player_armor_enchant != 'VOID':
+                quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
         elif area.upgrade_armor_enchant:
                 quick_guide_enchant_armor = (
                     f'{emojis.BP} Enchant {dungeon.player_armor.emoji} {dungeon.player_armor.name} to '
                     f'{dungeon.player_armor_enchant}'
                 )
-        if dungeon.player_armor_enchant != 'VOID':
-            quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
+                if dungeon.player_armor_enchant != 'VOID':
+                    quick_guide_enchant_armor = f'{quick_guide_enchant_armor} or higher'
 
     if area.area_no == 21:
         quick_guide_sword = (
@@ -622,7 +626,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     dungeon: database.Dungeon = await database.get_dungeon(area.dungeon_no)
     tt_no = 25 if user.tt > 25 else user.tt
     tt: database.TimeTravel = await database.get_time_travel(tt_no)
-    area_locked = new_commands = traderates_next_area = materials = next_area = area_req = None
+    area_locked = traderates_next_area = next_area = area_req = None
+    materials = new_commands = ''
     time_traveler_prepare = True if tt.tt_area == area.area_no else False
     if area.area_no == 15:
         next_area = await database.get_area(21)
@@ -664,9 +669,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         area_req = (
             f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
-            f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
-            #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
-            #f'{emojis.BP} Check `void` to see the current status and requirements\n'
+            f'{emojis.BLANK} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
             f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
@@ -674,9 +677,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         area_req = (
             f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
-            f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
-            #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
-            #f'{emojis.BP} Check `void` to see the current status and requirements\n'
+            f'{emojis.BLANK} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
             f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
@@ -701,11 +702,20 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     if area.area_no in (7,8): field_rec_gear = f'{field_rec_gear} **(*)**'
 
     # New commands
-    new_commands = ''
-    for new_command in area.new_commands:
-        if new_command is not None:
-            new_commands = f'{new_commands}, `{new_command}`'
-    if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
+    show_new_commands = False
+    if not user.ascended:
+        show_new_commands = True
+    else:
+        if area.area_no >= 12 and user.tt == 1: show_new_commands = True
+        elif area.area_no >= 13 and user.tt in (2,3): show_new_commands = True
+        elif area.area_no >= 14 and user.tt in (4,5): show_new_commands = True
+        elif area.area_no >= 15 and 6 <= user.tt <= 10: show_new_commands = True
+        elif area.area_no == 21: show_new_commands = True
+    if show_new_commands:
+        for new_command in area.new_commands:
+            if new_command is not None:
+                new_commands = f'{new_commands}, `{new_command}`'
+        if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command
     work_commands = await design_field_work_commands(area, user)
@@ -724,7 +734,6 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             materials = f'{materials}\n{emojis.BP} {tt.a5_apple:,} {emojis.APPLE} apples'
 
     if area.area_no == 3:
-        materials = ''
         if 1 <= user.tt <= 4:
             materials = (
                 f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins\n'
@@ -765,7 +774,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
     next_area_no_str = 'THE TOP' if area.area_no == 15 else f'AREA {area.area_no + 1}'
-    dungeon_no_str = 'THE "FINAL" DUNGEON' if area.area_no == 21 else f'D{area.dungeon_no}'
+    dungeon_no_str = 'THE "FINAL" FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
 
     # Note
     guide_area = 'top' if area.area_no == 21 else area.area_no
@@ -797,14 +806,14 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
     embed.add_field(name='QUICK GUIDE', value=quick_guide, inline=False)
     if area_req is not None:
-        embed.add_field(name='AREA REQUIREMENTS', value=area_req, inline=False)
+        embed.add_field(name=f'HOW TO REACH {area_no_str}', value=area_req, inline=False)
     if debuffs is not None:
         embed.add_field(name='AREA DEBUFFS', value=debuffs, inline=False)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN HUNT', value=field_monsters_hunt, inline=True)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN ADVENTURE', value=field_monsters_adv, inline=True)
-    if new_commands != '':
+    if show_new_commands and new_commands != '':
         embed.add_field(name='NEW COMMANDS', value=new_commands, inline=False)
     if work_commands is not None:
         embed.add_field(name='BEST WORK COMMAND', value=work_commands, inline=False)
@@ -812,7 +821,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
         embed.add_field(name=f'RECOMMENDED GEAR FOR {dungeon_no_str}', value=field_rec_gear, inline=True)
         embed.add_field(name=f'RECOMMENDED STATS FOR {dungeon_no_str}', value=field_rec_stats, inline=True)
-    if materials is not None:
+    if materials != '':
         embed.add_field(name='MATERIALS TO FARM', value=materials, inline=False)
     if not time_traveler_prepare:
         embed.add_field(name=trades_name, value=trades, inline=False)
