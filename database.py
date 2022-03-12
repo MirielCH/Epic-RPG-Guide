@@ -100,9 +100,11 @@ class Dungeon(NamedTuple):
 
 class Area(NamedTuple):
     """Container for area data"""
+    adv_dmg: Tuple[int, int]
     area_no: int
     description: str
     dungeon_no: float
+    hunt_dmg: Tuple[int, int]
     new_commands: Tuple[str, str, str]
     money_tt1_nohorse: int
     money_tt1_t6horse: int
@@ -280,9 +282,11 @@ async def _dict_to_area(record: dict) -> Area:
     function_name = '_dict_to_area'
     try:
         area = Area(
+            adv_dmg = (record['adv_dmg_min'], record['adv_dmg_max']),
             area_no = record['area'],
             description = record['description'],
             dungeon_no = record['dungeon'],
+            hunt_dmg = (record['hunt_dmg_min'], record['hunt_dmg_max']),
             new_commands = (record['new_cmd_1'], record['new_cmd_2'], record['new_cmd_3']),
             money_tt1_nohorse = record['money_tt1_nohorse'],
             money_tt1_t6horse = record['money_tt1_t6horse'],

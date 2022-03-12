@@ -626,7 +626,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     dungeon: database.Dungeon = await database.get_dungeon(area.dungeon_no)
     tt_no = 25 if user.tt > 25 else user.tt
     tt: database.TimeTravel = await database.get_time_travel(tt_no)
-    area_locked = traderates_next_area = next_area = area_req = None
+    area_locked = traderates_next_area = next_area = area_req = area_dmg = None
     materials = new_commands = ''
     time_traveler_prepare = True if tt.tt_area == area.area_no else False
     if area.area_no == 15:
@@ -719,6 +719,15 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     # Best work command
     work_commands = await design_field_work_commands(area, user)
+
+    # Area damage
+    if area.adv_dmg[1] is not None and area.hunt_dmg[1] is not None:
+        area_dmg = (
+            f'{emojis.BP} ~**{area.hunt_dmg[1]:,}** in `hunt`, '
+            f'~**{functions.round_school(area.hunt_dmg[1]*1.7):,}** in `hunt h`\n'
+            f'{emojis.BP} ~**{area.adv_dmg[1]:,}** in `adv`, '
+            f'~**{functions.round_school(area.adv_dmg[1]*1.7):,}** in `adv h`\n'
+        )
 
     # Lootboxes
     lootboxes = await design_field_lootboxes(area, user)
@@ -813,6 +822,8 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         embed.add_field(name='MONSTERS IN HUNT', value=field_monsters_hunt, inline=True)
     if field_monsters_hunt != '':
         embed.add_field(name='MONSTERS IN ADVENTURE', value=field_monsters_adv, inline=True)
+    if area_dmg is not None:
+        embed.add_field(name='MONSTER DAMAGE', value=area_dmg, inline=False)
     if show_new_commands and new_commands != '':
         embed.add_field(name='NEW COMMANDS', value=new_commands, inline=False)
     if work_commands is not None:

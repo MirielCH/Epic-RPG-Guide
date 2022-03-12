@@ -3,6 +3,12 @@
 import database
 from resources import emojis
 
+
+def round_school(number: float) -> int:
+    quotient, rest = divmod(number, 1)
+    return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
+
+
 async def design_field_traderate(area: database.Area) -> str:
     """Create field "trade rates" for area & trading"""
     field_value = f'{emojis.BP} 1 {emojis.FISH} ⇄ {emojis.LOG} {area.trade_fish_log}'
