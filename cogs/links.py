@@ -4,7 +4,7 @@
 import discord
 from discord.ext import commands
 
-from resources import emojis, functions, settings
+from resources import emojis, functions, settings, strings
 
 
 # Links
@@ -53,7 +53,7 @@ class LinksCog(commands.Cog):
         """Links to wiki, servers, top.gg and invite"""
         epic_rpg_guide = (
             f'{emojis.BP} [Support Server]({LINK_SUPPORT_SERVER})\n'
-            f'{emojis.BP} [Bot Invite]({LINK_INVITE})\n'
+            f'{emojis.BP} [Bot Invite]({strings.LINK_INVITE})\n'
             f'{emojis.BP} [Vote]({LINK_VOTE})'
         )
         epic_rpg = (

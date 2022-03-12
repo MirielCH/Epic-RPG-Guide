@@ -178,6 +178,11 @@ async def inventory_get(inventory, material):
     return mat
 
 
+def round_school(number: float) -> int:
+    quotient, rest = divmod(number, 1)
+    return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
+
+
 def format_string(string: str) -> str:
     """Format string to ASCII"""
     string = (
@@ -252,7 +257,7 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
 
 
 async def wait_for_profession_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
-    """Waits for and returns the profession embed from EPIC RPG"""
+    """Waits for and returns the message with the profession detail embed from EPIC RPG"""
     def epic_rpg_check(message):
         correct_message = False
         try:
@@ -272,12 +277,52 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
 
 
 async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
-    """Waits for and returns the world embed from EPIC RPG"""
+    """Waits for and returns the message with the world embed from EPIC RPG"""
     def epic_rpg_check(message):
         correct_message = False
         try:
             field2 = message.embeds[0].fields[1]
             if 'daily monster' in field2.name.lower(): correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the horse embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            field2 = message.embeds[0].fields[1]
+            if f'{ctx_author}\'s horse' in embed_author:
+                correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the inventory embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            field2 = message.embeds[0].fields[1]
+            if f'{ctx_author}\'s inventory' in embed_author:
+                correct_message = True
         except:
             pass
 
@@ -358,3 +403,38 @@ async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
             raise ValueError(error)
 
         return mob_name
+
+
+async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
+                                              bot_message: discord.Message) -> Tuple[int, int]:
+        """Extracts horse tier and level from a horse embed.
+
+        Arguments
+        ---------
+        ctx: Context.
+        bot_message: Message the data is extracted from.
+
+        Returns
+        -------
+        Tuple[
+            horse tier: int,
+            horse level: int
+        ]
+
+        Raises
+        ------
+        ValueError if something goes wrong during extraction.
+        Also logs the errors to the database.
+        """
+        data_field = bot_message.embeds[0].fields[0]
+        tier_search = re.search('tier\*\* - (.+?) <', data_field.value.lower())
+        level_search = re.search('level\*\* - (.+?) \(', data_field.value.lower())
+        try:
+            tier = tier_search.group(1)
+            tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
+            level = int(level_search.group(1))
+        except Exception as error:
+            await database.log_error(error, ctx)
+            raise ValueError(error)
+
+        return (tier, level)

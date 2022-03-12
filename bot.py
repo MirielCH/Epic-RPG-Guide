@@ -42,14 +42,23 @@ async def on_error(event: str, *args, **kwargs) -> None:
         embed.add_field(name='Error', value=f'```py\n{traceback_message[:1015]}```', inline=False)
         await database.log_error(f'Got an error in event {event}:\nError: {error[1]}\nTraceback: {traceback_str}')
         await message.channel.send(embed=embed)
-    elif event == 'on_reaction_add':
-        reaction, user = args
-        return
-    elif event == 'on_command_error':
-        ctx, error = args
-        raise
     else:
-        return
+        embed = discord.Embed(title='An error occured')
+        error = sys.exc_info()
+        traceback_str = "".join(traceback.format_tb(error[2]))
+        traceback_message = f'{error[1]}\n{traceback_str}'
+        #embed.add_field(name='Event', value=f'`{event}`', inline=False)
+        embed.add_field(name='Error', value=f'```py\n{traceback_message[:1015]}```', inline=False)
+        await database.log_error(f'Got an error:\nError: {error[1]}\nTraceback: {traceback_str}')
+        await message.channel.send(embed=embed)
+        if event == 'on_reaction_add':
+            reaction, user = args
+            return
+        elif event == 'on_command_error':
+            ctx, error = args
+            raise
+        else:
+            return
 
 
 COG_EXTENSIONS = [
@@ -57,7 +66,9 @@ COG_EXTENSIONS = [
     'cogs.crafting',
     'cogs.dev',
     'cogs.dungeons',
+    'cogs.enchanting',
     'cogs.events',
+    'cogs.events_old',
     'cogs.fun',
     'cogs.guilds',
     'cogs.gambling',
@@ -67,6 +78,7 @@ COG_EXTENSIONS = [
     'cogs.main_old',
     'cogs.misc',
     'cogs.monsters',
+    'cogs.monsters_old',
     'cogs.pets',
     'cogs.professions',
     'cogs.professions_old',

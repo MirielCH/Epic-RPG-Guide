@@ -8,7 +8,7 @@ import sys
 from discord.ext import commands
 
 import database
-from resources import emojis
+from resources import emojis, functions
 
 
 class DevCog(commands.Cog):
@@ -36,6 +36,42 @@ class DevCog(commands.Cog):
             f'Available dev commands:\n'
             f'{subcommands}'
         )
+
+    @dev.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def logs(self, ctx, base_log_amount: int) -> None:
+        """Calculates how many logs it needs for a certain amount of epic logs"""
+        item_amount = 100
+        returned_percentage = 0.12
+        level = 102
+        base_log_amount_upper = 100_000_000_000
+        base_log_amount_lower = 0
+        while True:
+            #base_log_amount = log_amount = (base_log_amount_lower + base_log_amount_upper) // 2
+            log_amount = base_log_amount
+            epic_log_amount = epic_log_amount_total = log_amount_total = 0
+            while True:
+                epic_log_amount, log_rest = divmod(log_amount, 25)
+                epic_log_amount_total += epic_log_amount
+                if level >= 100:
+                    returned_amount = functions.round_school(epic_log_amount * 0.8 * 25 * returned_percentage)
+                    if returned_amount == 0: returned_amount = 1
+                    log_rest += returned_amount
+                    log_amount_total += returned_amount
+                log_amount = log_rest + epic_log_amount * 20
+                log_amount_total += epic_log_amount * 20
+                if log_amount < 25: break
+            await ctx.send(f'{epic_log_amount_total:,}')
+            return
+            if (item_amount - 1) <= epic_log_amount_total <= (item_amount + 1):
+                break
+            elif epic_log_amount_total < item_amount:
+                base_log_amount_lower = base_log_amount - 1
+            elif epic_log_amount_total > item_amount:
+                base_log_amount_upper = base_log_amount + 1
+
+
 
 
     @dev.command(aliases=('unload','reload',))

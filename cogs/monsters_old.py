@@ -127,7 +127,7 @@ class MonstersOldCog(commands.Cog):
 
 # Initialization
 def setup(bot):
-    bot.add_cog(MonstersCog(bot))
+    bot.add_cog(MonstersOldCog(bot))
 
 
 

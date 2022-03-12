@@ -104,9 +104,11 @@ class Dungeon(NamedTuple):
 
 class Area(NamedTuple):
     """Container for area data"""
+    adv_dmg: Tuple[int, int]
     area_no: int
     description: str
     dungeon_no: float
+    hunt_dmg: Tuple[int, int]
     new_commands: Tuple[str, str, str]
     money_tt1_nohorse: int
     money_tt1_t6horse: int
@@ -285,9 +287,11 @@ async def _dict_to_area(record: dict) -> Area:
     function_name = '_dict_to_area'
     try:
         area = Area(
+            adv_dmg = (record['adv_dmg_min'], record['adv_dmg_max']),
             area_no = record['area'],
             description = record['description'],
             dungeon_no = record['dungeon'],
+            hunt_dmg = (record['hunt_dmg_min'], record['hunt_dmg_max']),
             new_commands = (record['new_cmd_1'], record['new_cmd_2'], record['new_cmd_3']),
             money_tt1_nohorse = record['money_tt1_nohorse'],
             money_tt1_t6horse = record['money_tt1_t6horse'],
@@ -350,6 +354,66 @@ async def _dict_to_monster(record: dict) -> Monster:
         raise LookupError(error)
 
     return monster
+
+
+async def _dict_to_item(record: dict) -> Item:
+    """Creates an Item object from a database record
+
+    Arguments
+    ---------
+    record: Database record from table "items" as a dict.
+
+    Returns
+    -------
+    Item object.
+
+    Raises
+    ------
+    LookupError if something goes wrong reading the dict. Also logs this error to the database.
+    """
+    function_name = '_dict_to_item'
+    try:
+        item_name = record['name']
+        record.pop('name')
+        item_emoji = getattr(emojis, record['emoji'])
+        record.pop('emoji')
+        item_type = record['type']
+        record.pop('type')
+        requirements = record['requirements']
+        record.pop('requirements')
+        item_at = int(record['at'])
+        record.pop('at')
+        item_def = int(record['def'])
+        record.pop('def')
+        item_dismantleable = bool(record['dismantleable'])
+        record.pop('dismantleable')
+        for name, amount in record.copy().items():
+            if amount == 0: record.pop(name)
+        ingredients = []
+        for name, amount in record.items():
+            ingredient = Ingredient(
+                amount = amount,
+                name = strings.item_columns_names[name]
+            )
+            ingredients.append(ingredient)
+        ingredients.sort(key=lambda ingredient: ingredient.amount)
+        item = Item(
+            item_type = item_type,
+            dismanteable = item_dismantleable,
+            emoji = item_emoji,
+            requirements = requirements,
+            ingredients = ingredients,
+            name = item_name,
+            stat_at = item_at,
+            stat_def = item_def
+        )
+    except Exception as error:
+        await log_error(
+            INTERNAL_ERROR_DICT_TO_OBJECT.format(function=function_name, record=record)
+        )
+        raise LookupError(error)
+
+    return item
 
 
 # --- Get Data ---
@@ -753,6 +817,47 @@ async def get_item(name: str) -> Item:
     )
 
     return item
+
+
+async def get_all_items() -> Tuple[Item]:
+    """Gets all items from the table "items".
+
+    Returns
+    -------
+    Tuple[Item]
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no dungeons were found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'items'
+    function_name = 'get_all_items'
+    sql = f'SELECT * FROM {table} ORDER BY name ASC'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No items found in database.')
+    items = []
+    for record in records:
+        item = await _dict_to_item(dict(record))
+        items.append(item)
+
+    return tuple(items)
 
 
 # Get tt unlocks

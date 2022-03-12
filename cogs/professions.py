@@ -1,6 +1,7 @@
 # professions.py
 
 import asyncio
+from decimal import Decimal, ROUND_HALF_UP
 from math import ceil
 
 import discord
@@ -76,13 +77,14 @@ class ProfessionsCog(commands.Cog):
         profession: Option(str, 'The profession you want to calculate for. Reads from EPIC RPG if empty.',
                            choices=strings.PROFESSIONS, default=None),
         from_level: Option(int, 'The profession level you want to calculate from. Reads from EPIC RPG if empty.',
-                           min_value = 2, max_value = 200, default=None),
+                           min_value = 1, max_value = 200, default=None),
         to_level: Option(int, 'The profession level you want to calculate a total for. Uses 100 if empty.',
                          min_value = 2, max_value = 200, default=100),
     ) -> None:
-        """Calculates what you need to level up your professions"""
+        """Professions calculator"""
         current_xp = 0
-        needed_xp = output_total = None
+        from_level_defined = False if from_level is None else True
+        output_total = None
         if profession is None or from_level is None:
             command = f'rpg pr {profession}' if profession is not None else 'rpg pr [profession]'
             bot_message_task = asyncio.ensure_future(functions.wait_for_profession_message(self.bot, ctx))
@@ -130,7 +132,7 @@ class ProfessionsCog(commands.Cog):
                 'lootboxer': 'filled lootbox',
                 'worker': 'banana pickaxe',
             }
-            xp = needed_xp - current_xp if needed_xp is not None else profession_data.xp[next_level]
+            xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
             item_total = item_amount = ceil(xp / 100)
             item_total_wb = item_amount_wb = ceil(xp / 110)
             xp_rest = 100 - (xp % 100)
@@ -209,7 +211,7 @@ class ProfessionsCog(commands.Cog):
                 )
 
         if profession == 'merchant':
-            xp = needed_xp - current_xp if needed_xp is not None else profession_data.xp[next_level]
+            xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
             item_total = item_amount = xp * 5
             item_total_wb = item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
 
@@ -260,15 +262,68 @@ class ProfessionsCog(commands.Cog):
                 )
 
         if profession == 'crafter':
-            xp = needed_xp - current_xp if needed_xp is not None else profession_data.xp[next_level]
-            item_total = item_amount = xp
-            item_total_wb = item_amount_wb = ceil(item_amount / 1.1)
+            returned_percentages = {
+                101: 0.12,
+                102: 0.1283,
+                103: 0.1346,
+                104: 0.14,
+                105: 0.1447,
+                106: 0.149,
+                107: 0.1529,
+            }
+            async def calculate_logs(item_amount: int, returned_percentage: float, level: int) -> int:
+                """Calculates how many logs it needs for a certain amount of epic logs"""
+                base_log_amount_upper = 100_000_000_000
+                base_log_amount_lower = 0
+                while True:
+                    base_log_amount = log_amount = (base_log_amount_lower + base_log_amount_upper) // 2
+                    epic_log_amount = epic_log_amount_total = xp_total = 0
+                    while True:
+                        epic_log_amount, log_rest = divmod(log_amount, 25)
+                        epic_log_amount_total += epic_log_amount
+                        xp_total += epic_log_amount * 2
+                        if level >= 100:
+                            returned_amount = functions.round_school(epic_log_amount * 25 * 0.8 * returned_percentage)
+                            if returned_amount == 0: returned_amount = 1
+                            log_rest += returned_amount
+                        log_amount = log_rest + epic_log_amount * 20
+                        if log_amount < 25: break
+                    if (item_amount-1) <= xp_total <= (item_amount+1):
+                        break
+                    elif xp_total < item_amount:
+                        base_log_amount_lower = base_log_amount - 1
+                    elif xp_total > item_amount:
+                        base_log_amount_upper = base_log_amount + 1
+                return base_log_amount
 
-            output = (
-                f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {emojis.LOG_EPIC} '
-                f'(if world buff: **{item_amount_wb:,}**)'
+            xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
+
+            how_to_level = (
+                f'{emojis.BP} Repeatedly craft & dismantle {emojis.LOG_EPIC} EPIC logs.\n'
+                f'{emojis.BP} Due to the chance to get logs back, you should craft in batches.\n'
+                f'{emojis.BLANK} The smaller the batches, the lower the overall risk.'
             )
 
+            returned_percentage = returned_percentages[from_level] if from_level > 100 else 0.1
+            try:
+                log_amount = await asyncio.wait_for(calculate_logs(xp, returned_percentage, from_level),
+                                                    timeout=5.0)
+            except asyncio.TimeoutError:
+                await ctx.respond('Welp, something took to long here, calculation cancelled.')
+                return
+            log_amount_total = log_amount
+            log_amount_wb = ceil(log_amount / 1.1)
+            log_amount_total_wb = log_amount_wb
+            if (from_level) < 100:
+                crafter_procc = f'Assuming you get **no** logs back when crafting'
+            else:
+                crafter_procc = (
+                    f'Assuming you get {returned_percentage*100:,.2f}% of your logs back 80% of the time'
+                )
+            output = (
+                f'{emojis.BP} Level {from_level} to {next_level}: '
+                f'**{log_amount:,}** {emojis.LOG} (if world buff: **{log_amount_wb:,}**)'
+            )
             current_level = next_level
             for x in range(6):
                 current_level += 1
@@ -278,39 +333,63 @@ class ProfessionsCog(commands.Cog):
                         f'{output}\n{emojis.BP} Level {current_level}+: No data yet'
                     )
                     break
-                item_amount = level_xp
-                item_amount_wb = ceil((item_amount / 1.1))
+                returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
+                if (current_level - 1) < 100:
+                    crafter_procc = f'Assuming you get **no** logs back when crafting'
+                else:
+                    crafter_procc = (
+                        f'Assuming you get {returned_percentage*100:,.2f}% of your logs back 80% of the time'
+                    )
+                try:
+                    log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
+                                                                    current_level-1), timeout=5.0)
+                except asyncio.TimeoutError:
+                    await ctx.respond('Welp, something took to long here, calculation cancelled.')
+                    return
+                log_amount_wb = ceil(log_amount / 1.1)
                 output = (
                     f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                    f'**{item_amount:,}** {emojis.LOG_EPIC} (if world buff: **{item_amount_wb:,}**)'
+                    f'**{log_amount:,}** {emojis.LOG} (if world buff: **{log_amount_wb:,}**)'
                 )
+                item_amount = level_xp
 
             if from_level < to_level:
                 for current_level in range(from_level + 2, to_level + 1):
                     level_xp = profession_data.xp[current_level]
+                    returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                     if level_xp is None:
                         output_total = (
                             f'{emojis.BP} Not enough data yet.\n'
                             f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
                         )
                         break
-                    item_amount = level_xp
-                    item_amount_wb = ceil((item_amount / 1.1))
-                    item_total = item_total + item_amount
-                    item_total_wb = item_total_wb + item_amount_wb
+                    try:
+                        log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
+                                                                        current_level-1), timeout=5.0)
+                    except asyncio.TimeoutError:
+                        await ctx.respond('Welp, something took to long here, calculation cancelled.')
+                        return
+                    log_amount_wb = ceil(log_amount / 1.1)
+                    log_amount_total += log_amount
+                    log_amount_total_wb += log_amount_wb
 
                 if output_total is None:
                     output_total = (
-                        f'{emojis.BP} **{item_total:,}** {emojis.LOG_EPIC} without world buff\n'
-                        f'{emojis.BP} **{item_total_wb:,}** {emojis.LOG_EPIC} with world buff'
-                    )
+                        f'{emojis.BP} ~**{log_amount_total:,}** {emojis.LOG} without world buff\n'
+                        f'{emojis.BP} ~**{log_amount_total_wb:,}** {emojis.LOG} with world buff\n'
 
-            embed.add_field(name='HOW TO LEVEL', value=f'{emojis.BP} Craft {emojis.LOG_EPIC} EPIC logs')
+                    )
+            note = (
+                f'{emojis.BP} Levels 1-99 assume you get **no** logs back!\n'
+                f'{emojis.BP} Levels 100+ include the crafter bonus\n'
+            )
+            embed.add_field(name='HOW TO LEVEL', value=how_to_level)
             embed.add_field(name='NEXT LEVELS', value=output, inline=False)
             if output_total is not None:
                 embed.add_field(
                     name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
+            embed.add_field(name='NOTE', value=note, inline=False)
 
         await ctx.respond(embed=embed)
 

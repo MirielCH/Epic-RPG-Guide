@@ -206,6 +206,7 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
     creator = f'{emojis.BP} Miriel#0001'
     thanks = (
         f'{emojis.BP} FlyingPanda#0328\n'
+        f'{emojis.BP} r5#2253\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )
     privacy = (

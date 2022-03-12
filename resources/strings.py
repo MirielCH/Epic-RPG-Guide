@@ -14,7 +14,7 @@ DEFAULT_FOOTER = 'Use /guide to see all available guides.'
 
 ARGUMENT_TOPIC_DESCRIPTION = 'The topic you want to read about'
 
-item_aliases = {
+ITEM_ALIASES = {
     'ed sw': 'edgy sword',
     'edgy sw': 'edgy sword',
     'omega sw': 'omega sword',
@@ -303,3 +303,17 @@ PROFESSIONS = (
     'merchant',
     'worker',
 )
+
+
+NUMBERS_ROMAN_INTEGER = {
+    'ix': 1,
+    'ii': 2,
+    'iii': 3,
+    'iv': 4,
+    'v': 5,
+    'vi': 6,
+    'vii': 7,
+    'viii': 8,
+    'ix': 9,
+    'x': 10,
+}
