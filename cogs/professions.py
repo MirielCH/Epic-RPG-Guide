@@ -1,7 +1,6 @@
 # professions.py
 
 import asyncio
-from decimal import Decimal, ROUND_HALF_UP
 from math import ceil
 
 import discord
@@ -33,8 +32,8 @@ TOPICS = [
 ]
 
 
-# profession commands (cog)
 class ProfessionsCog(commands.Cog):
+    """Cog with profession commands"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -311,12 +310,6 @@ class ProfessionsCog(commands.Cog):
             log_amount_total = log_amount
             log_amount_wb = ceil(log_amount / 1.1)
             log_amount_total_wb = log_amount_wb
-            if (from_level) < 100:
-                crafter_procc = f'Assuming you get **no** logs back when crafting'
-            else:
-                crafter_procc = (
-                    f'Assuming you get {returned_percentage*100:,.2f}% of your logs back 80% of the time'
-                )
             output = (
                 f'{emojis.BP} Level {from_level} to {next_level}: '
                 f'~**{log_amount:,}** {emojis.LOG} (if world buff: ~**{log_amount_wb:,}**)'
@@ -331,12 +324,6 @@ class ProfessionsCog(commands.Cog):
                     )
                     break
                 returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
-                if (current_level - 1) < 100:
-                    crafter_procc = f'Assuming you get **no** logs back when crafting'
-                else:
-                    crafter_procc = (
-                        f'Assuming you get {returned_percentage*100:,.2f}% of your logs back 80% of the time'
-                    )
                 try:
                     log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
                                                                     current_level-1), timeout=5.0)

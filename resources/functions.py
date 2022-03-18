@@ -1,5 +1,6 @@
 # functions.py
 
+from argparse import ArgumentError
 import asyncio
 import re
 from typing import Callable, List, Union, Tuple
@@ -239,10 +240,16 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
             except asyncio.CancelledError:
                 pass
     if view.value in ('abort','timeout'):
-        await interaction.edit_original_message(content=strings.MSG_ABORTED, view=None)
+        if isinstance(interaction, discord.WebhookMessage):
+            await interaction.edit(content=strings.MSG_ABORTED, view=None)
+        else:
+            await interaction.edit_original_message(content=strings.MSG_ABORTED, view=None)
     elif view.value is None:
         view.stop()
-        asyncio.ensure_future(interaction.edit_original_message(view=None))
+        if isinstance(interaction, discord.WebhookMessage):
+            asyncio.ensure_future(interaction.edit(view=None))
+        else:
+            asyncio.ensure_future(interaction.edit_original_message(view=None))
     bot_message = None
     if bot_message_task.done():
         try:
@@ -265,6 +272,27 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
             embed_author = format_string(str(message.embeds[0].author))
             field2 = message.embeds[0].fields[1]
             if f'{ctx_author}\'s professions' in embed_author and 'about this profession' in field2.name.lower():
+                correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the profession overview embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            description = message.embeds[0].description
+            if (f'{ctx_author}\'s professions' in embed_author
+                and 'more information about a profession' in description.lower()):
                 correct_message = True
         except:
             pass
@@ -374,6 +402,45 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
             raise ValueError(error)
 
         return (profession_found, level, current_xp, needed_xp)
+
+
+async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationContext,
+                                                      bot_message: discord.Message, profession: str) -> Tuple[str, int]:
+        """Extracts the level for a profession from a profession embed.
+
+        Arguments
+        ---------
+        ctx: Context.
+        bot_message: Message the data is extracted from.
+        profession: Name of the profession you want the level for.
+
+        Returns
+        -------
+        Tuple[
+            Profession name: str,
+            level: int,
+        ]
+
+        Raises
+        ------
+        ValueError if something goes wrong during extraction.
+        ArgumentError if the desired profession wasn't found.
+        Also logs the errors to the database.
+        """
+        profession = profession.lower()
+        if profession not in strings.PROFESSIONS:
+            raise ArgumentError(f'Profession {profession} is not a valid profession.')
+        fields = bot_message.embeds[0].fields
+        for field in fields:
+            if profession in field.name.lower():
+                try:
+                    level = re.search('lv (.+?) \|', field.name.lower()).group(1)
+                    level = int(level)
+                except Exception as error:
+                    await database.log_error(error, ctx)
+                    raise ValueError(error)
+                break
+        return (profession, level)
 
 
 async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,

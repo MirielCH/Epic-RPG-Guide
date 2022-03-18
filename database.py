@@ -190,6 +190,19 @@ class Monster(NamedTuple):
     name: str
 
 
+class Horse(NamedTuple):
+    """Container for horse data"""
+    def_level_bonus: float
+    festive_level_bonus: float
+    magic_level_bonus: float
+    golden_level_bonus: float
+    special_level_bonus: float
+    strong_level_bonus: float
+    super_special_level_bonus: float
+    tank_level_bonus: float
+    tier: int
+
+
 class OracleAnswer(NamedTuple):
     """Container for oracle answers"""
     answer: str
@@ -748,6 +761,50 @@ async def get_time_travel(tt_no: int) -> TimeTravel:
     )
 
     return tt
+
+
+async def get_horse(tier: int) -> Horse:
+    """Returns a record from table "horses".
+
+    Returns:
+       Horse object.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    table = 'horses'
+    function_name = 'get_horse'
+    sql = f'SELECT * FROM {table} WHERE tier=?'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (tier,))
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound(f'No data for horse tier {tier} found in database.')
+    record = dict(record)
+    horse_data = Horse(
+        def_level_bonus = record['def_level_bonus'],
+        festive_level_bonus = record['festive_level_bonus'],
+        magic_level_bonus = record['magic_level_bonus'],
+        golden_level_bonus = record['golden_level_bonus'],
+        special_level_bonus = record['special_level_bonus'],
+        strong_level_bonus = record['strong_level_bonus'],
+        super_special_level_bonus = record['super_special_level_bonus'],
+        tank_level_bonus = record['tank_level_bonus'],
+        tier = record['tier'],
+    )
+
+    return horse_data
 
 
 # Get mats data for the needed mats of area 3 and 5
