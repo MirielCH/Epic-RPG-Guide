@@ -183,7 +183,10 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} `/invite` : Invite Epic RPG Guide to your server\n'
         f'{emojis.BP} `/support` : Visit the support server\n'
     )
-    field_settings = f'{emojis.BP} `/set progress` : Set your progress to get fitting guides\n'
+    settings = (
+        f'{emojis.BP} `/settings` : View your current settings\n'
+        f'{emojis.BP} `/set progress` : Set your progress to get fitting guides\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'EPIC RPG GUIDE: ALL GUIDES',
@@ -196,7 +199,7 @@ async def embed_help_guides() -> discord.Embed:
     embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
-    embed.add_field(name='SETTINGS', value=field_settings, inline=False)
+    embed.add_field(name='SETTINGS', value=settings, inline=False)
     return embed
 
 
@@ -205,6 +208,9 @@ async def embed_help_calculators() -> discord.Embed:
     checks = (
         f'{emojis.BP} `/area check` : Check if you\'re ready for an area\n'
         f'{emojis.BP} `/dungeon check` : Check if you\'re ready for a dungeon\n'
+    )
+    coincap = (
+        f'{emojis.BP} `/coincap calculator` : Calculate the coin cap for a TT/area\n'
     )
     crafting = (
         f'{emojis.BP} `/craft` : Recipes mats calculator\n'
@@ -233,9 +239,10 @@ async def embed_help_calculators() -> discord.Embed:
         title = 'EPIC RPG GUIDE: CALCULATORS',
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.add_field(name='COIN CAP', value=coincap, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
-    embed.add_field(name='DROPCHANCE', value=drop_chance, inline=False)
+    embed.add_field(name='DROP CHANCE', value=drop_chance, inline=False)
     embed.add_field(name='HORSE', value=horse, inline=False)
     embed.add_field(name='PETS', value=pet, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions, inline=False)

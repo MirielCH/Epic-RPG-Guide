@@ -45,6 +45,10 @@ async def on_error(event: str, *args, **kwargs) -> None:
         await database.log_error(f'Got an error in event {event}:\nError: {error[1]}\nTraceback: {traceback_str}')
         await message.channel.send(embed=embed)
     else:
+        try:
+            message, = args
+        except:
+            return
         embed = discord.Embed(title='An error occured')
         error = sys.exc_info()
         traceback_str = "".join(traceback.format_tb(error[2]))
@@ -69,6 +73,7 @@ COG_EXTENSIONS = [
     'cogs.crafting',
     'cogs.dev',
     'cogs.dev_old',
+    'cogs.duel',
     'cogs.dungeons',
     'cogs.enchanting',
     'cogs.events',
@@ -85,6 +90,7 @@ COG_EXTENSIONS = [
     'cogs.main',
     'cogs.main_old',
     'cogs.misc',
+    'cogs.misc_old',
     'cogs.monsters',
     'cogs.monsters_old',
     'cogs.pets',
@@ -95,6 +101,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.titles_old',
     'cogs.trading',
+    'cogs.ultraining',
 ]
 
 if __name__ == '__main__':

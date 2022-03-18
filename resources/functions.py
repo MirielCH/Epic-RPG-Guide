@@ -328,8 +328,26 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            field2 = message.embeds[0].fields[1]
             if f'{ctx_author}\'s horse' in embed_author:
+                correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+async def wait_for_profile_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the profile embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            if f'{ctx_author}\'s profile' in embed_author:
                 correct_message = True
         except:
             pass
@@ -348,7 +366,6 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            field2 = message.embeds[0].fields[1]
             if f'{ctx_author}\'s inventory' in embed_author:
                 correct_message = True
         except:
@@ -364,146 +381,180 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
 # Extract values from game embeds
 async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
                                              bot_message: discord.Message) -> Tuple[str, int, int, int]:
-        """Extracts profession name and level from a profession embed.
+    """Extracts profession name and level from a profession embed.
 
-        Arguments
-        ---------
-        ctx: Context.
-        bot_message: Message the data is extracted from.
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
 
-        Returns
-        -------
-        Tuple[
-            Profession name: str,
-            level: int,
-            current xp: int,
-            xp needed for next level: int
-        ]
+    Returns
+    -------
+    Tuple[
+        Profession name: str,
+        level: int,
+        current xp: int,
+        xp needed for next level: int
+    ]
 
-        Raises
-        ------
-        ValueError if something goes wrong during extraction.
-        Also logs the errors to the database.
-        """
-        pr_field = bot_message.embeds[0].fields[0]
-        profession_found = None
-        for profession in strings.PROFESSIONS:
-            if profession in pr_field.name.lower():
-                profession_found = profession
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    pr_field = bot_message.embeds[0].fields[0]
+    profession_found = None
+    for profession in strings.PROFESSIONS:
+        if profession in pr_field.name.lower():
+            profession_found = profession
 
-        level_search = re.search('level\*\*: (.+?) \(', pr_field.value.lower())
-        xp_search = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
-        try:
-            level = int(level_search.group(1))
-            current_xp = int(xp_search.group(1).replace(',',''))
-            needed_xp = int(xp_search.group(2).replace(',',''))
-        except Exception as error:
-            await database.log_error(error, ctx)
-            raise ValueError(error)
+    level_search = re.search('level\*\*: (.+?) \(', pr_field.value.lower())
+    xp_search = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
+    try:
+        level = int(level_search.group(1))
+        current_xp = int(xp_search.group(1).replace(',',''))
+        needed_xp = int(xp_search.group(2).replace(',',''))
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise ValueError(error)
 
-        return (profession_found, level, current_xp, needed_xp)
+    return (profession_found, level, current_xp, needed_xp)
 
 
 async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationContext,
                                                       bot_message: discord.Message, profession: str) -> Tuple[str, int]:
-        """Extracts the level for a profession from a profession embed.
+    """Extracts the level for a profession from a profession embed.
 
-        Arguments
-        ---------
-        ctx: Context.
-        bot_message: Message the data is extracted from.
-        profession: Name of the profession you want the level for.
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+    profession: Name of the profession you want the level for.
 
-        Returns
-        -------
-        Tuple[
-            Profession name: str,
-            level: int,
-        ]
+    Returns
+    -------
+    Tuple[
+        Profession name: str,
+        level: int,
+    ]
 
-        Raises
-        ------
-        ValueError if something goes wrong during extraction.
-        ArgumentError if the desired profession wasn't found.
-        Also logs the errors to the database.
-        """
-        profession = profession.lower()
-        if profession not in strings.PROFESSIONS:
-            raise ArgumentError(f'Profession {profession} is not a valid profession.')
-        fields = bot_message.embeds[0].fields
-        for field in fields:
-            if profession in field.name.lower():
-                try:
-                    level = re.search('lv (.+?) \|', field.name.lower()).group(1)
-                    level = int(level)
-                except Exception as error:
-                    await database.log_error(error, ctx)
-                    raise ValueError(error)
-                break
-        return (profession, level)
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    ArgumentError if the desired profession wasn't found.
+    Also logs the errors to the database.
+    """
+    profession = profession.lower()
+    if profession not in strings.PROFESSIONS:
+        raise ArgumentError(f'Profession {profession} is not a valid profession.')
+    fields = bot_message.embeds[0].fields
+    for field in fields:
+        if profession in field.name.lower():
+            try:
+                level = re.search('lv (.+?) \|', field.name.lower()).group(1)
+                level = int(level)
+            except Exception as error:
+                await database.log_error(error, ctx)
+                raise ValueError(error)
+            break
+    return (profession, level)
 
 
 async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
                                                 bot_message: discord.Message) -> str:
-        """Extracts monster name from the world embed.
+    """Extracts monster name from the world embed.
 
-        Arguments
-        ---------
-        ctx: Context.
-        bot_message: Message the data is extracted from.
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
 
-        Returns
-        -------
-        monster name: str
+    Returns
+    -------
+    monster name: str
 
-        Raises
-        ------
-        ValueError if something goes wrong during extraction.
-        Also logs the errors to the database.
-        """
-        mob_field = bot_message.embeds[0].fields[1]
-        name_search = re.search('> \*\*(.+?)\*\*', mob_field.value.lower())
-        try:
-            mob_name = name_search.group(1)
-        except Exception as error:
-            await database.log_error(error, ctx)
-            raise ValueError(error)
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    mob_field = bot_message.embeds[0].fields[1]
+    name_search = re.search('> \*\*(.+?)\*\*', mob_field.value.lower())
+    try:
+        mob_name = name_search.group(1)
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise ValueError(error)
 
-        return mob_name
+    return mob_name
 
 
 async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
                                               bot_message: discord.Message) -> Tuple[int, int]:
-        """Extracts horse tier and level from a horse embed.
+    """Extracts horse tier and level from a horse embed.
 
-        Arguments
-        ---------
-        ctx: Context.
-        bot_message: Message the data is extracted from.
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
 
-        Returns
-        -------
-        Tuple[
-            horse tier: int,
-            horse level: int
-        ]
+    Returns
+    -------
+    Tuple[
+        horse tier: int,
+        horse level: int
+    ]
 
-        Raises
-        ------
-        ValueError if something goes wrong during extraction.
-        Also logs the errors to the database.
-        """
-        data_field = bot_message.embeds[0].fields[0]
-        tier_search = re.search('tier\*\* - (.+?) <', data_field.value.lower())
-        level_search = re.search('level\*\* - (.+?) \(', data_field.value.lower())
-        if level_search is None:
-            level_search = re.search('level\*\* - (.+?)\\n', data_field.value.lower())
-        try:
-            tier = tier_search.group(1)
-            tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
-            level = int(level_search.group(1))
-        except Exception as error:
-            await database.log_error(error, ctx)
-            raise ValueError(error)
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    data_field = bot_message.embeds[0].fields[0]
+    tier_search = re.search('tier\*\* - (.+?) <', data_field.value.lower())
+    level_search = re.search('level\*\* - (.+?) \(', data_field.value.lower())
+    if level_search is None:
+        level_search = re.search('level\*\* - (.+?)\\n', data_field.value.lower())
+    try:
+        tier = tier_search.group(1)
+        tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
+        level = int(level_search.group(1))
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise ValueError(error)
 
-        return (tier, level)
+    return (tier, level)
+
+
+async def extract_progress_data_from_profile_embed(ctx: discord.ApplicationContext,
+                                                       bot_message: discord.Message) -> Tuple[int, int]:
+    """Extracts tt and max area from a profile embed.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    Tuple[
+        current tt: int,
+        max area: int
+    ]
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    progress_field = bot_message.embeds[0].fields[0]
+    tt_search = re.search('time travels\*\*: (.+?)$', progress_field.value.lower())
+    area_search = re.search('max: (.+?)\)', progress_field.value.lower())
+    try:
+        tt = int(tt_search.group(1)) if tt_search is not None else 0
+        area = int(area_search.group(1))
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise ValueError(error)
+
+    return (tt, area)

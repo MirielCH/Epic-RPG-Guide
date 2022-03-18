@@ -209,6 +209,19 @@ class OracleAnswer(NamedTuple):
     image_url: str
 
 
+class Code(NamedTuple):
+    """Container for codes"""
+    code: str
+    contents: str
+    temporary: bool
+
+
+class Tip(NamedTuple):
+    """Container for tips"""
+    id: int
+    tip: str
+
+
 @dataclass
 class User():
     """Container for user data"""
@@ -1042,25 +1055,51 @@ async def get_profession_levels(ctx, profession, levelrange):
 
     return profession_levels
 
-# Get random tip
-async def get_tip(ctx, id=0):
 
+async def get_tip(id: Optional[int] = None) -> Tip:
+    """Get a tip. If no id is given, this returns a random tip.
+
+    Returns
+    -------
+    Tip object
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no answer was found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'tips'
+    function_name = 'get_tip'
+    if id is None:
+        sql = f'SELECT * FROM {table} ORDER BY RANDOM() LIMIT 1'
+    else:
+        sql = f'SELECT * FROM {table} WHERE id = ?'
     try:
-        cur=ERG_DB.cursor()
-        if id > 0:
-            cur.execute('SELECT tip FROM tips WHERE id=?',(id,))
-            record = cur.fetchone()
-        elif id == 0:
-            cur.execute('SELECT tip FROM tips ORDER BY RANDOM() LIMIT 1')
-            record = cur.fetchone()
-
-        if record:
-            tip = record
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        if id is None:
+            cur.execute(sql)
         else:
-            tip = ('There is no tip with that ID.',)
+            cur.execute(sql, (id,))
+        record = cur.fetchone()
     except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No tip found in database.')
+
+    tip = Tip(
+        id = record['id'],
+        tip = record['tip'],
+    )
 
     return tip
 
@@ -1155,6 +1194,41 @@ async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
     )
 
     return pet_tier
+
+
+async def get_all_codes() -> Tuple[Code]:
+    """Returns all codes from table "codes".
+
+    Returns:
+        Tuple with Code objects
+
+    Raises:
+        NoDataFoundError if there are no settings stored.
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'codes'
+    function_name = 'get_all_codes'
+    sql = f'SELECT * FROM {table}'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    codes = []
+    for record in records:
+        code = Code(
+            code = record['code'],
+            contents = record['contents'],
+            temporary = bool(record['temporary'])
+        )
+        codes.append(code)
+
+    return tuple(codes)
 
 
 # Get redeemable codes
