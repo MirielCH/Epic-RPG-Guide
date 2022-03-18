@@ -9,7 +9,7 @@ from resources import functions
 
 
 # Guild commands (cog)
-class guildCog(commands.Cog):
+class GuildOldCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -121,7 +121,7 @@ class guildCog(commands.Cog):
 
 # Initialization
 def setup(bot):
-    bot.add_cog(guildCog(bot))
+    bot.add_cog(GuildOldCog(bot))
 
 
 # --- Redundancies ---
