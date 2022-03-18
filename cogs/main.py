@@ -5,11 +5,20 @@ import aiohttp
 from datetime import datetime
 
 import discord
+from discord.commands import slash_command, Option
 from discord.ext import commands, tasks
 
 import database
-from resources import emojis
-from resources import logs, settings
+from resources import emojis, logs, settings, strings, views
+
+
+TOPIC_GUIDES = 'Guides'
+TOPIC_CALCULATORS = 'Calculators'
+
+TOPICS = [
+    TOPIC_GUIDES,
+    TOPIC_CALCULATORS,
+]
 
 
 class MainCog(commands.Cog):
@@ -79,8 +88,6 @@ class MainCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Fires when bot has finished starting"""
-        #DiscordComponents(bot)
-
         startup_info = f'{self.bot.user.name} has connected to Discord!'
         print(startup_info)
         logs.logger.info(startup_info)
@@ -103,88 +110,145 @@ class MainCog(commands.Cog):
         except:
             return
 
+    # Commands
+    @slash_command(description='Main help command')
+    async def help(self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                           choices=TOPICS, default=TOPIC_GUIDES),
+    ) -> None:
+        """Main help command"""
+        topics_functions = {
+            TOPIC_GUIDES: embed_help_guides,
+            TOPIC_CALCULATORS: embed_help_calculators,
+        }
+        view = views.TopicView(ctx, topics_functions, active_topic=topic)
+        embed = await topics_functions[topic]()
+        interaction = await ctx.respond(embed=embed, view=view)
+        view.interaction = interaction
+        await view.wait()
+        await interaction.edit_original_message(view=None)
+
+    @slash_command(description='Some bot stats')
+    async def about(self, ctx: discord.ApplicationContext) -> None:
+        """About command"""
+        start_time = datetime.utcnow()
+        interaction = await ctx.respond('Testing API latency...')
+        end_time = datetime.utcnow()
+        api_latency = end_time - start_time
+        embed = await embed_about(self.bot, ctx, api_latency)
+        await interaction.edit_original_message(content=None, embed=embed)
+
 # Initialization
 def setup(bot):
     bot.add_cog(MainCog(bot))
 
 
 # --- Embeds ---
-async def embed_main_help(ctx: commands.Context) -> discord.Embed:
+async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
-    prefix = ctx.prefix
-    seasonal_event = f'{emojis.BP} `{prefix}love` : Valentine event guide\n'
-    progress = (
-        f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
-        f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
-        f'{emojis.BP} `{prefix}dungeons` / `{prefix}d` : Dungeon guides overview\n'
-        f'{emojis.BP} `{prefix}timetravel` / `{prefix}tt` : Time travel guide\n'
-        f'{emojis.BP} `{prefix}coolness` : Everything known about {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} `{prefix}ultraining` / `{prefix}ultr` : Ultraining guide\n'
+    seasonal_event = f'{emojis.BP} `/valentine guide` : Valentine event guide\n'
+    guides = (
+        f'{emojis.BP} `/area guide`\n'
+        f'{emojis.BP} `/beginner guide`\n'
+        f'{emojis.BP} `/coolness guide`\n'
+        f'{emojis.BP} `/dungeon guide`\n'
+        f'{emojis.BP} `/enchanting guide`\n'
+        f'{emojis.BP} `/event guide`\n'
+        f'{emojis.BP} `/farming guide`\n'
+        f'{emojis.BP} `/gambling guide`\n'
+        f'{emojis.BP} `/guild guide`\n'
+        f'{emojis.BP} `/horse guide`\n'
+        f'{emojis.BP} `/pet guide`\n'
+        f'{emojis.BP} `/professions guide`\n'
+        f'{emojis.BP} `/timetravel guide`\n'
+        f'{emojis.BP} `/trade guide`\n'
+        f'{emojis.BP} `/ultraining guide`\n'
     )
-    crafting = (
-        f'{emojis.BP} `{prefix}craft` : Recipes mats calculator\n'
-        f'{emojis.BP} `{prefix}dismantle` / `{prefix}dm` : Dismantling calculator\n'
-        f'{emojis.BP} `{prefix}invcalc` / `{prefix}ic` : Inventory calculator\n'
-        f'{emojis.BP} `{prefix}drops` : Monster drops\n'
-        f'{emojis.BP} `{prefix}enchants` / `{prefix}e` : Enchants'
+    trade_rates = (
+        f'{emojis.BP} `/trade rates` : Overview of all trade rates\n'
     )
-    animals = (
-        f'{emojis.BP} `{prefix}horse` : Horse guide\n'
-        f'{emojis.BP} `{prefix}pet` : Pets guide\n'
-    )
-    trading = f'{emojis.BP} `{prefix}trading` : Trading guides overview'
-    professions_value = f'{emojis.BP} `{prefix}professions` / `{prefix}pr` : Professions guide'
-    guild_overview = f'{emojis.BP} `{prefix}guild` : Guild guide'
-    event_overview = f'{emojis.BP} `{prefix}events` : Event guides overview'
     monsters = (
-        f'{emojis.BP} `{prefix}mobs [area]` : List of all monsters in area [area]\n'
-        f'{emojis.BP} `{prefix}dailymob` : Where to find the daily monster'
+        f'{emojis.BP} `/monster drops` : Monster drops and where to find them\n'
+        f'{emojis.BP} `/monster search` : Look up monsters or the daily monster\n'
     )
-    gambling_overview = f'{emojis.BP} `{prefix}gambling` : Gambling guides overview'
+    achievements = f'{emojis.BP} `/title search` : Look up titles / achievements\n'
     misc = (
-        f'{emojis.BP} `{prefix}calc` : A basic calculator\n'
-        f'{emojis.BP} `{prefix}codes` : Redeemable codes\n'
-        f'{emojis.BP} `{prefix}duel` : Duelling weapons\n'
-        f'{emojis.BP} `{prefix}farm` : Farming guide\n'
-        f'{emojis.BP} `{prefix}returning` : Returning event guide\n'
-        f'{emojis.BP} `{prefix}tip` : A handy dandy random tip\n'
-        f'{emojis.BP} `{prefix}title` / `{prefix}t`  : Titles / Achievements\n'
+        f'{emojis.BP} `/ask the oracle` : A very useless command\n'
+        f'{emojis.BP} `/codes` : All current redeemable codes\n'
+        f'{emojis.BP} `/duel weapons` : What every weapon does in duels\n'
+        f'{emojis.BP} `/tip` : A handy dandy random tip\n'
     )
     botlinks = (
-        f'{emojis.BP} `{prefix}invite` : Invite me to your server\n'
-        f'{emojis.BP} `{prefix}support` : Visit the support server\n'
-        f'{emojis.BP} `{prefix}links` : EPIC RPG wiki & support'
+        f'{emojis.BP} `/invite` : Invite Epic RPG Guide to your server\n'
+        f'{emojis.BP} `/support` : Visit the support server\n'
     )
-    field_settings = (
-        f'{emojis.BP} `{prefix}settings` / `{prefix}me` : Check your user settings\n'
-        f'{emojis.BP} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
-        f'{emojis.BP} `{prefix}prefix` : Check/set the prefix'
-    )
+    field_settings = f'{emojis.BP} `/set progress` : Set your progress to get fitting guides\n'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'EPIC RPG GUIDE',
-        description = f'Hey **{ctx.author.name}**, what do you want to know?'
+        title = 'EPIC RPG GUIDE: ALL GUIDES',
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
     #embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
-    embed.add_field(name='PROGRESS', value=progress, inline=False)
-    embed.add_field(name='CRAFTING', value=crafting, inline=False)
-    embed.add_field(name='HORSE & PETS', value=animals, inline=False)
-    embed.add_field(name='TRADING', value=trading, inline=False)
-    embed.add_field(name='PROFESSIONS', value=professions_value, inline=False)
-    embed.add_field(name='GUILD', value=guild_overview, inline=False)
-    embed.add_field(name='EVENTS', value=event_overview, inline=False)
+    embed.add_field(name='GUIDES', value=guides, inline=False)
+    embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
-    embed.add_field(name='GAMBLING', value=gambling_overview, inline=False)
+    embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=field_settings, inline=False)
     return embed
 
 
-async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: datetime) -> discord.Embed:
+async def embed_help_calculators() -> discord.Embed:
+    """Main menu embed"""
+    checks = (
+        f'{emojis.BP} `/area check` : Check if you\'re ready for an area\n'
+        f'{emojis.BP} `/dungeon check` : Check if you\'re ready for a dungeon\n'
+    )
+    crafting = (
+        f'{emojis.BP} `/craft` : Recipes mats calculator\n'
+        f'{emojis.BP} `/dismantle` : Dismantling calculator\n'
+        f'{emojis.BP} `/invcalc` : Convert your inventory into one material\n'
+    )
+    timetravel = (
+        f'{emojis.BP} `/score calculator` : Calculate the STT score of your inventory\n'
+    )
+    horse = (
+        f'{emojis.BP} `/horse boost calculator` : Calculate horse boosts\n'
+        f'{emojis.BP} `/horse training calculator` : Calculate horse training cost\n'
+    )
+    pet = (
+        f'{emojis.BP} `/pet fuse` : See the recommended tiers for a pet fusion\n'
+    )
+    drop_chance = f'{emojis.BP} `/dropchance calculator` : Calculate your monster drop chance\n'
+    trading = f'{emojis.BP} `/trade calculator` : Calculate materials after trading'
+    professions = f'{emojis.BP} `/professions calculator` : Calculate what you need to level professions'
+    ultraining = f'{emojis.BP} `/ultraining calculator` : Calculate EPIC NPC damage in ultraining'
+    misc = (
+        f'{emojis.BP} `/calc` : A basic calculator\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'EPIC RPG GUIDE: CALCULATORS',
+    )
+    embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.add_field(name='CRAFTING', value=crafting, inline=False)
+    embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
+    embed.add_field(name='DROPCHANCE', value=drop_chance, inline=False)
+    embed.add_field(name='HORSE', value=horse, inline=False)
+    embed.add_field(name='PETS', value=pet, inline=False)
+    embed.add_field(name='PROFESSIONS', value=professions, inline=False)
+    embed.add_field(name='TIME TRAVEL', value=timetravel, inline=False)
+    embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='ULTRAINING', value=ultraining, inline=False)
+    embed.add_field(name='MISC', value=misc, inline=False)
+    return embed
+
+
+async def embed_about(bot: commands.Bot, ctx: discord.ApplicationContext, api_latency: datetime) -> discord.Embed:
     """Bot info embed"""
-    user_count, *_ = await database.get_user_number(ctx)
+    user_count = await database.get_user_count()
     closed_shards = 0
     for shard in bot.shards.values():
         if shard is not None:
@@ -195,7 +259,7 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
         f'{emojis.BP} {len(bot.guilds):,} servers\n'
         f'{emojis.BP} {user_count:,} users\n'
         f'{emojis.BP} {len(bot.shards):,} shards ({closed_shards:,} shards offline)\n'
-        f'{emojis.BP} {round(bot.latency * 1000):,} ms average latency'
+        f'{emojis.BP} {round(bot.latency * 1000):,} ms average bot latency\n'
     )
     current_shard = bot.get_shard(ctx.guild.shard_id)
     bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'

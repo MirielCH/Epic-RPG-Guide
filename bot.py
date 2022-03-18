@@ -13,7 +13,7 @@ from resources import settings, logs
 intents = discord.Intents.none()
 intents.guilds = True   # for on_guild_join(), bot.guilds and everything guild related
 intents.messages = True   # for the calculators that read the game
-intents.message_content = True   # for EPIC RPG reading and message commands
+intents.message_content = True   # for the calculators that read the game
 
 
 if settings.DEBUG_MODE:
@@ -95,7 +95,8 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.titles_old',
     'cogs.trading',
-    ]
+]
+
 if __name__ == '__main__':
     for extension in COG_EXTENSIONS:
         bot.load_extension(extension)

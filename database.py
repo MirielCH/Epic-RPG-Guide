@@ -1195,6 +1195,34 @@ async def get_user_number(ctx):
     return user_number
 
 
+async def get_user_count() -> int:
+    """Gets the amount of users in the table "users".
+
+    Returns
+    -------
+    Amount of users: int
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database. Also logs this error to the log file.
+    """
+    table = 'users'
+    function_name = 'get_user_count'
+    sql = f'SELECT COUNT(user_id) FROM {table}'
+    try:
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    (user_count,) = record
+
+    return user_count
+
+
 async def get_user(user_id: int) -> User:
     """Returns user settings from table "users".
     If none is found, a new record with the default settings TT0 and not ascended is
