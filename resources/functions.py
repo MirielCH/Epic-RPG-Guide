@@ -429,6 +429,8 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         data_field = bot_message.embeds[0].fields[0]
         tier_search = re.search('tier\*\* - (.+?) <', data_field.value.lower())
         level_search = re.search('level\*\* - (.+?) \(', data_field.value.lower())
+        if level_search is None:
+            level_search = re.search('level\*\* - (.+?)\\n', data_field.value.lower())
         try:
             tier = tier_search.group(1)
             tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])

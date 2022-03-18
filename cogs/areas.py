@@ -726,11 +726,32 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     # Area damage
     if area.adv_dmg[1] is not None and area.hunt_dmg[1] is not None:
+        hunt_dmg_min = area.hunt_dmg[0]
+        hunt_dmg_max = area.hunt_dmg[1]
+        hunt_dmg_min_hm = functions.round_school(hunt_dmg_min*1.7)
+        hunt_dmg_max_hm = functions.round_school(hunt_dmg_max*1.7)
+        adv_dmg_min = area.adv_dmg[0]
+        adv_dmg_max = area.adv_dmg[1]
+        adv_dmg_min_hm = functions.round_school(adv_dmg_min*1.7)
+        adv_dmg_max_hm = functions.round_school(adv_dmg_max*1.7)
+
+        if 16 <= area.area_no <= 20:
+            area_dmg = (
+                f'{emojis.BP} `hunt`: ~**{hunt_dmg_max:,}**, '
+                f'`hunt h`: ~**{hunt_dmg_max_hm:,}**\n'
+                f'{emojis.BP} `adv`: ~**{adv_dmg_max:,}**, '
+                f'`adv h`: ~**{adv_dmg_max_hm:,}**'
+            )
+        else:
+            area_dmg = (
+                f'{emojis.BP} `hunt`: **{hunt_dmg_min:,}**~**{hunt_dmg_max:,}**, '
+                f'`hunt h`: **{hunt_dmg_min_hm:,}**~**{hunt_dmg_max_hm:,}**\n'
+                f'{emojis.BP} `adv`: **{adv_dmg_min:,}**~**{adv_dmg_max:,}**, '
+                f'`adv h`: **{adv_dmg_min_hm:,}**~**{adv_dmg_max_hm:,}**'
+            )
         area_dmg = (
-            f'{emojis.BP} ~**{area.hunt_dmg[1]:,}** in `hunt`, '
-            f'~**{functions.round_school(area.hunt_dmg[1]*1.7):,}** in `hunt h`\n'
-            f'{emojis.BP} ~**{area.adv_dmg[1]:,}** in `adv`, '
-            f'~**{functions.round_school(area.adv_dmg[1]*1.7):,}** in `adv h`\n'
+            f'{area_dmg}\n'
+            f'{emojis.BLANK} Monster damage - (AT + DEF) = Actual damage'
         )
 
     # Lootboxes

@@ -165,10 +165,10 @@ class CraftingCog(commands.Cog):
         try:
             item: database.Item = await database.get_item(item_name)
         except database.NoDataFound:
-            await ctx.send(f'Uhm, I don\'t know an item called `{original_item_name}`, sorry.')
+            await ctx.respond(f'Uhm, I don\'t know an item called `{original_item_name}`, sorry.')
             return
         if not item.dismanteable:
-            await ctx.send(f'{item.emoji} `{item.name}` can not be dismantled.')
+            await ctx.respond(f'{item.emoji} `{item.name}` can not be dismantled.')
             return
         breakdown_totals = await get_item_breakdown(ctx, item, amount, dismantle=True)
         if amount == 1:
@@ -212,14 +212,14 @@ class CraftingCog(commands.Cog):
 
         if area.area_no in (1,2):
             response = (
-                f'{response}\n'
+                f'{response}\n\n'
                 f'Apples and rubies are included in the calculation as follows:\n'
                 f'{emojis.BP} 1 {emojis.APPLE} = 3 {emojis.LOG} = 3 {emojis.FISH} (trade value in A3)\n'
                 f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} = 225 {emojis.FISH}(trade value in A5)\n'
             )
         elif area.area_no in (3,4):
             response = (
-                f'{response}\n'
+                f'{response}\n\n'
                 f'Rubies are included in the calculation as follows:\n'
                 f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} = 225 {emojis.FISH} (trade value in A5)\n'
             )

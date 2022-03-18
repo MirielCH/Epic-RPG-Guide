@@ -50,11 +50,7 @@ class MainCog(commands.Cog):
             await ctx.respond(embed=embed, ephemeral=True)
 
         error = getattr(error, 'original', error)
-        if isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
-            return
-        elif isinstance(error, commands.DisabledCommand):
-            await ctx.respond(f'Command `{ctx.command.qualified_name}` is temporarily disabled.', ephemeral=True)
-        elif isinstance(error, commands.NoPrivateMessage):
+        if isinstance(error, commands.NoPrivateMessage):
             if ctx.guild_id is None:
                 await ctx.respond(
                     f'I\'m sorry, this command is not available in DMs because it needs to be able to read EPIC RPG.\n\n'
@@ -71,6 +67,11 @@ class MainCog(commands.Cog):
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
                                 commands.TooManyArguments, commands.BadArgument, commands.BotMissingPermissions)):
             await send_error()
+        elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.respond(
+                f'Yo hey, calm down, this is an oracle, not a spam box, wait another {error.retry_after:.1f}s, will ya.',
+                ephemeral=True
+            )
         else:
             await database.log_error(error, ctx)
             if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()

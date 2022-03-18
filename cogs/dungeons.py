@@ -947,7 +947,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
             f'{emojis.BLANK} `protect`\n'
             f'{emojis.BLANK} `invulnerability`\n'
             f'{emojis.BLANK} `healing spell`\n'
-            f'{emojis.BLANK} `protect` x8\n'
+            f'{emojis.BLANK} `protect` x7\n'
             f'{emojis.BP} Note: The defender will die before the boss does'
         )
     elif dungeon_no == 13:

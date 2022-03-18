@@ -3,6 +3,7 @@
 from aifc import Error
 from dataclasses import dataclass
 from datetime import datetime
+from email.mime import image
 import sqlite3
 from typing import NamedTuple, Optional, Tuple, Union
 
@@ -187,6 +188,12 @@ class Monster(NamedTuple):
     drop_name: str
     emoji: str
     name: str
+
+
+class OracleAnswer(NamedTuple):
+    """Container for oracle answers"""
+    answer: str
+    image_url: str
 
 
 @dataclass
@@ -860,6 +867,48 @@ async def get_all_items() -> Tuple[Item]:
     return tuple(items)
 
 
+async def get_oracle_answer() -> OracleAnswer:
+    """Get a random oracle answer
+
+    Returns
+    -------
+    OracleAnswer object
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    exceptions.NoDataFoundError if no answer was found.
+    LookupError if something goes wrong reading the dict.
+    Also logs all errors to the database.
+    """
+    table = 'oracle_answers'
+    function_name = 'get_oracle_answer'
+    sql = f'SELECT * FROM {table} ORDER BY RANDOM() LIMIT 1'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur = ERG_DB.cursor()
+        cur.execute(sql)
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+    if not record:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No oracle answer found in database.')
+
+    answer = OracleAnswer(
+        answer = record['answer'],
+        image_url = record['image_url'],
+    )
+
+    return answer
+
+
 # Get tt unlocks
 async def get_tt_unlocks(ctx, user_tt):
     try:
@@ -1008,8 +1057,10 @@ async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
         column = 'tt_41_60'
     elif 61 <= tt_no <= 90:
         column = 'tt_61_90'
+    elif 91 <= tt_no <= 120:
+        column = 'tt_91_120'
     else:
-        column = 'tt_91_plus'
+        column = 'tt_121_plus'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
@@ -1241,7 +1292,7 @@ async def get_all_monsters() -> Tuple[Monster]:
     """
     table = 'monsters'
     function_name = 'get_all_monsters'
-    sql = f'SELECT * FROM {table}'
+    sql = f'SELECT * FROM {table} ORDER BY name ASC'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur = ERG_DB.cursor()

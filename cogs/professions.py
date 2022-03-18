@@ -322,7 +322,7 @@ class ProfessionsCog(commands.Cog):
                 )
             output = (
                 f'{emojis.BP} Level {from_level} to {next_level}: '
-                f'**{log_amount:,}** {emojis.LOG} (if world buff: **{log_amount_wb:,}**)'
+                f'~**{log_amount:,}** {emojis.LOG} (if world buff: ~**{log_amount_wb:,}**)'
             )
             current_level = next_level
             for x in range(6):
@@ -349,20 +349,20 @@ class ProfessionsCog(commands.Cog):
                 log_amount_wb = ceil(log_amount / 1.1)
                 output = (
                     f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                    f'**{log_amount:,}** {emojis.LOG} (if world buff: **{log_amount_wb:,}**)'
+                    f'~**{log_amount:,}** {emojis.LOG} (if world buff: ~**{log_amount_wb:,}**)'
                 )
                 item_amount = level_xp
 
             if from_level < to_level:
                 for current_level in range(from_level + 2, to_level + 1):
                     level_xp = profession_data.xp[current_level]
-                    returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                     if level_xp is None:
                         output_total = (
                             f'{emojis.BP} Not enough data yet.\n'
                             f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
                         )
                         break
+                    returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                     try:
                         log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
                                                                         current_level-1), timeout=5.0)
@@ -389,7 +389,7 @@ class ProfessionsCog(commands.Cog):
                 embed.add_field(
                     name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
-            embed.add_field(name='NOTE', value=note, inline=False)
+            embed.add_field(name='NOTE', value=note)
 
         await ctx.respond(embed=embed)
 
