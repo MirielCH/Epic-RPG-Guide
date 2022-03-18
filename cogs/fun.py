@@ -18,7 +18,7 @@ class FunCog(commands.Cog):
 
     # Commands
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @cmd_the.command()
+    @cmd_the.command(description='Ask the oracle any yes/no question! Just don\'t expect a useful answer.')
     async def oracle(self, ctx: discord.ApplicationContext, question: str) -> None:
         """Ask the oracle (and get nonsense in return)"""
         if len(question) > 250:

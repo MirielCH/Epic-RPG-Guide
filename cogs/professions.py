@@ -21,7 +21,7 @@ TOPIC_MERCHANT = 'Merchant'
 TOPIC_OVERVIEW = 'Overview'
 TOPIC_WORKER = 'Worker'
 
-TOPICS = {
+TOPICS = [
         TOPIC_OVERVIEW,
         TOPIC_ASCENSION,
         TOPIC_LEVELING,
@@ -30,7 +30,7 @@ TOPICS = {
         TOPIC_LOOTBOXER,
         TOPIC_MERCHANT,
         TOPIC_WORKER,
-    }
+]
 
 
 # profession commands (cog)
@@ -38,10 +38,7 @@ class ProfessionsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_professions = SlashCommandGroup(
-        "professions",
-        "Profession commands",
-    )
+    cmd_professions = SlashCommandGroup("professions", "Profession commands")
 
     @cmd_professions.command(name='guide', description='All you need to know about professions')
     async def professions_guide(

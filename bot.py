@@ -76,6 +76,7 @@ COG_EXTENSIONS = [
     'cogs.fun',
     'cogs.guilds',
     'cogs.gambling',
+    'cogs.gambling_old',
     'cogs.horse',
     'cogs.links',
     'cogs.main',
