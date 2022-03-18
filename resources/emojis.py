@@ -135,6 +135,9 @@ SWORD_ZOMBIE = '<:zombiesword:770326606941913118>'
 # Event: Shared Items
 SLEEPY_POTION = '<:sleepypotion:782200523776458772>'
 
+# Event: Anniversary
+LB_ANNIVERSARY = '<:anniversarylootbox:819857587897368608>'
+
 # Event: Celebration
 COIN_CELEBRATION = '<:celebrationcoin:936912877791629312>'
 

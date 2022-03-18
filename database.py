@@ -898,8 +898,10 @@ async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
         column = 'tt_41_60'
     elif 61 <= tt_no <= 90:
         column = 'tt_61_90'
+    elif 91 <= tt_no <= 120:
+        column = 'tt_91_120'
     else:
-        column = 'tt_91_plus'
+        column = 'tt_121_plus'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
