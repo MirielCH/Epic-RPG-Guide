@@ -82,7 +82,13 @@ class DevCog(commands.Cog):
     @dev.command(name='sync-commands')
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:
         """Manually sync commands"""
-        await self.bot.sync_commands()
+        await ctx.defer()
+        if settings.DEBUG_MODE:
+            await self.bot.sync_commands(commands=[], guild_ids=settings.DEV_GUILDS)
+            await self.bot.sync_commands(guild_ids=settings.DEV_GUILDS)
+        else:
+            await self.bot.sync_commands(commands=[], force=False)
+            await self.bot.sync_commands(force=False)
         await ctx.respond('Done')
 
 

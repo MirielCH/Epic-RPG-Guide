@@ -178,6 +178,8 @@ class MiscCog(commands.Cog):
             return
 
     cmd_coincap = SlashCommandGroup("coincap", "Coincap commands")
+    @commands.bot_has_permissions(view_channel=True)
+    @commands.guild_only()
     @cmd_coincap.command(name='calculator', description='Calculate the coin cap for a TT/area')
     async def coincap_calculator(
         self,
@@ -207,6 +209,7 @@ class MiscCog(commands.Cog):
             f'**{coin_cap:,}** {emojis.COIN} coins.\n'
             f'You can not receive coins with `give`, `multidice` or `miniboss` if you would exceed this cap.'
         )
+
 
 # Initialization
 def setup(bot):
@@ -313,7 +316,7 @@ async def embed_coolness_guide() -> discord.Embed:
         f'{emojis.BP} `ultraining` awards 2 coolness per stage (see `/ultraining guide`)\n'
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
-        f'{emojis.BP} Get {emojis.LOG_HYPER} HYPER or {emojis.LOG_ULTRA} ULTRA logs from work commands\n'
+        f'{emojis.BP} Get HYPER, ULTRA or ULTIMATE logs from work commands\n'
         f'{emojis.BP} Forge ULTRA-EDGY or higher gear\n'
         f'{emojis.BP} Ascend a pet\n'
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
@@ -363,7 +366,6 @@ async def embed_farming_guide() -> discord.Embed:
         f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten (`rpg eat bread`)'
     )
-
     usage_carrot = (
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** '
         f'{emojis.CARROT}\n'

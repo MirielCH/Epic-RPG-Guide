@@ -469,7 +469,7 @@ async def embed_coolness(prefix):
         f'{emojis.BP} `ultraining` awards 2 coolness per stage (see `{prefix}ultr`)\n'
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
-        f'{emojis.BP} Get {emojis.LOG_HYPER} HYPER or {emojis.LOG_ULTRA} ULTRA logs from work commands\n'
+        f'{emojis.BP} Get HYPER, ULTRA or ULTIMATE logs from work commands\n'
         f'{emojis.BP} Forge ULTRA-EDGY or higher gear\n'
         f'{emojis.BP} Ascend a pet\n'
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'

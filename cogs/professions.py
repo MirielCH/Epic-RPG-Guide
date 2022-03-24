@@ -130,6 +130,7 @@ class ProfessionsCog(commands.Cog):
             }
             xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
             item_total = item_amount = ceil(xp / 100)
+            xp_total = xp
             item_total_wb = item_amount_wb = ceil(xp / 110)
             xp_rest = 100 - (xp % 100)
             xp_rest_wb = 110 - (xp % 110)
@@ -176,6 +177,7 @@ class ProfessionsCog(commands.Cog):
                             f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
                         )
                         break
+                    xp_total += level_xp
                     actual_xp = level_xp - xp_rest
                     actual_xp_wb = level_xp - xp_rest_wb
                     item_amount = ceil(actual_xp / 100)
@@ -192,23 +194,23 @@ class ProfessionsCog(commands.Cog):
                 if output_total is None:
                     output_total = (
                         f'{emojis.BP} **{item_total:,}** {food_emojis[profession]} without world buff\n'
-                        f'{emojis.BP} **{item_total_wb:,}** {food_emojis[profession]} with world buff'
+                        f'{emojis.BP} **{item_total_wb:,}** {food_emojis[profession]} with world buff\n'
+                        f'{emojis.BP} XP required: **{xp_total:,}**\n'
                     )
             embed.add_field(
                 name='HOW TO LEVEL',
                 value=f'{emojis.BP} Cook {food_emojis[profession]} {food_names[profession]}'
             )
-            embed.add_field(
-                name='NEXT LEVELS', value=output, inline=False
-            )
             if output_total is not None:
                 embed.add_field(
                     name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
+            embed.add_field(name='NEXT LEVELS', value=output, inline=False)
 
         if profession == 'merchant':
             xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
             item_total = item_amount = xp * 5
+            xp_total = xp
             item_total_wb = item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
 
             output = (
@@ -240,6 +242,7 @@ class ProfessionsCog(commands.Cog):
                             f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
                         )
                         break
+                    xp_total += level_xp
                     item_amount = level_xp * 5
                     item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
                     item_total = item_total + item_amount
@@ -248,14 +251,15 @@ class ProfessionsCog(commands.Cog):
                 if output_total is None:
                     output_total = (
                         f'{emojis.BP} **{item_total:,}** {emojis.LOG} without world buff\n'
-                        f'{emojis.BP} **{item_total_wb:,}** {emojis.LOG} with world buff'
+                        f'{emojis.BP} **{item_total_wb:,}** {emojis.LOG} with world buff\n'
+                        f'{emojis.BP} XP required: **{xp_total:,}**\n'
                     )
             embed.add_field(name='HOW TO LEVEL', value=f'{emojis.BP} Sell {emojis.LOG} wooden logs')
-            embed.add_field(name='NEXT LEVELS', value=output, inline=False)
             if output_total is not None:
                 embed.add_field(
                     name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
+            embed.add_field(name='NEXT LEVELS', value=output, inline=False)
 
         if profession == 'crafter':
             returned_percentages = {
@@ -273,22 +277,22 @@ class ProfessionsCog(commands.Cog):
                 base_log_amount_lower = 0
                 while True:
                     base_log_amount = log_amount = (base_log_amount_lower + base_log_amount_upper) // 2
-                    epic_log_amount = epic_log_amount_total = xp_total = 0
+                    epic_log_amount = epic_log_amount_total = xp_totals = 0
                     while True:
                         epic_log_amount, log_rest = divmod(log_amount, 25)
                         epic_log_amount_total += epic_log_amount
-                        xp_total += epic_log_amount * 2
+                        xp_totals += epic_log_amount * 2
                         if level >= 100:
                             returned_amount = functions.round_school(epic_log_amount * 25 * 0.8 * returned_percentage)
                             if returned_amount == 0: returned_amount = 1
                             log_rest += returned_amount
                         log_amount = log_rest + epic_log_amount * 20
                         if log_amount < 25: break
-                    if (item_amount-1) <= xp_total <= (item_amount+1):
+                    if (item_amount-1) <= xp_totals <= (item_amount+1):
                         break
-                    elif xp_total < item_amount:
+                    elif xp_totals < item_amount:
                         base_log_amount_lower = base_log_amount - 1
-                    elif xp_total > item_amount:
+                    elif xp_totals > item_amount:
                         base_log_amount_upper = base_log_amount + 1
                 return base_log_amount
 
@@ -303,11 +307,12 @@ class ProfessionsCog(commands.Cog):
             returned_percentage = returned_percentages[from_level] if from_level > 100 else 0.1
             try:
                 log_amount = await asyncio.wait_for(calculate_logs(xp, returned_percentage, from_level),
-                                                    timeout=5.0)
+                                                    timeout=3.0)
             except asyncio.TimeoutError:
                 await ctx.respond('Welp, something took to long here, calculation cancelled.')
                 return
             log_amount_total = log_amount
+            xp_total = xp
             log_amount_wb = ceil(log_amount / 1.1)
             log_amount_total_wb = log_amount_wb
             output = (
@@ -326,7 +331,7 @@ class ProfessionsCog(commands.Cog):
                 returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                 try:
                     log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
-                                                                    current_level-1), timeout=5.0)
+                                                                    current_level-1), timeout=3.0)
                 except asyncio.TimeoutError:
                     await ctx.respond('Welp, something took to long here, calculation cancelled.')
                     return
@@ -346,6 +351,7 @@ class ProfessionsCog(commands.Cog):
                             f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
                         )
                         break
+                    xp_total += level_xp
                     returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                     try:
                         log_amount = await asyncio.wait_for(calculate_logs(level_xp, returned_percentage,
@@ -361,6 +367,7 @@ class ProfessionsCog(commands.Cog):
                     output_total = (
                         f'{emojis.BP} ~**{log_amount_total:,}** {emojis.LOG} without world buff\n'
                         f'{emojis.BP} ~**{log_amount_total_wb:,}** {emojis.LOG} with world buff\n'
+                        f'{emojis.BP} XP required: **{xp_total:,}**\n'
 
                     )
             note = (
@@ -368,11 +375,11 @@ class ProfessionsCog(commands.Cog):
                 f'{emojis.BP} Levels 100+ include the crafter bonus\n'
             )
             embed.add_field(name='HOW TO LEVEL', value=how_to_level)
-            embed.add_field(name='NEXT LEVELS', value=output, inline=False)
             if output_total is not None:
                 embed.add_field(
                     name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
                 )
+            embed.add_field(name='NEXT LEVELS', value=output, inline=False)
             embed.add_field(name='NOTE', value=note)
 
         await ctx.respond(embed=embed)

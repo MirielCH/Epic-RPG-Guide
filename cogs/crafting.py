@@ -94,7 +94,7 @@ class CraftingCog(commands.Cog):
     ) -> None:
         """Calculates mats you need when crafting items"""
         if len(item_name) > 200:
-            await ctx.respond('Really?')
+            await ctx.respond('Really?', ephemeral=True)
             return
         await ctx.defer()
         original_item_name = item_name
@@ -317,10 +317,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -337,10 +337,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -357,10 +357,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -377,10 +377,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -397,10 +397,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -418,10 +418,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         apple_calc = apple + (banana * 12)
         log_calc = log + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -444,10 +444,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         logepic_calc = logepic + (logsuper_calc * 8)
         log_calc = log + (logepic_calc * 20)
         apple_calc = apple + (banana * 12)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             fish_calc = fish_calc + (ruby * 225)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             fish_calc = fish_calc + (ruby * 225)
         else:
@@ -464,10 +464,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         logepic_calc = logepic + (logsuper_calc * 8)
         log_calc = log + (logepic_calc * 20)
         apple_calc = apple + (banana * 12)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             fish_calc = fish + (ruby * 225)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             fish_calc = fish + (ruby * 225)
         else:
@@ -486,10 +486,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         logepic_calc = logepic + (logsuper_calc * 8)
         log_calc = log + (logepic_calc * 20)
         apple_calc = apple + (banana * 12)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             fish_calc = fish + (ruby * 225)
-        elif area in (3,4):
+        elif area.area_no in (3,4):
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             fish_calc = fish + (ruby * 225)
         else:
@@ -512,11 +512,11 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fishgolden_calc = fishgolden + (fishepic * 80)
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area in (1,2,3,4):
+        if area.area_no in (1,2,3,4):
             log_calc = log_calc + (ruby * 225)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             apple_calc = apple_calc + (log_calc // 3)
         else:
             apple_calc = apple_calc + (log_calc // area.trade_apple_log)
@@ -532,11 +532,11 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fishgolden_calc = fishgolden + (fishepic * 80)
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area in (1,2,3,4):
+        if area.area_no in (1,2,3,4):
             log_calc = log_calc + (ruby * 225)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             apple_calc = apple + (log_calc // 3)
         else:
             apple_calc = apple + (log_calc // area.trade_apple_log)
@@ -554,11 +554,11 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fishgolden_calc = fishgolden + (fishepic * 80)
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area in (1,2):
+        if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
         else:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
-        if area in (1,2,3,4):
+        if area.area_no in (1,2,3,4):
             ruby_calc = ruby + (log_calc // 450)
         else:
             ruby_calc = ruby + (log_calc // area.trade_ruby_log)

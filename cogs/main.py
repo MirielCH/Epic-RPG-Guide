@@ -162,7 +162,6 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} `/pet guide`\n'
         f'{emojis.BP} `/professions guide`\n'
         f'{emojis.BP} `/timetravel guide`\n'
-        f'{emojis.BP} `/trade guide`\n'
         f'{emojis.BP} `/ultraining guide`\n'
     )
     trade_rates = (
@@ -183,7 +182,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} `/invite` : Invite Epic RPG Guide to your server\n'
         f'{emojis.BP} `/support` : Visit the support server\n'
     )
-    settings = (
+    field_settings = (
         f'{emojis.BP} `/settings` : View your current settings\n'
         f'{emojis.BP} `/set progress` : Set your progress to get fitting guides\n'
     )
@@ -199,7 +198,7 @@ async def embed_help_guides() -> discord.Embed:
     embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
-    embed.add_field(name='SETTINGS', value=settings, inline=False)
+    embed.add_field(name='SETTINGS', value=field_settings, inline=False)
     return embed
 
 

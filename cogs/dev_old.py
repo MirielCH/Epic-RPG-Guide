@@ -231,6 +231,14 @@ class DevOldCog(commands.Cog):
         await self.bot.sync_commands()
         await ctx.send('Done')
 
+    @dev.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def fetch_members(self, ctx: commands.Context) -> None:
+        guild = await self.bot.fetch_guild(830928381100556338)
+        members = await guild.fetch_members(limit=10).flatten()
+        await ctx.send(str(members))
+
 
 
 # Initialization
