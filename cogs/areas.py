@@ -361,7 +361,9 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
 
     if user.ascended:
         if 1 <= area.area_no <= 9:
-            if 1 <= area.area_no <= 3:
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} `chainsaw`'
+            elif 1 <= area.area_no <= 3:
                 work_commands = f'{emojis.BP} `dynamite`'
             elif 4 <= area.area_no <= 5:
                 work_commands = (
@@ -384,15 +386,21 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
                     f'{emojis.BP} `dynamite` otherwise'
                 )
         elif area.area_no == 10:
-            work_commands = (
-                f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                f'{emojis.BP} `chainsaw` otherwise'
-            )
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} `chainsaw`'
+            else:
+                work_commands = (
+                    f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
+                )
         elif area.area_no == 11:
-            work_commands = (
-                f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                f'{emojis.BP} `chainsaw` otherwise'
-            )
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} `chainsaw`'
+            else:
+                work_commands = (
+                    f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} `chainsaw` otherwise'
+                )
         else:
             work_commands = (
                 f'{emojis.BP} `dynamite` if you need coins\n'
@@ -419,6 +427,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_RARE} Rare and {emojis.LB_EPIC} EPIC until A3\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -434,6 +443,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -449,6 +459,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EPIC} EPIC and {emojis.LB_EDGY} EDGY until A5\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -462,6 +473,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         else:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
+                f'{emojis.BP} Keep: 12 {emojis.LB_OMEGA} OMEGA for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
@@ -477,7 +489,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
                 f'{emojis.BP} Keep: {emojis.LB_EDGY} EDGY until A7\n'
-                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         else:
@@ -499,7 +511,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         elif 10 <= user.tt <= 24:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         else:
@@ -527,7 +539,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         elif 10 <= user.tt <= 24:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
                 f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
                 f'log for the EDGY sword\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
@@ -540,7 +552,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
                 f'{emojis.BP} Keep: {emojis.LB_OMEGA} OMEGA until A11 if you already have an ULTRA '
                 f'log for the EDGY sword\n'
                 f'{emojis.BP} Keep: 1 {emojis.LB_GODLY} GODLY for D15-2 (only if you plan to do it)\n'
-                f'{emojis.BP} Open: {emojis.LB_EDGY} EDGY, excess {emojis.LB_OMEGA} OMEGA, excess {emojis.LB_GODLY} GODLY'
+                f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
 
     elif 11 <= area.area_no <= 14:
@@ -552,7 +564,7 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
         elif 10 <= user.tt <= 24:
             lootboxes = (
                 f'{emojis.BP} Buy: {emojis.LB_EDGY} EDGY\n'
-                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for D14 ({emojis.ARMOR_OMEGA} OMEGA Armor)\n'
+                f'{emojis.BP} Keep: 1 {emojis.LB_OMEGA} OMEGA for {emojis.ARMOR_OMEGA} OMEGA Armor\n'
                 f'{emojis.BP} Open: All lootboxes you don\'t need to keep'
             )
         else:

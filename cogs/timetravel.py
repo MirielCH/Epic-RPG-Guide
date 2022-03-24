@@ -550,8 +550,14 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
     bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
+    greenhouse_watermelon = dynamite_rubies * 3
+    chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    greenhouse_watermelon = Decimal(greenhouse_watermelon).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    chainsaw_ultimate = Decimal(chainsaw_ultimate).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
+    watermelon = int(greenhouse_watermelon)
+    ultimate_logs = int(chainsaw_ultimate)
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
     tt_enchant_multipliers = {
         15: 6,
@@ -600,11 +606,11 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     )
 
     work_multiplier = (
+        f'{emojis.BP} **{watermelon:,}** {emojis.WATERMELON} with `greenhouse`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
-        f'{emojis.BP} ~**{functions.round_school(rubies/3.5):,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.WATERMELON} with `greenhouse`\n'
+        f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
     )
 
     coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
@@ -657,7 +663,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 10`)\n'
     )
 
     prep_tt25 = (
@@ -671,7 +677,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in `{prefix}tt`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 6`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 10`)\n'
     )
 
     prep_stt = (

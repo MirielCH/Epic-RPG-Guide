@@ -192,7 +192,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    embed.add_field(name=f'ANNIVERSARY EVENT 2022 {emojis.LB_ANNIVERSARY}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'ANNIVERSARY EVENT 2022 {emojis.LB_ANNIVERSARY}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)

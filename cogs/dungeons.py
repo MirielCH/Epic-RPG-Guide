@@ -1061,7 +1061,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         f'{emojis.BP} {guide_stats.format(prefix=prefix)}'
     )
     if dungeon_no != 21:
-        guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=f"{dungeon_no:g}")}\n{guides}'
+        dungeon_no_check = f'{dungeon_no:g}' if dungeon_no != 15.2 else '15-2'
+        guides = f'{emojis.BP} {guide_check.format(prefix=prefix,dungeon_no=dungeon_no_check)}\n{guides}'
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
