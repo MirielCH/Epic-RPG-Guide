@@ -1,10 +1,61 @@
 # pets.py
 # Contains the content for pet commands
 
+from typing import Optional
+
 import discord
 
 import database
-from resources import emojis, settings, strings
+from resources import emojis, settings, strings, views
+
+
+# --- Topics ---
+TOPIC_ADVENTURES = 'Pet adventures'
+TOPIC_CATCH = 'Catching pets'
+TOPIC_FUSION = 'Fusing pets'
+TOPIC_OVERVIEW = 'Overview'
+TOPIC_SKILLS = 'Skills: Normal skills'
+TOPIC_SKILLS_SPECIAL = 'Skills: Special skills'
+TOPIC_SKILLS_UNIQUE = 'Skills: Unique skills'
+
+TOPICS = [
+    TOPIC_OVERVIEW,
+    TOPIC_CATCH,
+    TOPIC_FUSION,
+    TOPIC_ADVENTURES,
+    TOPIC_SKILLS,
+    TOPIC_SKILLS_SPECIAL,
+    TOPIC_SKILLS_UNIQUE,
+]
+
+
+# --- Commands ---
+async def command_pet_guide(ctx: discord.ApplicationContext, topic: str) -> None:
+    """Pet guide command"""
+    topics_functions = {
+        TOPIC_OVERVIEW: embed_pets_overview,
+        TOPIC_CATCH: embed_pets_catch,
+        TOPIC_FUSION: embed_pets_fusion,
+        TOPIC_ADVENTURES: embed_pets_adventures,
+        TOPIC_SKILLS: embed_pets_skills_normal,
+        TOPIC_SKILLS_SPECIAL: embed_pets_skills_special,
+        TOPIC_SKILLS_UNIQUE: embed_pets_skills_unique,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await interaction.edit_original_message(view=None)
+
+
+async def command_pet_fuse(ctx: discord.ApplicationContext, pet_tier: int, timetravel: Optional[int] = None) -> None:
+    """Pet fuse command"""
+    if timetravel is None:
+        user: database.User = await database.get_user(ctx.author.id)
+        timetravel = user.tt
+    embed = await embed_fuse(pet_tier, timetravel)
+    await ctx.respond(embed=embed)
 
 
 # --- Embeds ---

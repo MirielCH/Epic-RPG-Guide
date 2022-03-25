@@ -195,6 +195,38 @@ def format_string(string: str) -> str:
     return string
 
 
+async def calculate_amount(amount: str) -> int:
+    """Returns the actual amount from a text.
+    The argument can contain k, m or b (e.g. 100k).
+    The calculated amount needs to result in a whole number.
+
+    Returns
+    -------
+    The amount calculated (int) if valid.
+    None if no valid amount could be calculated."""
+    if amount.endswith('k'):
+        try:
+            amount = int(float(amount.replace('k','')) * 1_000)
+        except:
+            return None
+    elif amount.endswith('m'):
+        try:
+            amount = int(float(amount.replace('m','')) * 1_000_000)
+        except:
+            return None
+    elif amount.endswith('b'):
+        try:
+            amount = int(float(amount.replace('b','')) * 1_000_000_000)
+        except:
+            return None
+    else:
+        try:
+            amount = int(amount)
+        except:
+            return None
+    return amount
+
+
 async def default_footer(prefix):
     footer = f'Use {prefix}guide or {prefix}g to see all available guides.'
 
