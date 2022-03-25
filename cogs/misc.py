@@ -7,8 +7,7 @@ from discord.commands import slash_command, SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import misc
-import database
-from resources import functions, strings
+from resources import functions
 
 
 class MiscCog(commands.Cog):
@@ -43,7 +42,7 @@ class MiscCog(commands.Cog):
     @cmd_beginner.command(name='guide', description='How to start in the game')
     async def beginner_guide(self, ctx: discord.ApplicationContext) -> None:
         """Beginner guide"""
-        await misc.embed_beginner_guide(ctx)
+        await misc.command_beginner_guide(ctx)
 
     @slash_command(description='A handy dandy random tip')
     async def tip(

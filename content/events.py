@@ -107,12 +107,8 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
         EVENT_RETURNING: embed_event_returning,
         EVENT_WORK: embed_event_rubydragon,
     }
-    view = views.TopicView(ctx, events_functions, active_topic=event)
     embed = await events_functions[event]()
-    interaction = await ctx.respond(embed=embed, view=view)
-    view.interaction = interaction
-    await view.wait()
-    await interaction.edit_original_message(view=None)
+    await ctx.respond(embed=embed)
 
 
 # --- Redundancies ---

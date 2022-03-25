@@ -65,7 +65,7 @@ async def command_stt_score_calculator(bot: discord.Bot, ctx: discord.Applicatio
         return
     if bot_message is None: return
     inventory = str(bot_message.embeds[0].fields)
-    embed = await embed_stt_score_calculator(area_no, inventory)
+    embed = await embed_stt_score_calculator(area_no, inventory.lower())
     await ctx.respond(embed=embed)
 
 
@@ -467,7 +467,7 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
     for area in areas:
         area_no_next = area.area_no + 1
         if area_no_next != len(areas)+1:
-            area_next = all_areas[area_no_next-1]
+            area_next = all_areas[area_no_next]
         else:
             area_next = None
         if area_next is not None:
@@ -496,7 +496,7 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
             all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
             best_change = max(all_changes)
             best_change_index = all_changes.index(best_change)
-        areas_best_changes.append([area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log])
+        areas_best_changes.append([area.area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log])
         if area_next is None: break
 
     # Get the amount of logs in each area
@@ -539,15 +539,18 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
         if not trade_area == len(areas_best_changes):
             areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
 
-    a15 = a16 =(0,0,0)
+    a15 = a16 = (0,0,0)
     for log_amount in areas_log_amounts:
         if log_amount[0] == 15:
             a15 = log_amount
-        elif log_amount[0] == 16:
+        elif log_amount[0] == 21:
             a16 = log_amount
     log_a15 = a15[1]
     ruby_rate_a15 = a15[2]
-    ruby_a15 = floor(log_a15 / ruby_rate_a15)
+    try:
+        ruby_a15 = floor(log_a15 / ruby_rate_a15)
+    except ZeroDivisionError:
+        ruby_a15 = 0
     log_a16 = a16[1]
     ruby_rate_a16 = a16[2]
     ruby_a16 = floor(log_a16 / ruby_rate_a16)
@@ -621,8 +624,9 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
         f'{emojis.BP} {seed_potato:,} {emojis.SEED_POTATO} = {score_seed_potato:,.2f}\n'
         f'{emojis.BP} Total: **{score_farm_items:,.2f}**\n'
     )
+    ruby_a15_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
     field_materials = (
-        f'{emojis.BP} {ruby_a15:,} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
+        f'{emojis.BP} {ruby_a15_str} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
         f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in the TOP = {score_ruby_a16:,.2f}\n'
         f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
         f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
@@ -632,8 +636,9 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
         f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
         f'{emojis.BP} Total in A16-A20 and the TOP: **{score_a16:,.2f}**\n'
     )
+    score_total_a15_str = f'{score_total_a15:,.2f}' if ruby_a15 != 0 else 'N/A'
     field_totals = (
-        f'{emojis.BP} Total in A15: **{score_total_a15:,.2f}**\n'
+        f'{emojis.BP} Total in A15: **{score_total_a15_str}**\n'
         f'{emojis.BP} Total in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
     )
     notes = (
@@ -645,8 +650,8 @@ async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Em
         title = 'STT SCORE CALCULATOR',
         description = (
             f'Your current area: **{message_area}**\n'
-            f'Total score in A15: **{score_total_a15:,.2f}**\n'
-            f'Total score in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
+            f'Total score in A15: **{score_total_a15_str}**\n'
+            f'Total score in A16-A20 and the TOP: **{score_total_a16:,.2f}**'
         )
     )
     embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)

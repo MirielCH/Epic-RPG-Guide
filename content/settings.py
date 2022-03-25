@@ -32,7 +32,7 @@ async def command_settings(ctx: discord.ApplicationContext) -> None:
 async def command_set_progress(ctx: discord.ApplicationContext, timetravel: int, ascension: str) -> None:
     """Set progress command"""
     ascended = True if ascension == CHOICE_ASCENDED else False
-    if timetravel > 25 and not ascended:
+    if timetravel >= 25 and not ascended:
         await ctx.respond(
             f'Invalid combination. You can\'t set yourself as not ascended if you are {emojis.TIME_TRAVEL} TT 25+.',
             ephemeral=True
@@ -80,6 +80,6 @@ async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
             f'current progress.'
         )
     )
-    embed.set_footer(text=f'Tip: Use {ctx.prefix}setprogress to change your settings.')
+    embed.set_footer(text=f'Tip: Use `/set progress` to change your settings.')
     embed.add_field(name='YOUR CURRENT SETTINGS', value=settings_field, inline=False)
     return embed

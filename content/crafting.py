@@ -71,11 +71,14 @@ async def command_craft(ctx: discord.ApplicationContext, item_name: str, amount:
     try:
         item: database.Item = await database.get_item(item_name)
     except database.NoDataFound:
-        return f'Uhm, I don\'t know how to craft `{original_item_name}`, sorry.'
+        await ctx.respond(f'Uhm, I don\'t know how to craft `{original_item_name}`, sorry.')
+        return
     if item.item_type in ('sword', 'armor') and amount > 1:
-        return f'You can only craft 1 {item.emoji} `{item.name}`.'
+        await ctx.respond(f'You can only craft 1 {item.emoji} `{item.name}`.')
+        return
     if not item.ingredients:
-        return f'{item.emoji} `{item.name}` can not be crafted.'
+        await ctx.respond(f'{item.emoji} `{item.name}` can not be crafted.')
+        return
     breakdown_totals = await get_item_breakdown(item, amount)
     if amount == 1:
         message = f'To craft {item.emoji} `{item.name}` you need:'
@@ -107,15 +110,18 @@ async def command_dismantle(ctx: discord.ApplicationContext, item_name: str, amo
     original_item_name = item_name
     item_name = item_name.lower()
     if item_name == 'brandon':
-        return 'I WILL NEVER ALLOW THAT. YOU MONSTER.'
+        await ctx.respond('I WILL NEVER ALLOW THAT. YOU MONSTER.')
+        return
     if item_name in strings.ITEM_ALIASES:
         item_name = strings.ITEM_ALIASES[item_name]
     try:
         item: database.Item = await database.get_item(item_name)
     except database.NoDataFound:
-        return f'Uhm, I don\'t know an item called `{original_item_name}`, sorry.'
+        await ctx.respond(f'Uhm, I don\'t know an item called `{original_item_name}`, sorry.')
+        return
     if not item.dismanteable:
-        return f'{item.emoji} `{item.name}` can not be dismantled.'
+        await ctx.respond(f'{item.emoji} `{item.name}` can not be dismantled.')
+        return
     breakdown_totals = await get_item_breakdown(item, amount, dismantle=True)
     if amount == 1:
         message = f'By dismantling {item.emoji} `{item.name}` you get:'

@@ -44,13 +44,13 @@ async def command_beginner_guide(ctx: discord.ApplicationContext) -> None:
 async def command_tip(ctx: discord.ApplicationContext, tip_id: Optional[int] = None) -> None:
     """Tip command"""
     try:
-        tip: database.Tip = await database.get_tip(id)
+        tip: database.Tip = await database.get_tip(tip_id)
     except database.NoDataFound:
-        await ctx.respond('There is no tip with that ID', ephemeral=True)
+        await ctx.respond('There is no tip with that ID :cry:', ephemeral=True)
         return
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'TIP {tip.id}',
+        title = f'TIP #{tip.id}',
         description = tip.tip
     )
     await ctx.respond(embed=embed)
@@ -163,7 +163,7 @@ async def command_coincap_calculator(
     area_no: Optional[int] = None
 ) -> str:
     """Coincap calculator message"""
-    if time_travel is None or area_no is None:
+    if timetravel is None or area_no is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_message(bot, ctx))
         try:
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg p')
@@ -175,7 +175,7 @@ async def command_coincap_calculator(
             return
         if bot_message is None: return
         tt_found, area_found = await functions.extract_progress_data_from_profile_embed(ctx, bot_message)
-        if time_travel is None: time_travel = tt_found
+        if timetravel is None: timetravel = tt_found
         if area_no is None: area_no = area_found
     coin_cap = pow(timetravel, 4) * 500_000_000 + pow(area_no, 2) * 100_000
     if area_no == 1: coin_cap += 1
@@ -436,7 +436,7 @@ async def embed_beginner_guide() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'STARTER GUIDE',
+        title = 'BEGINNER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)

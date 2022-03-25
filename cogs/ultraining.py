@@ -19,7 +19,7 @@ class UltrainingCog(commands.Cog):
     @cmd_ultraining.command(name='guide', description='All about ultraining')
     async def ultraining_guide(self, ctx: discord.ApplicationContext) -> None:
         """Ultraining guide"""
-        await ultraining.command_ultraining_guide()
+        await ultraining.command_ultraining_guide(ctx)
 
     @cmd_ultraining.command(name='calculator', description='Calculates the EPIC NPC damage in ultraining')
     async def ultraining_calculator(

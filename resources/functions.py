@@ -3,9 +3,10 @@
 from argparse import ArgumentError
 import asyncio
 import re
-from typing import Callable, List, Union, Tuple
+from typing import Union, Tuple
 
 import discord
+from discord.commands import OptionChoice
 from discord.ext import commands
 
 import database
@@ -19,6 +20,12 @@ def await_coroutine(coro):
             coro.send(None)
         except StopIteration as error:
             return error.value
+
+
+# --- Autocomplete functions ---
+async def area_choice(ctx: discord.AutocompleteContext):
+    """Provides the ability to select the TOP"""
+    return [OptionChoice(name='The TOP', value=21),] if ctx.value.lower() in 'the top' else []
 
 
 # Design fields for embeds

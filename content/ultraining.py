@@ -16,12 +16,11 @@ async def command_ultraining_calculator(ctx: discord.ApplicationContext, stage: 
     """Ultraining calculator command"""
     npc_at_base = 5 * (stage ** 1.25)
     npc_def_base = 6 * (stage ** 1.25)
-    message = (
+    await ctx.respond(
         f'Estimated EPIC NPC stats at stage **{stage:,}**:\n'
         f'{emojis.STAT_AT} AT: **{round(npc_at_base * 0.9):,} - {round(npc_at_base * 1.1):,}**\n'
         f'{emojis.STAT_DEF} DEF: **{round(npc_def_base * 0.9):,} - {round(npc_def_base * 1.1):,}**\n'
     )
-    await ctx.response(message)
 
 
 # --- Embeds ---

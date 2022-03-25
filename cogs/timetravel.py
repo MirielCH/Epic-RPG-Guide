@@ -1,17 +1,11 @@
 # timetravel.py
 
 import discord
-from discord.commands import SlashCommandGroup, Option
+from discord.commands import SlashCommandGroup, Option, OptionChoice
 from discord.ext import commands
 
-from content import timetravel
-from resources import strings
-
-
-# --- Autocomplete functions ---
-async def area_choice(ctx: discord.AutocompleteContext):
-    """Provides the ability to select the TOP"""
-    return {'The TOP': 21} if ctx.value.lower() in 'the top' else {}
+from content import timetravel as timetravel_content
+from resources import functions, strings
 
 
 class TimeTravelCog(commands.Cog):
@@ -28,10 +22,10 @@ class TimeTravelCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
-                           choices=timetravel.TOPICS, default=timetravel.TOPIC_TT),
+                           choices=timetravel_content.TOPICS, default=timetravel_content.TOPIC_TT),
     ) -> None:
         """Time travel guide"""
-        await timetravel.command_timetravel_guide(ctx, topic)
+        await timetravel_content.command_timetravel_guide(ctx, topic)
 
     @cmd_tt.command(name='details', description='Unlocks & bonuses of a certain TT and how to prepare for it')
     async def timetravel_details(
@@ -41,15 +35,15 @@ class TimeTravelCog(commands.Cog):
                            min_value=1, max_value=1000, default=None),
     ) -> None:
         """Time travel details"""
-        await timetravel.command_timetravel_details(ctx, timetravel=timetravel)
+        await timetravel_content.command_timetravel_details(ctx, timetravel=timetravel)
 
     @cmd_score.command(name='calculator', description='Calculates the theoretical score of your inventory')
     async def stt_score_calculator(
         self,
         ctx: discord.ApplicationContext,
-        area_no: Option(int, 'Your current area', min_value=1, max_value=21, autocomplete=area_choice),
+        area_no: Option(int, 'Your current area', min_value=1, max_value=21, autocomplete=functions.area_choice),
     ) -> None:
-        await timetravel.command_stt_score_calculator(self.bot, ctx, area_no)
+        await timetravel_content.command_stt_score_calculator(self.bot, ctx, area_no)
 
 
 # Initialization

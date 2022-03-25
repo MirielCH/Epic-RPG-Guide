@@ -50,10 +50,10 @@ async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = f'{emojis.BP} `/valentine guide` : Valentine event guide\n'
     guides = (
-        f'{emojis.BP} `/area guide`\n'
+        #f'{emojis.BP} `/area guide`\n'
         f'{emojis.BP} `/beginner guide`\n'
         f'{emojis.BP} `/coolness guide`\n'
-        f'{emojis.BP} `/dungeon guide`\n'
+        #f'{emojis.BP} `/dungeon guide`\n'
         f'{emojis.BP} `/enchanting guide`\n'
         f'{emojis.BP} `/event guide`\n'
         f'{emojis.BP} `/farming guide`\n'
@@ -61,8 +61,9 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} `/guild guide`\n'
         f'{emojis.BP} `/horse guide`\n'
         f'{emojis.BP} `/pet guide`\n'
-        f'{emojis.BP} `/professions guide`\n'
+        f'{emojis.BP} `/profession guide`\n'
         f'{emojis.BP} `/timetravel guide`\n'
+        f'{emojis.BP} `/timetravel details`\n'
         f'{emojis.BP} `/ultraining guide`\n'
     )
     trade_rates = (
@@ -75,6 +76,7 @@ async def embed_help_guides() -> discord.Embed:
     achievements = f'{emojis.BP} `/title search` : Look up titles / achievements\n'
     misc = (
         f'{emojis.BP} `/ask the oracle` : A very useless command\n'
+        f'{emojis.BP} `/badges` : All badges and how to get them\n'
         f'{emojis.BP} `/codes` : All current redeemable codes\n'
         f'{emojis.BP} `/duel weapons` : What every weapon does in duels\n'
         f'{emojis.BP} `/tip` : A handy dandy random tip\n'
@@ -96,7 +98,7 @@ async def embed_help_guides() -> discord.Embed:
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
-    embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
+    #embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=field_settings, inline=False)
@@ -115,10 +117,10 @@ async def embed_help_calculators() -> discord.Embed:
     crafting = (
         f'{emojis.BP} `/craft` : Recipes mats calculator\n'
         f'{emojis.BP} `/dismantle` : Dismantling calculator\n'
-        f'{emojis.BP} `/invcalc` : Convert your inventory into one material\n'
+        f'{emojis.BP} `/inventory calculator` : Convert your inventory into one material\n'
     )
     timetravel = (
-        f'{emojis.BP} `/score calculator` : Calculate the STT score of your inventory\n'
+        f'{emojis.BP} `/stt score calculator` : Calculate the STT score of your inventory\n'
     )
     horse = (
         f'{emojis.BP} `/horse boost calculator` : Calculate horse boosts\n'
@@ -129,10 +131,10 @@ async def embed_help_calculators() -> discord.Embed:
     )
     drop_chance = f'{emojis.BP} `/dropchance calculator` : Calculate your monster drop chance\n'
     trading = f'{emojis.BP} `/trade calculator` : Calculate materials after trading'
-    professions = f'{emojis.BP} `/professions calculator` : Calculate what you need to level professions'
+    professions = f'{emojis.BP} `/profession calculator` : Calculate what you need to level professions'
     ultraining = f'{emojis.BP} `/ultraining calculator` : Calculate EPIC NPC damage in ultraining'
     misc = (
-        f'{emojis.BP} `/calc` : A basic calculator\n'
+        f'{emojis.BP} `/calculator` : A basic calculator\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -141,13 +143,13 @@ async def embed_help_calculators() -> discord.Embed:
     embed.set_footer(text='Note: This is not an official guide bot.')
     embed.add_field(name='COIN CAP', value=coincap, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
-    embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
+    #embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
     embed.add_field(name='DROP CHANCE', value=drop_chance, inline=False)
     embed.add_field(name='HORSE', value=horse, inline=False)
     embed.add_field(name='PETS', value=pet, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions, inline=False)
     embed.add_field(name='TIME TRAVEL', value=timetravel, inline=False)
-    embed.add_field(name='TRADING', value=trading, inline=False)
+    #embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='ULTRAINING', value=ultraining, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     return embed

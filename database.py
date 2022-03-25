@@ -1664,7 +1664,7 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
     timestamp = datetime.utcnow()
     if isinstance(ctx, discord.ApplicationContext):
         command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
-        command_data = str(ctx.interaction.data['options'])
+        command_data = str(ctx.interaction.data.get('options','None'))
         try:
             user = await get_user(ctx.author.id)
             user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'

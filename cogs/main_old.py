@@ -22,6 +22,8 @@ class MainOldCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def main_help(self, ctx: commands.Context):
         """Main help command"""
+        await ctx.send('Yo, this is now a slash command bot, try `/help` instead.')
+        return
         prefix = await database.get_prefix(ctx)
         embed = await embed_main_help(ctx)
         await ctx.send(embed=embed)

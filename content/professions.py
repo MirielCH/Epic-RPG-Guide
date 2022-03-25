@@ -86,7 +86,6 @@ async def command_profession_calculator(
             return
         if profession is None: profession = profession_found
         if from_level is None: from_level = level_found
-    await ctx.defer()
     try:
         embed = await asyncio.wait_for(embed_professions_calculator(profession, to_level, current_xp,
                                                                     needed_xp, from_level),
