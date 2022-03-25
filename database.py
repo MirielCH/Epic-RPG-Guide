@@ -657,7 +657,7 @@ async def get_all_areas() -> Tuple[Area]:
     """
     table = 'areas'
     function_name = 'get_all_areas'
-    sql = f'SELECT * FROM {table}'
+    sql = f'SELECT * FROM {table} ORDER BY area'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur = ERG_DB.cursor()

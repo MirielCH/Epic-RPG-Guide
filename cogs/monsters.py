@@ -1,14 +1,10 @@
 # monsters.py
 
-import asyncio
-
 import discord
 from discord.ext import commands
 from discord.commands import Option, SlashCommandGroup
 
 from content import monsters
-import database
-from resources import functions, strings, views
 
 
 # --- Autocomplete functions ---
