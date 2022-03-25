@@ -1133,7 +1133,7 @@ async def get_horse_data(ctx: commands.Context, tier: int) -> dict:
     return horse_data
 
 
-async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
+async def get_pet_tier(tier: int, tt_no: int) -> PetTier:
     """Returns a pet tier.
 
     Returns:
@@ -1168,9 +1168,9 @@ async def get_pet_tier(ctx: commands.Context, tier: int, tt_no: int) -> PetTier:
         raise
     if not record_pet_tier:
         await log_error(
-            ctx, INTERNAL_ERROR_NO_DATA_FOUND.format(table='pets',
-                                                     function='get_pet_tier',
-                                                     select=f'Pet tier {tier}')
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table='pets',
+                                                function='get_pet_tier',
+                                                select=f'Pet tier {tier}')
         )
         raise NoDataFound
     record_pet_tier = dict(record_pet_tier)

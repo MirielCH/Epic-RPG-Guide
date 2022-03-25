@@ -94,6 +94,7 @@ COG_EXTENSIONS = [
     'cogs.monsters',
     'cogs.monsters_old',
     'cogs.pets',
+    'cogs.pets_old',
     'cogs.professions',
     'cogs.professions_old',
     'cogs.settings',

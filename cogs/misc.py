@@ -11,8 +11,8 @@ import database
 from resources import emojis, functions, settings, strings
 
 
-# Miscellaneous commands (cog)
 class MiscCog(commands.Cog):
+    """Cog with miscellanous commands"""
     def __init__(self, bot):
         self.bot = bot
 
