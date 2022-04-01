@@ -106,6 +106,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.titles_old',
     'cogs.trading',
+    'cogs.trading_old',
     'cogs.ultraining',
 ]
 

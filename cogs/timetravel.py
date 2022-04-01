@@ -43,7 +43,7 @@ class TimeTravelCog(commands.Cog):
     async def tj_score_calculator(
         self,
         ctx: discord.ApplicationContext,
-        area_no: Option(int, 'Your current area', min_value=1, max_value=21, autocomplete=functions.area_choice),
+        area_no: Option(int, 'Your current area', min_value=1, max_value=21, choices=strings.CHOICES_AREA),
     ) -> None:
         await timetravel_content.command_tj_score_calculator(self.bot, ctx, area_no)
 

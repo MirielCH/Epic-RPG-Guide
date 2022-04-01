@@ -6,7 +6,6 @@ from discord.commands import SlashCommandGroup, slash_command, Option
 from discord.ext import commands
 
 from content import settings as settings_content
-from resources import settings
 
 
 class SettingsCog(commands.Cog):

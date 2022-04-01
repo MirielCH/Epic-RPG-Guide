@@ -62,6 +62,7 @@ async def command_profession_calculator(
 ) -> None:
     """Profession calculator command"""
     current_xp = 0
+    needed_xp = None
     if profession is None or from_level is None:
         command = f'/professions {profession}' if profession is not None else '/professions [profession]'
         bot_message_task = asyncio.ensure_future(functions.wait_for_profession_message(bot, ctx))
@@ -186,8 +187,10 @@ async def embed_professions_leveling() -> discord.Embed:
     )
 
     enchanter = (
-        f'{emojis.BP} This is the last profession you should level up (it\'s expensive and you need access to at least `transmute`)\n'
-        f'{emojis.BP} Level before time traveling using `transmute` or `transcend`\n'
+        f'{emojis.BP} This is the last profession you should level up (it\'s expensive and you need access to at least '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/transmute`)\n'
+        f'{emojis.BP} Level before time traveling using {emojis.EPIC_RPG_LOGO_SMALL}`/transmute` or '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/transcend`\n'
         f'{emojis.BP} XP gain is based on the quality of the enchant you get (see topic `Enchanter`)\n'
         f'{emojis.BP} Costs around 3 billion coins without {emojis.HORSE_T8} T8+ horse\n'
         f'{emojis.BP} Costs around 2 billion coins with {emojis.HORSE_T8} T8+ horse'
@@ -198,7 +201,7 @@ async def embed_professions_leveling() -> discord.Embed:
     )
 
     calculator = (
-        f'{emojis.BP} Use `/professions calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
     )
 
     embed = discord.Embed(
@@ -206,7 +209,9 @@ async def embed_professions_leveling() -> discord.Embed:
         title = 'HOW TO LEVEL PROFESSIONS',
         description = (
             f'This guide shows you how to level up professions to reach ascension (level 100).\n'
-            f'Do not overfarm to get ascended as early as possible. It wastes a lot of time you could spend time traveling. TT give high bonuses and ascension makes more sense if you already have access to all commands up to area 15.\n'
+            f'Do not overfarm to get ascended as early as possible. It wastes a lot of time you could spend time '
+            f'traveling. TT give high bonuses and ascension makes more sense if you already have access to all commands '
+            f'up to area 15.\n'
             f'Thus, unless you can reach ascension easily, always time travel again instead of staying and farming.'
         )
     )
@@ -240,7 +245,8 @@ async def embed_professions_crafter() -> discord.Embed:
     )
 
     xp_gain = (
-        f'{emojis.BP} A detailed list of all material and gear XP is available in the [Wiki](https://epic-rpg.fandom.com/wiki/Professions#Crafter)'
+        f'{emojis.BP} A detailed list of all material and gear XP is available in the '
+        f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Crafter)'
     )
 
     embed = discord.Embed(
@@ -272,7 +278,8 @@ async def embed_professions_enchanter() -> discord.Embed:
     how_to_get_xp = (
         f'{emojis.BP} Use enchanting commands\n'
         f'{emojis.BLANK} The XP formula is [tt multiplier] * [command multiplier] * [enchantment xp]\n'
-        f'{emojis.BLANK} Ex: If you enchant **Perfect** with `transmute` in TT6, you get `2 * 100 * 7` XP\n'
+        f'{emojis.BLANK} Ex: If you enchant **Perfect** with {emojis.EPIC_RPG_LOGO_SMALL}`/transmute` in TT6, '
+        f'you get `2 * 100 * 7` XP\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_FRUIT_ICE_CREAM} fruit ice cream (100 XP each)~~ (don\'t do that)'
     )
 
@@ -294,14 +301,14 @@ async def embed_professions_enchanter() -> discord.Embed:
     )
 
     command_multipliers = (
-        f'{emojis.BP} `enchant`: 1\n'
-        f'{emojis.BP} `refine`: 10\n'
-        f'{emojis.BP} `transmute`: 100\n'
-        f'{emojis.BP} `transcend`: 1,000'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/enchant`: 1\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/refine`: 10\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transmute`: 100\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transcend`: 1,000'
     )
 
     tt_multiplier = (
-        f'{emojis.BP} Use `rpg time travel` to check your TT multiplier'
+        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` to check your TT multiplier'
     )
 
     embed = discord.Embed(
@@ -384,7 +391,8 @@ async def embed_professions_merchant() -> discord.Embed:
     )
 
     xp_gain = (
-        f'{emojis.BP} A detailed list of XP per amount sold is available in the [Wiki](https://epic-rpg.fandom.com/wiki/Professions#Merchant)'
+        f'{emojis.BP} A detailed list of XP per amount sold is available in the '
+        f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Merchant)'
     )
 
     embed = discord.Embed(
@@ -411,10 +419,10 @@ async def embed_professions_worker() -> discord.Embed:
     level_101 =(
         f'{emojis.BP} Adds an increasing chance to find other items with top tier work commands\n'
         f'{emojis.BP} The chance is 4% at level 101 and increases by 4% for every level\n'
-        f'{emojis.BP} `bigboat` gets a chance to drop {emojis.BANANA} bananas\n'
-        f'{emojis.BP} `chainsaw` gets a chance to drop {emojis.FISH} normie fish\n'
-        f'{emojis.BP} `dynamite` gets a chance to drop {emojis.LOG_SUPER} SUPER logs\n'
-        f'{emojis.BP} `greenhouse` gets a chance to drop {emojis.RUBY} rubies'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat` gets a chance to drop {emojis.BANANA} bananas\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw` gets a chance to drop {emojis.FISH} normie fish\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` gets a chance to drop {emojis.LOG_SUPER} SUPER logs\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse` gets a chance to drop {emojis.RUBY} rubies'
     )
 
     how_to_get_xp = (
@@ -423,14 +431,17 @@ async def embed_professions_worker() -> discord.Embed:
     )
 
     xp_gain = (
-        f'{emojis.BP} `chop` / `fish` / `pickup` / `mine`: 4 XP\n'
-        f'{emojis.BP} `axe` / `ladder` / `pickaxe`: 8 XP\n'
-        f'{emojis.BP} `net`: 9 XP\n'
-        f'{emojis.BP} `bowsaw` / `tractor` / `drill`: 12 XP\n'
-        f'{emojis.BP} `boat`: 13 XP\n'
-        f'{emojis.BP} `chainsaw`: 16 XP\n'
-        f'{emojis.BP} `greenhouse` / `dynamite`: 17 XP\n'
-        f'{emojis.BP} `bigboat`: 18 XP'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/chop`, {emojis.EPIC_RPG_LOGO_SMALL}`/fish`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/pickup`, {emojis.EPIC_RPG_LOGO_SMALL}`/mine`: 4 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/axe`, {emojis.EPIC_RPG_LOGO_SMALL}`/ladder`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/pickaxe`: 8 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/net`: 9 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/bowsaw`, {emojis.EPIC_RPG_LOGO_SMALL}`/tractor`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/drill`: 12 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/boat`: 13 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`: 16 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse`, {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite`: 17 XP\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}  `/bigboat`: 18 XP'
     )
 
     embed = discord.Embed(
@@ -456,14 +467,16 @@ async def embed_ascension() -> discord.Embed:
 
     benefits =(
         f'{emojis.BP} Get more materials by using high tier work commands early\n'
-        f'{emojis.BP} Get more XP by using `hunt hardmode` and `adventure hardmode` early\n'
-        f'{emojis.BP} Get higher enchants easier by using `transcend` and `transmute` early\n'
+        f'{emojis.BP} Get more XP by using {emojis.EPIC_RPG_LOGO_SMALL}`/hunt mode: hardmode` and '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/adventure mode: hardmode` early\n'
+        f'{emojis.BP} Get higher enchants easier by using higher enchanting commands early\n'
         f'{emojis.BP} {emojis.RUBY} rubies and {emojis.BANANA} bananas are obtainable in area 1+'
     )
 
     notes = (
         f'{emojis.BP} Trade rates are still area locked\n'
-        f'{emojis.BP} Higher tier logs and fish remain area locked. Use `rpg h [material]` to see the area they unlock in.'
+        f'{emojis.BP} Higher tier logs and fish remain area locked. Use '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/help topic: [material]` to see the area they unlock in.'
     )
 
     embed = discord.Embed(
@@ -481,7 +494,7 @@ async def embed_ascension() -> discord.Embed:
     return embed
 
 
-async def embed_professions_calculator(profession: str, to_level: int, current_xp: int, needed_xp: int,
+async def embed_professions_calculator(profession: str, to_level: int, current_xp: int, needed_xp: Optional[int] = None,
                                        from_level: Optional[int] = None) -> discord.Embed:
     """Professions calculator embed"""
     from_level_defined = False if from_level is None else True
@@ -490,6 +503,7 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
     next_level = from_level + 1
     if profession_data.xp[next_level] is None and needed_xp is not None:
         await profession_data.update_level(next_level, needed_xp)
+    if needed_xp is None: needed_xp = profession_data.xp[next_level]
 
     description = f'**{profession.capitalize()}** level **{from_level}**'
     if to_level > from_level:

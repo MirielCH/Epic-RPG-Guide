@@ -167,8 +167,8 @@ async def embed_overview() -> discord.Embed:
         f'inventory'
     )
     calculators = (
-        f'{emojis.BP} `/horse boost calculator`\n'
-        f'{emojis.BP} `/horse training calculator`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse boost calculator`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse training calculator`\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -317,7 +317,7 @@ async def embed_types() -> discord.Embed:
         f'{emojis.BP} MAGIC if you are {emojis.TIME_TRAVEL} TT 2+, ascended\n'
     )
     calculators = (
-        f'{emojis.BP} `/horse boost calculator`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse boost calculator`\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -385,8 +385,8 @@ async def embed_breeding() -> discord.Embed:
         f'{emojis.BP} Note: Each breeding consumes 1 {emojis.HORSE_TOKEN} horse token'
     )
     calculators = (
-        f'{emojis.BP} `/horse boost calculator`\n'
-        f'{emojis.BP} `/horse training calculator`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse boost calculator`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse training calculator`\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

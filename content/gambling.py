@@ -48,10 +48,7 @@ async def command_gambling_guide(ctx: discord.ApplicationContext, topic: str):
 # --- Embeds ---
 async def embed_blackjack() -> discord.Embed:
     """Blackjack embed"""
-    syntax = (
-        f'{emojis.BP} `rpg blackjack [$]`\n'
-        f'{emojis.BP} `rpg bj [$]`\n'
-    )
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/blackjack`\n'
     rules = (
         f'{emojis.BP} Both the dealer (the bot) and you have 2 cards on hand\n'
         f'{emojis.BP} The goal is go get 21 or a number close to it (but not exceed it)\n'
@@ -82,7 +79,7 @@ async def embed_blackjack() -> discord.Embed:
         description = f'\"Blackjack is very scientific. There\'s always a right answer and wrong answer.\"'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='CARD VALUES', value=card_values, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -92,10 +89,7 @@ async def embed_blackjack() -> discord.Embed:
 
 async def embed_coinflip() -> discord.Embed:
     """Coinflip embed"""
-    syntax = (
-        f'{emojis.BP} `rpg coinflip head|tail [$]`\n'
-        f'{emojis.BP} `rpg cf h|t [$]`'
-    )
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/coinflip`\n'
     rules = (
         f'{emojis.BP} You flip a coin and bet on heads or tails\n'
         f'{emojis.BP} The coin can either be heads, tails or land on the side'
@@ -121,7 +115,7 @@ async def embed_coinflip() -> discord.Embed:
         description = f'\"Ah. Fortune smiles. Another day of wine and roses. Or, in your case, beer and pizza!\"'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)
@@ -131,7 +125,7 @@ async def embed_coinflip() -> discord.Embed:
 
 async def embed_cups() -> discord.Embed:
     """Cups embed"""
-    syntax = f'{emojis.BP} `rpg cups [$]`'
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/cups`'
     rules = (
         f'{emojis.BP} You are presented with three {emojis.CUPS} cups\n'
         f'{emojis.BP} You have to enter either `1`, `2` or `3` to pick one of the cups\n'
@@ -149,7 +143,7 @@ async def embed_cups() -> discord.Embed:
         description = 'These ain\'t coffee cups.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)
@@ -159,7 +153,7 @@ async def embed_cups() -> discord.Embed:
 
 async def embed_dice() -> discord.Embed:
     """Dice embed"""
-    syntax = f'{emojis.BP} `rpg dice [$]`'
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/dice`'
     rules = (
         f'{emojis.BP} You roll a die that can go from 1 to 7\n'
         f'{emojis.BP} If you get a 1, 2 or 3, you lose\n'
@@ -189,7 +183,7 @@ async def embed_dice() -> discord.Embed:
         description = 'Dice, dice, baby.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)
@@ -199,7 +193,7 @@ async def embed_dice() -> discord.Embed:
 
 async def embed_multidice() -> discord.Embed:
     """Multidice embed"""
-    syntax = f'{emojis.BP} `rpg multidice [@player] [$]`'
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/multidice`'
     rules = (
         f'{emojis.BP} You roll a die against another player\n'
         f'{emojis.BP} Whoever gets the higher roll, wins'
@@ -225,7 +219,7 @@ async def embed_multidice() -> discord.Embed:
         description = 'Someone wins. Someone loses. Such is life.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)
@@ -235,7 +229,7 @@ async def embed_multidice() -> discord.Embed:
 
 async def embed_slots() -> discord.Embed:
     """Slots embed"""
-    syntax = f'{emojis.BP} `rpg slots [$]`'
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/slots`'
     rules = (
         f'{emojis.BP} The slot machine gives you a row of 5 emojis\n'
         f'{emojis.BP} If you get **3 or more** of the same emoji, you win (see below)\n'
@@ -272,7 +266,7 @@ async def embed_slots() -> discord.Embed:
         description = 'Keep rollin\', rollin\', rollin\', rollin\'.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='5-OF-THE-SAME WINNINGS', value=rewards_five, inline=False)
     embed.add_field(name='4-OF-THE-SAME WINNINGS', value=rewards_four, inline=False)
@@ -283,7 +277,7 @@ async def embed_slots() -> discord.Embed:
 
 async def embed_wheel() -> discord.Embed:
     """Wheel embed"""
-    syntax = f'{emojis.BP} `rpg wheel [$]`'
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/wheel`'
     rules = (
         f'{emojis.BP} This is a simple wheel of fortune\n'
         f'{emojis.BP} The wheel lands on one of 7 possible colors\n'
@@ -315,7 +309,7 @@ async def embed_wheel() -> discord.Embed:
         description = 'What you gonna tell your dad?'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='SYNTAX', value=syntax, inline=False)
+    embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
     embed.add_field(name='CHANCES', value=chances, inline=False)

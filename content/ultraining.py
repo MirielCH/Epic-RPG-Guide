@@ -32,7 +32,7 @@ async def embed_ultraining_guide():
         f'{emojis.BP} You win or lose depending on your stats vs the EPIC NPC\'s stats\n'
         f'{emojis.BP} If you win, the stage increases by +1 the next time\n'
         f'{emojis.BP} Stages never reset\n'
-        f'{emojis.BP} You can use `rpg ultr p` to check your progress\n'
+        f'{emojis.BP} You can use {emojis.EPIC_RPG_LOGO_SMALL}`/ultraining progress: true` to check your progress\n'
     )
     which_command = (
         f'{emojis.BP} The exact impact of the chosen answer is unknown\n'
@@ -54,7 +54,7 @@ async def embed_ultraining_guide():
         f'{emojis.BP} Note: You can **not** get pets in ultraining\n'
     )
     calculators = (
-        f'{emojis.BP} `/ultraining calculator`: Calculate EPIC NPC damage in ultraining\n'
+        f'{emojis.BP} {emojis.LOGO}`/ultraining calculator`: Calculate EPIC NPC damage in ultraining\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

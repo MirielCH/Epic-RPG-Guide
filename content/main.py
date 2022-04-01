@@ -51,49 +51,50 @@ async def embed_help_guides() -> discord.Embed:
     seasonal_event = f'{emojis.BP} `/valentine guide` : Valentine event guide\n'
     guides = (
         #f'{emojis.BP} `/area guide`\n'
-        f'{emojis.BP} `/beginner guide`\n'
-        f'{emojis.BP} `/coolness guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/beginner guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/coolness guide`\n'
         #f'{emojis.BP} `/dungeon guide`\n'
-        f'{emojis.BP} `/enchanting guide`\n'
-        f'{emojis.BP} `/event guide`\n'
-        f'{emojis.BP} `/farming guide`\n'
-        f'{emojis.BP} `/gambling guide`\n'
-        f'{emojis.BP} `/guild guide`\n'
-        f'{emojis.BP} `/horse guide`\n'
-        f'{emojis.BP} `/pet guide`\n'
-        f'{emojis.BP} `/profession guide`\n'
-        f'{emojis.BP} `/time-travel guide`\n'
-        f'{emojis.BP} `/time-travel details`\n'
-        f'{emojis.BP} `/ultraining guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/enchanting guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/event guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/farming guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/gambling guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/guild guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/pet guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/profession guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/time-travel guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/time-travel details`\n'
+        f'{emojis.BP} {emojis.LOGO}`/trade guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/ultraining guide`\n'
     )
     trade_rates = (
-        f'{emojis.BP} `/trade rates` : Overview of all trade rates\n'
+        f'{emojis.BP} {emojis.LOGO}`/trade rates` : Overview of all trade rates\n'
     )
     monsters = (
-        f'{emojis.BP} `/monster drops` : Monster drops and where to find them\n'
-        f'{emojis.BP} `/monster search` : Look up monsters or the daily monster\n'
+        f'{emojis.BP} {emojis.LOGO}`/monster drops` : Monster drops and where to find them\n'
+        f'{emojis.BP} {emojis.LOGO}`/monster search` : Look up monsters or the daily monster\n'
     )
-    achievements = f'{emojis.BP} `/title search` : Look up titles / achievements\n'
+    achievements = f'{emojis.BP} {emojis.LOGO}`/title search` : Look up titles / achievements\n'
     misc = (
-        f'{emojis.BP} `/ask the oracle` : A very useless command\n'
-        f'{emojis.BP} `/badges` : All badges and how to get them\n'
-        f'{emojis.BP} `/codes` : All current redeemable codes\n'
-        f'{emojis.BP} `/duel weapons` : What every weapon does in duels\n'
-        f'{emojis.BP} `/tip` : A handy dandy random tip\n'
+        f'{emojis.BP} {emojis.LOGO}`/ask the oracle` : A very useless command\n'
+        f'{emojis.BP} {emojis.LOGO}`/badges` : All badges and how to get them\n'
+        f'{emojis.BP} {emojis.LOGO}`/codes` : All current redeemable codes\n'
+        f'{emojis.BP} {emojis.LOGO}`/duel weapons` : What every weapon does in duels\n'
+        f'{emojis.BP} {emojis.LOGO}`/tip` : A handy dandy random tip\n'
     )
     botlinks = (
-        f'{emojis.BP} `/invite` : Invite Epic RPG Guide to your server\n'
-        f'{emojis.BP} `/support` : Visit the support server\n'
+        f'{emojis.BP} {emojis.LOGO}`/invite` : Invite Epic RPG Guide to your server\n'
+        f'{emojis.BP} {emojis.LOGO}`/support` : Visit the support server\n'
     )
     field_settings = (
-        f'{emojis.BP} `/settings` : View your current settings\n'
-        f'{emojis.BP} `/set progress` : Set your progress to get fitting guides\n'
+        f'{emojis.BP} {emojis.LOGO}`/settings` : View your current settings\n'
+        f'{emojis.BP} {emojis.LOGO}`/set progress` : Set your progress to get fitting guides\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'EPIC RPG GUIDE: ALL GUIDES',
+        title = 'EPIC RPG GUIDES',
     )
-    embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.set_footer(text='Note: This is not an official bot.')
     #embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
@@ -108,39 +109,39 @@ async def embed_help_guides() -> discord.Embed:
 async def embed_help_calculators() -> discord.Embed:
     """Main menu embed"""
     checks = (
-        f'{emojis.BP} `/area check` : Check if you\'re ready for an area\n'
-        f'{emojis.BP} `/dungeon check` : Check if you\'re ready for a dungeon\n'
+        f'{emojis.BP} {emojis.LOGO}`/area check` : Check if you\'re ready for an area\n'
+        f'{emojis.BP} {emojis.LOGO}`/dungeon check` : Check if you\'re ready for a dungeon\n'
     )
     coincap = (
-        f'{emojis.BP} `/coin-cap calculator` : Calculate the coin cap for a TT/area\n'
+        f'{emojis.BP} {emojis.LOGO}`/coin-cap calculator` : Calculate the coin cap for a TT/area\n'
     )
     crafting = (
-        f'{emojis.BP} `/crafting calculator` : Recipes mats calculator\n'
-        f'{emojis.BP} `/dismantling calculator` : Dismantling calculator\n'
-        f'{emojis.BP} `/inventory calculator` : Convert your inventory into one material\n'
+        f'{emojis.BP} {emojis.LOGO}`/crafting calculator` : Recipes mats calculator\n'
+        f'{emojis.BP} {emojis.LOGO}`/dismantling calculator` : Dismantling calculator\n'
+        f'{emojis.BP} {emojis.LOGO}`/inventory calculator` : Convert your inventory into one material\n'
     )
     timetravel = (
-        f'{emojis.BP} `/time-jump score calculator` : Calculate the time jump score of your inventory\n'
+        f'{emojis.BP} {emojis.LOGO}`/time-jump score calculator` : Calculate the time jump score of your inventory\n'
     )
     horse = (
-        f'{emojis.BP} `/horse boost calculator` : Calculate horse boosts\n'
-        f'{emojis.BP} `/horse training calculator` : Calculate horse training cost\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse boost calculator` : Calculate horse boosts\n'
+        f'{emojis.BP} {emojis.LOGO}`/horse training calculator` : Calculate horse training cost\n'
     )
     pet = (
-        f'{emojis.BP} `/pet fuse` : See the recommended tiers for a pet fusion\n'
+        f'{emojis.BP} {emojis.LOGO}`/pet fuse` : See the recommended tiers for a pet fusion\n'
     )
-    drop_chance = f'{emojis.BP} `/dropchance calculator` : Calculate your monster drop chance\n'
-    trading = f'{emojis.BP} `/trade calculator` : Calculate materials after trading'
-    professions = f'{emojis.BP} `/profession calculator` : Calculate what you need to level professions'
-    ultraining = f'{emojis.BP} `/ultraining calculator` : Calculate EPIC NPC damage in ultraining'
+    drop_chance = f'{emojis.BP} {emojis.LOGO}`/dropchance calculator` : Calculate your monster drop chance\n'
+    trading = f'{emojis.BP} {emojis.LOGO}`/trade calculator` : Calculate materials after trading'
+    professions = f'{emojis.BP} {emojis.LOGO}`/profession calculator` : Calculate what you need to level professions'
+    ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining calculator` : Calculate EPIC NPC damage in ultraining'
     misc = (
-        f'{emojis.BP} `/calculator` : A basic calculator\n'
+        f'{emojis.BP} {emojis.LOGO}`/calculator` : A basic calculator\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'EPIC RPG GUIDE: CALCULATORS',
+        title = 'EPIC RPG CALCULATORS',
     )
-    embed.set_footer(text='Note: This is not an official guide bot.')
+    embed.set_footer(text='Note: This is not an official bot.')
     embed.add_field(name='COIN CAP', value=coincap, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     #embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)

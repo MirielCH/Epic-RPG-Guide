@@ -101,10 +101,10 @@ async def embed_time_travel() -> discord.Embed:
         title = 'TIME TRAVEL (TT)',
         description = (
             f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
-            f'To time travel, use `rpg time travel` while meeting the requirements.\n'
+            f'To time travel, use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` while meeting the requirements.\n'
             f'Warning: **You will lose everything except the items mentioned below**. So make sure you have done all '
             f'you want to do. You can check what you should do before time traveling by looking up the TT you are '
-            f'going to travel to with `/time-travel details`.'
+            f'going to travel to with {emojis.LOGO}`/time-travel details`.'
         )
 
     )
@@ -146,7 +146,7 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
     if mytt:
         embed_description = (
             f'This is your current TT according to your settings.\n'
-            f'If this is wrong, use `/set progress` to change it.'
+            f'If this is wrong, use {emojis.LOGO}`/set progress` to change it.'
         )
     else:
         embed_description = 'Allons-y !'
@@ -167,7 +167,8 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
         f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
-        f'{emojis.BP} Higher chance to get +1 tier in `horse breed` and `pet fusion` (chance unknown)\n'
+        f'{emojis.BP} Higher chance to get +1 tier in {emojis.EPIC_RPG_LOGO_SMALL}`/horse breeding` and '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/pets fusion` (chance unknown)\n'
     )
     coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
     field_coin_cap = (
@@ -176,75 +177,83 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} There is also a cap for boosted minibosses which is a bit higher (but unknown)'
     )
     work_multiplier = (
-        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with `greenhouse`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
-        f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
+        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`\n'
+        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`\n'
+        f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`\n'
     )
     prep_tt1_to_2 = (
         f'{emojis.BP} If your horse is T6+: Get 30m coins\n'
         f'{emojis.BP} If your horse is <T6: Get 50m coins\n'
-        f'{emojis.BP} If you need money: Do boosted minibosses, use `drill` and sell mob drops\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use {emojis.EPIC_RPG_LOGO_SMALL}`/drill` and '
+        f'sell mob drops\n'
         f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
-        f'{emojis.BP} Level up professions (see `/profession guide`)\n'
-        f'{emojis.BP} Sell everything else **except** the items listed in `/timetravel guide`\n'
+        f'{emojis.BP} Level up professions (see {emojis.LOGO}`/profession guide`)\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
     prep_tt3_to_4 = (
         f'{emojis.BP} If your horse is T6+: Get 50m coins\n'
         f'{emojis.BP} If your horse is <T6: Get 150m coins\n'
-        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` and '
+        f'sell mob drops\n'
         f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
-        f'{emojis.BP} Level up professions if not done (see `/profession guide`)\n'
+        f'{emojis.BP} Level up professions if not done (see {emojis.LOGO}`/profession guide`)\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
-        f'{emojis.BP} Sell everything else **except** the items listed in `/timetravel guide`\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
     prep_tt5_to_9 = (
         f'{emojis.BP} If your horse is T6+: Get 150m coins\n'
         f'{emojis.BP} If your horse is <T6: Get 350m coins\n'
-        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` and '
+        f'sell mob drops\n'
         f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
-        f'{emojis.BP} Level up professions if not done (see `/profession guide`)\n'
+        f'{emojis.BP} Level up professions if not done (see {emojis.LOGO}`/profession guide`)\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
-        f'{emojis.BP} Sell everything else **except** the items listed in `/timetravel guide`\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
     prep_tt10_to_24 = (
         f'{emojis.BP} If your horse is T6+: Get 350m coins\n'
         f'{emojis.BP} If your horse is <T6: Get 850m coins\n'
-        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` and '
+        f'sell mob drops\n'
         f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
-        f'{emojis.BP} Level up professions if not done (see `/profession guide`)\n'
+        f'{emojis.BP} Level up professions if not done (see {emojis.LOGO}`/profession guide`)\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
-        f'{emojis.BP} Sell everything else **except** the items listed in `/timetravel guide`\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 10`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet '
+        f'({emojis.EPIC_RPG_LOGO_SMALL}`/badge claim id: 10`)\n'
     )
     prep_tt25 = (
         f'{emojis.BP} If your horse is T6+: Get 350m coins\n'
         f'{emojis.BP} If your horse is <T6: Get 850m coins\n'
         f'{emojis.BP} Note: You **need** a T6+ horse to do Dungeon 15\n'
-        f'{emojis.BP} If you need money: Do boosted minibosses, use `dynamite` and sell mob drops\n'
+        f'{emojis.BP} If you need money: Do boosted minibosses, use {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` and '
+        f'sell mob drops\n'
         f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
-        f'{emojis.BP} Level up professions if not done (see `/profession guide`)\n'
+        f'{emojis.BP} Level up professions if not done (see {emojis.LOGO}`/profession guide`)\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
-        f'{emojis.BP} Sell everything else **except** the items listed in `/timetravel guide`\n'
+        f'{emojis.BP} Sell everything else **except** the items listed in {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
-        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet (`rpg badge claim 10`)\n'
+        f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet '
+        f'({emojis.EPIC_RPG_LOGO_SMALL}`/badge claim id: 10`)\n'
     )
     prep_stt = (
         f'{emojis.BP} Get 850m coins\n'
-        f'{emojis.BP} Level up professions if not done (see `/profession guide`)\n'
+        f'{emojis.BP} Level up professions if not done (see {emojis.LOGO}`/profession guide`)\n'
         f'{emojis.BP} If you need a higher score: Trade to {emojis.RUBY} rubies\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything you don\'t need for your desired score\n'
-        f'{emojis.BP} Do not sell items listed in `/time-travel guide`'
+        f'{emojis.BP} Do not sell items listed in {emojis.LOGO}`/time-travel guide`'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -296,7 +305,7 @@ async def embed_time_jump() -> discord.Embed:
         title = 'TIME JUMP',
         description = (
             f'Time jumping is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have '
-            f'to use `/time jump` to reach the next TT.\n'
+            f'to use {emojis.EPIC_RPG_LOGO_SMALL}`/time jump` to reach the next TT.\n'
             f'Time jump lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'
             f'These bonuses cost score points which are calculated based on your inventory and your gear '
             f'(see topic `Time jump score`).\n'
@@ -383,7 +392,7 @@ async def embed_time_jump_score() -> discord.Embed:
         description = (
             f'The score points for the starter bonuses of time jump are calculated based on your level, '
             f'inventory and your gear.\n'
-            f'You can calculate the score of your inventory with `/time-jump score calculator`.'
+            f'You can calculate the score of your inventory with {emojis.LOGO}`/time-jump score calculator`.'
         )
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
@@ -501,7 +510,9 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
             all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
             best_change = max(all_changes)
             best_change_index = all_changes.index(best_change)
-        areas_best_changes.append([area.area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log])
+        areas_best_changes.append(
+            [area.area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log]
+        )
         if area_next is None: break
 
     # Get the amount of logs in each area

@@ -139,14 +139,14 @@ async def embed_monster_drops() -> discord.Embed:
         f'{emojis.BP} A {emojis.HORSE_T8} T8 horse increases the drop chance by 50%\n'
         f'{emojis.BP} A {emojis.HORSE_T9} T9 horse increases the drop chance by 100%\n'
         f'{emojis.BP} A {emojis.HORSE_T10} T10 horse increases the drop chance by 200%\n'
-        f'{emojis.BP} To see your drop chance, use `/dropchance calculator`\n{emojis.BLANK}'
+        f'{emojis.BP} To see your drop chance, use {emojis.LOGO}`/dropchance calculator`\n{emojis.BLANK}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
-            f'These items drop when using `hunt`, `hunt together` or when opening lootboxes.\n'
-            f'You can go back to previous areas with `rpg area`.\n'
+            f'These items drop when using {emojis.EPIC_RPG_LOGO_SMALL}`/hunt` or when opening lootboxes.\n'
+            f'You can move to other areas with {emojis.EPIC_RPG_LOGO_SMALL}`/area`.\n'
             f'{emojis.BLANK}'
         )
     )

@@ -68,7 +68,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Allows you to participate in completing weekly guild tasks\n'
     )
     how_to_join = (
-        f'{emojis.BP} Use `rpg guild create` to create your own guild\n'
+        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/guild create` to create your own guild\n'
         f'{emojis.BP} Ask a guild owner to invite you in their guild'
     )
     embed = discord.Embed(
@@ -87,21 +87,21 @@ async def embed_overview() -> discord.Embed:
 async def embed_commands() -> discord.Embed:
     """Commands embed"""
     owner = (
-        f'{emojis.BP} `rpg guild buy` : Buy something from the guild shop\n'
-        f'{emojis.BP} `rpg guild change owner` : Transfer guild ownership\n'
-        f'{emojis.BP} `rpg guild create` : Create a guild\n'
-        f'{emojis.BP} `rpg guild delete` : Delete a guild\n'
-        f'{emojis.BP} `rpg guild invite` : Invite a player to your guild\n'
-        f'{emojis.BP} `rpg guild kick` : Kick a player from your guild'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild buy` : Buy something from the guild shop\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild changeowner` : Transfer guild ownership\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild create` : Create a guild\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild delete` : Delete a guild\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild invite` : Invite a player to your guild\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild kick` : Kick a player from your guild'
     )
     member = (
-        f'{emojis.BP} `rpg guild leave` : Leave the guild\n'
-        f'{emojis.BP} `rpg guild list` : List all members of the guild\n'
-        f'{emojis.BP} `rpg guild raid` : Start a guild raid\n'
-        f'{emojis.BP} `rpg guild ranking` : Opens the global guild leaderboard\n'
-        f'{emojis.BP} `rpg guild shop` : Opens the guild shop\n'
-        f'{emojis.BP} `rpg guild tasks` : Show/claim the weekly guild tasks\n'
-        f'{emojis.BP} `rpg guild upgrade` : Upgrade guild {emojis.GUILD_STEALTH} stealth\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild leave` : Leave the guild\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild list` : List all members of the guild\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild raid` : Start a guild raid\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild ranking` : Opens the global guild leaderboard\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild shop` : Opens the guild shop\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild tasks` : Show/claim the weekly guild tasks\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild upgrade` : Upgrade guild {emojis.GUILD_STEALTH} stealth\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

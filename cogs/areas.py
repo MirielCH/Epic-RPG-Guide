@@ -308,15 +308,16 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
     """Returns the best work commands for the area embed"""
 
     work_commands = None
+    emoji = emojis.EPIC_RPG_LOGO_SMALL
 
     if 16 <= area.area_no <= 20:
         if area.area_no in (16,18):
             work_commands = (
-                f'{emojis.BP} `bigboat` if you need {emojis.FISH_SUPER} SUPER fish\n'
-                f'{emojis.BP} `chainsaw` otherwise'
+                f'{emojis.BP} {emoji}`/bigboat` if you need {emojis.FISH_SUPER} SUPER fish\n'
+                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
             )
         elif area.area_no in (17,20):
-            work_commands = f'{emojis.BP} `chainsaw`'
+            work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
         elif area.area_no == 19:
             work_commands = None
         return work_commands
@@ -337,75 +338,75 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
     if not user.ascended or (user.ascended and user.tt == 1):
         if user.tt == 0 and area.area_no == 11:
             work_commands = (
-                f'{emojis.BP} `drill` if you need coins\n'
-                f'{emojis.BP} `chainsaw` otherwise'
+                f'{emojis.BP} {emoji}`/drill` if you need coins\n'
+                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
             )
         elif user.tt == 2 and 6 <= area.area_no <= 8:
             work_commands = (
-               f'{emojis.BP} `pickaxe`'
+               f'{emojis.BP} {emoji}`/pickaxe`'
             )
         else:
             if money_nohorse is None:
-                work_commands = f'{emojis.BP} `{area.work_cmd_poor}`'
+                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_poor}`'
             else:
                 if user.tt < 25:
                     work_commands = (
-                        f'{emojis.BP} `{area.work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} `{area.work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
                     )
                 else:
                     work_commands = (
-                        f'{emojis.BP} `{area.work_cmd_poor}` if < {money_t6horse}m coins'
+                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins'
                     )
-                work_commands = f'{work_commands}\n{emojis.BP} `{area.work_cmd_rich}` otherwise'
+                work_commands = f'{work_commands}\n{emojis.BP} {emoji}`{area.work_cmd_rich}` otherwise'
 
-        if user.ascended:
-            if 1 <= area.area_no <= 9:
-                if user.tt == 1:
-                    work_commands = f'{emojis.BP} `chainsaw`'
-                elif 1 <= area.area_no <= 3:
-                    work_commands = f'{emojis.BP} `dynamite`'
-                elif 4 <= area.area_no <= 5:
-                    work_commands = (
-                        f'{emojis.BP} `chainsaw` if worker 115 or higher\n'
-                        f'{emojis.BP} `dynamite` otherwise'
-                    )
-                elif 6 <= area.area_no <= 7:
-                    work_commands = (
-                        f'{emojis.BP} `greenhouse` if worker 102 or higher\n'
-                        f'{emojis.BP} `dynamite` otherwise'
-                    )
-                elif area.area_no == 8:
-                    work_commands = (
-                        f'{emojis.BP} `chainsaw` if worker 109 or higher\n'
-                        f'{emojis.BP} `dynamite` otherwise'
-                    )
-                elif area.area_no == 9:
-                    work_commands = (
-                        f'{emojis.BP} `greenhouse` if worker 107 or higher\n'
-                        f'{emojis.BP} `dynamite` otherwise'
-                    )
-            elif area.area_no == 10:
-                if user.tt == 1:
-                    work_commands = f'{emojis.BP} `chainsaw`'
-                else:
-                    work_commands = (
-                        f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                        f'{emojis.BP} `chainsaw` otherwise'
-                    )
-            elif area.area_no == 11:
-                if user.tt == 1:
-                    work_commands = f'{emojis.BP} `chainsaw`'
-                else:
-                    work_commands = (
-                        f'{emojis.BP} `dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                        f'{emojis.BP} `chainsaw` otherwise'
-                    )
+    if user.ascended:
+        if 1 <= area.area_no <= 9:
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+            elif 1 <= area.area_no <= 3:
+                work_commands = f'{emojis.BP} {emoji}`/dynamite`'
+            elif 4 <= area.area_no <= 5:
+                work_commands = (
+                    f'{emojis.BP} {emoji}`/chainsaw` if worker 115 or higher\n'
+                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                )
+            elif 6 <= area.area_no <= 7:
+                work_commands = (
+                    f'{emojis.BP} {emoji}`/greenhouse` if worker 102 or higher\n'
+                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                )
+            elif area.area_no == 8:
+                work_commands = (
+                    f'{emojis.BP} {emoji}`/chainsaw` if worker 109 or higher\n'
+                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                )
+            elif area.area_no == 9:
+                work_commands = (
+                    f'{emojis.BP} {emoji}`/greenhouse` if worker 107 or higher\n'
+                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                )
+        elif area.area_no == 10:
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
             else:
                 work_commands = (
-                    f'{emojis.BP} `dynamite` if you need coins\n'
-                    f'{emojis.BP} `chainsaw` otherwise'
+                    f'{emojis.BP} {emoji}`/dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} {emoji}`/chainsaw` otherwise'
                 )
+        elif area.area_no == 11:
+            if user.tt == 1:
+                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+            else:
+                work_commands = (
+                    f'{emojis.BP} {emoji}`/dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                )
+        else:
+            work_commands = (
+                f'{emojis.BP} {emoji}`/dynamite` if you need coins\n'
+                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+            )
 
     return work_commands
 
@@ -730,7 +731,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     if show_new_commands:
         for new_command in area.new_commands:
             if new_command is not None:
-                new_commands = f'{new_commands}, `{new_command}`'
+                new_commands = f'{new_commands}, {emojis.EPIC_RPG_LOGO_SMALL}`{new_command}`'
         if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command
@@ -749,17 +750,15 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
         if 16 <= area.area_no <= 20:
             area_dmg = (
-                f'{emojis.BP} `hunt`: ~**{hunt_dmg_max:,}**, '
-                f'`hunt h`: ~**{hunt_dmg_max_hm:,}**\n'
-                f'{emojis.BP} `adv`: ~**{adv_dmg_max:,}**, '
-                f'`adv h`: ~**{adv_dmg_max_hm:,}**'
+                f'{emojis.BP} Hunt: ~**{hunt_dmg_max:,}** normal, ~**{hunt_dmg_max_hm:,}** hardmode\n'
+                f'{emojis.BP} Adventure: ~**{adv_dmg_max:,}** normal, ~**{adv_dmg_max_hm:,}** hardmode'
             )
         else:
             area_dmg = (
-                f'{emojis.BP} `hunt`: **{hunt_dmg_min:,}**~**{hunt_dmg_max:,}**, '
-                f'`hunt h`: **{hunt_dmg_min_hm:,}**~**{hunt_dmg_max_hm:,}**\n'
-                f'{emojis.BP} `adv`: **{adv_dmg_min:,}**~**{adv_dmg_max:,}**, '
-                f'`adv h`: **{adv_dmg_min_hm:,}**~**{adv_dmg_max_hm:,}**'
+                f'{emojis.BP} Hunt: **{hunt_dmg_min:,}**~**{hunt_dmg_max:,}** normal, '
+                f'**{hunt_dmg_min_hm:,}**~**{hunt_dmg_max_hm:,}** hardmode\n'
+                f'{emojis.BP} Adventure: **{adv_dmg_min:,}**~**{adv_dmg_max:,}** normal, '
+                f'**{adv_dmg_min_hm:,}**~**{adv_dmg_max_hm:,}** hardmode'
             )
         area_dmg = (
             f'{area_dmg}\n'

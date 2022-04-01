@@ -1,5 +1,7 @@
 # strings.py
 
+from discord.commands import OptionChoice
+
 
 MSG_ABORTED = 'Aborted.'
 MSG_ABORTING = 'Aborting.'
@@ -322,3 +324,10 @@ NUMBERS_ROMAN_INTEGER = {
     'ix': 9,
     'x': 10,
 }
+
+
+# Choices for slash commands
+CHOICES_AREA = []
+for area_no in range(1, 21):
+    CHOICES_AREA.append(OptionChoice(name=f'Area {area_no}', value=area_no))
+CHOICES_AREA.append(OptionChoice(name='The TOP', value=21))

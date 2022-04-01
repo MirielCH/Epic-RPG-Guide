@@ -52,7 +52,7 @@ EVENTS_MULTIPLAYER = [
 EVENT_BIG_ARENA = 'Big arena'
 EVENT_HORSE_RACE = 'Horse race'
 EVENT_LOTTERY = 'Lottery'
-EVENT_NOT_SO_MINI_BOSS = 'Not so mini boss'
+EVENT_MININTBOSS = 'Minin\'tboss'
 EVENT_TOURNAMENT = 'Pet tournament'
 EVENT_TRADE = 'Special trade'
 
@@ -60,7 +60,7 @@ EVENTS_GLOBAL = [
     EVENT_BIG_ARENA,
     EVENT_HORSE_RACE,
     EVENT_LOTTERY,
-    EVENT_NOT_SO_MINI_BOSS,
+    EVENT_MININTBOSS,
     EVENT_TOURNAMENT,
     EVENT_TRADE
 ]
@@ -105,7 +105,7 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
         EVENT_LOTTERY: embed_event_lottery,
         EVENT_FISH: embed_event_megalodon,
         EVENT_MINIBOSS: embed_event_miniboss,
-        EVENT_NOT_SO_MINI_BOSS: embed_event_notsominiboss,
+        EVENT_MININTBOSS: embed_event_minintboss,
         EVENT_TOURNAMENT: embed_event_pettournament,
         EVENT_TRADE: embed_event_specialtrade,
         EVENT_RETURNING: embed_event_returning,
@@ -129,7 +129,10 @@ events_official_server = 'The outcome is announced in the [official server](http
 # --- Embeds: Personal Events ---
 async def embed_event_enchant() -> discord.Embed:
     """Enchant event"""
-    trigger = f'{emojis.BP} `enchant`, `refine`, `transmute`, `transcend` (0.085 % chance)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/enchant`, {emojis.EPIC_RPG_LOGO_SMALL}`/refine`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/transmute`, {emojis.EPIC_RPG_LOGO_SMALL}`/transcend` (0.085 % chance)'
+    )
     answers = (
         f'{emojis.BP} `cry`: Nothing happens but you won\'t get an enchant\n'
         f'{emojis.BP} `fix`: You get an enchant and either gain **or lose** 5 LIFE\n'
@@ -160,17 +163,13 @@ async def embed_event_epicguard() -> discord.Embed:
     """Epic guard event"""
     trigger = (
         f'{emojis.BP} Most commands that have a cooldown, with the exception of multiplayer commands like '
-        f'`arena`, `duel`, `horse breed` or `miniboss` (chance unknown)'
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/arena`, {emojis.EPIC_RPG_LOGO_SMALL}`/duel`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/horse breed` or {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss` (chance unknown)'
     )
-    answers = (
-        f'{emojis.BP} The name of the random item the guard shows you\n'
-        f'{emojis.BP} Tip: You can use `fish` instead of `normie fish`\n'
-        f'{emojis.BP} Tip: You can use `potion` instead of `life potion`\n'
-        f'{emojis.BP} Tip: You can use `wolf` instead of `wolf skin`'
-    )
+    answers = f'{emojis.BP} The emoji of the random item the guard shows you\n'
     jail = (
         f'{emojis.BP} If you answer wrong, you will be put in jail\n'
-        f'{emojis.BP} Use `rpg jail` and then `protest`\n'
+        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/jail` and then `protest`\n'
         f'{emojis.BP} Do not try to kill the guard, there is a high chance of losing XP\n'
         f'{emojis.BP} If you manage to kill the guard anyway, you will get 100 XP'
     )
@@ -194,7 +193,7 @@ async def embed_event_epicguard() -> discord.Embed:
 
 async def embed_event_farm() -> discord.Embed:
     """Farm (failed planting) event"""
-    trigger = f'{emojis.BP} `farm` (chance unknown)'
+    trigger = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/farm` (chance unknown)'
     answers = (
         f'{emojis.BP} `cry`: You get 1 crop and your seed back.\n'
         f'{emojis.BP} `plant another`: You get your seed back.\n'
@@ -220,7 +219,7 @@ async def embed_event_farm() -> discord.Embed:
 
 async def embed_event_heal() -> discord.Embed:
     """Heal event (mysterious man)"""
-    trigger = f'{emojis.BP} `heal` (0.75 % chance)'
+    trigger = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/heal` (0.75 % chance)'
     answers = (
         f'{emojis.BP} `cry`: The event ends, nothing happens\n'
         f'{emojis.BP} `search`: Leads to the option to `fight` the thief. If you do this, you will either '
@@ -246,7 +245,7 @@ async def embed_event_heal() -> discord.Embed:
 
 async def embed_event_lootbox() -> discord.Embed:
     """Lootbox opening event"""
-    trigger = f'{emojis.BP} `open` (chance unknown)'
+    trigger = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/open` (chance unknown)'
     answers = (
         f'{emojis.BP} `cry`: You get a {emojis.LB_EPIC} EPIC, {emojis.LB_RARE} rare or '
         f'{emojis.LB_UNCOMMON} uncommon lootbox\n'
@@ -313,14 +312,15 @@ async def embed_event_rubydragon() -> discord.Embed:
 async def embed_event_arena() -> discord.Embed:
     """Arena event"""
     trigger = (
-        f'{emojis.BP} `arena` to start the event alone\n'
-        f'{emojis.BP} `arena @Users` to start the event with up to 9 people for greater rewards\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/arena` to start the event alone\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/arena @Users` to start the event with up to 9 people '
+        f'for greater rewards\n'
         f'{emojis.BP} You can only mention users if their cooldown is ready\n'
         f'{emojis.BP} This will use up the cooldown of every player mentioned'
     )
     answers = (
-        f'{emojis.BP} `yes` or `y` if you got mentioned\n'
-        f'{emojis.BP} `join` if you are a participant'
+        f'{emojis.BP} Click `yes` if you got mentioned\n'
+        f'{emojis.BP} Click ⚔️ if you are a participant'
     )
     rewards = (
         f'{emojis.BP} 1 {emojis.ARENA_COOKIE} cookie per kill per initiator\n'
@@ -352,7 +352,8 @@ async def embed_event_arena() -> discord.Embed:
 async def embed_event_coinrain() -> discord.Embed:
     """Coin rain event"""
     trigger = (
-        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)\n'
         f'{emojis.BP} By using a {emojis.COIN_TRUMPET} coin trumpet from the EPIC shop'
     )
     answers = f'{emojis.BP} `catch`'
@@ -381,7 +382,8 @@ async def embed_event_coinrain() -> discord.Embed:
 async def embed_event_epictree() -> discord.Embed:
     """Epic tree event"""
     trigger = (
-        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)\n'
         f'{emojis.BP} By using an {emojis.EPIC_SEED} epic seed from the EPIC shop'
     )
     answers = f'{emojis.BP} `chop`'
@@ -408,7 +410,10 @@ async def embed_event_epictree() -> discord.Embed:
 
 async def embed_event_god() -> discord.Embed:
     """God event"""
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)'
+    )
     answers = (
         f'{emojis.BP} The phrase god asks for\n'
         f'{emojis.BP} For a list of all possible phrases see the '
@@ -438,7 +443,10 @@ async def embed_event_god() -> discord.Embed:
 
 async def embed_event_legendary() -> discord.Embed:
     """Legendary boss event"""
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)'
+    )
     answers = f'{emojis.BP} `time to fight`'
     rewards = f'{emojis.BP} + 1 level for every participant if successful'
     note = (
@@ -463,7 +471,10 @@ async def embed_event_legendary() -> discord.Embed:
 
 async def embed_event_lootboxsummoning() -> discord.Embed:
     """Lootbox summoning event"""
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)'
+    )
     answers = f'{emojis.BP} `summon`'
     rewards = (
         f'{emojis.BP} A lootbox for every player that entered\n'
@@ -492,7 +503,8 @@ async def embed_event_lootboxsummoning() -> discord.Embed:
 async def embed_event_megalodon() -> discord.Embed:
     """Megalodon event"""
     trigger = (
-        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)\n'
         f'{emojis.BP} By using an {emojis.ULTRA_BAIT} ultra bait from the EPIC shop'
     )
     answers = f'{emojis.BP} `fish`'
@@ -521,14 +533,14 @@ async def embed_event_megalodon() -> discord.Embed:
 async def embed_event_miniboss() -> discord.Embed:
     """Miniboss event"""
     trigger = (
-        f'{emojis.BP} `miniboss` to start the event alone\n'
-        f'{emojis.BP} `miniboss @Users` to start the event with up to 9 people for greater rewards\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss` to start the event alone\n'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss @Users` to start the event with up to 9 people for greater rewards\n'
         f'{emojis.BP} You can only mention users if their cooldown is ready\n'
         f'{emojis.BP} This will use up the cooldown of every player mentioned'
     )
     answers = (
-        f'{emojis.BP} `yes` or `y` if you got mentioned\n'
-        f'{emojis.BP} `fight` if you are a participant'
+        f'{emojis.BP} Click `yes` if you got mentioned\n'
+        f'{emojis.BP} Click 🗡️ if you are a participant'
     )
     rewards = (
         f'{emojis.BP} {emojis.COIN} Coins\n'
@@ -542,13 +554,13 @@ async def embed_event_miniboss() -> discord.Embed:
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
         f'{emojis.BP} {events_player_no.format(no=10)}\n'
-        f'{emojis.BP} This event shares its cooldown with `dungeons`\n'
-        f'{emojis.BP} This event shares its cooldown with `not so mini boss`\n'
+        f'{emojis.BP} This event shares its cooldown with {emojis.EPIC_RPG_LOGO_SMALL}`/dungeon`\n'
+        f'{emojis.BP} This event shares its cooldown with {emojis.EPIC_RPG_LOGO_SMALL}`/minintboss`\n'
         f'{emojis.BP} The chance increases by 5% for every participant'
     )
     whichone = (
         f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
-        f'{emojis.BP} `not so mini boss` rewards dragon scales instead of coins'
+        f'{emojis.BP} Minin\'tboss rewards dragon scales instead of coins'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -560,13 +572,16 @@ async def embed_event_miniboss() -> discord.Embed:
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-    embed.add_field(name='DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
+    embed.add_field(name='DUNGEON OR MINIBOSS OR NOT SO MININ\'TBOSS?', value=whichone, inline=False)
     return embed
 
 
 async def embed_event_specialtrade() -> discord.Embed:
     """Special trade event"""
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(chance unknown)'
+    )
     answers = (
         f'{emojis.BP} The phrase the epic NPC asks for\n'
         f'{emojis.BP} Note: You need the items for the trade in your inventory'
@@ -603,7 +618,7 @@ async def embed_event_specialtrade() -> discord.Embed:
 async def embed_event_bigarena() -> discord.Embed:
     """Big arena event"""
     schedule = f'{emojis.BP} Monday, Wednesday, Friday at 18:00 UTC'
-    answers = f'{emojis.BP} `big arena join` (unlocked in area 7)'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/big arena join: true` (unlocked in area 7)'
     rewards = (
         f'{emojis.BP} ~1000+ {emojis.ARENA_COOKIE} arena cookies for the winner\n'
         f'{emojis.BP} ~200+ {emojis.ARENA_COOKIE} arena cookies for second and third place\n'
@@ -612,9 +627,9 @@ async def embed_event_bigarena() -> discord.Embed:
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
-        f'{emojis.BP} This event shares its cooldown with `arena`'
+        f'{emojis.BP} This event shares its cooldown with {emojis.EPIC_RPG_LOGO_SMALL}`/arena`'
     )
-    whichone = f'{emojis.BP} `big arena` has higher rewards than unboosted `arena`'
+    whichone = f'{emojis.BP} Big arena has higher rewards than unboosted arena'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'BIG ARENA EVENT',
@@ -632,7 +647,7 @@ async def embed_event_bigarena() -> discord.Embed:
 async def embed_event_horserace() -> discord.Embed:
     """Horse race event"""
     schedule = f'{emojis.BP} Every even hour (= every 2 hours)'
-    answers = f'{emojis.BP} `horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
     rewards = (
         f'{emojis.BP} T1 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
         f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +1 horse level or +1 horse tier\n'
@@ -642,7 +657,7 @@ async def embed_event_horserace() -> discord.Embed:
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
-        f'{emojis.BP} This event shares its cooldown with `horse breeding`\n'
+        f'{emojis.BP} This event shares its cooldown with {emojis.EPIC_RPG_LOGO_SMALL}`/horse breeding`\n'
         f'{emojis.BP} Your chance to win is heavily influenced by your horse\'s level'
     )
     whichone = f'{emojis.BP} Unless your horse is {emojis.HORSE_T10} T10, breed instead'
@@ -663,7 +678,7 @@ async def embed_event_horserace() -> discord.Embed:
 async def embed_event_pettournament() -> discord.Embed:
     """Pet tournament event"""
     schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
-    answers = f'{emojis.BP} `pets tournament [ID]`'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/pets tournament'
     rewards = (
         f'{emojis.BP} + 1 pet tier\n'
         f'{emojis.BP} You only get the reward if you **win** the tournament'
@@ -692,7 +707,7 @@ async def embed_event_pettournament() -> discord.Embed:
 async def embed_event_lottery() -> discord.Embed:
     """Lottery event"""
     schedule = f'{emojis.BP} Every 12 hours at 00:00 / 12:00 UTC'
-    answers = f'{emojis.BP} `buy lottery ticket [1-10]`'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/lottery amount: [1-10]`'
     rewards = (
         f'{emojis.BP} A huge amount of {emojis.COIN} coins if you win\n'
         f'{emojis.BP} Absolutely nothing if you don\'t'
@@ -716,24 +731,25 @@ async def embed_event_lottery() -> discord.Embed:
     return embed
 
 
-async def embed_event_notsominiboss() -> discord.Embed:
+async def embed_event_minintboss() -> discord.Embed:
     """Not so mini boss event"""
     schedule = f'{emojis.BP} Tuesday, Thursday, Saturday at 18:00 UTC'
-    answers = f'{emojis.BP} `not so mini boss join` (unlocked in area 10)'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/minintboss join: true` (unlocked in area 10)'
     rewards = f'{emojis.BP} 2-4 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
-        f'{emojis.BP} This event shares its cooldown with `miniboss` and `dungeon`\n'
+        f'{emojis.BP} This event shares its cooldown with {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss` and '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/dungeon`\n'
         f'{emojis.BP} This event has a 20% chance to fail'
     )
     whichone = (
         f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
-        f'{emojis.BP} `miniboss` rewards coins instead of dragon scales'
+        f'{emojis.BP} Miniboss rewards coins instead of dragon scales'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'NOT SO MINI BOSS EVENT',
+        title = 'MININ\'TBOSS EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
@@ -741,13 +757,13 @@ async def embed_event_notsominiboss() -> discord.Embed:
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
-    embed.add_field(name='DUNGEON OR MINIBOSS OR NOT SO MINI BOSS?', value=whichone, inline=False)
+    embed.add_field(name='DUNGEON OR MINIBOSS OR MININ\'TBOSS?', value=whichone, inline=False)
     return embed
 
 
 async def embed_event_hunt() -> discord.Embed:
     """Hunt event embed"""
-    trigger = f'{emojis.BP} `hunt` in areas 3+ (chance unknown)'
+    trigger = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt` in areas 3+ (chance unknown)'
     answers = (
         f'{emojis.BP} `cry`: The zombie horde walks away, you get nothing\n'
         f'{emojis.BP} `fight`: Small chance to get 1 coin and _almost_ one level, high chance to get nothing\n'
@@ -809,16 +825,18 @@ async def embed_event_snowball() -> discord.Embed:
 
 async def embed_event_bunny() -> discord.Embed:
     """Easter: Bunny event"""
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (0.75 % chance)'
+    trigger = (
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
+        f'(0.75 % chance)'
+    )
     answers = (
         f'{emojis.BP} The bunny has a {emojis.PET_HAPPINESS} happiness and :carrot: hunger stat\n'
-        f'{emojis.BP} You can enter a line of commands to influence these stats\n'
-        f'{emojis.BP} `feed` decreases hunger by 18-22\n'
-        f'{emojis.BP} `pat` increases happiness by 8-12\n'
-        f'{emojis.BP} Example: `feed feed pat pat pat`\n'
+        f'{emojis.BP} You click on the buttons below to influence these stats\n'
+        f'{emojis.BP} 1 `feed` decreases hunger by 18-22\n'
+        f'{emojis.BP} 1 `pat` increases happiness by 8-12\n'
         f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
-        f'{emojis.BP} You can only use up to 6 commands\n'
-        f'{emojis.BP} Less commands = 15 {emojis.EASTER_EGG} easter eggs for every command not used'
+        f'{emojis.BP} You can only use up to 6 actions\n'
+        f'{emojis.BP} Less actions = 15 {emojis.EASTER_EGG} easter eggs for every command not used'
     )
     rewards = (
         f'{emojis.BP} {emojis.EASTER_BUNNY} Bunny (used in crafting {emojis.EASTER_SPAWNER} boss spawners)\n'
@@ -951,22 +969,26 @@ async def embed_event_scroll_boss() -> discord.Embed:
 async def embed_event_returning() -> discord.Embed:
     """Returning event"""
     activities = (
-        f'{emojis.BP} Get {emojis.COIN_SMOL} smol coins in `hunt`, `adventure` and all work commands\n'
-        f'{emojis.BP} Complete the event quest to get several rewards (see `rpg ret quest`)\n'
-        f'{emojis.BP} Claim a reward from the super-daily every day (see `rpg ret superdaily`)\n'
-        f'{emojis.BP} Buy various rewards in the `rpg ret shop`\n'
+        f'{emojis.BP} Get {emojis.COIN_SMOL} smol coins in {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and all work commands\n'
+        f'{emojis.BP} Complete the event quest to get several rewards '
+        f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/returning quest`)\n'
+        f'{emojis.BP} Claim a reward from the super-daily every day '
+        f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/returning superdaily`)\n'
+        f'{emojis.BP} Buy various rewards in the {emojis.EPIC_RPG_LOGO_SMALL}`/returning shop`\n'
     )
     bonuses = (
-        f'{emojis.BP} All command cooldowns except `vote` and `guild` are reduced by 33%\n'
+        f'{emojis.BP} All command cooldowns except {emojis.EPIC_RPG_LOGO_SMALL}`/vote` and '
+        f'{emojis.EPIC_RPG_LOGO_SMALL}`/guild` are reduced by 33%\n'
         f'{emojis.BP} You can enter all dungeons without buying a dungeon key\n'
-        f'{emojis.BP} The drop chance of mob drops is doubled (see `/monster drops`)\n'
+        f'{emojis.BP} The drop chance of mob drops is doubled (see {emojis.LOGO}`/monster drops`)\n'
     )
     schedule = (
         f'{emojis.BP} Event starts when you use a command after being inactive for at least 2 months\n'
         f'{emojis.BP} Event ends 7 days after it started\n'
     )
     tldr_guide = (
-        f'{emojis.BP} Make sure to use `rpg ret superdaily` every day\n'
+        f'{emojis.BP} Make sure to use {emojis.EPIC_RPG_LOGO_SMALL}`/returning superdaily` every day\n'
         f'{emojis.BP} Play the game (welcome back!)\n'
     )
     note = (

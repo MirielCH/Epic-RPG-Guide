@@ -22,28 +22,6 @@ def await_coroutine(coro):
             return error.value
 
 
-# --- Autocomplete functions ---
-async def area_choice(ctx: discord.AutocompleteContext):
-    """Provides the ability to select the TOP"""
-    return [OptionChoice(name='The TOP', value=21),] if ctx.value.lower() in 'the top' else []
-
-
-async def amount_choice(ctx: discord.AutocompleteContext):
-    """Provides the ability to use/select k, m and b in amounts"""
-    if not ctx.value.isnumeric(): return []
-    try:
-        amount = int(ctx.value)
-    except:
-        return []
-    choices = [OptionChoice(name=f'{ctx.value}', value=amount),]
-    if 1 <= amount <= 999:
-        choices.append(OptionChoice(name=f'{ctx.value}k', value=amount * 1_000))
-        choices.append(OptionChoice(name=f'{ctx.value}m', value=amount * 1_000_000))
-    if 1 <= amount <= 4:
-        choices.append(OptionChoice(name=f'{ctx.value}b', value=amount * 1_000_000_000))
-    return choices
-
-
 # Design fields for embeds
 async def design_field_traderate(area: database.Area) -> str:
     """Create field "trade rates" for area & trading"""
