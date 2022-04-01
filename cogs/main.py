@@ -65,8 +65,15 @@ class MainCog(commands.Cog):
                     ephemeral=True
                 )
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,
-                                commands.TooManyArguments, commands.BadArgument, commands.BotMissingPermissions)):
+                                commands.TooManyArguments, commands.BadArgument)):
             await send_error()
+        elif isinstance(error, commands.BotMissingPermissions):
+            await ctx.respond(
+                f'You can\'t use this command here, because I can\'t read EPIC RPG in this channel.\n'
+                f'To enable this, I need to have a role and that role needs the permission `View Channel` / '
+                f'`Read Messages` in this channel.',
+                ephemeral=True
+            )
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.respond(
                 f'Yo hey, calm down, this is an oracle, not a spam box, wait another {error.retry_after:.1f}s, will ya.',

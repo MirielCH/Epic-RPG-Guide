@@ -62,8 +62,8 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} `/horse guide`\n'
         f'{emojis.BP} `/pet guide`\n'
         f'{emojis.BP} `/profession guide`\n'
-        f'{emojis.BP} `/timetravel guide`\n'
-        f'{emojis.BP} `/timetravel details`\n'
+        f'{emojis.BP} `/time-travel guide`\n'
+        f'{emojis.BP} `/time-travel details`\n'
         f'{emojis.BP} `/ultraining guide`\n'
     )
     trade_rates = (
@@ -112,15 +112,15 @@ async def embed_help_calculators() -> discord.Embed:
         f'{emojis.BP} `/dungeon check` : Check if you\'re ready for a dungeon\n'
     )
     coincap = (
-        f'{emojis.BP} `/coincap calculator` : Calculate the coin cap for a TT/area\n'
+        f'{emojis.BP} `/coin-cap calculator` : Calculate the coin cap for a TT/area\n'
     )
     crafting = (
-        f'{emojis.BP} `/craft` : Recipes mats calculator\n'
-        f'{emojis.BP} `/dismantle` : Dismantling calculator\n'
+        f'{emojis.BP} `/crafting calculator` : Recipes mats calculator\n'
+        f'{emojis.BP} `/dismantling calculator` : Dismantling calculator\n'
         f'{emojis.BP} `/inventory calculator` : Convert your inventory into one material\n'
     )
     timetravel = (
-        f'{emojis.BP} `/stt score calculator` : Calculate the STT score of your inventory\n'
+        f'{emojis.BP} `/time-jump score calculator` : Calculate the time jump score of your inventory\n'
     )
     horse = (
         f'{emojis.BP} `/horse boost calculator` : Calculate horse boosts\n'

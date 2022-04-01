@@ -558,6 +558,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     rubies = int(dynamite_rubies)
     watermelon = int(greenhouse_watermelon)
     ultimate_logs = int(chainsaw_ultimate)
+    if ultimate_logs == 0: ultimate_logs = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
     tt_enchant_multipliers = {
         15: 6,

@@ -63,7 +63,7 @@ async def command_profession_calculator(
     """Profession calculator command"""
     current_xp = 0
     if profession is None or from_level is None:
-        command = f'rpg pr {profession}' if profession is not None else 'rpg pr [profession]'
+        command = f'/professions {profession}' if profession is not None else '/professions [profession]'
         bot_message_task = asyncio.ensure_future(functions.wait_for_profession_message(bot, ctx))
         try:
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, command)

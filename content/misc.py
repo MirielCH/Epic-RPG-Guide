@@ -166,7 +166,7 @@ async def command_coincap_calculator(
     if timetravel is None or area_no is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_message(bot, ctx))
         try:
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg p')
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/profile')
         except asyncio.TimeoutError:
             await ctx.respond(
                 strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profile'),

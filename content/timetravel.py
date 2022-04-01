@@ -13,22 +13,22 @@ from resources import emojis, functions, settings, strings, views
 
 # --- Topics ---
 TOPIC_TT = 'Time travel (TT)'
-TOPIC_STT = 'Super time travel (STT)'
-TOPIC_STT_SCORE = 'Super time travel (STT) score'
+TOPIC_TJ = 'Time jump'
+TOPIC_TJ_SCORE = 'Time jump score'
 
 TOPICS = [
     TOPIC_TT,
-    TOPIC_STT,
-    TOPIC_STT_SCORE,
+    TOPIC_TJ,
+    TOPIC_TJ_SCORE,
 ]
 
 # --- Commands ---
-async def command_timetravel_guide(ctx: discord.ApplicationContext, topic: str) -> None:
+async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Timetravel guide command"""
     topics_functions = {
-        TOPIC_TT: embed_timetravel,
-        TOPIC_STT: embed_super_timetravel,
-        TOPIC_STT_SCORE: embed_super_timetravel_score,
+        TOPIC_TT: embed_time_travel,
+        TOPIC_TJ: embed_time_jump,
+        TOPIC_TJ_SCORE: embed_time_jump_score,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -38,7 +38,7 @@ async def command_timetravel_guide(ctx: discord.ApplicationContext, topic: str) 
     await interaction.edit_original_message(view=None)
 
 
-async def command_timetravel_details(ctx: discord.ApplicationContext, timetravel: Optional[int] = None) -> None:
+async def command_time_travel_details(ctx: discord.ApplicationContext, timetravel: Optional[int] = None) -> None:
     """Timetravel guide command"""
     mytt = True if timetravel is None else False
     if timetravel is None:
@@ -48,15 +48,15 @@ async def command_timetravel_details(ctx: discord.ApplicationContext, timetravel
         await ctx.respond('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
         return
     tt: database.TimeTravel = await database.get_time_travel(timetravel)
-    embed = await embed_timetravel_details(tt, mytt)
+    embed = await embed_time_travel_details(tt, mytt)
     await ctx.respond(embed=embed)
 
 
-async def command_stt_score_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int) -> None:
+async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int) -> None:
     """STT score calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
-        bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg i')
+        bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/inventory')
     except asyncio.TimeoutError:
         await ctx.respond(
             strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='inventory'),
@@ -65,12 +65,12 @@ async def command_stt_score_calculator(bot: discord.Bot, ctx: discord.Applicatio
         return
     if bot_message is None: return
     inventory = str(bot_message.embeds[0].fields)
-    embed = await embed_stt_score_calculator(area_no, inventory.lower())
+    embed = await embed_tj_score_calculator(area_no, inventory.lower())
     await ctx.respond(embed=embed)
 
 
 # --- Embeds ---
-async def embed_timetravel() -> discord.Embed:
+async def embed_time_travel() -> discord.Embed:
     """Time travel overview"""
     where = (
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 0: Beat dungeon 10, reach area 11\n'
@@ -104,7 +104,7 @@ async def embed_timetravel() -> discord.Embed:
             f'To time travel, use `rpg time travel` while meeting the requirements.\n'
             f'Warning: **You will lose everything except the items mentioned below**. So make sure you have done all '
             f'you want to do. You can check what you should do before time traveling by looking up the TT you are '
-            f'going to travel to with `/timetravel details`.'
+            f'going to travel to with `/time-travel details`.'
         )
 
     )
@@ -114,20 +114,24 @@ async def embed_timetravel() -> discord.Embed:
     return embed
 
 
-async def embed_timetravel_details(tt: database.TimeTravel, mytt: bool = False):
+async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False):
     """Embed with details for specific time travel"""
     bonus_xp = (99 + tt.tt) * tt.tt / 2
     bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
     bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
-    greenhouse_watermelon = dynamite_rubies * 3
+    greenhouse_watermelon_min = dynamite_rubies * 2
+    greenhouse_watermelon_max = dynamite_rubies * 3
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
-    greenhouse_watermelon = Decimal(greenhouse_watermelon).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    greenhouse_watermelon_max = Decimal(greenhouse_watermelon_max).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     chainsaw_ultimate = Decimal(chainsaw_ultimate).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
-    watermelon = int(greenhouse_watermelon)
+    watermelon_min = int(greenhouse_watermelon_min)
+    watermelon_max = int(greenhouse_watermelon_max)
     ultimate_logs = int(chainsaw_ultimate)
+    if ultimate_logs == 0: ultimate_logs = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
     tt_enchant_multipliers = {
         15: 6,
@@ -172,7 +176,7 @@ async def embed_timetravel_details(tt: database.TimeTravel, mytt: bool = False):
         f'{emojis.BP} There is also a cap for boosted minibosses which is a bit higher (but unknown)'
     )
     work_multiplier = (
-        f'{emojis.BP} **{watermelon:,}** {emojis.WATERMELON} with `greenhouse`\n'
+        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with `greenhouse`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
@@ -240,7 +244,7 @@ async def embed_timetravel_details(tt: database.TimeTravel, mytt: bool = False):
         f'{emojis.BP} If you need a higher score: Trade to {emojis.RUBY} rubies\n'
         f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
         f'{emojis.BP} Sell everything you don\'t need for your desired score\n'
-        f'{emojis.BP} Do not sell items listed in `/timetravel guide`'
+        f'{emojis.BP} Do not sell items listed in `/time-travel guide`'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -267,7 +271,7 @@ async def embed_timetravel_details(tt: database.TimeTravel, mytt: bool = False):
     return embed
 
 
-async def embed_super_timetravel() -> discord.Embed:
+async def embed_time_jump() -> discord.Embed:
     """Super timetravel guide"""
     requirements = (
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 25+\n'
@@ -289,13 +293,14 @@ async def embed_super_timetravel() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'SUPER TIME TRAVEL',
+        title = 'TIME JUMP',
         description = (
-            f'Super time travel is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have '
-            f'to use `super time travel` to reach the next TT.\n'
-            f'Super time travel lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'
+            f'Time jumping is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have '
+            f'to use `/time jump` to reach the next TT.\n'
+            f'Time jump lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'
             f'These bonuses cost score points which are calculated based on your inventory and your gear '
-            f'(see topic `STT score`).'
+            f'(see topic `Time jump score`).\n'
+            f'Note: Time jump used to be called "super time travel".\n'
         )
 
     )
@@ -305,7 +310,7 @@ async def embed_super_timetravel() -> discord.Embed:
     return embed
 
 
-async def embed_super_timetravel_score() -> discord.Embed:
+async def embed_time_jump_score() -> discord.Embed:
     """STT score embed"""
     base = (
         f'{emojis.BP} If you are level 200, have the ULTRA-OMEGA set and your inventory is empty, you have 355.5 score'
@@ -374,11 +379,11 @@ async def embed_super_timetravel_score() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'SUPER TIME TRAVEL SCORE',
+        title = 'TIME JUMP SCORE',
         description = (
-            f'The score points for the starter bonuses of super time travel are calculated based on your level, '
+            f'The score points for the starter bonuses of time jump are calculated based on your level, '
             f'inventory and your gear.\n'
-            f'You can calculate the score of your inventory with `/stt score calculator`.'
+            f'You can calculate the score of your inventory with `/time-jump score calculator`.'
         )
     )
     embed.set_footer(text=strings.DEFAULT_FOOTER)
@@ -396,7 +401,7 @@ async def embed_super_timetravel_score() -> discord.Embed:
     return embed
 
 
-async def embed_stt_score_calculator(area_no: int, inventory: str) -> discord.Embed:
+async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Embed:
     """STT score calculator embed"""
     fish = await functions.inventory_get(inventory, 'normie fish')
     fishgolden = await functions.inventory_get(inventory, 'golden fish')

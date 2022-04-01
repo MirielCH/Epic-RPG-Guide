@@ -12,6 +12,7 @@ MSG_SYNTAX = 'The command syntax is `{syntax}`'
 MSG_SEARCH_QUERY_TOO_SHORT = 'The search query needs to be at least 3 characters long.'
 MSG_INPUT_TOO_LONG = 'Really.'
 MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}`'
+MSG_WAIT_FOR_INPUT_SLASH = '**{user}**, please use {emoji}`{command}`'
 MSG_WRONG_INPUT = 'Wrong input. Aborting.'
 
 DEFAULT_FOOTER = 'Use /guide to see all available guides.'

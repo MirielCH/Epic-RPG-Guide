@@ -1,11 +1,9 @@
 # crafting.py
 
 import asyncio
-from typing import Optional, Tuple
+from typing import Optional
 
 import discord
-from discord.ext import commands
-from discord.commands import Option, slash_command, SlashCommandGroup
 
 import database
 from resources import emojis
@@ -23,7 +21,7 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
     if horse_tier is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
         try:
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg horse')
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/horse stats')
         except asyncio.TimeoutError:
             await ctx.respond(
                 strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='horse'),
@@ -36,7 +34,7 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
     await ctx.respond(embed=embed)
 
 
-async def command_craft(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
+async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
     """Craft command"""
     if len(item_name) > 200:
         await ctx.respond('Really?', ephemeral=True)
@@ -94,7 +92,7 @@ async def command_craft(ctx: discord.ApplicationContext, item_name: str, amount:
     await ctx.respond(message)
 
 
-async def command_dismantle(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
+async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
     """Dismantle command"""
     if len(item_name) > 200:
         await ctx.respond('Really?', ephemeral=True)
@@ -140,7 +138,7 @@ async def command_inventory_calculator(bot: discord.Bot, ctx: discord.Applicatio
     """Inventory calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
-        bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg i')
+        bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/inventory')
     except asyncio.TimeoutError:
         await ctx.respond(
             strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='inventory'),

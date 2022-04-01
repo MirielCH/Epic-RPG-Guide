@@ -1016,7 +1016,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         rewards = (
             f'{rewards}\n'
             f'{emojis.BLANK} Note: You can not have more than 1 in your inventory.\n'
-            f'{emojis.BP} Unlocks the ability to get 2 additional {emojis.TIME_TRAVEL} TTs every {21 - dungeon_no:g} TTs.\n'
+            f'{emojis.BP} Unlocks the ability to get 1 additional {emojis.TIME_TRAVEL} TT every {21 - dungeon_no:g} TTs.\n'
             f'{emojis.BLANK} This reward is permanent.\n'
             f'{emojis.BP} Chance to get a {emojis.PET_VOIDOG} VOIDog pet\n'
         )

@@ -80,7 +80,11 @@ EVENT_TYPES = [
 # --- Commands ---
 async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> None:
     """Event guide command"""
-    if event not in EVENTS_ALL:
+    for event_check in EVENTS_ALL:
+        if event.lower() in event_check.lower():
+            event = event_check
+            break
+    else:
         await ctx.respond('I don\'t know an event with that name, sorry.', ephemeral=True)
         return
     events_functions = {

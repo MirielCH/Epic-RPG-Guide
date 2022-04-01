@@ -24,7 +24,7 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
     if name is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
         try:
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg world')
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/world')
         except asyncio.TimeoutError:
             await ctx.respond(
                 strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profession'),

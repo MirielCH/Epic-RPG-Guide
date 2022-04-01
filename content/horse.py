@@ -48,7 +48,7 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
     if horse_tier is None or horse_level is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
         try:
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg horse')
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/horse stats')
         except asyncio.TimeoutError:
             await ctx.respond(
                 strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='horse'),
@@ -95,7 +95,7 @@ async def command_horse_training_calculator(
         if horse_tier is None or from_level is None:
             bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
             try:
-                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg horse')
+                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/horse stats')
             except asyncio.TimeoutError:
                 await ctx.respond(
                     strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='horse'),
@@ -109,7 +109,7 @@ async def command_horse_training_calculator(
         if lootboxer_level is None:
             bot_message_task = asyncio.ensure_future(functions.wait_for_profession_overview_message(bot, ctx))
             try:
-                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, 'rpg pr')
+                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, '/professions stats')
             except asyncio.TimeoutError:
                 await ctx.respond(
                     strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profession'),
@@ -372,7 +372,7 @@ async def embed_breeding() -> discord.Embed:
         f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed after 60 attempts)\n'
         f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed after 120 attempts)\n'
         f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed after 360 attempts)\n'
-        f'{emojis.BP} T9 ➜ T10: chance & attempts unknown\n'
+        f'{emojis.BP} T9 ➜ T10: chance unknown (guaranteed after 1080 attempts)\n'
     )
     horse_level = (
         f'{emojis.BP} The new horses will have an average of both horse\'s levels\n'

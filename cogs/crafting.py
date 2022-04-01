@@ -44,15 +44,10 @@ class CraftingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_dropchance = SlashCommandGroup(
-        "dropchance",
-        "Dropchance commands",
-    )
-
-    cmd_inventory = SlashCommandGroup(
-        "inventory",
-        "Inventory commands",
-    )
+    cmd_dropchance = SlashCommandGroup("dropchance", "Dropchance commands")
+    cmd_inventory = SlashCommandGroup("inventory", "Inventory commands")
+    cmd_crafting = SlashCommandGroup("crafting", "Crafting commands")
+    cmd_dismantling = SlashCommandGroup("dismantling", "Dismantling commands")
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
@@ -68,8 +63,8 @@ class CraftingCog(commands.Cog):
         """Dropchance calculator"""
         await crafting.command_dropchance_calculator(self.bot, ctx, timetravel=timetravel, horse_tier=horse_tier)
 
-    @slash_command(description='Shows the materials you need to craft an item')
-    async def craft(
+    @cmd_crafting.command(name='calculator', description='Shows the materials you need to craft an item')
+    async def crafting_calculator(
         self,
         ctx: discord.ApplicationContext,
         item_name: Option(str, 'The item you want to craft', name='item',
@@ -77,10 +72,10 @@ class CraftingCog(commands.Cog):
         amount: Option(str, 'The amount of items you want to see the materials for'),
     ) -> None:
         """Calculates mats you need when crafting items"""
-        await crafting.command_craft(ctx, item_name, amount)
+        await crafting.command_crafting_calculator(ctx, item_name, amount)
 
-    @slash_command(description='Shows the materials you get when dismantling an item')
-    async def dismantle(
+    @cmd_dismantling.command(name='calculator', description='Shows the materials you get when dismantling an item')
+    async def dismantling_calculator(
         self,
         ctx: discord.ApplicationContext,
         item_name: Option(str, 'The item you want to dismantle', name='item',
@@ -88,7 +83,7 @@ class CraftingCog(commands.Cog):
         amount: Option(str, 'The amount of items you want to see the materials for'),
     ) -> None:
         """Calculates mats you get when dismantling items"""
-        await crafting.command_dismantle(ctx, item_name, amount)
+        await crafting.command_dismantling_calculator(ctx, item_name, amount)
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()

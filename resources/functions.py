@@ -28,6 +28,22 @@ async def area_choice(ctx: discord.AutocompleteContext):
     return [OptionChoice(name='The TOP', value=21),] if ctx.value.lower() in 'the top' else []
 
 
+async def amount_choice(ctx: discord.AutocompleteContext):
+    """Provides the ability to use/select k, m and b in amounts"""
+    if not ctx.value.isnumeric(): return []
+    try:
+        amount = int(ctx.value)
+    except:
+        return []
+    choices = [OptionChoice(name=f'{ctx.value}', value=amount),]
+    if 1 <= amount <= 999:
+        choices.append(OptionChoice(name=f'{ctx.value}k', value=amount * 1_000))
+        choices.append(OptionChoice(name=f'{ctx.value}m', value=amount * 1_000_000))
+    if 1 <= amount <= 4:
+        choices.append(OptionChoice(name=f'{ctx.value}b', value=amount * 1_000_000_000))
+    return choices
+
+
 # Design fields for embeds
 async def design_field_traderate(area: database.Area) -> str:
     """Create field "trade rates" for area & trading"""
@@ -267,7 +283,10 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
     This error is also logged to the database.
     """
     view = views.AbortView(ctx)
-    interaction = await ctx.respond(strings.MSG_WAIT_FOR_INPUT.format(user=ctx.author.name, command=command), view=view)
+    interaction = await ctx.respond(
+        strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL, command=command),
+        view=view
+    )
     view.interaction = interaction
     view_task = asyncio.ensure_future(view.wait())
     done, pending = await asyncio.wait([bot_message_task, view_task], return_when=asyncio.FIRST_COMPLETED)
