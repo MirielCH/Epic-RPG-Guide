@@ -235,7 +235,7 @@ async def default_footer(prefix):
 
 # Wait for input
 async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_task: asyncio.coroutine,
-                                command: str) -> Union[discord.Message, None]:
+                                content: str) -> Union[discord.Message, None]:
     """Sends a message with an abort button that tells the user to input a command.
     This function then waits for both view input and bot_message_task.
     If the bot message task finishes first, the bot message is returned, otherwise return value is None.
@@ -247,7 +247,7 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
     ---------
     ctx: Context.
     bot_message_task: The task with the coroutine that waits for the EPIC RPG message.
-    command: The command the user is told to enter.
+    content: The content of the message that tells the user what to enter.
 
     Returns
     -------
@@ -260,10 +260,7 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
     This error is also logged to the database.
     """
     view = views.AbortView(ctx)
-    interaction = await ctx.respond(
-        strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL, command=command),
-        view=view
-    )
+    interaction = await ctx.respond(content, view=view)
     view.interaction = interaction
     view_task = asyncio.ensure_future(view.wait())
     done, pending = await asyncio.wait([bot_message_task, view_task], return_when=asyncio.FIRST_COMPLETED)
@@ -383,6 +380,25 @@ async def wait_for_profile_message(bot: commands.Bot, ctx: discord.ApplicationCo
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             if f'{ctx_author}\'s profile' in embed_author:
+                correct_message = True
+        except:
+            pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
+async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the profile OR the stats embed from EPIC RPG"""
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            ctx_author = format_string(str(ctx.author.name))
+            embed_author = format_string(str(message.embeds[0].author))
+            if f'{ctx_author}\'s profile' in embed_author or f'{ctx_author}\'s stats' in embed_author:
                 correct_message = True
         except:
             pass
@@ -562,7 +578,7 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
 
 
 async def extract_progress_data_from_profile_embed(ctx: discord.ApplicationContext,
-                                                       bot_message: discord.Message) -> Tuple[int, int]:
+                                                   bot_message: discord.Message) -> Tuple[int, int]:
     """Extracts tt and max area from a profile embed.
 
     Arguments
@@ -593,3 +609,44 @@ async def extract_progress_data_from_profile_embed(ctx: discord.ApplicationConte
         raise ValueError(error)
 
     return (tt, area)
+
+
+async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationContext,
+                                                    bot_message: discord.Message) -> Tuple[int, int, int]:
+    """Extracts at, def and life from a profile or stats embed.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    Tuple[
+        at: int,
+        def: int,
+        life: int
+    ]
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    embed_author = str(bot_message.embeds[0].author)
+    if 'profile' in embed_author:
+        stats_field = bot_message.embeds[0].fields[1]
+    else:
+        stats_field = bot_message.embeds[0].fields[0]
+    at_search = re.search('at\*\*: (.+?)\\n', stats_field.value.lower())
+    def_search = re.search('def\*\*: (.+?)\\n', stats_field.value.lower())
+    life_search = re.search('life\*\*: (.+?)\/(.+?)$', stats_field.value.lower())
+    try:
+        user_at = int(at_search.group(1))
+        user_def = int(def_search.group(1))
+        user_life = int(life_search.group(2))
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise ValueError(error)
+
+    return (user_at, user_def, user_life)

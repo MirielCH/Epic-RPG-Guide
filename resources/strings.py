@@ -312,6 +312,32 @@ PROFESSIONS = (
 )
 
 
+DUNGEONS = (
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    15.2,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+)
+
+
 NUMBERS_ROMAN_INTEGER = {
     'ix': 1,
     'ii': 2,
@@ -331,6 +357,16 @@ CHOICES_AREA = []
 for area_no in range(1, 21):
     CHOICES_AREA.append(OptionChoice(name=f'Area {area_no}', value=area_no))
 CHOICES_AREA.append(OptionChoice(name='The TOP', value=21))
+
+
+CHOICES_DUNGEON = []
+for dungeon_no in range(1, 21):
+    if dungeon_no == 15:
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon 15', value=15))
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon 15-2', value=15.2))
+    else:
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon {dungeon_no}', value=dungeon_no))
+CHOICES_DUNGEON.append(OptionChoice(name='The "final" fight', value=21))
 
 
 CHOICE_ASCENDED = 'Ascended'

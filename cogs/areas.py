@@ -15,7 +15,7 @@ class AreasCog(commands.Cog):
 
     cmd_area = SlashCommandGroup("area", "Area commands")
 
-    @cmd_area.command(name='guide', description='Guide for certain areas')
+    @cmd_area.command(name='guide', description='What to do and what you need in all areas')
     async def area_guide(
         self,
         ctx: discord.ApplicationContext,
@@ -29,8 +29,23 @@ class AreasCog(commands.Cog):
                            choices=strings.CHOICES_ASCENSION, default=None),
 
     ) -> None:
-        """Dropchance calculator"""
+        """Area guide"""
         await areas.command_area_guide(ctx, area_no, timetravel, ascension, length)
+
+    @commands.bot_has_permissions(view_channel=True)
+    @commands.guild_only()
+    @cmd_area.command(name='check', description='Check how much damage you take in an area')
+    async def area_check(
+        self,
+        ctx: discord.ApplicationContext,
+        area_no: Option(int, 'The area you want to check for', name='area',
+                        min_value=1, max_value=21, choices=strings.CHOICES_AREA),
+        user_at: Option(int, 'Your AT. Reads from EPIC RPG if empty.', name='at', min_value=1, default=None),
+        user_def: Option(int, 'Your DEF. Reads from EPIC RPG if empty.', name='def', min_value=1, default=None),
+        user_life: Option(int, 'Your LIFE. Reads from EPIC RPG if empty.', name='life', min_value=100, default=None),
+    ) -> None:
+        """Area check"""
+        await areas.command_area_check(self.bot, ctx, area_no, user_at, user_def, user_life)
 
 
 # Initialization

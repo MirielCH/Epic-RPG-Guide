@@ -1,5 +1,6 @@
 # areas.py
 
+import asyncio
 from typing import Optional
 
 import discord
@@ -9,6 +10,7 @@ import database
 from resources import emojis, functions, settings, strings, views
 
 
+# --- Commands ---
 async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_no: int,
                              ascension: Optional[str] = None, length: Optional[str] = None) -> None:
     """Area guide command"""
@@ -29,12 +31,47 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
             return
         user.ascended = True if ascension == strings.CHOICE_ASCENDED else False
     full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
-    view = views.AreaView(ctx, area_no, user, full_guide, embed_area_guide)
+    view = views.AreaGuideView(ctx, area_no, user, full_guide, embed_area_guide)
     embed = await embed_area_guide(ctx, area_no, user, full_guide)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
     await interaction.edit_original_message(view=None)
+
+
+async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
+                             user_at: Optional[int] = None, user_def: Optional[int] = None,
+                             user_life: Optional[int] = None)  -> None:
+    """Area check command"""
+    if user_at is None or user_def is None or user_life is None:
+        bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
+        try:
+            content = (
+                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}`/profile` '
+                f'or {emojis.EPIC_RPG_LOGO_SMALL}`/stats`\n'
+                f'Note that profile backgrounds are not supported.'
+            )
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='stats'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        at_found, def_found, life_found = await functions.extract_stats_from_profile_or_stats_embed(ctx, bot_message)
+        if user_at is None: user_at = at_found
+        if user_def is None: user_def = def_found
+        if user_life is None: user_life = life_found
+    view = views.AreaCheckView(ctx, area_no, user_at, user_def, user_life, embed_area_check)
+    embed = await embed_area_check(area_no, user_at, user_def, user_life)
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    if isinstance(interaction, discord.WebhookMessage):
+        await interaction.edit(view=None)
+    else:
+        await interaction.edit_original_message(view=None)
 
 
 # --- Functions ---
@@ -468,6 +505,105 @@ async def design_field_lootboxes(area: database.Area, user: database.User) -> st
     return lootboxes
 
 
+async def design_field_area_check(area_no: int, user_at: int, user_def: int, user_life: int) -> str:
+    """Returns a check result field value for one area for the area check embed"""
+    area: database.Area = await database.get_area(area_no)
+    user_at_def = user_at + user_def
+    hunt_dmg_min = area.hunt_dmg[0]
+    hunt_dmg_max = area.hunt_dmg[1]
+    hunt_dmg_min_hm = functions.round_school(hunt_dmg_min*1.7)
+    hunt_dmg_max_hm = functions.round_school(hunt_dmg_max*1.7)
+    adv_dmg_min = area.adv_dmg[0]
+    adv_dmg_max = area.adv_dmg[1]
+    adv_dmg_min_hm = functions.round_school(adv_dmg_min*1.7)
+    adv_dmg_max_hm = functions.round_school(adv_dmg_max*1.7)
+
+    hunt_taken_dmg_min = hunt_dmg_min - user_at_def
+    hunt_taken_dmg_min_hm = hunt_dmg_min_hm - user_at_def
+    hunt_taken_dmg_max = hunt_dmg_max - user_at_def
+    hunt_taken_dmg_max_hm = hunt_dmg_max_hm - user_at_def
+    adv_taken_dmg_min = adv_dmg_min - user_at_def
+    adv_taken_dmg_max = adv_dmg_max - user_at_def
+    adv_taken_dmg_min_hm = adv_dmg_min_hm - user_at_def
+    adv_taken_dmg_max_hm = adv_dmg_max_hm - user_at_def
+
+    if hunt_taken_dmg_min < 0: hunt_taken_dmg_min = 0
+    if hunt_taken_dmg_min_hm < 0: hunt_taken_dmg_min_hm = 0
+    if hunt_taken_dmg_max < 0: hunt_taken_dmg_max = 0
+    if hunt_taken_dmg_max_hm < 0: hunt_taken_dmg_max_hm = 0
+    if adv_taken_dmg_min < 0: adv_taken_dmg_min = 0
+    if adv_taken_dmg_min_hm < 0: adv_taken_dmg_min_hm = 0
+    if adv_taken_dmg_max < 0: adv_taken_dmg_max = 0
+    if adv_taken_dmg_max_hm < 0: adv_taken_dmg_max_hm = 0
+
+    if hunt_taken_dmg_max == 0:
+        hunt_emoji = emojis.CHECK_OK
+    elif hunt_taken_dmg_max < user_life:
+        hunt_emoji = emojis.CHECK_IGNORE
+    elif hunt_taken_dmg_min < user_life:
+        hunt_emoji = emojis.CHECK_WARN
+    else:
+        hunt_emoji = emojis.CHECK_FAIL
+    if hunt_taken_dmg_max_hm == 0:
+        hunt_hm_emoji = emojis.CHECK_OK
+    elif hunt_taken_dmg_max_hm < user_life:
+        hunt_hm_emoji = emojis.CHECK_IGNORE
+    elif hunt_taken_dmg_min_hm < user_life:
+        hunt_hm_emoji = emojis.CHECK_WARN
+    else:
+        hunt_hm_emoji = emojis.CHECK_FAIL
+
+    if adv_taken_dmg_max == 0:
+        adv_emoji = emojis.CHECK_OK
+    elif adv_taken_dmg_max < user_life:
+        adv_emoji = emojis.CHECK_IGNORE
+    elif adv_taken_dmg_min < user_life:
+        adv_emoji = emojis.CHECK_WARN
+    else:
+        adv_emoji = emojis.CHECK_FAIL
+    if adv_taken_dmg_max_hm == 0:
+        adv_hm_emoji = emojis.CHECK_OK
+    elif adv_taken_dmg_max_hm < user_life:
+        adv_hm_emoji = emojis.CHECK_IGNORE
+    elif adv_taken_dmg_min_hm < user_life:
+        adv_hm_emoji = emojis.CHECK_WARN
+    else:
+        adv_hm_emoji = emojis.CHECK_FAIL
+
+    if hunt_taken_dmg_min == hunt_taken_dmg_max:
+        hunt_dmg_taken_str = f'{hunt_taken_dmg_max:,}'
+    else:
+        hunt_dmg_taken_str = f'{hunt_taken_dmg_min:,}-{hunt_taken_dmg_max:,}'
+    if hunt_taken_dmg_min_hm == hunt_taken_dmg_max_hm:
+        hunt_dmg_taken_hm_str = f'{hunt_taken_dmg_max_hm:,}'
+    else:
+        hunt_dmg_taken_hm_str = f'{hunt_taken_dmg_min_hm:,}-{hunt_taken_dmg_max_hm:,}'
+    if adv_taken_dmg_min == adv_taken_dmg_max:
+        adv_dmg_taken_str = f'{adv_taken_dmg_max:,}'
+    else:
+        adv_dmg_taken_str = f'{adv_taken_dmg_min}-{adv_taken_dmg_max}'
+    if adv_taken_dmg_min_hm == adv_taken_dmg_max_hm:
+        adv_dmg_taken_hm_str = f'{adv_taken_dmg_max_hm:,}'
+    else:
+        adv_dmg_taken_hm_str = f'{adv_taken_dmg_min_hm:,}-{adv_taken_dmg_max_hm:,}'
+
+    if 1 <= area_no <= 15:
+        result = (
+            f'{emojis.BP} {hunt_emoji} **Hunt**: {hunt_dmg_taken_str} damage\n'
+            f'{emojis.BP} {hunt_hm_emoji} **Hunt hardmode**: {hunt_dmg_taken_hm_str} damage\n'
+            f'{emojis.BP} {adv_emoji} **Adventure**: {adv_dmg_taken_str} damage\n'
+            f'{emojis.BP} {adv_hm_emoji} **Adventure hardmode**: {adv_dmg_taken_hm_str} damage\n'
+        )
+    else:
+        result = (
+            f'{emojis.BP} {hunt_emoji} **Hunt**: {hunt_taken_dmg_max} damage\n'
+            f'{emojis.BP} {hunt_hm_emoji} **Hunt hardmode**: {hunt_taken_dmg_max_hm} damage\n'
+            f'{emojis.BP} {adv_emoji} **Adventure**: {adv_taken_dmg_max} damage\n'
+            f'{emojis.BP} {adv_hm_emoji} **Adventure hardmode**: {adv_taken_dmg_max_hm} damage\n'
+        )
+    return result
+
+
 # --- Embeds ---
 async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.User, full_version: bool) -> discord.Embed:
     """Returns embed with area guide"""
@@ -573,7 +709,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     work_commands = await design_field_work_commands(area, user)
 
     # Area damage
-    if area.adv_dmg[1] is not None and area.hunt_dmg[1] is not None:
+    if area.adv_dmg[1] > 0 and area.hunt_dmg[1] > 0:
         hunt_dmg_min = area.hunt_dmg[0]
         hunt_dmg_max = area.hunt_dmg[1]
         hunt_dmg_min_hm = functions.round_school(hunt_dmg_min*1.7)
@@ -597,7 +733,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Monster damage - (AT + DEF) = Actual damage'
+            f'{emojis.BLANK} Use `/area check` to see your actual damage'
         )
 
     # Lootboxes
@@ -714,4 +850,30 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     if full_version:
         embed.add_field(name='NOTE', value=note, inline=False)
 
+    return embed
+
+
+async def embed_area_check(area_no: int, user_at: int, user_def: int, user_life: int) -> discord.Embed:
+    """Embed with area check"""
+    legend = (
+        f'{emojis.BP} {emojis.CHECK_OK} : You will always take 0 damage\n'
+        f'{emojis.BP} {emojis.CHECK_IGNORE} : You will take damage but always survive if healed up\n'
+        f'{emojis.BP} {emojis.CHECK_WARN} : If you are lucky and healed up, you might survive\n'
+        f'{emojis.BP} {emojis.CHECK_FAIL} : It was nice knowing you. RIP.\n'
+    )
+    stats = (
+        f'{emojis.BP} {emojis.STAT_AT} **AT**: {user_at:,}\n'
+        f'{emojis.BP} {emojis.STAT_DEF} **DEF**: {user_def:,}\n'
+        f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {user_life:,}'
+    )
+    area_no_str = 'the TOP' if area_no == 21 else f'area {area_no}'
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'{area_no_str.upper()} DAMAGE CHECK',
+    )
+    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.add_field(name='YOUR STATS', value=stats, inline=False)
+    area_check_field = await design_field_area_check(area_no, user_at, user_def, user_life)
+    embed.add_field(name='DAMAGE TAKEN', value=area_check_field, inline=False)
+    embed.add_field(name='LEGEND', value=legend, inline=False)
     return embed

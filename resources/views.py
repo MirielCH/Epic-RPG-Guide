@@ -1,19 +1,37 @@
 # views.py
 """Contains global interaction views"""
 
-from ast import Call
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Union
 
 import discord
-from discord.ext import commands, pages
 
 import database
-from resources import emojis, settings, strings
+from resources import settings, strings
 
 
 # --- Components ---
-class AreaSelect(discord.ui.Select):
-    """Area Select"""
+class AreaCheckSelect(discord.ui.Select):
+    """Area check select"""
+    def __init__(self, active_area: int):
+        options = []
+        for area_no in range(1,22):
+            label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+            emoji = '🔹' if area_no == active_area else None
+            options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_area = int(select_value)
+        embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
+                                         self.view.user_life)
+        self.view.clear_items()
+        self.view.add_item(AreaCheckSelect(self.view.active_area))
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class AreaGuideSelect(discord.ui.Select):
+    """Area guide select"""
     def __init__(self, active_area: int):
         options = []
         for area_no in range(1,22):
@@ -27,7 +45,48 @@ class AreaSelect(discord.ui.Select):
         self.view.active_area = int(select_value)
         embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
         self.view.clear_items()
-        self.view.add_item(AreaSelect(self.view.active_area))
+        self.view.add_item(AreaGuideSelect(self.view.active_area))
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class DungeonCheckSelect(discord.ui.Select):
+    """Dungeon check select"""
+    def __init__(self, active_dungeon: float):
+        options = []
+        for dungeon_no in strings.DUNGEONS:
+            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'The "final" fight'
+            label = label.replace('.','-')
+            emoji = '🔹' if dungeon_no == active_dungeon else None
+            options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_dungeon = float(select_value)
+        embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
+                                         self.view.user_life)
+        self.view.clear_items()
+        self.view.add_item(DungeonCheckSelect(self.view.active_dungeon))
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class DungeonGuideSelect(discord.ui.Select):
+    """Dungeon guide select"""
+    def __init__(self, active_dungeon: float):
+        options = []
+        for dungeon_no in strings.DUNGEONS:
+            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'The "final" fight'
+            label = label.replace('.','-')
+            emoji = '🔹' if dungeon_no == active_dungeon else None
+            options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_dungeon = float(select_value)
+        embed = await self.view.function(self.view.active_dungeon)
+        self.view.clear_items()
+        self.view.add_item(DungeonGuideSelect(self.view.active_dungeon))
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -127,16 +186,60 @@ class AbortView(discord.ui.View):
         self.stop()
 
 
-class AreaView(discord.ui.View):
-    """View with an area select.
+class AreaCheckView(discord.ui.View):
+    """View with an area select that shows area checks on select.
     Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
 
     Arguments
     ---------
     ctx: Context.
     active_area: Currently chosen area. Use 21 if the top.
-    function: The function that returns the area embed, The function needs to return an embed and have two arguments
-    argument (context: discord.ApplicationContext, area_no: int, tt_no: int, ascended: bool, full_guide: bool)
+    user_at: AT of the player.
+    user_def: DEF of the player.
+    user_life: LIFE of the player.
+    function: The function that returns the area check embed. The function needs to return an embed and have the
+    following arguments: area_no: int, user_at: int, user_def: int, user_life: int
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, active_area: int, user_at: int, user_def: int, user_life: int,
+                 function: Callable, interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.ctx = ctx
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.active_area = active_area
+        self.user_at = user_at
+        self.user_def = user_def
+        self.user_life = user_life
+        self.function = function
+        self.add_item(AreaCheckSelect(self.active_area))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
+class AreaGuideView(discord.ui.View):
+    """View with an area select that shows area guides on select.
+    Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    active_area: Currently chosen area. Use 21 if the top.
+    function: The function that returns the area embed, The function needs to return an embed and have the
+    following arguments: context: discord.ApplicationContext, area_no: int, tt_no: int, ascended: bool, full_guide: bool
 
     Returns
     -------
@@ -154,7 +257,89 @@ class AreaView(discord.ui.View):
         self.db_user = db_user
         self.full_guide = full_guide
         self.function = function
-        self.add_item(AreaSelect(self.active_area))
+        self.add_item(AreaGuideSelect(self.active_area))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
+class DungeonCheckView(discord.ui.View):
+    """View with a dungeon select that shows dungeon checks on select.
+    Also needs the interaction of the response with the view, so do DungeonCheckView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    active_dungeon: Currently chosen dungeon. Use 21 if final fight.
+    user_at: AT of the player.
+    user_def: DEF of the player.
+    user_life: LIFE of the player.
+    function: The function that returns the area check embed. The function needs to return an embed and have the
+    following arguments: dungeon_no: float, user_at: int, user_def: int, user_life: int
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, active_dungeon: float, user_at: int, user_def: int, user_life: int,
+                 function: Callable, interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.ctx = ctx
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.active_dungeon = active_dungeon
+        self.user_at = user_at
+        self.user_def = user_def
+        self.user_life = user_life
+        self.function = function
+        self.add_item(DungeonCheckSelect(self.active_dungeon))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
+class DungeonGuideView(discord.ui.View):
+    """View with a dungeon select that shows dungeon guides on select.
+    Also needs the interaction of the response with the view, so do DungeonGuideView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    active_dungeon: Currently chosen dungeon. Use 21 if final fight.
+    function: The function that returns the dungeon embed, The function needs to return an embed and have the
+    following arguments: dungeon_no: float
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, active_dungeon: float, function: Callable,
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.ctx = ctx
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.active_dungeon = active_dungeon
+        self.function = function
+        self.add_item(DungeonGuideSelect(self.active_dungeon))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
