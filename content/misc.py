@@ -137,7 +137,7 @@ async def command_calculator(ctx: discord.ApplicationContext, calculation: str) 
     for slice in calculation_parsed:
         calculation_reassembled = f'{calculation_reassembled}{slice}'
     try:
-        result = eval(calculation_reassembled)
+        #result = eval(calculation_reassembled) # This line seems useless
         result = Decimal(eval(calculation_reassembled))
         result = formatNumber(result)
         if isinstance(result, int):
@@ -145,7 +145,11 @@ async def command_calculator(ctx: discord.ApplicationContext, calculation: str) 
         else:
             result = f'{result:,}'.rstrip('0').rstrip('.')
         if len(result) > 2000:
-            return 'Well. Whatever you calculated, the result is too long to display. GG.'
+            await ctx.respond(
+                'Well. Whatever you calculated, the result is too long to display. GG.',
+                ephemeral=True
+            )
+            return
     except:
         await ctx.respond(
             f'Well, _that_ didn\'t calculate to anything useful.\n'

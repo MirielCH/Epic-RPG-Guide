@@ -6,7 +6,6 @@ import re
 from typing import Union, Tuple
 
 import discord
-from discord.commands import OptionChoice
 from discord.ext import commands
 
 import database

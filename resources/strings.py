@@ -331,3 +331,19 @@ CHOICES_AREA = []
 for area_no in range(1, 21):
     CHOICES_AREA.append(OptionChoice(name=f'Area {area_no}', value=area_no))
 CHOICES_AREA.append(OptionChoice(name='The TOP', value=21))
+
+
+CHOICE_ASCENDED = 'Ascended'
+CHOICE_NOT_ASCENDED = 'Not ascended'
+CHOICES_ASCENSION = [
+    CHOICE_ASCENDED,
+    CHOICE_NOT_ASCENDED,
+]
+
+
+CHOICE_GUIDE_FULL = 'Full'
+CHOICE_GUIDE_SHORT = 'Short'
+CHOICES_AREA_GUIDES = [
+    CHOICE_GUIDE_FULL,
+    CHOICE_GUIDE_SHORT,
+]

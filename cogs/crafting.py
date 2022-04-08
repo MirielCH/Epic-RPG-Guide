@@ -91,7 +91,7 @@ class CraftingCog(commands.Cog):
     async def inventory_calculator(
         self,
         ctx: discord.ApplicationContext,
-        area_no: Option(int, 'The area you are currently in. Use 21 if in the TOP.', name='area',
+        area_no: Option(int, 'The area you are currently in', name='area',
                         min_value = 1, max_value = 21, choices=strings.CHOICES_AREA),
         material: Option(str, 'The material you want to convert to', choices=INVCALC_ITEMS),
     ) -> None:

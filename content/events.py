@@ -14,6 +14,7 @@ EVENT_HEAL = 'Healing (mysterious man)'
 EVENT_HUNT = 'Hunt (zombie horde)'
 EVENT_LB_OPEN = 'Lootbox opening'
 EVENT_RETURNING = 'Returning'
+EVENT_TRADE = 'Special trade'
 EVENT_WORK = 'Work (ruby dragon)'
 
 EVENTS_PERSONAL = [
@@ -24,7 +25,8 @@ EVENTS_PERSONAL = [
     EVENT_HUNT,
     EVENT_LB_OPEN,
     EVENT_RETURNING,
-    EVENT_WORK
+    EVENT_TRADE,
+    EVENT_WORK,
 ]
 
 # Multiplayer events
@@ -54,7 +56,6 @@ EVENT_HORSE_RACE = 'Horse race'
 EVENT_LOTTERY = 'Lottery'
 EVENT_MININTBOSS = 'Minin\'tboss'
 EVENT_TOURNAMENT = 'Pet tournament'
-EVENT_TRADE = 'Special trade'
 
 EVENTS_GLOBAL = [
     EVENT_BIG_ARENA,
@@ -62,7 +63,6 @@ EVENTS_GLOBAL = [
     EVENT_LOTTERY,
     EVENT_MININTBOSS,
     EVENT_TOURNAMENT,
-    EVENT_TRADE
 ]
 
 EVENTS_ALL = EVENTS_PERSONAL + EVENTS_MULTIPLAYER + EVENTS_GLOBAL

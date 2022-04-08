@@ -1,15 +1,36 @@
 # views.py
 """Contains global interaction views"""
 
+from ast import Call
 from typing import Callable, List, Optional
 
 import discord
 from discord.ext import commands, pages
 
+import database
 from resources import emojis, settings, strings
 
 
 # --- Components ---
+class AreaSelect(discord.ui.Select):
+    """Area Select"""
+    def __init__(self, active_area: int):
+        options = []
+        for area_no in range(1,22):
+            label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+            emoji = '🔹' if area_no == active_area else None
+            options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_area = int(select_value)
+        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
+        self.view.clear_items()
+        self.view.add_item(AreaSelect(self.view.active_area))
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
 class TopicSelect(discord.ui.Select):
     """Topic Select"""
     def __init__(self, topics: dict, active_topic: str):
@@ -71,28 +92,6 @@ class CustomButton(discord.ui.Button):
         self.view.stop()
 
 
-class AreaSelect(discord.ui.Select):
-    """Area select"""
-    def __init__(self, areas: int):
-        options = []
-        for area in range(1, areas + 1):
-            options.append(discord.SelectOption(label=f'Area {area}', value=str(area)))
-        options.append(discord.SelectOption(label='<Abort>', value='abort'))
-        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options)
-
-    async def callback(self, interaction: discord.Interaction):
-        select_value = self.values[0]
-        if select_value == 'abort':
-            self.view.value = select_value
-            await interaction.message.edit(view=None)
-            self.view.stop()
-            return
-        area = int(select_value)
-        self.view.area = area
-        embed = await self.view.function(self.view.prefix, area)
-        await interaction.response.edit_message(embed=embed, view=self.view)
-
-
 # --- Views ---
 class AbortView(discord.ui.View):
     """View with an abort button.
@@ -128,9 +127,49 @@ class AbortView(discord.ui.View):
         self.stop()
 
 
+class AreaView(discord.ui.View):
+    """View with an area select.
+    Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    active_area: Currently chosen area. Use 21 if the top.
+    function: The function that returns the area embed, The function needs to return an embed and have two arguments
+    argument (context: discord.ApplicationContext, area_no: int, tt_no: int, ascended: bool, full_guide: bool)
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, active_area: int, db_user: database.User, full_guide: bool,
+                 function: Callable, interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.ctx = ctx
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.active_area = active_area
+        self.db_user = db_user
+        self.full_guide = full_guide
+        self.function = function
+        self.add_item(AreaSelect(self.active_area))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
 class TopicView(discord.ui.View):
     """View with a topic select.
-    Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
+    Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
 
     Arguments
     ---------
@@ -235,44 +274,4 @@ class ConfirmCancelView(discord.ui.View):
         self.value = None
         if self.interaction is not None:
             await self.interaction.edit_original_message(view=None)
-        self.stop()
-
-
-class AreaView(discord.ui.View):
-    """View with an area select.
-    Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
-
-    Arguments
-    ---------
-    ctx: Context.
-    areas: Amount of areas the select will list. First area is always 1.
-    function: Function that generates the embed, this will be called with every button press. The function needs to
-        return an embed and have two arguments: prefix: str, page_no: int.
-
-    Returns
-    -------
-    'abort' when abort was selected.
-    'timeout if timed out.
-    None otherwise.
-    """
-    def __init__(self, ctx: commands.Context, areas: int, function: Callable[[str, int], discord.Embed],
-                 interaction: Optional[discord.Interaction] = None):
-        super().__init__(timeout=20)
-        self.value = None
-        self.interaction = interaction
-        self.user = ctx.author
-        self.prefix = ctx.prefix
-        self.function = function
-        self.areas = areas
-        self.area = 0
-        self.add_item(AreaSelect(self.areas))
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
-        return True
-
-    async def on_timeout(self) -> None:
-        self.value = 'timeout'
         self.stop()
