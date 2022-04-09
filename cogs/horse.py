@@ -270,7 +270,7 @@ class HorseCog(commands.Cog):
             f'Examples: `{prefix}htc t5 l35 l75` or `{prefix}htc 4 18 48`'
         )
         horse_tier = 0
-        horse_level = 0
+        horse_level = f'{emojis.BP} T9 ➜ T10: chance unknown (guaranteed after 1080 attempts)\n'
         lootboxer_level = 0
         if args:
             args = [arg.lower() for arg in args]
@@ -918,7 +918,7 @@ async def embed_horses_breeding(prefix: str) -> discord.Embed:
         f'{emojis.BP} T6 ➜ T7: 2% chance (guaranteed after 60 attempts)\n'
         f'{emojis.BP} T7 ➜ T8: 1% chance (guaranteed after 120 attempts)\n'
         f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed after 360 attempts)\n'
-        f'{emojis.BP} T9 ➜ T10: chance & attempts unknown\n'
+        f'{emojis.BP} T9 ➜ T10: chance unknown (guaranteed after 1080 attempts)\n'
     )
     horse_level = (
         f'{emojis.BP} The new horses will have an average of both horse\'s levels\n'

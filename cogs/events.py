@@ -1148,7 +1148,7 @@ async def embed_event_bunnyboss(prefix):
     trigger = (
         f'{emojis.BP} Craft a {emojis.EASTER_SPAWNER} boss spawner\n'
         f'{emojis.BP} Use `egg use boss spawner` or `egg buy instant spawn`\n'
-        f'{emojis.BP} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
+        f'{emojis.BLANK} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
     )
 
     answers = (

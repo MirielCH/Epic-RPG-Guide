@@ -398,7 +398,7 @@ async def embed_guild_weekly(prefix):
 
 
 async def embed_guild_tasks(prefix: str) -> discord.Embed:
-    """Weekly guild tasks"""
+    """Weekly guild tasks (40%, 100%, 200%)"""
     guild_tasks_1 = (
         f'{emojis.BP} Answer `16/40/80` EPIC guard questions correctly\n'
         f'{emojis.BP} Chop `48/120/240` MEGA logs\n'
@@ -422,7 +422,7 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
         f'{emojis.BP} Raid `2/5/10` times for the guild\n'
         f'{emojis.BP} Trigger or start `12/30/60` random events\n'
         f'{emojis.BP} Vote for the bot `10/25/50` times\n'
-        f'{emojis.BP} Win `24/60/120` duels\n'
+        f'{emojis.BP} Win `20/50/100` duels\n'
     )
 
     rewards = (
