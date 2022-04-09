@@ -4,7 +4,6 @@ from typing import Optional, Tuple
 from operator import itemgetter
 
 import discord
-from discord.ext import commands
 
 import database
 from resources import emojis, functions, settings, strings

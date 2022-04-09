@@ -63,7 +63,7 @@ class MiscCog(commands.Cog):
         """Basic calculator"""
         await misc.command_calculator(ctx, calculation)
 
-    cmd_coincap = SlashCommandGroup("coincap", "Coincap commands")
+    cmd_coincap = SlashCommandGroup("coin-cap", "Coincap commands")
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
     @cmd_coincap.command(name='calculator', description='Calculate the coin cap for a TT/area')

@@ -1054,7 +1054,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
         image_name = 'WALKTHROUGH'
 
     dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
+    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
 
     guides = (
         f'{emojis.BP} {guide_gear.format(prefix=prefix)}\n'
@@ -1136,7 +1136,7 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
     prefix = ctx.prefix
     page_1 = f'➜ See `{prefix}dg1` for dungeons 1 to 9.'
     page_2 = f'➜ See `{prefix}dg2` for dungeons 10 to 15.'
-    page_3 = f'➜ See `{prefix}dg3` for dungeons 16 to 20 and the "final" fight.'
+    page_3 = f'➜ See `{prefix}dg3` for dungeons 16 to 20 and the EPIC NPC fight.'
 
     if page == 1:
         title_value = 'RECOMMENDED GEAR FOR DUNGEONS 1 TO 9'

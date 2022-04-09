@@ -1,9 +1,7 @@
 # database.py
 
-from aifc import Error
 from dataclasses import dataclass
 from datetime import datetime
-from email.mime import image
 import sqlite3
 from typing import NamedTuple, Optional, Tuple, Union
 
@@ -586,27 +584,6 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
 
     return dungeon_check_data
 
-# Get area data for the area embeds
-async def get_area_data(ctx, area):
-
-    try:
-        cur=ERG_DB.cursor()
-        select_columns = 'a.area, a.work_cmd_poor, a.work_cmd_rich, a.work_cmd_asc, a.new_cmd_1, a.new_cmd_2, a.new_cmd_3, a.money_tt1_t6horse, a.money_tt1_nohorse, a.money_tt3_t6horse, a.money_tt3_nohorse, a.money_tt5_t6horse, a.money_tt5_nohorse, a.money_tt10_t6horse, a.money_tt10_nohorse, '\
-                         'a.upgrade_sword, a.upgrade_sword_enchant, a.upgrade_armor, a.upgrade_armor_enchant, a.description, a.dungeon, i1.emoji, '\
-                        'i2.emoji, d.player_at, d.player_def, d.player_carry_def, d.player_life, d.life_boost_needed, d.player_level, d.player_sword_name, d.player_sword_enchant, d.player_armor_name, d.player_armor_enchant'
-        cur.execute(f'SELECT {select_columns} FROM areas a INNER JOIN dungeons d ON d.dungeon = a.dungeon INNER JOIN items i1 ON i1.name = d.player_sword_name INNER JOIN items i2 ON i2.name = d.player_armor_name WHERE a.area=?', (area,))
-        record = cur.fetchone()
-
-        if record:
-            area_data = record
-        else:
-            await log_error(ctx, 'No area data found in database.')
-    except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(ctx, error)
-
-    return area_data
-
 
 async def get_area(area_no: int) -> Area:
     """Returns an area from table "areas".
@@ -820,24 +797,6 @@ async def get_horse(tier: int) -> Horse:
     return horse_data
 
 
-# Get mats data for the needed mats of area 3 and 5
-async def get_mats_data(ctx, user_tt):
-    try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT t.tt, t.a3_fish, t.a5_apple FROM timetravel t WHERE tt=?', (user_tt,))
-        record = cur.fetchone()
-
-        if record:
-            mats_data = record
-        else:
-            await log_error(ctx, 'No tt_mats data found in database.')
-    except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(ctx, error)
-
-    return mats_data
-
-
 async def get_item(name: str) -> Item:
     """Returns an item from table "items".
 
@@ -996,6 +955,7 @@ async def get_tt_unlocks(ctx, user_tt):
 
     return tt_unlock_data
 
+
 # Get trade rate data
 async def get_traderate_data(ctx, areas):
 
@@ -1024,36 +984,6 @@ async def get_traderate_data(ctx, areas):
         await log_error(ctx, error)
 
     return traderate_data
-
-# Get profession XP
-async def get_profession_levels(ctx, profession, levelrange):
-
-    start_level, end_level = levelrange
-    if profession == 'worker':
-        query = 'SELECT level, worker_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'merchant':
-        query = 'SELECT level, merchant_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'lootboxer':
-        query = 'SELECT level, lootboxer_xp FROM professions WHERE level BETWEEN ? and ?'
-    elif profession == 'enchanter':
-        query = 'SELECT level, enchanter_xp FROM professions WHERE level BETWEEN ? and ?'
-    else:
-        await log_error(ctx, 'Unknown profession, could not generate profession query.')
-        return
-
-    try:
-        cur=ERG_DB.cursor()
-        cur.execute(query, (start_level, end_level,))
-        record = cur.fetchall()
-        if record:
-            profession_levels = record
-        else:
-            await log_error(ctx, 'No profession data data found in database.')
-    except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(ctx, error)
-
-    return profession_levels
 
 
 async def get_tip(id: Optional[int] = None) -> Tip:
@@ -1361,7 +1291,7 @@ async def get_all_users() -> Tuple[User]:
         raise
     users = []
     for record in records:
-        if record['ascended'] not in ('ascended', 'not ascended'): raise Error('Already migrated.')
+        if record['ascended'] not in ('ascended', 'not ascended'): raise BaseException('Already migrated.')
         user = User(
             ascended = True if record['ascended'] == 'ascended' else False,
             tt = record['tt'],
@@ -1503,7 +1433,7 @@ async def get_monsters(search_string: str) -> Tuple[Title]:
     return tuple(monsters)
 
 
-async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
+async def get_titles(search_string: str) -> Tuple[Title]:
     """Returns all titles for a search query.
 
     Returns:
@@ -1520,7 +1450,7 @@ async def get_titles(ctx: commands.Context, search_string: str) -> Tuple[Title]:
     else:
         search_string = search_string.replace(' ','%').replace("'",'_')
         search_string = f'%{search_string}%'
-        sql = f"SELECT * FROM titles WHERE title LIKE ? or requirements LIKE ?"
+        sql = f"SELECT * FROM titles WHERE title LIKE ? or requirements LIKE ? ORDER BY id ASC"
         cur.execute(sql, (search_string, search_string))
     records = cur.fetchall()
     if not records:

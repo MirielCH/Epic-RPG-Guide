@@ -20,7 +20,7 @@ class ProfessionsCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
-                           choices=professions.TOPICS, default=professions.TOPIC_OVERVIEW),
+                      choices=professions.TOPICS, default=professions.TOPIC_OVERVIEW),
     ) -> None:
         """Profession guide"""
         await professions.command_profession_guide(ctx, topic)

@@ -48,12 +48,12 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 # --- Embeds ---
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
-    seasonal_event = f'{emojis.BP} `/valentine guide` : Valentine event guide\n'
+    seasonal_event = f'{emojis.BP} {emojis.LOGO}`/valentine guide` : Valentine event guide\n'
     guides = (
-        #f'{emojis.BP} `/area guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/area guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/beginner guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/coolness guide`\n'
-        #f'{emojis.BP} `/dungeon guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/dungeon guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/enchanting guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/event guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/farming guide`\n'
@@ -99,7 +99,7 @@ async def embed_help_guides() -> discord.Embed:
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
-    #embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
+    embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=field_settings, inline=False)
@@ -144,13 +144,13 @@ async def embed_help_calculators() -> discord.Embed:
     embed.set_footer(text='Note: This is not an official bot.')
     embed.add_field(name='COIN CAP', value=coincap, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
-    #embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
+    embed.add_field(name='DAMAGE CHECKS', value=checks, inline=False)
     embed.add_field(name='DROP CHANCE', value=drop_chance, inline=False)
     embed.add_field(name='HORSE', value=horse, inline=False)
     embed.add_field(name='PETS', value=pet, inline=False)
     embed.add_field(name='PROFESSIONS', value=professions, inline=False)
     embed.add_field(name='TIME TRAVEL', value=timetravel, inline=False)
-    #embed.add_field(name='TRADING', value=trading, inline=False)
+    embed.add_field(name='TRADING', value=trading, inline=False)
     embed.add_field(name='ULTRAINING', value=ultraining, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
     return embed

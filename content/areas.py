@@ -113,11 +113,14 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
 
     if area.area_no == 21:
         quick_guide_sword = (
-            f'{emojis.BP} Craft {emojis.SWORD_GODLYCOOKIE} GODLY cookie if you want to do the "final" fight'
+            f'{emojis.BP} Craft {emojis.SWORD_GODLYCOOKIE} GODLY cookie if you want to do the EPIC NPC fight'
         )
 
     if tt.tt_area == area.area_no:
-        quick_guide = f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel (see `/time-travel details`)'
+        quick_guide = (
+            f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel '
+            f'(see {emojis.LOGO}`/time-travel details`)'
+        )
         return quick_guide
 
     if ((area.area_no == 3 and tt.a3_fish > 0) or (area.area_no == 5 and tt.a5_apple > 0)):
@@ -129,7 +132,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
         quick_guide = (
             f'{quick_guide}\n'
             f'{emojis.BP} Go back to previous areas if you are missing materials for crafting the armor '
-            f'(see `/monster drops`)'
+            f'(see {emojis.LOGO}`/monster drops`)'
         )
     if quick_guide_sword != '' or quick_guide_enchant_sword != '':
         quick_guide = f'{quick_guide}\n{quick_guide_sword}{quick_guide_enchant_sword}'
@@ -596,10 +599,10 @@ async def design_field_area_check(area_no: int, user_at: int, user_def: int, use
         )
     else:
         result = (
-            f'{emojis.BP} {hunt_emoji} **Hunt**: {hunt_taken_dmg_max} damage\n'
-            f'{emojis.BP} {hunt_hm_emoji} **Hunt hardmode**: {hunt_taken_dmg_max_hm} damage\n'
-            f'{emojis.BP} {adv_emoji} **Adventure**: {adv_taken_dmg_max} damage\n'
-            f'{emojis.BP} {adv_hm_emoji} **Adventure hardmode**: {adv_taken_dmg_max_hm} damage\n'
+            f'{emojis.BP} {hunt_emoji} **Hunt**: {hunt_taken_dmg_max:,} damage\n'
+            f'{emojis.BP} {hunt_hm_emoji} **Hunt hardmode**: {hunt_taken_dmg_max_hm:,} damage\n'
+            f'{emojis.BP} {adv_emoji} **Adventure**: {adv_taken_dmg_max:,} damage\n'
+            f'{emojis.BP} {adv_hm_emoji} **Adventure hardmode**: {adv_taken_dmg_max_hm:,} damage\n'
         )
     return result
 
@@ -651,7 +654,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         )
     elif area.area_no == 16:
         area_req = (
-            f'{emojis.BP} Complete the "final" fight in the TOP once\n'
+            f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
@@ -661,7 +664,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
-            f'{emojis.BP} Complete the "final" fight in the TOP once\n'
+            f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
@@ -733,7 +736,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Use `/area check` to see your actual damage'
+            f'{emojis.BLANK} Use {emojis.LOGO}`/area check` to see your actual damage'
         )
 
     # Lootboxes
@@ -791,12 +794,12 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
 
     area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
     next_area_no_str = 'THE TOP' if area.area_no == 15 else f'AREA {area.area_no + 1}'
-    dungeon_no_str = 'THE "FINAL" FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
+    dungeon_no_str = 'EPIC NPC FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
 
     # Note
     guide_area = 'top' if area.area_no == 21 else area.area_no
     note = (
-        f'{emojis.BP} To change your personal TT settings, use `/set progress`.'
+        f'{emojis.BP} To change your personal TT settings, use {emojis.LOGO}`/set progress`.'
     )
     if area.area_no in (7,8):
         note = (

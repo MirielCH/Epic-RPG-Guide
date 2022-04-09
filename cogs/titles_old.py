@@ -41,7 +41,7 @@ class TitlesOldCog(commands.Cog):
             await ctx.send('Really.')
             return
         try:
-            titles = await database.get_titles(ctx, search_string)
+            titles = await database.get_titles(search_string)
         except database.NoDataFound:
             await ctx.send('I didn\'t find any titles with that search query, sorry. Try searching for something else.')
             return

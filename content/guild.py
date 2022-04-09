@@ -256,7 +256,7 @@ async def embed_tasks() -> discord.Embed:
         f'{emojis.BP} Raid `2/5/10` times for the guild\n'
         f'{emojis.BP} Trigger or start `12/30/60` random events\n'
         f'{emojis.BP} Vote for the bot `10/25/50` times\n'
-        f'{emojis.BP} Win `24/60/120` duels\n'
+        f'{emojis.BP} Win `20/50/100` duels\n'
     )
     rewards = (
         f'{emojis.BP} Stage 1: 1 {emojis.GUILD_COIN} guild coin + 25 guild XP\n'

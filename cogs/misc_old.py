@@ -523,7 +523,7 @@ async def embed_badges(prefix):
     badges_other = (
         f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
         f'{emojis.BP} {emojis.BADGE_TOP} : Unlocked by beating D15-2 and reaching the TOP\n'
-        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the "final" fight in the TOP\n'
+        f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the EPIC NPC in the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )

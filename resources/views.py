@@ -1,12 +1,47 @@
 # views.py
 """Contains global interaction views"""
 
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Union, Tuple
 
 import discord
 
 import database
 from resources import settings, strings
+
+
+# --- Functions ---
+def get_area_button_labels(active_area: int) -> Tuple[str, str]:
+    """Returns the labels for previous and next area buttons"""
+    next_label = f'Area {active_area + 1} ▶'
+    prev_label = f'◀ Area {active_area - 1}'
+    if active_area == 1:
+        prev_label = '◀'
+    if active_area == 20:
+        next_label = 'The TOP ▶'
+    if active_area == 21:
+       next_label = '▶'
+    return (prev_label, next_label)
+
+
+def get_dungeon_button_labels(active_dungeon: float) -> Tuple[str, str]:
+    """Returns the labels for previous and next dungeon buttons"""
+    if active_dungeon.is_integer(): active_dungeon = int(active_dungeon)
+    next_label = f'Dungeon {active_dungeon + 1} ▶'
+    prev_label = f'◀ Dungeon {active_dungeon - 1}'
+    if active_dungeon == 1:
+        prev_label = '◀'
+    if active_dungeon == 15:
+        next_label = f'Dungeon 15-2 ▶'
+    if active_dungeon == 15.2:
+        prev_label = '◀ Dungeon 15'
+        next_label = f'Dungeon 16 ▶'
+    if active_dungeon == 16:
+        prev_label = '◀ Dungeon 15-2'
+    if active_dungeon == 20:
+        next_label = 'EPIC NPC fight ▶'
+    if active_dungeon == 21:
+       next_label = '▶'
+    return (prev_label, next_label)
 
 
 # --- Components ---
@@ -18,15 +53,68 @@ class AreaCheckSelect(discord.ui.Select):
             label = f'Area {area_no}' if area_no != 21 else 'The TOP'
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options)
+        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options,
+                         custom_id='select_area', row=0)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
         embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
                                          self.view.user_life)
-        self.view.clear_items()
-        self.view.add_item(AreaCheckSelect(self.view.active_area))
+        prev_label, next_label = get_area_button_labels(self.view.active_area)
+        for child in self.view.children.copy():
+            if child.custom_id == 'select_area':
+                self.view.remove_item(child)
+                self.view.add_item(AreaCheckSelect(self.view.active_area))
+            if child.custom_id == 'next':
+                child.label = next_label
+                child.disabled = True if self.view.active_area == 21 else False
+            if child.custom_id == 'prev':
+                child.label = prev_label
+                child.disabled = True if self.view.active_area == 1 else False
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class AreaCheckPaginatorButton(discord.ui.Button):
+    """Paginator button for area check view"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'prev':
+            self.view.active_area -= 1
+            prev_label, next_label = get_area_button_labels(self.view.active_area)
+            self.label = prev_label
+            if self.view.active_area == 1: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'next':
+                    child.disabled = False
+                    child.label = next_label
+                    break
+        elif self.custom_id == 'next':
+            self.view.active_area += 1
+            prev_label, next_label = get_area_button_labels(self.view.active_area)
+            self.label = next_label
+            if self.view.active_area == 21: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'prev':
+                    child.disabled = False
+                    child.label = prev_label
+                    break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'select_area':
+                options = []
+                for area_no in range(1,22):
+                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                    emoji = '🔹' if area_no == self.view.active_area else None
+                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
+                                         self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -38,14 +126,66 @@ class AreaGuideSelect(discord.ui.Select):
             label = f'Area {area_no}' if area_no != 21 else 'The TOP'
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options)
+        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options,
+                         custom_id='select_area', row=0)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
         embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
-        self.view.clear_items()
-        self.view.add_item(AreaGuideSelect(self.view.active_area))
+        prev_label, next_label = get_area_button_labels(self.view.active_area)
+        for child in self.view.children.copy():
+            if child.custom_id == 'select_area':
+                self.view.remove_item(child)
+                self.view.add_item(AreaGuideSelect(self.view.active_area))
+            if child.custom_id == 'next':
+                child.label = next_label
+                child.disabled = True if self.view.active_area == 21 else False
+            if child.custom_id == 'prev':
+                child.label = prev_label
+                child.disabled = True if self.view.active_area == 1 else False
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class AreaGuidePaginatorButton(discord.ui.Button):
+    """Paginator button for area guide view"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'prev':
+            self.view.active_area -= 1
+            prev_label, next_label = get_area_button_labels(self.view.active_area)
+            self.label = prev_label
+            if self.view.active_area == 1: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'next':
+                    child.disabled = False
+                    child.label = next_label
+                    break
+        elif self.custom_id == 'next':
+            self.view.active_area += 1
+            prev_label, next_label = get_area_button_labels(self.view.active_area)
+            self.label = next_label
+            if self.view.active_area == 21: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'prev':
+                    child.disabled = False
+                    child.label = prev_label
+                    break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'select_area':
+                options = []
+                for area_no in range(1,22):
+                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                    emoji = '🔹' if area_no == self.view.active_area else None
+                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -54,19 +194,83 @@ class DungeonCheckSelect(discord.ui.Select):
     def __init__(self, active_dungeon: float):
         options = []
         for dungeon_no in strings.DUNGEONS:
-            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'The "final" fight'
+            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
             label = label.replace('.','-')
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options)
+        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options,
+                         custom_id='select_dungeon', row=0)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
         embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
                                          self.view.user_life)
-        self.view.clear_items()
-        self.view.add_item(DungeonCheckSelect(self.view.active_dungeon))
+        prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+        for child in self.view.children.copy():
+            if child.custom_id == 'select_dungeon':
+                self.view.remove_item(child)
+                self.view.add_item(DungeonCheckSelect(self.view.active_dungeon))
+            if child.custom_id == 'next':
+                child.label = next_label
+                child.disabled = True if self.view.active_dungeon == 21 else False
+            if child.custom_id == 'prev':
+                child.label = prev_label
+                child.disabled = True if self.view.active_dungeon == 1 else False
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class DungeonCheckPaginatorButton(discord.ui.Button):
+    """Paginator button for dungeon check view"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'prev':
+            if self.view.active_dungeon == 15.2:
+                self.view.active_dungeon = 15.0
+            elif self.view.active_dungeon == 16:
+                self.view.active_dungeon = 15.2
+            else:
+                self.view.active_dungeon -= 1
+            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            self.label = prev_label
+            if self.view.active_dungeon == 1: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'next':
+                    child.disabled = False
+                    child.label = next_label
+                    break
+        elif self.custom_id == 'next':
+            if self.view.active_dungeon == 15:
+                self.view.active_dungeon = 15.2
+            elif self.view.active_dungeon == 15.2:
+                self.view.active_dungeon = 16.0
+            else:
+                self.view.active_dungeon += 1
+            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            self.label = next_label
+            if self.view.active_dungeon == 21: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'prev':
+                    child.disabled = False
+                    child.label = prev_label
+                    break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'select_dungeon':
+                options = []
+                for dungeon_no in strings.DUNGEONS:
+                    label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                    label = label.replace('.','-')
+                    emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                    options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
+                                         self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -75,18 +279,81 @@ class DungeonGuideSelect(discord.ui.Select):
     def __init__(self, active_dungeon: float):
         options = []
         for dungeon_no in strings.DUNGEONS:
-            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'The "final" fight'
+            label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
             label = label.replace('.','-')
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options)
+        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options,
+                         custom_id='select_dungeon', row=0)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
         embed = await self.view.function(self.view.active_dungeon)
-        self.view.clear_items()
-        self.view.add_item(DungeonGuideSelect(self.view.active_dungeon))
+        prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+        for child in self.view.children.copy():
+            if child.custom_id == 'select_dungeon':
+                self.view.remove_item(child)
+                self.view.add_item(DungeonGuideSelect(self.view.active_dungeon))
+            if child.custom_id == 'next':
+                child.label = next_label
+                child.disabled = True if self.view.active_dungeon == 21 else False
+            if child.custom_id == 'prev':
+                child.label = prev_label
+                child.disabled = True if self.view.active_dungeon == 1 else False
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class DungeonGuidePaginatorButton(discord.ui.Button):
+    """Paginator button for dungeon guide view"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'prev':
+            if self.view.active_dungeon == 15.2:
+                self.view.active_dungeon = 15.0
+            elif self.view.active_dungeon == 16:
+                self.view.active_dungeon = 15.2
+            else:
+                self.view.active_dungeon -= 1
+            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            self.label = prev_label
+            if self.view.active_dungeon == 1: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'next':
+                    child.disabled = False
+                    child.label = next_label
+                    break
+        elif self.custom_id == 'next':
+            if self.view.active_dungeon == 15:
+                self.view.active_dungeon = 15.2
+            elif self.view.active_dungeon == 15.2:
+                self.view.active_dungeon = 16.0
+            else:
+                self.view.active_dungeon += 1
+            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            self.label = next_label
+            if self.view.active_dungeon == 21: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'prev':
+                    child.disabled = False
+                    child.label = prev_label
+                    break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'select_dungeon':
+                options = []
+                for dungeon_no in strings.DUNGEONS:
+                    label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                    label = label.replace('.','-')
+                    emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                    options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.function(self.view.active_dungeon)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -218,6 +485,11 @@ class AreaCheckView(discord.ui.View):
         self.user_life = user_life
         self.function = function
         self.add_item(AreaCheckSelect(self.active_area))
+        prev_disabled = True if active_area == 1 else False
+        next_disabled = True if active_area == 21 else False
+        prev_label, next_label = get_area_button_labels(self.active_area)
+        self.add_item(AreaCheckPaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
+        self.add_item(AreaCheckPaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -258,6 +530,11 @@ class AreaGuideView(discord.ui.View):
         self.full_guide = full_guide
         self.function = function
         self.add_item(AreaGuideSelect(self.active_area))
+        prev_disabled = True if active_area == 1 else False
+        next_disabled = True if active_area == 21 else False
+        prev_label, next_label = get_area_button_labels(active_area)
+        self.add_item(AreaGuidePaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
+        self.add_item(AreaGuidePaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -277,7 +554,7 @@ class DungeonCheckView(discord.ui.View):
     Arguments
     ---------
     ctx: Context.
-    active_dungeon: Currently chosen dungeon. Use 21 if final fight.
+    active_dungeon: Currently chosen dungeon. Use 21 if EPIC NPC fight.
     user_at: AT of the player.
     user_def: DEF of the player.
     user_life: LIFE of the player.
@@ -302,6 +579,11 @@ class DungeonCheckView(discord.ui.View):
         self.user_life = user_life
         self.function = function
         self.add_item(DungeonCheckSelect(self.active_dungeon))
+        prev_disabled = True if active_dungeon == 1 else False
+        next_disabled = True if active_dungeon == 21 else False
+        prev_label, next_label = get_dungeon_button_labels(self.active_dungeon)
+        self.add_item(DungeonCheckPaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
+        self.add_item(DungeonCheckPaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -321,7 +603,7 @@ class DungeonGuideView(discord.ui.View):
     Arguments
     ---------
     ctx: Context.
-    active_dungeon: Currently chosen dungeon. Use 21 if final fight.
+    active_dungeon: Currently chosen dungeon. Use 21 if EPIC NPC fight.
     function: The function that returns the dungeon embed, The function needs to return an embed and have the
     following arguments: dungeon_no: float
 
@@ -340,6 +622,11 @@ class DungeonGuideView(discord.ui.View):
         self.active_dungeon = active_dungeon
         self.function = function
         self.add_item(DungeonGuideSelect(self.active_dungeon))
+        prev_disabled = True if active_dungeon == 1 else False
+        next_disabled = True if active_dungeon == 21 else False
+        prev_label, next_label = get_dungeon_button_labels(active_dungeon)
+        self.add_item(DungeonGuidePaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
+        self.add_item(DungeonGuidePaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -401,7 +688,7 @@ class PaginatorView(discord.ui.View):
     'timeout' on timeout.
     None if nothing happened yet.
     """
-    def __init__(self, ctx: discord.ApplicationContext, pages = List[discord.Embed],
+    def __init__(self, ctx: discord.ApplicationContext, pages: List[discord.Embed],
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
@@ -458,5 +745,45 @@ class ConfirmCancelView(discord.ui.View):
     async def on_timeout(self):
         self.value = None
         if self.interaction is not None:
-            await self.interaction.edit_original_message(view=None)
+            if isinstance(self.interaction, discord.WebhookMessage):
+                await self.interaction.edit(view=None)
+            else:
+                await self.interaction.edit_original_message(view=None)
+        self.stop()
+
+
+class FollowupCommandView(discord.ui.View):
+    """Paginator view with a single button that calls another command and then removes itself.
+
+    Also needs the interaction of the response with the view, so do
+    FollowupCommandView.interaction = await ctx.respond('foo').
+
+    Returns
+    -------
+    'timeout' on timeout.
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, label: str,
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.label = label
+        self.active_page = 1
+        self.add_item(CustomButton(custom_id='followup', label=label, emoji=None, style=discord.ButtonStyle.grey))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        if self.interaction is not None:
+            if isinstance(self.interaction, discord.WebhookMessage):
+                await self.interaction.edit(view=None)
+            else:
+                await self.interaction.edit_original_message(view=None)
         self.stop()

@@ -80,6 +80,6 @@ async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
             f'current progress.'
         )
     )
-    embed.set_footer(text=f'Tip: Use `/set progress` to change your settings.')
+    embed.set_footer(text=f'Tip: Use "/set progress" to change your settings.')
     embed.add_field(name='YOUR CURRENT SETTINGS', value=settings_field, inline=False)
     return embed

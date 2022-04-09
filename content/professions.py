@@ -443,7 +443,7 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/boat`: 13 XP\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`: 16 XP\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse`, {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite`: 17 XP\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}  `/bigboat`: 18 XP'
+        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`: 18 XP'
     )
 
     embed = discord.Embed(

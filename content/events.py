@@ -688,7 +688,7 @@ async def embed_event_pettournament() -> discord.Embed:
         f'{emojis.BP} {events_once_cycle}\n'
         f'{emojis.BP} You can only enter **1** pet per cycle\n'
         f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
-        f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see `/pets guide`)\n'
+        f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see {emojis.LOGO}`/pets guide`)\n'
         f'{emojis.BP} The tournament will not happen if there are less than 50 pets'
     )
     embed = discord.Embed(
@@ -819,81 +819,6 @@ async def embed_event_snowball() -> discord.Embed:
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
-    embed.add_field(name='NOTE', value=note, inline=False)
-    return embed
-
-
-async def embed_event_bunny() -> discord.Embed:
-    """Easter: Bunny event"""
-    trigger = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
-        f'(0.75 % chance)'
-    )
-    answers = (
-        f'{emojis.BP} The bunny has a {emojis.PET_HAPPINESS} happiness and :carrot: hunger stat\n'
-        f'{emojis.BP} You click on the buttons below to influence these stats\n'
-        f'{emojis.BP} 1 `feed` decreases hunger by 18-22\n'
-        f'{emojis.BP} 1 `pat` increases happiness by 8-12\n'
-        f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
-        f'{emojis.BP} You can only use up to 6 actions\n'
-        f'{emojis.BP} Less actions = 15 {emojis.EASTER_EGG} easter eggs for every command not used'
-    )
-    rewards = (
-        f'{emojis.BP} {emojis.EASTER_BUNNY} Bunny (used in crafting {emojis.EASTER_SPAWNER} boss spawners)\n'
-        f'{emojis.BP} {emojis.PET_GOLDEN_BUNNY} Fake golden bunny. Gifts you a {emojis.EASTER_SPAWNER} boss spawner '
-        f'every day.'
-    )
-    note =(
-        f'{emojis.BP} You can increase the chance of this event by crafting {emojis.EASTER_RAINBOW_CARROT} '
-        f'rainbow carrots\n'
-        f'{emojis.BP} You can craft up to 5 carrots which gives you a 3 % spawn chance'
-    )
-    embed = discord.Embed(
-        color = settings.EMBED_COLOR,
-        title = 'EASTER: BUNNY EVENT',
-        description = 'This is a random personal easter event in which a bunny appears for you to tame.'
-    )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='TRIGGER', value=trigger, inline=False)
-    embed.add_field(name='HOW TO TAME THE BUNNY', value=answers, inline=False)
-    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name='NOTE', value=note, inline=False)
-    return embed
-
-
-async def embed_event_bunnyboss() -> discord.Embed:
-    """Easter: Bunny boss event"""
-    trigger = (
-        f'{emojis.BP} Craft a {emojis.EASTER_SPAWNER} boss spawner\n'
-        f'{emojis.BP} Use `egg use boss spawner` or `egg buy instant spawn`\n'
-        f'{emojis.BP} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
-    )
-    answers = (
-        f'{emojis.BP} `fight` or `defend`\n'
-        f'{emojis.BP} Look at the boss stats to decide what to choose'
-    )
-    rewards = (
-        f'{emojis.BP} 1-2 {emojis.EASTER_EGG_GOLDEN} golden eggs\n'
-        f'{emojis.BP} {emojis.EASTER_EGG} Easter eggs\n'
-        f'{emojis.BP} {emojis.ARENA_COOKIE} Arena cookies\n'
-        f'{emojis.BP} {emojis.EPIC_COIN} EPIC coins\n'
-        f'{emojis.BP} {emojis.EASTER_LOOTBOX} Easter lootboxes\n'
-        f'{emojis.BP} The participants have a chance to get a few {emojis.EASTER_EGG} easter eggs and '
-        f'{emojis.ARENA_COOKIE} cookies'
-    )
-    note = (
-        f'{emojis.BP} {events_multiplayer}\n'
-        f'{emojis.BP} {events_player_no.format(no=15)}'
-    )
-    embed = discord.Embed(
-        color = settings.EMBED_COLOR,
-        title = 'EASTER: BUNNY BOSS EVENT',
-        description = 'This is a multiplayer easter event in which you fight a bunny boss.'
-    )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
-    embed.add_field(name='HOW TO START', value=trigger, inline=False)
-    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
-    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

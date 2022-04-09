@@ -5,10 +5,11 @@ from typing import Optional
 
 import discord
 
+from content import trading
 import database
 from resources import emojis
 from resources import settings
-from resources import functions, strings
+from resources import functions, strings, views
 
 
 # --- Commands ---
@@ -172,7 +173,15 @@ async def command_inventory_calculator(bot: discord.Bot, ctx: discord.Applicatio
             f'Rubies are included in the calculation as follows:\n'
             f'{emojis.BP} 1 {emojis.RUBY} = 450 {emojis.LOG} = 225 {emojis.FISH} (trade value in A5)\n'
         )
-    await ctx.respond(message)
+    if material in ('apple', 'normie fish', 'ruby', 'wooden log'):
+        view = views.FollowupCommandView(ctx, 'Calculate trades')
+        interaction = await ctx.respond(message, view=view)
+        view.interaction = interaction
+        await view.wait()
+        if view.value == 'followup':
+            await trading.command_trade_calculator(ctx, area_no, material, str(amount))
+    else:
+        await ctx.respond(message)
 
 
 # --- Functions ---

@@ -264,10 +264,16 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
     if dungeon_no in (10,15,15.2):
         check_results = f'{emojis.BP} Stats are irrelevant for this dungeon'
         if dungeon_no == 10:
-            check_results = f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see `/dungeon guide`)'
+            check_results = (
+                f'{check_results}\n'
+                f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+            )
         elif dungeon_no in (15,15.2):
             dungeon_no = str(dungeon_no).replace('.','-')
-            check_results = f'{check_results}\n{emojis.BP} This dungeon has various requirements (see `/dungeon guide`)'
+            check_results = (
+                f'{check_results}\n'
+                f'{emojis.BP} This dungeon has various requirements (see {emojis.LOGO}`/dungeon guide`)'
+            )
     elif dungeon_no == 11:
         if user_at_check_result == 'fail':
             check_results = (
@@ -310,7 +316,9 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                         f'{check_results}\n'
                         f'{emojis.BP} Note: You need a {emojis.LIFE_BOOST} LIFE boost C to reach recommended **LIFE**'
                     )
-        check_results = f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see `/dungeon guide`)'
+        check_results = (
+            f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+        )
     elif dungeon_no == 12:
         if (user_def_check_result == 'fail') or (check_life == 'fail'):
             check_results = f'{emojis.BP} You are not yet ready for this dungeon'
@@ -345,7 +353,10 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                 f'{check_results}\n'
                 f'{emojis.BP} Note that higher **LIFE** will still help in beating the dungeon'
             )
-        check_results = f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see `/dungeon guide`)'
+        check_results = (
+            f'{check_results}\n'
+            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+        )
     elif dungeon_no == 13:
         if user_life_check_result == 'fail':
             check_results = (
@@ -356,7 +367,10 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
             )
         else:
             check_results = f'{emojis.BP} Your stats are high enough for this dungeon'
-        check_results = f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see `/dungeon guide`)'
+        check_results = (
+            f'{check_results}\n'
+            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+        )
 
     elif dungeon_no == 14:
         if (user_def_check_result == 'fail') or user_life_check_result == 'fail':
@@ -391,11 +405,11 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                 )
         check_results = (
             f'{check_results}\n'
-            f'{emojis.BP} This dungeon has gear requirements (see `/dungeon guide`)\n'
+            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)\n'
             f'{emojis.BP} If you are using a helper bot, 1,500 LIFE or less are usually enough'
         )
 
-    elif 16 <= dungeon_no <= 20:
+    elif 16 <= dungeon_no <= 21:
         check_results = f'{emojis.BP} Stats for this dungeon are currently unknown'
     else:
         if user_carry_def_check_result == 'pass':
@@ -569,14 +583,16 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
 
     # Rewards
     if 1 <= dungeon_no <= 14:
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see `/area guide`)'
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see {emojis.LOGO}`/area guide`)'
     elif dungeon_no == 15:
-        rewards = f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see `/time-travel guide`)'
+        rewards = (
+            f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see {emojis.LOGO}`/time-travel guide`)'
+        )
     elif dungeon_no == 15.2:
         rewards = (
-            f'{emojis.BP} Unlocks the TOP (see `/area guide`)\n'
+            f'{emojis.BP} Unlocks the TOP (see {emojis.LOGO}`/area guide`)\n'
             f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n'
-            f'{emojis.BLANK} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie to beat the "final" fight\n'
+            f'{emojis.BLANK} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie to beat the EPIC NPC\n'
             f'{emojis.BLANK} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump to get to area 16\n'
         )
     elif 16 <= dungeon_no <= 20:
@@ -627,7 +643,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         image_name = 'WALKTHROUGH'
 
     dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
+    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -663,7 +679,6 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     if image_url is not None:
         embed.set_image(url=image_url)
         embed.add_field(name=image_name, value=f'** **', inline=False)
-
     return embed
 
 
@@ -686,7 +701,7 @@ async def embed_dungeon_check(dungeon_no: float, user_at: int, user_def: int, us
         f'{emojis.BP} You can **not** get carried in D16-D20, the boss gets stronger if someone dies!\n'
         f'{emojis.BP} This check does **not** take into account required gear for D10+!\n'
     )
-    dungeon_no_str = f'DUNGEON {dungeon_no:g}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
+    dungeon_no_str = f'DUNGEON {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
     dungeon_no_str = dungeon_no_str.replace('.','-')
     dungeon_check_results, dungeon_check_details = await design_field_dungeon_check(dungeon_no, user_at, user_def, user_life)
     embed = discord.Embed(
@@ -696,6 +711,7 @@ async def embed_dungeon_check(dungeon_no: float, user_at: int, user_def: int, us
     embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='YOUR STATS', value=stats, inline=False)
     embed.add_field(name='CHECK RESULT', value=dungeon_check_results, inline=False)
-    embed.add_field(name='DETAILS', value=dungeon_check_details, inline=False)
+    if dungeon_check_details != '':
+        embed.add_field(name='DETAILS', value=dungeon_check_details, inline=False)
     embed.add_field(name='LEGEND', value=legend, inline=False)
     return embed

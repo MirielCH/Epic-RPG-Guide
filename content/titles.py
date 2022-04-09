@@ -19,7 +19,7 @@ async def command_title_search(ctx: discord.ApplicationContext, search_string: s
         await ctx.respond(strings.MSG_INPUT_TOO_LONG, ephemeral=True)
         return
     try:
-        titles = await database.get_titles(ctx, search_string)
+        titles = await database.get_titles(search_string)
     except database.NoDataFound:
         await ctx.respond(
             'I didn\'t find any titles with that search query, sorry. Try searching for something else.',

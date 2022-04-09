@@ -156,7 +156,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Tiers range from I to X (1 to 10) (see topic `Tiers`)\n'
         f'{emojis.BP} Every tier unlocks new bonuses\n'
         f'{emojis.BP} Mainly increased by breeding with other horses (see topic `Breeding`)\n'
-        f'{emojis.BP} Small chance of increasing in horse races (see `/event guide`)'
+        f'{emojis.BP} Small chance of increasing in horse races (see {emojis.LOGO}`/event guide`)'
     )
     horse_level = (
         f'{emojis.BP} Levels range from 1 to ([tier] * 10) + [lootboxer bonus]\n'
@@ -164,7 +164,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Leveling up increases the horse type bonus (see the [Wiki]'
         f'(https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'
         f'{emojis.BP} Increased by using `horse training` which costs coins\n'
-        f'{emojis.BP} Training cost is reduced by leveling up lootboxer (see `/professions guide`)'
+        f'{emojis.BP} Training cost is reduced by leveling up lootboxer (see {emojis.LOGO}`/professions guide`)'
     )
     horse_type = (
         f'{emojis.BP} There are 8 different types (see topic `Types`)\n'

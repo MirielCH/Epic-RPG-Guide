@@ -17,7 +17,7 @@ MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}`'
 MSG_WAIT_FOR_INPUT_SLASH = '**{user}**, please use {emoji}`{command}`'
 MSG_WRONG_INPUT = 'Wrong input. Aborting.'
 
-DEFAULT_FOOTER = 'Use /guide to see all available guides.'
+DEFAULT_FOOTER = 'Use /help to see all available guides.'
 
 ARGUMENT_TOPIC_DESCRIPTION = 'The topic you want to read about'
 
@@ -366,7 +366,7 @@ for dungeon_no in range(1, 21):
         CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon 15-2', value=15.2))
     else:
         CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon {dungeon_no}', value=dungeon_no))
-CHOICES_DUNGEON.append(OptionChoice(name='The "final" fight', value=21))
+CHOICES_DUNGEON.append(OptionChoice(name='EPIC NPC fight', value=21))
 
 
 CHOICE_ASCENDED = 'Ascended'
