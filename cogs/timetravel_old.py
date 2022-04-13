@@ -200,6 +200,7 @@ class timetravelCog(commands.Cog):
                 mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
                 chip = await functions.inventory_get(inventory, 'chip')
                 dragonscale = await functions.inventory_get(inventory, 'dragon scale')
+                darkenergy = await functions.inventory_get(inventory, 'dark energy')
                 lbcommon = await functions.inventory_get(inventory, 'common lootbox')
                 lbuncommon = await functions.inventory_get(inventory, 'uncommon lootbox')
                 lbrare = await functions.inventory_get(inventory, 'rare lootbox')
@@ -346,11 +347,14 @@ class timetravelCog(commands.Cog):
         for log_amount in areas_log_amounts:
             if log_amount[0] == 15:
                 a15 = log_amount
-            elif log_amount[0] == 16:
+            elif log_amount[0] == 21:
                 a16 = log_amount
         log_a15 = a15[1]
         ruby_rate_a15 = a15[2]
-        ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        try:
+            ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        except ZeroDivisionError:
+            ruby_a15 = 0
         log_a16 = a16[1]
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
@@ -381,8 +385,10 @@ class timetravelCog(commands.Cog):
         score_mermaidhair = mermaidhair / 5
         score_chip = chip / 4
         score_dragonscale = dragonscale / 2
+        score_darkenergy = darkenergy
         score_mobdrops = (
             score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
+            + score_darkenergy
         )
         score_ruby_a15 = ruby_a15 / 25
         score_ruby_a16 = ruby_a16 / 25
@@ -416,6 +422,7 @@ class timetravelCog(commands.Cog):
             f'{emojis.BP} {mermaidhair:,} {emojis.MERMAID_HAIR} = {score_mermaidhair:,.2f}\n'
             f'{emojis.BP} {chip:,} {emojis.CHIP} = {score_chip:,.2f}\n'
             f'{emojis.BP} {dragonscale:,} {emojis.DRAGON_SCALE} = {score_dragonscale:,.2f}\n'
+            f'{emojis.BP} {darkenergy:,} {emojis.DARK_ENERGY} = {score_darkenergy:,.2f}\n'
             f'{emojis.BP} Total: **{score_mobdrops:,.2f}**\n'
         )
 
@@ -550,13 +557,17 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
     bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
-    greenhouse_watermelon = dynamite_rubies * 3
+    greenhouse_watermelon_min = dynamite_rubies * 2
+    greenhouse_watermelon_max = dynamite_rubies * 3
+    bigboat_superfish = dynamite_rubies / 1.15
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     greenhouse_watermelon = Decimal(greenhouse_watermelon).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     chainsaw_ultimate = Decimal(chainsaw_ultimate).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
-    watermelon = int(greenhouse_watermelon)
+    watermelon_min = int(greenhouse_watermelon_min)
+    watermelon_max = int(greenhouse_watermelon_max)
+    super_fish = int(bigboat_superfish)
     ultimate_logs = int(chainsaw_ultimate)
     if ultimate_logs == 0: ultimate_logs = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
@@ -614,10 +625,10 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     )
 
     work_multiplier = (
-        f'{emojis.BP} **{watermelon:,}** {emojis.WATERMELON} with `greenhouse`\n'
+        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
+        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`\n'
         f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
     )
 
@@ -844,7 +855,8 @@ async def embed_stt_score(prefix):
         f'{emojis.BP} 7 {emojis.UNICORN_HORN} unicorn horns = 1 score\n'
         f'{emojis.BP} 5 {emojis.MERMAID_HAIR} mermaid hairs = 1 score\n'
         f'{emojis.BP} 4 {emojis.CHIP} chips = 1 score\n'
-        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score'
+        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
+        f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
     )
 
     misc = (

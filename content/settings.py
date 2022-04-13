@@ -1,15 +1,11 @@
 # settings.py
 """Contains user settings commands"""
 
-import asyncio
-
 import discord
 from discord.ext import commands
 
 import database
-from resources import emojis
-from resources import settings
-from resources import strings
+from resources import emojis, settings
 
 
 # --- Choices ---

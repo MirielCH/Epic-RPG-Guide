@@ -1,8 +1,9 @@
 # dungeons.py
 
 import asyncio
+from optparse import Option
 from humanfriendly import format_timespan
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import discord
 
@@ -27,7 +28,8 @@ async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: flo
 
 async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContext, dungeon_no: float,
                                 user_at: Optional[int] = None, user_def: Optional[int] = None,
-                                user_life: Optional[int] = None)  -> None:
+                                user_life: Optional[int] = None,
+                                interaction: Optional[Union[discord.WebhookMessage, discord.Interaction]] = None)  -> None:
     """Dungeon check command"""
     if user_at is None or user_def is None or user_life is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
@@ -49,15 +51,22 @@ async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContex
         if user_at is None: user_at = at_found
         if user_def is None: user_def = def_found
         if user_life is None: user_life = life_found
-    view = views.DungeonCheckView(ctx, dungeon_no, user_at, user_def, user_life, embed_dungeon_check)
+    view = views.DungeonCheckView(bot, ctx, dungeon_no, user_at, user_def, user_life, embed_dungeon_check)
     embed = await embed_dungeon_check(dungeon_no, user_at, user_def, user_life)
-    interaction = await ctx.respond(embed=embed, view=view)
+    if interaction is None:
+        interaction = await ctx.respond(embed=embed, view=view)
+    else:
+        if isinstance(interaction, discord.WebhookMessage):
+            await interaction.edit(embed=embed, view=view)
+        else:
+            await interaction.edit_original_message(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if isinstance(interaction, discord.WebhookMessage):
-        await interaction.edit(view=None)
-    else:
-        await interaction.edit_original_message(view=None)
+    if view.value != 'switched':
+        if isinstance(interaction, discord.WebhookMessage):
+            await interaction.edit(view=None)
+        else:
+            await interaction.edit_original_message(view=None)
 
 
 # --- Functions ---
@@ -477,8 +486,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     else:
         boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
-    if 16 <= dungeon_no <= 21: boss_at = 'Unknown'
-    if dungeon_no == 21: boss_life = 'Unknown'
+    if 16 <= dungeon_no <= 20: boss_at = 'Unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
@@ -494,7 +502,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     elif 10 <= dungeon_no <= 15.2:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif dungeon_no == 21:
-        requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 **highly** recommended)'
+        requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 recommended)'
 
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
@@ -503,7 +511,16 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     if dungeon_no == 21:
         requirements = (
             f'{requirements}\n'
-            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it to start the fight)'
+            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it to start the fight)\n'
+            f'{emojis.BP} No gear (having a sword or armor results in instant death)\n'
+            f'{emojis.BP} 750,000+ {emojis.LOG} wooden logs to sell during the fight\n'
+            f'{emojis.BP} **4** T10 or higher pets to send on adventures\n'
+            f'{emojis.BLANK} At least **3** of these pets **must** have the {emojis.SKILL_EPIC} EPIC skill\n'
+            f'{emojis.BLANK} Only **1** can have a {emojis.SKILL_TRAVELER} time traveler skill\n'
+            f'{emojis.BLANK} If a pet has the {emojis.SKILL_TRAVELER} time traveler skill, it must also be '
+            f'{emojis.SKILL_EPIC} EPIC\n'
+            f'{emojis.BP} No active pet adventures before the fight\n'
+            f'{emojis.BP} 1,000+ {emojis.LIFE_POTION} life potions'
         )
     if dungeon_no in (10, 12, 14, 15):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
@@ -632,18 +649,20 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     elif dungeon_no == 21:
         notes = (
             f'{emojis.BP} This fight does not need your dungeon cooldown\n'
+            f'{emojis.BP} The {emojis.SWORD_GODLYCOOKIE} GODLY cookie is **one time use**\n'
+            f'{emojis.BP} The {emojis.EPIC_JUMP} EPIC jump you get is lost after TT\n'
         )
 
     # Images
     if dungeon_no == 11:
-        image_url = 'http://www.zoneseven.ch/erg/dungeon11.png'
+        image_url = 'https://erg.zoneseven.ch/ïmages/dungeon11.png'
         image_name = 'MOVEMENT BEHAVIOUR'
     elif dungeon_no == 13:
-        image_url = 'http://www.zoneseven.ch/erg/dungeon13.png'
+        image_url = 'https://erg.zoneseven.ch/images/dungeon13.png'
         image_name = 'WALKTHROUGH'
 
     dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
+    title = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE EPIC NPC FIGHT'
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -651,7 +670,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         description = dungeon.description
     )
 
-    embed.set_footer(text='Use /dungeon check to see if you are ready for this dungeon')
+    embed.set_footer(text='Use "/dungeon check" to see if you are ready for this dungeon')
     embed.add_field(name='BOSS', value=f'{emojis.BP} {dungeon.boss_emoji} {dungeon.boss_name}', inline=False)
     if player_amount is not None:
         embed.add_field(name='PLAYERS', value=player_amount, inline=False)
@@ -708,7 +727,7 @@ async def embed_dungeon_check(dungeon_no: float, user_at: int, user_def: int, us
         color = settings.EMBED_COLOR,
         title = f'{dungeon_no_str} STATS CHECK',
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.set_footer(text='Use "/dungeon guide" to see more details about this dungeon')
     embed.add_field(name='YOUR STATS', value=stats, inline=False)
     embed.add_field(name='CHECK RESULT', value=dungeon_check_results, inline=False)
     if dungeon_check_details != '':

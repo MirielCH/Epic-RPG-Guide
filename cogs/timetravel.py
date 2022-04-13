@@ -1,11 +1,11 @@
 # timetravel.py
 
 import discord
-from discord.commands import SlashCommandGroup, Option, OptionChoice
+from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import timetravel as timetravel_content
-from resources import functions, strings
+from resources import strings
 
 
 class TimeTravelCog(commands.Cog):

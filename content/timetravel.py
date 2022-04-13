@@ -110,7 +110,6 @@ async def embed_time_travel() -> discord.Embed:
         )
 
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='REQUIREMENTS FOR TIME TRAVEL', value=where, inline=False)
     embed.add_field(name='WHAT YOU KEEP', value=keptitems, inline=False)
     return embed
@@ -124,6 +123,7 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
     greenhouse_watermelon_min = dynamite_rubies * 2
     greenhouse_watermelon_max = dynamite_rubies * 3
+    bigboat_superfish = dynamite_rubies / 1.15
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
@@ -132,6 +132,7 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
     rubies = int(dynamite_rubies)
     watermelon_min = int(greenhouse_watermelon_min)
     watermelon_max = int(greenhouse_watermelon_max)
+    super_fish = int(bigboat_superfish)
     ultimate_logs = int(chainsaw_ultimate)
     if ultimate_logs == 0: ultimate_logs = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
@@ -183,7 +184,7 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`\n'
+        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`\n'
         f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with {emojis.EPIC_RPG_LOGO_SMALL}`/chainsaw`\n'
     )
     prep_tt1_to_2 = (
@@ -262,7 +263,6 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
         title = f'TIME TRAVEL {tt.tt} DETAILS',
         description = embed_description
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
     embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
     embed.add_field(name='COIN CAP', value=field_coin_cap, inline=False)
@@ -315,7 +315,6 @@ async def embed_time_jump() -> discord.Embed:
         )
 
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='STARTER BONUSES', value=starter_bonuses, inline=False)
     return embed
@@ -381,7 +380,8 @@ async def embed_time_jump_score() -> discord.Embed:
         f'{emojis.BP} 7 {emojis.UNICORN_HORN} unicorn horns = 1 score\n'
         f'{emojis.BP} 5 {emojis.MERMAID_HAIR} mermaid hairs = 1 score\n'
         f'{emojis.BP} 4 {emojis.CHIP} chips = 1 score\n'
-        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score'
+        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
+        f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
     )
     misc = (
         f'{emojis.BP} Having at least 1 {emojis.LIFE_POTION} life potion = 1 score\n'
@@ -397,7 +397,6 @@ async def embed_time_jump_score() -> discord.Embed:
             f'You can calculate the score of your inventory with {emojis.LOGO}`/time-jump score calculator`.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='BASE SCORE', value=base, inline=False)
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)
@@ -435,6 +434,7 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
     mermaidhair = await functions.inventory_get(inventory, 'mermaid hair')
     chip = await functions.inventory_get(inventory, 'chip')
     dragonscale = await functions.inventory_get(inventory, 'dragon scale')
+    darkenergy = await functions.inventory_get(inventory, 'dark energy')
     lbcommon = await functions.inventory_get(inventory, 'common lootbox')
     lbuncommon = await functions.inventory_get(inventory, 'uncommon lootbox')
     lbrare = await functions.inventory_get(inventory, 'rare lootbox')
@@ -598,8 +598,10 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
     score_mermaidhair = mermaidhair / 5
     score_chip = chip / 4
     score_dragonscale = dragonscale / 2
+    score_darkenergy = darkenergy
     score_mobdrops = (
         score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
+        + score_darkenergy
     )
     score_ruby_a15 = ruby_a15 / 25
     score_ruby_a16 = ruby_a16 / 25
@@ -630,6 +632,7 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
         f'{emojis.BP} {mermaidhair:,} {emojis.MERMAID_HAIR} = {score_mermaidhair:,.2f}\n'
         f'{emojis.BP} {chip:,} {emojis.CHIP} = {score_chip:,.2f}\n'
         f'{emojis.BP} {dragonscale:,} {emojis.DRAGON_SCALE} = {score_dragonscale:,.2f}\n'
+        f'{emojis.BP} {darkenergy:,} {emojis.DARK_ENERGY} = {score_darkenergy:,.2f}\n'
         f'{emojis.BP} Total: **{score_mobdrops:,.2f}**\n'
     )
     field_farming = (

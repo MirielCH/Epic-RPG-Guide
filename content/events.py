@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings, strings, views
+from resources import emojis, settings
 
 
 # --- Events ---
@@ -151,7 +151,6 @@ async def embed_event_enchant() -> discord.Embed:
             'This is a random personal event in which you accidentally "break" your equipment while enchanting it.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='SAFEST ANSWER', value=safe_answer, inline=False)
@@ -183,7 +182,6 @@ async def embed_event_epicguard() -> discord.Embed:
         title = 'EPIC GUARD EVENT',
         description = 'This is a random captcha event to prevent autotyping.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name='HOW TO GET OUT OF JAIL', value=jail, inline=False)
@@ -209,7 +207,6 @@ async def embed_event_farm() -> discord.Embed:
         title = 'FARM EVENT',
         description = 'This is a random personal event in which your planted seed won\'t grow as expected.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
@@ -235,7 +232,6 @@ async def embed_event_heal() -> discord.Embed:
         title = 'HEAL EVENT (MYSTERIOUS MAN)',
         description = 'This is a random personal event in which you encounter a mysterious man while healing yourself.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='SAFEST ANSWER', value=safe_answer, inline=False)
@@ -262,7 +258,6 @@ async def embed_event_lootbox() -> discord.Embed:
         title = 'LOOTBOX OPENING EVENT',
         description = 'This is a rare random personal event in which a lootboxes refuses to open.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
@@ -298,7 +293,6 @@ async def embed_event_rubydragon() -> discord.Embed:
         description = 'This is a random personal event in which you don\'t find any materials when working... '
         f'but a ruby dragon instead.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS (START)', value=answers, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS (RUBY DRAGON)', value=answers_ruby, inline=False)
@@ -340,7 +334,6 @@ async def embed_event_arena() -> discord.Embed:
         title = 'ARENA EVENT',
         description =   f'This is a multiplayer event in which up to 10 players fight each other.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO START', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -371,7 +364,6 @@ async def embed_event_coinrain() -> discord.Embed:
         title = 'COIN RAIN EVENT',
         description = 'This is a multiplayer event in which up to 20 players can catch coins falling from the sky.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -400,7 +392,6 @@ async def embed_event_epictree() -> discord.Embed:
         title = 'EPIC TREE EVENT (CHOP)',
         description = 'This is a multiplayer event in which you can chop yourself some logs from a huge tree.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -433,7 +424,6 @@ async def embed_event_god() -> discord.Embed:
         description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one '
         f'player can snatch up.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -461,7 +451,6 @@ async def embed_event_legendary() -> discord.Embed:
         description = 'This is a rare random multiplayer event in which a legendary boss spawns and up to 20 '
         f'players can defeat it.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -492,7 +481,6 @@ async def embed_event_lootboxsummoning() -> discord.Embed:
         description = 'This is a rare random multiplayer event in which a lootbox gets summoned and up to 20 '
         f'players can help to do so.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -522,7 +510,6 @@ async def embed_event_megalodon() -> discord.Embed:
         description = 'This is a multiplayer event in which a megalodon spawns in the river and up to 20 '
         f'players can get some fish.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -567,7 +554,6 @@ async def embed_event_miniboss() -> discord.Embed:
         title = 'MINIBOSS EVENT',
         description = 'This is a multiplayer event in which you fight a miniboss to get coins.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO START', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -606,7 +592,6 @@ async def embed_event_specialtrade() -> discord.Embed:
         description = 'This is a random multiplayer event in which the epic NPC appears and offers one player a '
         f'(very good) trade.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='REQUIRED ANSWER', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -635,7 +620,6 @@ async def embed_event_bigarena() -> discord.Embed:
         title = 'BIG ARENA EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -666,7 +650,6 @@ async def embed_event_horserace() -> discord.Embed:
         title = 'HORSE RACE EVENT',
         description = 'This is a global event which takes place every 2 hours.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -696,7 +679,6 @@ async def embed_event_pettournament() -> discord.Embed:
         title = 'PET TOURNAMENT EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -723,7 +705,6 @@ async def embed_event_lottery() -> discord.Embed:
         title = 'LOTTERY EVENT',
         description = 'This is a global event which takes place every 12 hours.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -752,7 +733,6 @@ async def embed_event_minintboss() -> discord.Embed:
         title = 'MININ\'TBOSS EVENT',
         description = 'This is a global event which takes place three times a week.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='SCHEDULE', value=schedule, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -782,7 +762,6 @@ async def embed_event_hunt() -> discord.Embed:
         title = 'HUNT EVENT (ZOMBIE HORDE)',
         description = 'This is a rare random personal event in which you encounter a zombie horde.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
@@ -815,7 +794,6 @@ async def embed_event_snowball() -> discord.Embed:
         title = 'CHRISTMAS: SNOWBALL FIGHT EVENT',
         description = 'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
@@ -846,7 +824,6 @@ async def embed_event_slime() -> discord.Embed:
             f'This is a random personal halloween event in which you spawn three {emojis.HAL_BAT_SLIME} bat slimes.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
@@ -883,7 +860,6 @@ async def embed_event_scroll_boss() -> discord.Embed:
             f'This boss is also called "scroll boss".\n'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='TACTICS', value=tactics, inline=False)
     embed.add_field(name='REWARDS IF YOU WIN', value=rewards_win, inline=False)
@@ -925,7 +901,6 @@ async def embed_event_returning() -> discord.Embed:
         title = f'RETURNING EVENT {emojis.EPIC_RPG_LOGO}',
         description = f'The returning event is an event for people that haven\'t played for at least 2 months'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)

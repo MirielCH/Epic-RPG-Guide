@@ -181,7 +181,6 @@ async def embed_overview() -> discord.Embed:
         title = 'HORSES',
         description = 'Horses have tiers, levels and types which all give certain important bonuses.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TIER', value=horse_tier, inline=False)
     embed.add_field(name='LEVEL', value=horse_level, inline=False)
     embed.add_field(name='TYPE', value=horse_type, inline=False)
@@ -248,7 +247,6 @@ async def embed_tiers() -> discord.Embed:
             f'tiering up.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'TIER I {emojis.HORSE_T1}', value=tier1, inline=False)
     embed.add_field(name=f'TIER II {emojis.HORSE_T2}', value=tier2, inline=False)
     embed.add_field(name=f'TIER III {emojis.HORSE_T3}', value=tier3, inline=False)
@@ -333,7 +331,6 @@ async def embed_types() -> discord.Embed:
             f'The best type for you depends on your current TT and your horse tier and level.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='DEFENDER', value=defender, inline=False)
     embed.add_field(name='FESTIVE', value=festive, inline=False)
     embed.add_field(name='GOLDEN', value=golden, inline=False)
@@ -399,7 +396,6 @@ async def embed_breeding() -> discord.Embed:
         title = 'HORSE BREEDING',
         description = 'You need to breed to increase your horse tier and/or get a different type.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO BREED', value=howto, inline=False)
     embed.add_field(name='WHERE TO BREED', value=whereto, inline=False)
     embed.add_field(name='IMPACT ON TIER', value=horse_tier, inline=False)

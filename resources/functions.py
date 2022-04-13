@@ -372,14 +372,14 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
     return bot_message
 
 
-async def wait_for_profile_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profile embed from EPIC RPG"""
     def epic_rpg_check(message):
         correct_message = False
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s profile' in embed_author:
+            if f'{ctx_author}\'s profile' in embed_author or f'{ctx_author}\'s progress' in embed_author:
                 correct_message = True
         except:
             pass
@@ -466,7 +466,7 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
         current_xp = int(xp_search.group(1).replace(',',''))
         needed_xp = int(xp_search.group(2).replace(',',''))
     except Exception as error:
-        await database.log_error(error, ctx)
+        await database.log_error(f'{profession_found.capitalize} data not found in profession message: {pr_field}', ctx)
         raise ValueError(error)
 
     return (profession_found, level, current_xp, needed_xp)
@@ -505,6 +505,10 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
                 level = re.search('lv (.+?) \|', field.name.lower()).group(1)
                 level = int(level)
             except Exception as error:
+                await database.log_error(
+                    f'{profession.capitalize} data not found in profession overview message field: {field}',
+                    ctx
+                )
                 await database.log_error(error, ctx)
                 raise ValueError(error)
             break
@@ -534,7 +538,7 @@ async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
     try:
         mob_name = name_search.group(1)
     except Exception as error:
-        await database.log_error(error, ctx)
+        await database.log_error(f'Monster name not found in world message: {mob_field}', ctx)
         raise ValueError(error)
 
     return mob_name
@@ -571,13 +575,13 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
         level = int(level_search.group(1))
     except Exception as error:
-        await database.log_error(error, ctx)
+        await database.log_error(f'Error extracting horse data in horse message: {data_field}', ctx)
         raise ValueError(error)
 
     return (tier, level)
 
 
-async def extract_progress_data_from_profile_embed(ctx: discord.ApplicationContext,
+async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.ApplicationContext,
                                                    bot_message: discord.Message) -> Tuple[int, int]:
     """Extracts tt and max area from a profile embed.
 
@@ -605,7 +609,10 @@ async def extract_progress_data_from_profile_embed(ctx: discord.ApplicationConte
         tt = int(tt_search.group(1)) if tt_search is not None else 0
         area = int(area_search.group(1))
     except Exception as error:
-        await database.log_error(error, ctx)
+        await database.log_error(
+            f'Error extracting progress data in profile or progress message: {progress_field}',
+            ctx
+        )
         raise ValueError(error)
 
     return (tt, area)
@@ -646,7 +653,10 @@ async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationCont
         user_def = int(def_search.group(1))
         user_life = int(life_search.group(2))
     except Exception as error:
-        await database.log_error(error, ctx)
+        await database.log_error(
+            f'Error extracting stats in profile or stats message: {stats_field}',
+            ctx
+        )
         raise ValueError(error)
 
     return (user_at, user_def, user_life)

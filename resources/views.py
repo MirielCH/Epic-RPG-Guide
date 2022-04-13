@@ -1,10 +1,12 @@
 # views.py
 """Contains global interaction views"""
 
+import asyncio
 from typing import Callable, List, Optional, Union, Tuple
 
 import discord
 
+from content import areas, dungeons
 import database
 from resources import settings, strings
 
@@ -12,12 +14,12 @@ from resources import settings, strings
 # --- Functions ---
 def get_area_button_labels(active_area: int) -> Tuple[str, str]:
     """Returns the labels for previous and next area buttons"""
-    next_label = f'Area {active_area + 1} ▶'
-    prev_label = f'◀ Area {active_area - 1}'
+    next_label = f'▶'
+    prev_label = f'◀'
     if active_area == 1:
         prev_label = '◀'
     if active_area == 20:
-        next_label = 'The TOP ▶'
+        next_label = '▶'
     if active_area == 21:
        next_label = '▶'
     return (prev_label, next_label)
@@ -61,18 +63,41 @@ class AreaCheckSelect(discord.ui.Select):
         self.view.active_area = int(select_value)
         embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
                                          self.view.user_life)
-        prev_label, next_label = get_area_button_labels(self.view.active_area)
+        #prev_label, next_label = get_area_button_labels(self.view.active_area)
         for child in self.view.children.copy():
             if child.custom_id == 'select_area':
                 self.view.remove_item(child)
                 self.view.add_item(AreaCheckSelect(self.view.active_area))
             if child.custom_id == 'next':
-                child.label = next_label
+                #child.label = next_label
                 child.disabled = True if self.view.active_area == 21 else False
             if child.custom_id == 'prev':
-                child.label = prev_label
+                #child.label = prev_label
                 child.disabled = True if self.view.active_area == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class AreaDungeonCheckSwitchButton(discord.ui.Button):
+    """Button for area/dungeon check that switches to the opposite check"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        await interaction.response.edit_message()
+        if self.custom_id == 'dungeon-switch':
+            area_dungeon = float(self.view.active_area)
+            function = dungeons.command_dungeon_check
+        else:
+            area_dungeon = self.view.active_dungeon
+            if area_dungeon.is_integer(): area_dungeon = int(self.view.active_dungeon)
+            if area_dungeon == 15.2: area_dungeon = 15
+            function = areas.command_area_check
+
+        self.view.value = 'switched'
+        self.view.stop()
+        await function(self.view.bot, self.view.ctx, area_dungeon, self.view.user_at, self.view.user_def,
+                       self.view.user_life, self.view.interaction)
 
 
 class AreaCheckPaginatorButton(discord.ui.Button):
@@ -84,23 +109,23 @@ class AreaCheckPaginatorButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction) -> None:
         if self.custom_id == 'prev':
             self.view.active_area -= 1
-            prev_label, next_label = get_area_button_labels(self.view.active_area)
-            self.label = prev_label
+            #prev_label, next_label = get_area_button_labels(self.view.active_area)
+            #self.label = prev_label
             if self.view.active_area == 1: self.disabled = True
             for child in self.view.children:
                 if child.custom_id == 'next':
                     child.disabled = False
-                    child.label = next_label
+                    #child.label = next_label
                     break
         elif self.custom_id == 'next':
             self.view.active_area += 1
-            prev_label, next_label = get_area_button_labels(self.view.active_area)
-            self.label = next_label
+            #prev_label, next_label = get_area_button_labels(self.view.active_area)
+            #self.label = next_label
             if self.view.active_area == 21: self.disabled = True
             for child in self.view.children:
                 if child.custom_id == 'prev':
                     child.disabled = False
-                    child.label = prev_label
+                    #child.label = prev_label
                     break
         else:
             return
@@ -206,16 +231,16 @@ class DungeonCheckSelect(discord.ui.Select):
         self.view.active_dungeon = float(select_value)
         embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
                                          self.view.user_life)
-        prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+        #prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
         for child in self.view.children.copy():
             if child.custom_id == 'select_dungeon':
                 self.view.remove_item(child)
                 self.view.add_item(DungeonCheckSelect(self.view.active_dungeon))
             if child.custom_id == 'next':
-                child.label = next_label
+                #child.label = next_label
                 child.disabled = True if self.view.active_dungeon == 21 else False
             if child.custom_id == 'prev':
-                child.label = prev_label
+                #child.label = prev_label
                 child.disabled = True if self.view.active_dungeon == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
 
@@ -234,13 +259,13 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
                 self.view.active_dungeon = 15.2
             else:
                 self.view.active_dungeon -= 1
-            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
-            self.label = prev_label
+            #prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            #self.label = prev_label
             if self.view.active_dungeon == 1: self.disabled = True
             for child in self.view.children:
                 if child.custom_id == 'next':
                     child.disabled = False
-                    child.label = next_label
+                    #child.label = next_label
                     break
         elif self.custom_id == 'next':
             if self.view.active_dungeon == 15:
@@ -249,13 +274,13 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
                 self.view.active_dungeon = 16.0
             else:
                 self.view.active_dungeon += 1
-            prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
-            self.label = next_label
+            #prev_label, next_label = get_dungeon_button_labels(self.view.active_dungeon)
+            #self.label = next_label
             if self.view.active_dungeon == 21: self.disabled = True
             for child in self.view.children:
                 if child.custom_id == 'prev':
                     child.disabled = False
-                    child.label = prev_label
+                    #child.label = prev_label
                     break
         else:
             return
@@ -472,9 +497,11 @@ class AreaCheckView(discord.ui.View):
     'timeout if timed out.
     None otherwise.
     """
-    def __init__(self, ctx: discord.ApplicationContext, active_area: int, user_at: int, user_def: int, user_life: int,
-                 function: Callable, interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
+    def __init__(self, bot: discord.Bot, ctx: discord.ApplicationContext, active_area: int, user_at: int,
+                 user_def: int, user_life: int, function: Callable,
+                 interaction: Optional[Union[discord.Interaction, discord.WebhookMessage]] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.bot = bot
         self.ctx = ctx
         self.value = None
         self.interaction = interaction
@@ -488,8 +515,10 @@ class AreaCheckView(discord.ui.View):
         prev_disabled = True if active_area == 1 else False
         next_disabled = True if active_area == 21 else False
         prev_label, next_label = get_area_button_labels(self.active_area)
-        self.add_item(AreaCheckPaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
-        self.add_item(AreaCheckPaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
+        self.add_item(AreaCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None))
+        self.add_item(AreaCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None))
+        self.add_item(AreaDungeonCheckSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon check', emoji=None))
+
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -566,9 +595,11 @@ class DungeonCheckView(discord.ui.View):
     'timeout if timed out.
     None otherwise.
     """
-    def __init__(self, ctx: discord.ApplicationContext, active_dungeon: float, user_at: int, user_def: int, user_life: int,
-                 function: Callable, interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
+    def __init__(self, bot: discord.Bot, ctx: discord.ApplicationContext, active_dungeon: float, user_at: int,
+                 user_def: int, user_life: int, function: Callable,
+                 interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.bot = bot
         self.ctx = ctx
         self.value = None
         self.interaction = interaction
@@ -582,8 +613,9 @@ class DungeonCheckView(discord.ui.View):
         prev_disabled = True if active_dungeon == 1 else False
         next_disabled = True if active_dungeon == 21 else False
         prev_label, next_label = get_dungeon_button_labels(self.active_dungeon)
-        self.add_item(DungeonCheckPaginatorButton(custom_id='prev', label=prev_label, disabled=prev_disabled, emoji=None))
-        self.add_item(DungeonCheckPaginatorButton(custom_id='next', label=next_label, disabled=next_disabled, emoji=None))
+        self.add_item(DungeonCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None))
+        self.add_item(DungeonCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None))
+        self.add_item(AreaDungeonCheckSwitchButton(custom_id="area-switch", label='↪ Area check', emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -678,38 +710,38 @@ class TopicView(discord.ui.View):
         self.stop()
 
 
-class PaginatorView(discord.ui.View):
-    """Paginator view with three buttons (previous, page count, next).
+    class PaginatorView(discord.ui.View):
+        """Paginator view with three buttons (previous, page count, next).
 
-    Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
+        Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
 
-    Returns
-    -------
-    'timeout' on timeout.
-    None if nothing happened yet.
-    """
-    def __init__(self, ctx: discord.ApplicationContext, pages: List[discord.Embed],
-                 interaction: Optional[discord.Interaction] = None):
-        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
-        self.value = None
-        self.interaction = interaction
-        self.user = ctx.author
-        self.pages = pages
-        self.active_page = 1
-        self.add_item(PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
-        self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
-                                        label=f'1/{len(self.pages)}'))
-        self.add_item(PaginatorButton(custom_id='next', label='▶', emoji=None))
+        Returns
+        -------
+        'timeout' on timeout.
+        None if nothing happened yet.
+        """
+        def __init__(self, ctx: discord.ApplicationContext, pages: List[discord.Embed],
+                    interaction: Optional[discord.Interaction] = None):
+            super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+            self.value = None
+            self.interaction = interaction
+            self.user = ctx.author
+            self.pages = pages
+            self.active_page = 1
+            self.add_item(PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
+            self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
+                                            label=f'1/{len(self.pages)}'))
+            self.add_item(PaginatorButton(custom_id='next', label='▶', emoji=None))
 
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
-        return True
+        async def interaction_check(self, interaction: discord.Interaction) -> bool:
+            if interaction.user != self.user:
+                await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+                return False
+            return True
 
-    async def on_timeout(self) -> None:
-        self.value = 'timeout'
-        self.stop()
+        async def on_timeout(self) -> None:
+            self.value = 'timeout'
+            self.stop()
 
 
 class ConfirmCancelView(discord.ui.View):

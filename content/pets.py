@@ -6,7 +6,7 @@ from typing import Optional
 import discord
 
 import database
-from resources import emojis, settings, strings, views
+from resources import emojis, settings, views
 
 
 # --- Topics ---
@@ -115,7 +115,6 @@ async def embed_pets_overview() -> discord.Embed:
             f'You can have up to (5 + TT) pets (= 7 pets at {emojis.TIME_TRAVEL} TT 2).'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='WHAT TO DO WITH PETS', value=whattodo, inline=False)
     embed.add_field(name='TIER', value=tier, inline=False)
@@ -159,7 +158,6 @@ async def embed_pets_catch() -> discord.Embed:
             f'pets in {emojis.TIME_TRAVEL} TT 2+'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name='HOW TO CATCH PETS', value=catch, inline=False)
     return embed
@@ -211,7 +209,6 @@ async def embed_pets_fusion() -> discord.Embed:
         title = 'FUSING PETS',
         description = 'You can fuse pets to tier them up and/or find or transfer normal skills.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO FUSE', value=general, inline=False)
     embed.add_field(name='TIERING UP', value=tiers, inline=False)
     embed.add_field(name='HOW TO GET (AND KEEP) SKILLS', value=skills, inline=False)
@@ -255,7 +252,6 @@ async def embed_pets_skills_normal() -> discord.Embed:
             f'Purple and yellow skills are rarer than blue ones.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'NORMIE {emojis.SKILL_NORMIE}', value=normie, inline=False)
     embed.add_field(name=f'FAST {emojis.SKILL_FAST}', value=fast, inline=False)
     embed.add_field(name=f'HAPPY {emojis.SKILL_HAPPY}', value=happy, inline=False)
@@ -302,7 +298,6 @@ async def embed_pets_skills_special() -> discord.Embed:
         title = 'SPECIAL PET SKILLS',
         description = 'Overview of all **special** pet skills.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'ASCENDED {emojis.SKILL_ASCENDED}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.SKILL_FIGHTER}', value=fighter, inline=False)
     embed.add_field(name=f'MASTER {emojis.SKILL_MASTER}', value=master, inline=False)
@@ -364,7 +359,6 @@ async def embed_pets_skills_unique() -> discord.Embed:
             f'Overview of all **unique** pet skills. These skill are unique to certain pets and can **not** be lost.\n'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
     embed.add_field(name=f'COMPETITIVE {emojis.SKILL_COMPETITIVE}', value=competitive, inline=False)
     embed.add_field(name=f'FARMER {emojis.SKILL_FARMER}', value=farmer, inline=False)
@@ -426,7 +420,6 @@ async def embed_pets_adventures() -> discord.Embed:
         title = 'PET ADVENTURES',
         description = 'You can send pets on adventures to find items or coins or to rank up their skills.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name='ADVENTURE TYPES', value=types, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -463,7 +456,6 @@ async def embed_fuse(pet_tier: int, timetravel: int) -> discord.Embed:
         title = f'TIER {pet_tier} PET FUSIONS • TT {timetravel}',
         description = 'This guide lists the minimum recommended fusions for a decent tier up chance.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'FUSION TO GET A T{pet_tier} PET', value=how_to_get_tier, inline=False)
     embed.add_field(name=f'FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)

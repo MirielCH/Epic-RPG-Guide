@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings, strings, views
+from resources import emojis, settings, views
 
 
 # --- Topics ---
@@ -77,7 +77,6 @@ async def embed_overview() -> discord.Embed:
         description = 'A guild is a group of up to 10 players that band together to unlock weekly rewards and duel bonuses.'
 
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='REQUIREMENT', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
     embed.add_field(name='HOW TO JOIN A GUILD', value=how_to_join, inline=False)
@@ -111,7 +110,6 @@ async def embed_commands() -> discord.Embed:
             f'A lot of the guild commands can only be used by the owner.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='OWNER COMMANDS', value=owner, inline=False)
     embed.add_field(name='MEMBER COMMANDS', value=member, inline=False)
     return embed
@@ -135,7 +133,6 @@ async def embed_progress() -> discord.Embed:
         title = 'GUILD LEVEL & BONUSES',
         description = 'You can level up your guild to get an increasing duel bonus.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='LEVEL / BONUS', value=level_bonus, inline=False)
     embed.add_field(name='HOW TO GET GUILD XP', value=guild_xp, inline=False)
     return embed
@@ -164,7 +161,6 @@ async def embed_shop() -> discord.Embed:
             f'Note that only the guild owner can buy rewards from the guild shop.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='AVAILABLE REWARDS', value=rewards, inline=False)
     return embed
 
@@ -191,7 +187,6 @@ async def embed_stats() -> discord.Embed:
         description = 'The guild stats are used to get the weekly rewards.'
 
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'STEALTH {emojis.GUILD_STEALTH}', value=stealth, inline=False)
     embed.add_field(name=f'ENERGY {emojis.GUILD_ENERGY}', value=energy, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
@@ -224,7 +219,6 @@ async def embed_raid_upgrade() -> discord.Embed:
             f'To learn more about the stats, see topic `Stealth & energy`'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='WEEKLY REWARDS', value=rewards, inline=False)
     embed.add_field(name='RAIDING & UPGRADING', value=raid_upgrade, inline=False)
     embed.add_field(name='STRATEGY', value=strategy, inline=False)
@@ -275,7 +269,6 @@ async def embed_tasks() -> discord.Embed:
             f'Every guild gets 4 random tasks every week.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='POSSIBLE TASKS (I)', value=guild_tasks_1, inline=False)
     embed.add_field(name='POSSIBLE TASKS (II)', value=guild_tasks_2, inline=False)
     embed.add_field(name='REWARDS', value=rewards, inline=False)

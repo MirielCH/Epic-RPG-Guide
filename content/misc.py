@@ -168,10 +168,13 @@ async def command_coincap_calculator(
 ) -> str:
     """Coincap calculator message"""
     if timetravel is None or area_no is None:
-        bot_message_task = asyncio.ensure_future(functions.wait_for_profile_message(bot, ctx))
+        bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_progress_message(bot, ctx))
         try:
-            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='/profile')
+            content = (
+                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}`/profile` '
+                f'or {emojis.EPIC_RPG_LOGO_SMALL}`/progress`\n'
+                f'Note that profile backgrounds are not supported.'
+            )
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
         except asyncio.TimeoutError:
             await ctx.respond(
@@ -180,7 +183,7 @@ async def command_coincap_calculator(
             )
             return
         if bot_message is None: return
-        tt_found, area_found = await functions.extract_progress_data_from_profile_embed(ctx, bot_message)
+        tt_found, area_found = await functions.extract_progress_data_from_profile_or_progress_embed(ctx, bot_message)
         if timetravel is None: timetravel = tt_found
         if area_no is None: area_no = area_found
     coin_cap = pow(timetravel, 4) * 500_000_000 + pow(area_no, 2) * 100_000
@@ -221,7 +224,6 @@ async def embed_codes():
             f'Every code can only be redeemed once.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     if temporary_value != '':
         embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
     if second_event_field:
@@ -274,7 +276,6 @@ async def embed_badges() -> discord.Embed:
         title = 'BADGES',
         description = 'Badges are cosmetic only profile decorations.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='ACHIEVEMENT BADGES', value=badges_achievements, inline=False)
     embed.add_field(name='COOLNESS BADGES', value=badges_coolness, inline=False)
     embed.add_field(name='OTHER BADGES', value=badges_other, inline=False)
@@ -311,7 +312,6 @@ async def embed_coolness_guide() -> discord.Embed:
         title = f'COOLNESS {emojis.STAT_COOLNESS}',
         description = 'Coolness is a stat you start collecting once you reach area 12.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='REQUIREMENTS', value=req, inline=False)
     embed.add_field(name='HOW TO GET COOLNESS', value=howtoget, inline=False)
@@ -390,7 +390,6 @@ async def embed_farming_guide() -> discord.Embed:
         title = 'FARMING',
         description = f'It ain\'t much, but it\'s honest work.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
     embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
@@ -452,7 +451,6 @@ async def embed_beginner_guide() -> discord.Embed:
         title = 'BEGINNER GUIDE',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
     embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)

@@ -39,6 +39,7 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
 
 async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
     """Craft command"""
+    item_name = item_name.replace('\n',' ')
     if len(item_name) > 200:
         await ctx.respond('Really?', ephemeral=True)
         return
@@ -97,6 +98,7 @@ async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name
 
 async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_name: str, amount: int) -> None:
     """Dismantle command"""
+    item_name = item_name.replace('\n',' ')
     if len(item_name) > 200:
         await ctx.respond('Really?', ephemeral=True)
         return

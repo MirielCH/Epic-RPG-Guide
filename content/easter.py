@@ -68,7 +68,6 @@ async def embed_overview() -> discord.Embed:
         title = f'EASTER EVENT 2022 {emojis.EASTER_EGG}',
         description = 'Hope you like eggs.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='WHAT TO DO', value=whattodo, inline=False)
@@ -106,7 +105,6 @@ async def embed_event_bunny() -> discord.Embed:
         title = 'EASTER: BUNNY EVENT',
         description = 'This is a random personal event in which a bunny appears for you to tame.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='HOW TO TAME THE BUNNY', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
@@ -143,7 +141,6 @@ async def embed_event_bunnyboss() -> discord.Embed:
         title = 'EASTER: BUNNY BOSS EVENT',
         description = 'This is a multiplayer event in which you fight a bunny boss.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW TO START', value=trigger, inline=False)
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)

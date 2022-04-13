@@ -2,9 +2,7 @@
 
 import discord
 
-from resources import emojis
-from resources import settings
-from resources import strings
+from resources import emojis, settings
 
 
 # --- Commands ---
@@ -62,7 +60,6 @@ async def embed_enchanting() -> discord.Embed:
             f'See the [Wiki](https://epic-rpg.fandom.com/wiki/Enchant) for **base** chance estimates.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='POSSIBLE ENCHANTS', value=buffs, inline=False)
     embed.add_field(name='HOW ENCHANTING WORKS', value=how_enchanting_works, inline=False)
     embed.add_field(name='COMMAND TIERS', value=commands_tiers, inline=False)

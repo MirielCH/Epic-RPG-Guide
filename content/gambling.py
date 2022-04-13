@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings, strings, views
+from resources import emojis, settings, views
 
 
 # --- Topics ---
@@ -78,7 +78,6 @@ async def embed_blackjack() -> discord.Embed:
         title = 'BLACKJACK',
         description = f'\"Blackjack is very scientific. There\'s always a right answer and wrong answer.\"'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='CARD VALUES', value=card_values, inline=False)
@@ -114,7 +113,6 @@ async def embed_coinflip() -> discord.Embed:
         title = 'COINFLIP',
         description = f'\"Ah. Fortune smiles. Another day of wine and roses. Or, in your case, beer and pizza!\"'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -142,7 +140,6 @@ async def embed_cups() -> discord.Embed:
         title = 'CUPS',
         description = 'These ain\'t coffee cups.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -182,7 +179,6 @@ async def embed_dice() -> discord.Embed:
         title = 'DICE',
         description = 'Dice, dice, baby.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -218,7 +214,6 @@ async def embed_multidice() -> discord.Embed:
         title = 'MULTIDICE',
         description = 'Someone wins. Someone loses. Such is life.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
@@ -265,7 +260,6 @@ async def embed_slots() -> discord.Embed:
         title = 'SLOTS',
         description = 'Keep rollin\', rollin\', rollin\', rollin\'.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='5-OF-THE-SAME WINNINGS', value=rewards_five, inline=False)
@@ -308,7 +302,6 @@ async def embed_wheel() -> discord.Embed:
         title = 'WHEEL',
         description = 'What you gonna tell your dad?'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='COMMAND', value=command, inline=False)
     embed.add_field(name='RULES', value=rules, inline=False)
     embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)

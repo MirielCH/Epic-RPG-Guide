@@ -75,6 +75,7 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster]):
         title = 'MONSTER SEARCH',
         description = description
     )
+    embed.set_footer(text='Use "/monster drops" to see all monster drops at once')
     monster = type(database.Monster)
     for monster in monsters:
         if monster.areas[0] == monster.areas[1]:
@@ -152,7 +153,7 @@ async def embed_monster_drops() -> discord.Embed:
             f'{emojis.BLANK}'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.set_footer(text='Use "/monster search" to look up specific monsters')
     embed.add_field(name=f'WOLF SKIN {emojis.WOLF_SKIN}', value=wolfskin, inline=True)
     embed.add_field(name=f'ZOMBIE EYE {emojis.ZOMBIE_EYE}', value=zombieeye, inline=True)
     embed.add_field(name=f'UNICORN HORN {emojis.UNICORN_HORN}', value=unicornhorn, inline=True)

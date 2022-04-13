@@ -67,7 +67,7 @@ async def embed_trades_area_specific(user: database.User, area: database.Area) -
         title = f'TRADES BEFORE LEAVING {area_no_str}',
         description = description
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.set_footer(text='Use "/area guide" to see the full guide for this area')
     return embed
 
 
@@ -82,7 +82,7 @@ async def embed_trades_all_areas(user: database.User) -> discord.Embed:
             f'Everything that isn\'t mentioned can be ignored.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.set_footer(text='Use "/area guide" to see the full area guides')
     areas = await database.get_all_areas()
     for area in areas:
         area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
@@ -106,7 +106,7 @@ async def embed_trade_rates(areas: Tuple[database.Area]) -> discord.Embed:
         title = 'TRADE RATES',
         description = f'The trades available to you depend on your **highest unlocked** area.\n{emojis.BLANK}'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
+    embed.set_footer(text='Use "/area guide" to see the recommended trades in each area')
 
     previous_area = None
     actual_areas = []
@@ -313,7 +313,6 @@ async def embed_trade_calculator(areas: Tuple[database.Area], area_no: int, mate
             f'follow all the trades correctly, this amounts to the following:'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
 
     previous_area = None
     actual_areas = []

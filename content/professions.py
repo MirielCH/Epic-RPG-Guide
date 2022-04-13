@@ -107,32 +107,30 @@ async def embed_professions_overview() -> discord.Embed:
         f'{emojis.BP} Level 101+: Adds a chance to find other items with work commands\n'
         f'{emojis.BP} For more details see topic `Worker`'
     )
-
     crafter = (
         f'{emojis.BP} Increases the chance to get 10% materials back when crafting\n'
         f'{emojis.BP} Level 101+: Increases the percentage of items returned\n'
         f'{emojis.BP} For more details see topic `Crafter`'
     )
-
     lootboxer = (
         f'{emojis.BP} Increases the bank XP bonus\n'
         f'{emojis.BP} Decreases the cost of horse training\n'
         f'{emojis.BP} Level 101+: Increases the maximum level of your horse\n'
         f'{emojis.BP} For more details see topic `Lootboxer`'
     )
-
     merchant = (
         f'{emojis.BP} Increases the amount of coins you get when selling items\n'
         f'{emojis.BP} Level 101+: You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
         f'{emojis.BP} For more details see topic `Merchant`'
     )
-
     enchanter = (
         f'{emojis.BP} Increases the chance to get a better enchant when enchanting\n'\
         f'{emojis.BP} Level 101+: Adds a chance to win the price of the enchant instead of spending it\n'
         f'{emojis.BP} For more details see topic `Enchanter`'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'PROFESSIONS',
@@ -142,14 +140,12 @@ async def embed_professions_overview() -> discord.Embed:
             f'If you get all professions to level 100, you can ascend (see topic `Ascension`).'
         )
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'WORKER {emojis.PR_WORKER}', value=worker, inline=False)
     embed.add_field(name=f'CRAFTER {emojis.PR_CRAFTER}', value=crafter, inline=False)
     embed.add_field(name=f'LOOTBOXER {emojis.PR_LOOTBOXER}', value=lootboxer, inline=False)
     embed.add_field(name=f'MERCHANT {emojis.PR_MERCHANT}', value=merchant, inline=False)
     embed.add_field(name=f'ENCHANTER {emojis.PR_ENCHANTER}', value=enchanter, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -162,7 +158,6 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Craft in batches of 500 or 1000 (you can dismantle all at once)\n'
         f'{emojis.BP} Once you reach level 100, switch to leveling merchant'
     )
-
     merchant = (
         f'{emojis.BP} This is the second profession you should level up\n'
         f'{emojis.BP} Level **before time traveling** with leftover materials\n'
@@ -172,7 +167,6 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Take 5x the XP amount and sell as many {emojis.LOG} logs\n'
         f'{emojis.BP} Once you reach level 100, focus on lootboxer and worker'
     )
-
     lootboxer = (
         f'{emojis.BP} Level up by opening lootboxes\n'
         f'{emojis.BP} Better lootboxes give more XP (see topic `Lootboxer`)\n'
@@ -180,14 +174,12 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} It\'s usually not necessary to cook {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes\n'
         f'{emojis.BP} Use `hunt hardmode` whenever you have access (unlocks in A13)'
     )
-
     worker = (
         f'{emojis.BP} Level up by using work commands or cooking {emojis.FOOD_BANANA_PICKAXE} banana pickaxes\n'
         f'{emojis.BP} Higher tier work commands give more XP (see topic `Worker`)\n'
         f'{emojis.BP} Try to keep the level at about the same as lootboxer\n'
         f'{emojis.BP} If lower than lootboxer, consider cooking {emojis.FOOD_BANANA_PICKAXE} banana pickaxes\n'
     )
-
     enchanter = (
         f'{emojis.BP} This is the last profession you should level up (it\'s expensive and you need access to at least '
         f'{emojis.EPIC_RPG_LOGO_SMALL}`/transmute`)\n'
@@ -197,15 +189,12 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Costs around 3 billion coins without {emojis.HORSE_T8} T8+ horse\n'
         f'{emojis.BP} Costs around 2 billion coins with {emojis.HORSE_T8} T8+ horse'
     )
-
     ascended = (
         f'{emojis.BP} Increase crafter and merchant to 101, then focus exclusively on worker\n'
     )
-
     calculator = (
         f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
     )
-
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'HOW TO LEVEL PROFESSIONS',
@@ -217,15 +206,13 @@ async def embed_professions_leveling() -> discord.Embed:
             f'Thus, unless you can reach ascension easily, always time travel again instead of staying and farming.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name=f'1. CRAFTER {emojis.PR_CRAFTER}', value=crafter, inline=False)
     embed.add_field(name=f'2. MERCHANT {emojis.PR_MERCHANT}', value=merchant, inline=False)
     embed.add_field(name=f'3. WORKER {emojis.PR_WORKER}', value=worker, inline=False)
     embed.add_field(name=f'4. LOOTBOXER {emojis.PR_LOOTBOXER}', value=lootboxer, inline=False)
     embed.add_field(name=f'5. ENCHANTER {emojis.PR_ENCHANTER}', value=enchanter, inline=False)
-    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     embed.add_field(name='AFTER ASCENSION', value=ascended, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -235,33 +222,30 @@ async def embed_professions_crafter() -> discord.Embed:
         f'{emojis.BP} Increases the chance to get 10% materials back when crafting\n'
         f'{emojis.BP} The chance at level 100 is 80%'
     )
-
     level_101 =(
         f'{emojis.BP} Increases the percentage of items returned\n'
         f'{emojis.BP} The percentage increases logarithmically'
     )
-
     how_to_get_xp = (
         f'{emojis.BP} Craft and dismantle\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_HEAVY_APPLE} heavy apples (100 XP each)~~ (don\'t do that)'
     )
-
     xp_gain = (
         f'{emojis.BP} A detailed list of all material and gear XP is available in the '
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Crafter)'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'CRAFTER PROFESSION'
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -271,12 +255,10 @@ async def embed_professions_enchanter() -> discord.Embed:
         f'{emojis.BP} Increases the chance to get a better enchant when enchanting\n'
         f'{emojis.BP} The exact chance increase is unknown'
     )
-
     level_101 =(
         f'{emojis.BP} Adds a chance to win the price of the enchant instead of spending it\n'
         f'{emojis.BP} The chance is 2% at level 101 and increases logarithmically with each level'
     )
-
     how_to_get_xp = (
         f'{emojis.BP} Use enchanting commands\n'
         f'{emojis.BLANK} The XP formula is [tt multiplier] * [command multiplier] * [enchantment xp]\n'
@@ -284,7 +266,6 @@ async def embed_professions_enchanter() -> discord.Embed:
         f'you get `2 * 100 * 7` XP\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_FRUIT_ICE_CREAM} fruit ice cream (100 XP each)~~ (don\'t do that)'
     )
-
     xp_gain = (
         f'{emojis.BP} **Normie**: 0 XP\n'
         f'{emojis.BP} **Good**: 1 XP\n'
@@ -301,31 +282,29 @@ async def embed_professions_enchanter() -> discord.Embed:
         f'{emojis.BP} **GODLY**: 12 XP\n'
         f'{emojis.BP} **VOID**: 13 XP\n'
     )
-
     command_multipliers = (
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/enchant`: 1\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/refine`: 10\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transmute`: 100\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transcend`: 1,000'
     )
-
     tt_multiplier = (
         f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` to check your TT multiplier'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ENCHANTER PROFESSION'
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
     embed.add_field(name='COMMAND MULTIPLIERS', value=command_multipliers, inline=False)
     embed.add_field(name='TT MULTIPLIER', value=tt_multiplier, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -337,17 +316,14 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} Horse training is 50 % cheaper at level 100\n'\
         f'{emojis.BP} The exact buff of the bank bonus unknown'
     )
-
     level_101 =(
         f'{emojis.BP} Increases the maximum level of your horse\n'
         f'{emojis.BP} The level increases by 1 per level after 100'
     )
-
     how_to_get_xp = (
         f'{emojis.BP} Open lootboxes\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes (100 XP each)~~ (don\'t do that)\n'
     )
-
     xp_gain = (
         f'{emojis.BP} {emojis.LB_COMMON} common lootbox: 4 XP\n'
         f'{emojis.BP} {emojis.LB_UNCOMMON} uncommon lootbox: 9 XP\n'
@@ -358,18 +334,18 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15004 XP\n'
         f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: Unknown\n'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'LOOTBOXER PROFESSION'
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -379,35 +355,32 @@ async def embed_professions_merchant() -> discord.Embed:
         f'{emojis.BP} Increases the amount of coins you get when selling items\n'
         f'{emojis.BP} You get 4.929395x more coins at level 100'
     )
-
     level_101 =(
         f'{emojis.BP} You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
         f'{emojis.BP} You get 1 dragon scale per 50 mob drops at level 101 (2%)\n'
         f'{emojis.BP} This increases by 2% for every level\n'
     )
-
     how_to_get_xp = (
         f'{emojis.BP} Sell materials\n'
         f'{emojis.BP} Note that you don\'t get any XP when selling gear and other items\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_COIN_SANDWICH} coin sandwich (100 XP each)~~ (**DON\'T DO THAT**)\n'
     )
-
     xp_gain = (
         f'{emojis.BP} A detailed list of XP per amount sold is available in the '
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Merchant)'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MERCHANT PROFESSION'
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -417,7 +390,6 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} Increases the chance to get a better item with work commands\n'
         f'{emojis.BP} The chance increase is 50% at level 100'
     )
-
     level_101 =(
         f'{emojis.BP} Adds an increasing chance to find other items with top tier work commands\n'
         f'{emojis.BP} The chance is 4% at level 101 and increases by 4% for every level\n'
@@ -426,12 +398,10 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite` gets a chance to drop {emojis.LOG_SUPER} SUPER logs\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse` gets a chance to drop {emojis.RUBY} rubies'
     )
-
     how_to_get_xp = (
         f'{emojis.BP} Use work commands\n'
         f'{emojis.BP} Cook {emojis.FOOD_BANANA_PICKAXE} banana pickaxes (100 XP each)\n'
     )
-
     xp_gain = (
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/chop`, {emojis.EPIC_RPG_LOGO_SMALL}`/fish`, '
         f'{emojis.EPIC_RPG_LOGO_SMALL}`/pickup`, {emojis.EPIC_RPG_LOGO_SMALL}`/mine`: 4 XP\n'
@@ -445,18 +415,18 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/greenhouse`, {emojis.EPIC_RPG_LOGO_SMALL}`/dynamite`: 17 XP\n'
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`: 18 XP'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'WORKER PROFESSION'
     )
-
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='PROFESSION BONUS', value=base_bonus, inline=False)
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
-
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -466,7 +436,6 @@ async def embed_ascension() -> discord.Embed:
         f'{emojis.BP} All 5 professions at level 100+ (see topic `How to level professions`)\n'
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 1+'
     )
-
     benefits =(
         f'{emojis.BP} Get more materials by using high tier work commands early\n'
         f'{emojis.BP} Get more XP by using {emojis.EPIC_RPG_LOGO_SMALL}`/hunt mode: hardmode` and '
@@ -474,13 +443,14 @@ async def embed_ascension() -> discord.Embed:
         f'{emojis.BP} Get higher enchants easier by using higher enchanting commands early\n'
         f'{emojis.BP} {emojis.RUBY} rubies and {emojis.BANANA} bananas are obtainable in area 1+'
     )
-
     notes = (
         f'{emojis.BP} Trade rates are still area locked\n'
         f'{emojis.BP} Higher tier logs and fish remain area locked. Use '
         f'{emojis.EPIC_RPG_LOGO_SMALL}`/help topic: [material]` to see the area they unlock in.'
     )
-
+    calculator = (
+        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ASCENSION',
@@ -489,10 +459,10 @@ async def embed_ascension() -> discord.Embed:
             f'This makes it much easier to get XP, materials and high enchants early.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='BENEFITS', value=benefits, inline=False)
     embed.add_field(name='NOTES', value=notes, inline=False)
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
@@ -515,7 +485,6 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
         title = 'PROFESSIONS CALCULATOR',
         description = description
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
 
     if profession in ('enchanter', 'lootboxer', 'worker'):
         food_emojis = {

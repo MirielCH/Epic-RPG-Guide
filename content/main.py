@@ -184,14 +184,14 @@ async def embed_about(bot: commands.Bot, ctx: discord.ApplicationContext, api_la
         f'{emojis.BP} r5#2253\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )
-    privacy = (
-        f'{emojis.BP} You can find this bot\'s privacy policy [here]'
-        f'(https://docs.google.com/document/d/1CStt8k902m5s5CUb2RyPTTN-dmb-N2FAONfxzm7eAio/edit?usp=sharing).\n'
+    documents = (
+        f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
+        f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
-    embed.add_field(name='PRIVACY POLICY', value=privacy, inline=False)
+    embed.add_field(name='PRIVACY POLICY & TOS', value=documents, inline=False)
     return embed

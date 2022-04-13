@@ -875,8 +875,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     else:
         boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
-    if 16 <= dungeon_no <= 21: boss_at = 'Unknown'
-    if dungeon_no == 21: boss_life = 'Unknown'
+    if 16 <= dungeon_no <= 20: boss_at = 'Unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
@@ -905,7 +904,7 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     elif 10 <= dungeon_no <= 15.2:
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif dungeon_no == 21:
-        requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 **highly** recommended)'
+        requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 recommended)'
 
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
@@ -914,7 +913,16 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     if dungeon_no == 21:
         requirements = (
             f'{requirements}\n'
-            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it to start the fight)'
+            f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it to start the fight)\n'
+            f'{emojis.BP} No gear (having a sword or armor results in instant death)\n'
+            f'{emojis.BP} 750,000+ {emojis.LOG} wooden logs to sell during the fight\n'
+            f'{emojis.BP} **4** T10 or higher pets to send on adventures\n'
+            f'{emojis.BLANK} At least **3** of these pets **must** have the {emojis.SKILL_EPIC} EPIC skill\n'
+            f'{emojis.BLANK} Only **1** can have a {emojis.SKILL_TRAVELER} time traveler skill\n'
+            f'{emojis.BLANK} If a pet has the {emojis.SKILL_TRAVELER} time traveler skill, it must also be '
+            f'{emojis.SKILL_EPIC} EPIC\n'
+            f'{emojis.BP} No active pet adventures before the fight\n'
+            f'{emojis.BP} 1,000+ {emojis.LIFE_POTION} life potions'
         )
     if dungeon_no in (10, 12, 14, 15):
         requirements = f'{requirements}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name}'
@@ -1041,6 +1049,8 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     elif dungeon_no == 21:
         notes = (
             f'{emojis.BP} This fight does not need your dungeon cooldown\n'
+            f'{emojis.BP} The {emojis.SWORD_GODLYCOOKIE} GODLY cookie is **one time use**\n'
+            f'{emojis.BP} The {emojis.EPIC_JUMP} EPIC jump you get is lost after TT\n'
         )
 
     # Images
@@ -1122,7 +1132,7 @@ async def embed_dungeon_rec_stats(ctx: commands.Context, dungeons: Tuple[databas
 
     for dungeon in dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
         field_rec_stats = await functions.design_field_rec_stats(dungeon, True)
         embed.add_field(name=field_name, value=field_rec_stats, inline=True)
 
@@ -1168,7 +1178,7 @@ async def embed_dungeon_rec_gear(ctx: commands.Context, dungeons: Tuple[database
 
     for dungeon in listed_dungeons:
         dungeon_no = 15.1 if dungeon.dungeon_no == 15 else dungeon.dungeon_no
-        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'THE "FINAL" FIGHT'
+        field_name = f'DUNGEON {f"{dungeon_no:g}".replace(".","-")}' if dungeon_no != 21 else 'EPIC NPC FIGHT'
         field_rec_gear = await functions.design_field_rec_gear(dungeon)
         if field_rec_gear is None: field_rec_gear = f'{emojis.BP} None'
         embed.add_field(name=field_name, value=field_rec_gear, inline=False)

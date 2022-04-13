@@ -1,13 +1,10 @@
 # misc.py
 
-import asyncio
-
 import discord
 from discord.commands import slash_command, SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import misc
-from resources import functions
 
 
 class MiscCog(commands.Cog):

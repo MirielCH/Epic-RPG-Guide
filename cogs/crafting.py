@@ -1,10 +1,8 @@
 # crafting.py
 
-import asyncio
-
 import discord
 from discord.ext import commands
-from discord.commands import Option, slash_command, SlashCommandGroup
+from discord.commands import Option, SlashCommandGroup
 
 from content import crafting
 import database

@@ -3,7 +3,7 @@
 
 import discord
 
-from resources import emojis, settings, strings
+from resources import emojis, settings
 
 
 # --- Commands ---
@@ -64,7 +64,6 @@ async def embed_ultraining_guide():
             f'It is the main source of coolness which you need for dungeon 15-2.'
         )
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='HOW IT WORKS', value=how_it_works, inline=False)
     embed.add_field(name='ATTACK, BLOCK OR ATTLOCK?', value=which_command, inline=False)
     embed.add_field(name='WHEN TO DO ULTRAINING', value=when, inline=False)

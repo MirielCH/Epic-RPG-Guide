@@ -3,7 +3,7 @@
 
 import discord
 
-from resources import emojis, settings, strings
+from resources import emojis, settings
 
 
 # --- Commands ---
@@ -37,7 +37,6 @@ async def embed_duel_weapons() -> discord.Embed:
         title = 'DUELS',
         description = 'Winning a duel depends on the chosen weapon and some luck.'
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='DUELLING WEAPONS', value=weapons, inline=False)
     embed.add_field(name='RANDOMNESS', value=randomness, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)

@@ -1,7 +1,7 @@
 # areas.py
 
 import asyncio
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 from discord.ext import commands
@@ -41,7 +41,8 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
 
 async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
                              user_at: Optional[int] = None, user_def: Optional[int] = None,
-                             user_life: Optional[int] = None)  -> None:
+                             user_life: Optional[int] = None,
+                             interaction: Optional[Union[discord.WebhookMessage, discord.Interaction]] = None)  -> None:
     """Area check command"""
     if user_at is None or user_def is None or user_life is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
@@ -63,15 +64,22 @@ async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, 
         if user_at is None: user_at = at_found
         if user_def is None: user_def = def_found
         if user_life is None: user_life = life_found
-    view = views.AreaCheckView(ctx, area_no, user_at, user_def, user_life, embed_area_check)
+    view = views.AreaCheckView(bot, ctx, area_no, user_at, user_def, user_life, embed_area_check)
     embed = await embed_area_check(area_no, user_at, user_def, user_life)
-    interaction = await ctx.respond(embed=embed, view=view)
+    if interaction is None:
+        interaction = await ctx.respond(embed=embed, view=view)
+    else:
+        if isinstance(interaction, discord.WebhookMessage):
+            await interaction.edit(embed=embed, view=view)
+        else:
+            await interaction.edit_original_message(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if isinstance(interaction, discord.WebhookMessage):
-        await interaction.edit(view=None)
-    else:
-        await interaction.edit_original_message(view=None)
+    if view.value != 'switched':
+        if isinstance(interaction, discord.WebhookMessage):
+            await interaction.edit(view=None)
+        else:
+            await interaction.edit_original_message(view=None)
 
 
 # --- Functions ---
@@ -623,7 +631,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         next_area = await database.get_area(area.area_no + 1)
 
     # Footer
-    footer = 'Tip: Use /dungeon guide for details about the next dungeon.'
+    footer = 'Use "/dungeon guide" to see details about the next dungeon.'
 
     # Description
     description = f'{area.description}'
@@ -634,7 +642,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             f'{emojis.BP} **You can not reach this area in your current TT**\n'
             f'{emojis.BP} This area is unlocked in {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt}'
             )
-        footer = f'Tip: See /time-travel guide for details about time traveling'
+        footer = f'Tip: See "/time-travel guide" for details about time traveling'
 
     # Area requirements
     unseal_time = {
@@ -816,10 +824,10 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = title,
-        description = description
     )
     embed.set_footer(text=footer)
-
+    if full_version:
+        embed.description = description
     if area_locked is not None:
         embed.add_field(name='AREA LOCKED', value=area_locked, inline=False)
     if full_version:
@@ -859,10 +867,10 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
 async def embed_area_check(area_no: int, user_at: int, user_def: int, user_life: int) -> discord.Embed:
     """Embed with area check"""
     legend = (
-        f'{emojis.BP} {emojis.CHECK_OK} : You will always take 0 damage\n'
-        f'{emojis.BP} {emojis.CHECK_IGNORE} : You will take damage but always survive if healed up\n'
-        f'{emojis.BP} {emojis.CHECK_WARN} : If you are lucky and healed up, you might survive\n'
-        f'{emojis.BP} {emojis.CHECK_FAIL} : It was nice knowing you. RIP.\n'
+        f'{emojis.BP} {emojis.CHECK_OK} : You will take no damage\n'
+        f'{emojis.BP} {emojis.CHECK_IGNORE} : You will take damage but survive if healed up\n'
+        f'{emojis.BP} {emojis.CHECK_WARN} : If you are lucky and healed up, you _might_ survive\n'
+        f'{emojis.BP} {emojis.CHECK_FAIL} : It was nice knowing you, RIP\n'
     )
     stats = (
         f'{emojis.BP} {emojis.STAT_AT} **AT**: {user_at:,}\n'
@@ -874,7 +882,6 @@ async def embed_area_check(area_no: int, user_at: int, user_def: int, user_life:
         color = settings.EMBED_COLOR,
         title = f'{area_no_str.upper()} DAMAGE CHECK',
     )
-    embed.set_footer(text=strings.DEFAULT_FOOTER)
     embed.add_field(name='YOUR STATS', value=stats, inline=False)
     area_check_field = await design_field_area_check(area_no, user_at, user_def, user_life)
     embed.add_field(name='DAMAGE TAKEN', value=area_check_field, inline=False)

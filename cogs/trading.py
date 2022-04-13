@@ -5,7 +5,7 @@ from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import trading
-from resources import functions, strings
+from resources import strings
 
 
 TRADECALC_MATERIALS = [
