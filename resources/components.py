@@ -179,6 +179,43 @@ class AreaGuidePaginatorButton(discord.ui.Button):
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
+class CraftingRecalculateButton(discord.ui.Button):
+    """Recalculation button for the crafting calculator"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+
+        if self.custom_id == 'prev':
+            self.view.active_area -= 1
+            if self.view.active_area == 1: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'next':
+                    child.disabled = False
+                    break
+        elif self.custom_id == 'next':
+            self.view.active_area += 1
+            if self.view.active_area == 21: self.disabled = True
+            for child in self.view.children:
+                if child.custom_id == 'prev':
+                    child.disabled = False
+                    break
+        else:
+            return
+        for child in self.view.children:
+            if child.custom_id == 'select_area':
+                options = []
+                for area_no in range(1,22):
+                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                    emoji = '🔹' if area_no == self.view.active_area else None
+                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
 class DungeonCheckSelect(discord.ui.Select):
     """Dungeon check select"""
     def __init__(self, active_dungeon: float):
@@ -331,20 +368,29 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
 
 class TopicSelect(discord.ui.Select):
     """Topic Select"""
-    def __init__(self, topics: dict, active_topic: str, placeholder: str):
+    def __init__(self, topics: dict, active_topic: str, placeholder: str, row: Optional[int] = None):
+        self.topics = topics
         options = []
         for topic in topics.keys():
             label = topic
             emoji = '🔹' if topic == active_topic else None
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options)
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id='select_topic')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_topic = select_value
+        for child in self.view.children:
+            if child.custom_id == 'select_topic':
+                options = []
+                for topic in self.topics.keys():
+                    label = topic
+                    emoji = '🔹' if topic == self.view.active_topic else None
+                    options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+                child.options = options
+                break
         embed = await self.view.topics[select_value]()
-        self.view.clear_items()
-        self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic, self.view.placeholder))
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 

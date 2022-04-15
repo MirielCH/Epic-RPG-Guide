@@ -118,7 +118,7 @@ class MainCog(commands.Cog):
         """Main help command"""
         await main.command_help(ctx, topic)
 
-    @slash_command(description='Some bot stats')
+    @slash_command(description='Some info and links about Epic RPG Guide')
     async def about(self, ctx: discord.ApplicationContext) -> None:
         """About command"""
         await main.command_about(self.bot, ctx)

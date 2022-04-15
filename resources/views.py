@@ -6,7 +6,7 @@ from typing import Callable, List, Optional, Union
 import discord
 
 import database
-from resources import components, functions, settings, strings
+from resources import components, functions, modals, settings, strings
 
 
 class AbortView(discord.ui.View):
@@ -259,8 +259,6 @@ class TopicView(discord.ui.View):
     topics: Topics to select from - dict (description: function). The functions need to return an embed and have one
     argument (context)
     active_topic: Currently chosen topic
-    function: Function that generates the embed, this will be called with every button press. The function needs to
-        return an embed and have two arguments: prefix: str, page_no: int.
 
     Returns
     -------
@@ -362,7 +360,7 @@ class ConfirmCancelView(discord.ui.View):
 
 
 class FollowupCommandView(discord.ui.View):
-    """Paginator view with a single button that calls another command and then removes itself.
+    """Followup view with a single button that calls another command and then removes itself.
 
     Also needs the interaction of the response with the view, so do
     FollowupCommandView.interaction = await ctx.respond('foo').
@@ -382,6 +380,46 @@ class FollowupCommandView(discord.ui.View):
         self.active_page = 1
         self.add_item(components.CustomButton(custom_id='followup', label=label, emoji=None,
                                               style=discord.ButtonStyle.grey))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        if self.interaction is not None:
+            await functions.edit_interaction(self.interaction, view=None)
+        self.stop()
+
+
+class FollowupCraftingCalculatorView(discord.ui.View):
+    """Followup view with a single button that calls the CraftinCalculatorAmountModal and then removes itself.
+
+    Also needs the interaction of the response with the view, so do
+    FollowupCommandView.interaction = await ctx.respond('foo').
+
+    Returns
+    -------
+    'timeout' on timeout.
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, item_name: str, item_emoji: str,
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.ctx = ctx
+        self.user = ctx.author
+        self.item_name = item_name
+        self.item_emoji = item_emoji
+
+    @discord.ui.button(label='Crafting calculator', style=discord.ButtonStyle.grey)
+    async def button_callback(self, button, interaction):
+        modal = modals.CraftingCalculatorAmountModal(self.ctx, self.item_name, self.item_emoji)
+        await interaction.response.send_modal(modal)
+        self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:

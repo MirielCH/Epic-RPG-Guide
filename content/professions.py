@@ -6,8 +6,9 @@ from typing import Optional
 
 import discord
 
+from content import crafting
 import database
-from resources import emojis, functions, settings, strings, views
+from resources import modals, emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -30,6 +31,19 @@ TOPICS = [
     TOPIC_MERCHANT,
     TOPIC_WORKER,
 ]
+
+
+FOOD_EMOJIS = {
+    'enchanter': emojis.FOOD_FRUIT_ICE_CREAM,
+    'lootboxer': emojis.FOOD_FILLED_LOOTBOX,
+    'worker': emojis.FOOD_BANANA_PICKAXE,
+}
+
+FOOD_NAMES = {
+    'enchanter': 'fruit ice cream',
+    'lootboxer': 'filled lootbox',
+    'worker': 'banana pickaxe',
+}
 
 
 # --- Commands ---
@@ -92,11 +106,18 @@ async def command_profession_calculator(
     try:
         embed = await asyncio.wait_for(embed_professions_calculator(profession, to_level, current_xp,
                                                                     needed_xp, from_level),
-                                        timeout=5.0)
+                                        timeout=3.0)
     except asyncio.TimeoutError:
         await ctx.respond('Welp, something took too long here, calculation cancelled.', ephemeral=True)
         return
-    await ctx.respond(embed=embed)
+    if profession in ('enchanter', 'lootboxer', 'worker'):
+        view = views.FollowupCraftingCalculatorView(ctx, FOOD_NAMES[profession], FOOD_EMOJIS[profession])
+        interaction = await ctx.respond(embed=embed, view=view)
+        view.interaction = interaction
+        await view.wait()
+        await functions.edit_interaction(interaction, view=None)
+    else:
+        await ctx.respond(embed=embed)
 
 
 # --- Embeds ---
@@ -487,16 +508,6 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
     )
 
     if profession in ('enchanter', 'lootboxer', 'worker'):
-        food_emojis = {
-            'enchanter': emojis.FOOD_FRUIT_ICE_CREAM,
-            'lootboxer': emojis.FOOD_FILLED_LOOTBOX,
-            'worker': emojis.FOOD_BANANA_PICKAXE,
-        }
-        food_names = {
-            'enchanter': 'fruit ice cream',
-            'lootboxer': 'filled lootbox',
-            'worker': 'banana pickaxe',
-        }
         xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
         item_total = item_amount = ceil(xp / 100)
         xp_total = xp
@@ -509,7 +520,7 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
             xp_rest_wb = 0
 
         output = (
-            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {food_emojis[profession]} '
+            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {FOOD_EMOJIS[profession]} '
             f'(if world buff: **{item_amount_wb:,}**)'
         )
 
@@ -534,7 +545,7 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
                 xp_rest_wb = 0
             output = (
                 f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                f'**{item_amount:,}** {food_emojis[profession]} (if world buff: **{item_amount_wb:,}**)'
+                f'**{item_amount:,}** {FOOD_EMOJIS[profession]} (if world buff: **{item_amount_wb:,}**)'
             )
 
         if from_level < to_level:
@@ -562,18 +573,18 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
 
             if output_total is None:
                 output_total = (
-                    f'{emojis.BP} **{item_total:,}** {food_emojis[profession]} without world buff\n'
-                    f'{emojis.BP} **{item_total_wb:,}** {food_emojis[profession]} with world buff\n'
+                    f'{emojis.BP} **{item_total:,}** {FOOD_EMOJIS[profession]} without world buff\n'
+                    f'{emojis.BP} **{item_total_wb:,}** {FOOD_EMOJIS[profession]} with world buff\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
                 )
         if profession == 'enchanter':
             how_to_level = (
                 f'{emojis.BP} Use `transmute` or `transcend`\n'
-                f'{emojis.BP} It\'s not recommended to cook {food_emojis[profession]} {food_names[profession]}, '
+                f'{emojis.BP} It\'s not recommended to cook {FOOD_EMOJIS[profession]} {FOOD_NAMES[profession]}, '
                 f'but if you prefer doing so regardless, see the required amounts below'
             )
         else:
-            how_to_level = f'{emojis.BP} Cook {food_emojis[profession]} {food_names[profession]}'
+            how_to_level = f'{emojis.BP} Cook {FOOD_EMOJIS[profession]} {FOOD_NAMES[profession]}'
         embed.add_field(name='HOW TO LEVEL', value=how_to_level)
         if output_total is not None:
             embed.add_field(

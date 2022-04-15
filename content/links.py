@@ -25,6 +25,6 @@ async def command_support(ctx: discord.ApplicationContext) -> discord.Embed:
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'NEED BOT SUPPORT?',
-        description = f'You can visit the support server [here](https://discord.gg/v7WbhnhbgN).'
+        description = f'You can visit the support server [here]({settings.LINK_SUPPORT}).'
     )
     await ctx.respond(embed=embed)

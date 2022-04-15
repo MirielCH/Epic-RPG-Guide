@@ -2,12 +2,13 @@
 """Contains the main events, error handling and the help and about commands"""
 
 from datetime import datetime
+from typing import Optional
 
 import discord
 from discord.ext import commands
 
 import database
-from resources import emojis, functions, settings, views
+from resources import components, emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -20,6 +21,77 @@ TOPICS = [
 ]
 
 
+# --- Views ---
+class HelpView(discord.ui.View):
+    """View with a topic select and link buttons.
+    Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    topics: Topics to select from - dict (description: function). The functions need to return an embed and have one
+    argument (context)
+    active_topic: Currently chosen topic
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, topics: dict, active_topic: str,
+                 placeholder: Optional[str] = 'Choose topic ...',
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.topics = topics
+        self.active_topic = active_topic
+        self.placeholder = placeholder
+        self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder, row=0))
+        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=settings.LINK_INVITE, row=1))
+        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=settings.LINK_SUPPORT, row=1))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
+class LinksView(discord.ui.View):
+    """View with link buttons.
+    Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=settings.LINK_INVITE, row=1))
+        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=settings.LINK_SUPPORT, row=1))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
+
+
 # --- Commands ---
 async def command_help(ctx: discord.ApplicationContext, topic: str) -> None:
     """Help command"""
@@ -27,7 +99,7 @@ async def command_help(ctx: discord.ApplicationContext, topic: str) -> None:
         TOPIC_GUIDES: embed_help_guides,
         TOPIC_CALCULATORS: embed_help_calculators,
     }
-    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    view = HelpView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
@@ -42,7 +114,11 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
     end_time = datetime.utcnow()
     api_latency = end_time - start_time
     embed = await embed_about(bot, ctx, api_latency)
-    await functions.edit_interaction(interaction, content=None, embed=embed)
+    view = LinksView(ctx)
+    interaction = await functions.edit_interaction(interaction, content=None, embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await functions.edit_interaction(interaction, view=None)
 
 
 # --- Embeds ---

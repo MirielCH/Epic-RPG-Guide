@@ -1,9 +1,8 @@
 # dungeons.py
 
 import asyncio
-from optparse import Option
 from humanfriendly import format_timespan
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import discord
 
