@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings
+from resources import emojis, functions, settings, views
 
 
 # --- Events ---
@@ -111,8 +111,12 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
         EVENT_RETURNING: embed_event_returning,
         EVENT_WORK: embed_event_rubydragon,
     }
+    view = views.TopicView(ctx, events_functions, active_topic=event, placeholder='Choose event ...')
     embed = await events_functions[event]()
-    await ctx.respond(embed=embed)
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await functions.edit_interaction(interaction, view=None)
 
 
 # --- Redundancies ---

@@ -268,6 +268,7 @@ class TopicView(discord.ui.View):
     None otherwise.
     """
     def __init__(self, ctx: discord.ApplicationContext, topics: dict, active_topic: str,
+                 placeholder: Optional[str] = 'Choose topic ...',
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
@@ -275,7 +276,8 @@ class TopicView(discord.ui.View):
         self.user = ctx.author
         self.topics = topics
         self.active_topic = active_topic
-        self.add_item(components.TopicSelect(self.topics, self.active_topic))
+        self.placeholder = placeholder
+        self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:

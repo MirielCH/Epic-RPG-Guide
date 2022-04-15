@@ -18,7 +18,7 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
     full_guide = user = interaction = None
     if switch_view is not None:
         user = getattr(switch_view, 'db_user', None)
-        full_guide = getattr(switch_view, 'full_guide', None)
+        full_guide = getattr(switch_view, 'full_guide', True)
         interaction = getattr(switch_view, 'interaction', None)
     if user is None:
         user: database.User = await database.get_user(ctx.author.id)

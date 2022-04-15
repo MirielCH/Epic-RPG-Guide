@@ -17,7 +17,7 @@ class AreaCheckSelect(discord.ui.Select):
             label = f'Area {area_no}' if area_no != 21 else 'The TOP'
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options,
+        super().__init__(placeholder='Choose area ...', min_values=1, max_values=1, options=options,
                          custom_id='select_area', row=0)
 
     async def callback(self, interaction: discord.Interaction):
@@ -125,7 +125,7 @@ class AreaGuideSelect(discord.ui.Select):
             label = f'Area {area_no}' if area_no != 21 else 'The TOP'
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-        super().__init__(placeholder='Choose area...', min_values=1, max_values=1, options=options,
+        super().__init__(placeholder='Choose area ...', min_values=1, max_values=1, options=options,
                          custom_id='select_area', row=0)
 
     async def callback(self, interaction: discord.Interaction):
@@ -188,7 +188,7 @@ class DungeonCheckSelect(discord.ui.Select):
             label = label.replace('.','-')
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options,
+        super().__init__(placeholder='Choose dungeon ...', min_values=1, max_values=1, options=options,
                          custom_id='select_dungeon', row=0)
 
     async def callback(self, interaction: discord.Interaction):
@@ -264,7 +264,7 @@ class DungeonGuideSelect(discord.ui.Select):
             label = label.replace('.','-')
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-        super().__init__(placeholder='Choose dungeon...', min_values=1, max_values=1, options=options,
+        super().__init__(placeholder='Choose dungeon ...', min_values=1, max_values=1, options=options,
                          custom_id='select_dungeon', row=0)
 
     async def callback(self, interaction: discord.Interaction):
@@ -331,20 +331,20 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
 
 class TopicSelect(discord.ui.Select):
     """Topic Select"""
-    def __init__(self, topics: dict, active_topic: str):
+    def __init__(self, topics: dict, active_topic: str, placeholder: str):
         options = []
         for topic in topics.keys():
             label = topic
             emoji = '🔹' if topic == active_topic else None
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-        super().__init__(placeholder='Choose topic...', min_values=1, max_values=1, options=options)
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_topic = select_value
         embed = await self.view.topics[select_value]()
         self.view.clear_items()
-        self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic))
+        self.view.add_item(TopicSelect(self.view.topics, self.view.active_topic, self.view.placeholder))
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 

@@ -18,10 +18,11 @@ async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: flo
     if dungeon_no not in strings.DUNGEONS:
         await ctx.respond('Is that supposed to be a valid dungeon? :thinking:', ephemeral=True)
         return
-    full_guide = user = interaction = None
+    user = interaction = None
+    full_guide = True
     if switch_view is not None:
         user = getattr(switch_view, 'db_user', None)
-        full_guide = getattr(switch_view, 'full_guide', None)
+        full_guide = getattr(switch_view, 'full_guide', True)
         interaction = getattr(switch_view, 'interaction', None)
     view = views.DungeonGuideView(ctx, dungeon_no, embed_dungeon_guide, user, full_guide)
     embed = await embed_dungeon_guide(dungeon_no)
