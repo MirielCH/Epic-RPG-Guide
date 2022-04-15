@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import emojis, settings, views
+from resources import emojis, functions, settings, views
 
 
 # --- Topics ---
@@ -32,7 +32,7 @@ async def command_help(ctx: discord.ApplicationContext, topic: str) -> None:
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> None:
@@ -42,7 +42,7 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
     end_time = datetime.utcnow()
     api_latency = end_time - start_time
     embed = await embed_about(bot, ctx, api_latency)
-    await interaction.edit_original_message(content=None, embed=embed)
+    await functions.edit_interaction(interaction, content=None, embed=embed)
 
 
 # --- Embeds ---

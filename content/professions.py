@@ -50,7 +50,7 @@ async def command_profession_guide(ctx: discord.ApplicationContext, topic: str) 
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_profession_calculator(
@@ -566,10 +566,15 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
                     f'{emojis.BP} **{item_total_wb:,}** {food_emojis[profession]} with world buff\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
                 )
-        embed.add_field(
-            name='HOW TO LEVEL',
-            value=f'{emojis.BP} Cook {food_emojis[profession]} {food_names[profession]}'
-        )
+        if profession == 'enchanter':
+            how_to_level = (
+                f'{emojis.BP} Use `transmute` or `transcend`\n'
+                f'{emojis.BP} It\'s not recommended to cook {food_emojis[profession]} {food_names[profession]}, '
+                f'but if you prefer doing so regardless, see the required amounts below'
+            )
+        else:
+            how_to_level = f'{emojis.BP} Cook {food_emojis[profession]} {food_names[profession]}'
+        embed.add_field(name='HOW TO LEVEL', value=how_to_level)
         if output_total is not None:
             embed.add_field(
                 name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
@@ -624,6 +629,7 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
                     f'{emojis.BP} **{item_total_wb:,}** {emojis.LOG} with world buff\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
                 )
+
         embed.add_field(name='HOW TO LEVEL', value=f'{emojis.BP} Sell {emojis.LOG} wooden logs')
         if output_total is not None:
             embed.add_field(

@@ -35,7 +35,7 @@ async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_time_travel_details(ctx: discord.ApplicationContext, timetravel: Optional[int] = None) -> None:

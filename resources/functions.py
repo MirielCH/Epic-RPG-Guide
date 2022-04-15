@@ -6,6 +6,7 @@ import re
 from typing import Union, Tuple
 
 import discord
+from discord.utils import MISSING
 from discord.ext import commands
 
 import database
@@ -19,6 +20,17 @@ def await_coroutine(coro):
             coro.send(None)
         except StopIteration as error:
             return error.value
+
+
+async def edit_interaction(interaction: Union[discord.Interaction, discord.WebhookMessage], **kwargs) -> None:
+    """Edits a reponse. The response can either be an interaction OR a WebhookMessage"""
+    content = kwargs.get('content', MISSING)
+    embed = kwargs.get('embed', MISSING)
+    view = kwargs.get('view', MISSING)
+    if isinstance(interaction, discord.WebhookMessage):
+        await interaction.edit(content=content, embed=embed, view=view)
+    else:
+        await interaction.edit_original_message(content=content, embed=embed, view=view)
 
 
 # Design fields for embeds
@@ -272,16 +284,10 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
             except asyncio.CancelledError:
                 pass
     if view.value in ('abort','timeout'):
-        if isinstance(interaction, discord.WebhookMessage):
-            await interaction.edit(content=strings.MSG_ABORTED, view=None)
-        else:
-            await interaction.edit_original_message(content=strings.MSG_ABORTED, view=None)
+        await edit_interaction(interaction, content=strings.MSG_ABORTED, view=None)
     elif view.value is None:
         view.stop()
-        if isinstance(interaction, discord.WebhookMessage):
-            asyncio.ensure_future(interaction.edit(view=None))
-        else:
-            asyncio.ensure_future(interaction.edit_original_message(view=None))
+        asyncio.ensure_future(edit_interaction(interaction, view=None))
     bot_message = None
     if bot_message_task.done():
         try:

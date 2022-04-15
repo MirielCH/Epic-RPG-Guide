@@ -8,7 +8,7 @@ import discord
 from discord.commands import SlashCommandGroup, CommandPermission, Option
 from discord.ext import commands
 
-from resources import settings, views
+from resources import functions, settings, views
 
 
 class DevCog(commands.Cog):
@@ -71,13 +71,13 @@ class DevCog(commands.Cog):
         view.interaction = interaction
         await view.wait()
         if view.value is None:
-            await interaction.edit_original_message(content=f'**{ctx.author.name}**, you didn\'t answer in time.',
-                                                    view=None)
+            await functions.edit_interaction(interaction, content=f'**{ctx.author.name}**, you didn\'t answer in time.',
+                                             view=None)
         elif view.value == 'confirm':
-            await interaction.edit_original_message(content='Shutting down.', view=None)
+            await functions.edit_interaction(interaction, content='Shutting down.', view=None)
             await self.bot.close()
         else:
-            await interaction.edit_original_message(content='Shutdown aborted.', view=None)
+            await functions.edit_interaction(interaction, content='Shutdown aborted.', view=None)
 
     @dev.command(name='sync-commands')
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:

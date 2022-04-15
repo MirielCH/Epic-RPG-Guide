@@ -61,7 +61,7 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
         interaction = await ctx.respond(embed=embeds[0], view=view)
         view.interaction = interaction
         await view.wait()
-        await interaction.edit_original_message(view=None)
+        await functions.edit_interaction(interaction, view=None)
     else:
         await ctx.respond(embed=embed)
 

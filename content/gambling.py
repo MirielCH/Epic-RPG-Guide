@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings, views
+from resources import emojis, functions, settings, views
 
 
 # --- Topics ---
@@ -42,7 +42,7 @@ async def command_gambling_guide(ctx: discord.ApplicationContext, topic: str):
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 # --- Embeds ---

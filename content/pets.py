@@ -6,7 +6,7 @@ from typing import Optional
 import discord
 
 import database
-from resources import emojis, settings, views
+from resources import emojis, functions, settings, views
 
 
 # --- Topics ---
@@ -46,7 +46,7 @@ async def command_pet_guide(ctx: discord.ApplicationContext, topic: str) -> None
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_pet_fuse(ctx: discord.ApplicationContext, pet_tier: int, timetravel: Optional[int] = None) -> None:

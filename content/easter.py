@@ -3,7 +3,7 @@
 import discord
 
 from content import events
-from resources import emojis, settings, strings, views
+from resources import emojis, settings, functions, views
 
 
 # --- Topics ---
@@ -30,7 +30,7 @@ async def easter_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 # --- Embeds ---

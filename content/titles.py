@@ -6,7 +6,7 @@ from typing import Tuple
 import discord
 
 import database
-from resources import emojis, settings, strings, views
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
@@ -38,7 +38,7 @@ async def command_title_search(ctx: discord.ApplicationContext, search_string: s
         interaction = await ctx.respond(embed=embeds[0], view=view)
         view.interaction = interaction
         await view.wait()
-        await interaction.edit_original_message(view=None)
+        await functions.edit_interaction(interaction, view=None)
     else:
         await ctx.respond(embed=embed)
 

@@ -11,10 +11,19 @@ from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
-async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_no: int,
-                             ascension: Optional[str] = None, length: Optional[str] = None) -> None:
+async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_no: Optional[int] = None,
+                             ascension: Optional[str] = None, length: Optional[str] = None,
+                             switch_view: Optional[discord.ui.View] = None) -> None:
     """Area guide command"""
-    user: database.User = await database.get_user(ctx.author.id)
+    full_guide = user = interaction = None
+    if switch_view is not None:
+        user = getattr(switch_view, 'db_user', None)
+        full_guide = getattr(switch_view, 'full_guide', None)
+        interaction = getattr(switch_view, 'interaction', None)
+    if user is None:
+        user: database.User = await database.get_user(ctx.author.id)
+    if full_guide is None:
+        full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
     if tt_no is not None: user.tt = tt_no
     if ascension is not None:
         if user.tt == 0 and ascension == strings.CHOICE_ASCENDED:
@@ -30,20 +39,28 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
             )
             return
         user.ascended = True if ascension == strings.CHOICE_ASCENDED else False
-    full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
     view = views.AreaGuideView(ctx, area_no, user, full_guide, embed_area_guide)
     embed = await embed_area_guide(ctx, area_no, user, full_guide)
-    interaction = await ctx.respond(embed=embed, view=view)
+    if interaction is None:
+        interaction = await ctx.respond(embed=embed, view=view)
+    else:
+        await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
 
 
 async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
                              user_at: Optional[int] = None, user_def: Optional[int] = None,
                              user_life: Optional[int] = None,
-                             interaction: Optional[Union[discord.WebhookMessage, discord.Interaction]] = None)  -> None:
+                             switch_view: Optional[discord.ui.View] = None)  -> None:
     """Area check command"""
+    interaction = None
+    if switch_view is not None:
+        user_at = getattr(switch_view, 'user_at', None)
+        user_def = getattr(switch_view, 'user_def', None)
+        user_life = getattr(switch_view, 'user_life', None)
+        interaction = getattr(switch_view, 'interaction', None)
     if user_at is None or user_def is None or user_life is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
         try:
@@ -69,17 +86,10 @@ async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, 
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)
     else:
-        if isinstance(interaction, discord.WebhookMessage):
-            await interaction.edit(embed=embed, view=view)
-        else:
-            await interaction.edit_original_message(embed=embed, view=view)
+        await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if view.value != 'switched':
-        if isinstance(interaction, discord.WebhookMessage):
-            await interaction.edit(view=None)
-        else:
-            await interaction.edit_original_message(view=None)
+    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
 
 
 # --- Functions ---

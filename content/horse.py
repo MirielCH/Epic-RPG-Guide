@@ -39,7 +39,7 @@ async def command_horse_guide(ctx: discord.ApplicationContext, topic: str) -> No
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationContext,

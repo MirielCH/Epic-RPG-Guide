@@ -12,25 +12,39 @@ from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
-async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: float) -> None:
+async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: float,
+                                switch_view: Optional[discord.ui.View] = None) -> None:
     """Dungeon guide command"""
-    #if dungeon_no.is_integer(): dungeon_no = int(dungeon_no)
     if dungeon_no not in strings.DUNGEONS:
         await ctx.respond('Is that supposed to be a valid dungeon? :thinking:', ephemeral=True)
         return
-    view = views.DungeonGuideView(ctx, dungeon_no, embed_dungeon_guide)
+    full_guide = user = interaction = None
+    if switch_view is not None:
+        user = getattr(switch_view, 'db_user', None)
+        full_guide = getattr(switch_view, 'full_guide', None)
+        interaction = getattr(switch_view, 'interaction', None)
+    view = views.DungeonGuideView(ctx, dungeon_no, embed_dungeon_guide, user, full_guide)
     embed = await embed_dungeon_guide(dungeon_no)
-    interaction = await ctx.respond(embed=embed, view=view)
+    if interaction is None:
+        interaction = await ctx.respond(embed=embed, view=view)
+    else:
+        await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await interaction.edit_original_message(view=None)
+    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
 
 
 async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContext, dungeon_no: float,
                                 user_at: Optional[int] = None, user_def: Optional[int] = None,
                                 user_life: Optional[int] = None,
-                                interaction: Optional[Union[discord.WebhookMessage, discord.Interaction]] = None)  -> None:
+                                switch_view: Optional[discord.ui.View] = None)  -> None:
     """Dungeon check command"""
+    interaction = None
+    if switch_view is not None:
+        user_at = getattr(switch_view, 'user_at', None)
+        user_def = getattr(switch_view, 'user_def', None)
+        user_life = getattr(switch_view, 'user_life', None)
+        interaction = getattr(switch_view, 'interaction', None)
     if user_at is None or user_def is None or user_life is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
         try:
@@ -56,17 +70,11 @@ async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContex
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)
     else:
-        if isinstance(interaction, discord.WebhookMessage):
-            await interaction.edit(embed=embed, view=view)
-        else:
-            await interaction.edit_original_message(embed=embed, view=view)
+        await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
     if view.value != 'switched':
-        if isinstance(interaction, discord.WebhookMessage):
-            await interaction.edit(view=None)
-        else:
-            await interaction.edit_original_message(view=None)
+        await functions.edit_interaction(interaction, view=None)
 
 
 # --- Functions ---
