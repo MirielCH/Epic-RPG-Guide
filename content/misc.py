@@ -7,7 +7,23 @@ from typing import Optional
 import discord
 
 import database
-from resources import emojis, functions, settings, strings
+from resources import emojis, functions, settings, strings, views
+
+
+# --- Topics ---
+TOPIC_OVERVIEW = 'Overview'
+TOPIC_BEGINNER_FIRST_RUN = 'Your first run'
+TOPIC_FARMING_USAGE = 'Crops usage and value'
+
+TOPICS_BEGINNER = [
+    TOPIC_OVERVIEW,
+    TOPIC_BEGINNER_FIRST_RUN,
+]
+
+TOPICS_FARMING = [
+    TOPIC_OVERVIEW,
+    TOPIC_FARMING_USAGE,
+]
 
 
 # --- Commands ---
@@ -29,16 +45,32 @@ async def command_coolness_guide(ctx: discord.ApplicationContext) -> None:
     await ctx.respond(embed=embed)
 
 
-async def command_farming_guide(ctx: discord.ApplicationContext) -> None:
+async def command_farming_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Farming command"""
-    embed = await embed_farming_guide()
-    await ctx.respond(embed=embed)
+    topics_functions = {
+        TOPIC_OVERVIEW: embed_farming_overview,
+        TOPIC_FARMING_USAGE: embed_farming_usage,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await functions.edit_interaction(interaction, view=None)
 
 
-async def command_beginner_guide(ctx: discord.ApplicationContext) -> None:
+async def command_beginner_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Beginner guide command"""
-    embed = await embed_beginner_guide()
-    await ctx.respond(embed=embed)
+    topics_functions = {
+        TOPIC_OVERVIEW: embed_beginner_overview,
+        TOPIC_BEGINNER_FIRST_RUN: embed_beginner_first_run,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_tip(ctx: discord.ApplicationContext, tip_id: Optional[int] = None) -> None:
@@ -319,8 +351,8 @@ async def embed_coolness_guide() -> discord.Embed:
     return embed
 
 
-async def embed_farming_guide() -> discord.Embed:
-    """Farming guide"""
+async def embed_farming_overview() -> discord.Embed:
+    """Farming guide overview"""
     planting_normal = (
         f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/farm` to plant {emojis.SEED} seeds. '
         f'Buy seeds in the shop for 4,000 coins.\n'
@@ -338,6 +370,31 @@ async def embed_farming_guide() -> discord.Embed:
         f'{emojis.CARROT} carrots)\n'
         f'{emojis.BP} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
     )
+    what_to_plant = (
+        f'{emojis.BP} If you want to cook food for levels or stats: {emojis.CARROT} carrots\n'
+        f'{emojis.BP} If you want to get more coins or a higher STT score: {emojis.BREAD} bread\n'
+        f'{emojis.BP} If you want to flex potatoes for some reason: {emojis.POTATO} potatoes'
+    )
+    note = (
+        f'{emojis.BP} Farming is unlocked in area 4\n'
+        f'{emojis.BP} The command can be used in area 1+ when ascended\n'
+        f'{emojis.BP} The amount of items you gain increases with your TT\n'
+        f'{emojis.BP} You can not farm in the TOP'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'FARMING GUIDE',
+        description = f'It ain\'t much, but it\'s honest work.'
+    )
+    embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
+    embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
+    embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_farming_usage() -> discord.Embed:
+    """Farming item usage"""
     usage_bread = (
         f'{emojis.BP} {emojis.SWORD_HAIR} `Hair Sword` ➜ 4 {emojis.MERMAID_HAIR} + **220** {emojis.BREAD}\n'
         f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} `Electronical Armor` ➜ 12 {emojis.CHIP} + 1 {emojis.LOG_HYPER} + '
@@ -379,30 +436,21 @@ async def embed_farming_guide() -> discord.Embed:
         f'{emojis.BP} If you want to get more coins or a higher STT score: {emojis.BREAD} bread\n'
         f'{emojis.BP} If you want to flex potatoes for some reason: {emojis.POTATO} potatoes'
     )
-    note = (
-        f'{emojis.BP} Farming is unlocked in area 4\n'
-        f'{emojis.BP} The command can be used in area 1+ when ascended\n'
-        f'{emojis.BP} The amount of items you gain increases with your TT\n'
-        f'{emojis.BP} You can not farm in the TOP'
-    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'FARMING',
+        title = 'CROPS USAGE AND VALUE',
         description = f'It ain\'t much, but it\'s honest work.'
     )
-    embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
-    embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
     embed.add_field(name='BREAD USAGE', value=usage_bread, inline=False)
     embed.add_field(name='CARROT USAGE', value=usage_carrot, inline=False)
     embed.add_field(name='POTATO USAGE', value=usage_potato, inline=False)
     embed.add_field(name='STT SCORE', value=stt_score, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
-    embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 
 
-async def embed_beginner_guide() -> discord.Embed:
-    """Beginner guide"""
+async def embed_beginner_overview() -> discord.Embed:
+    """Beginner guide overview"""
     goal = (
         f'The goal is to advance until you reach your highest reachable area. At that point you can time travel.\n'
         f'Think of this as new game+. This resets your progress but unlocks more of the game. For more information '
@@ -419,6 +467,18 @@ async def embed_beginner_guide() -> discord.Embed:
         f'undergeared and get carried.\n'
         f'**This does not work for dungeons 10+**. To enter those you **need** to have certain gear.'
     )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'BEGINNER GUIDE',
+        description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
+    )
+    embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
+    embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
+    return embed
+
+
+async def embed_beginner_first_run() -> discord.Embed:
+    """Beginner first run guide"""
     first_run = (
         f'Your first run is called TT0 (time travel 0) because you haven\'t time traveled yet. In TT0 you need to '
         f'reach area 11 which means you need to beat dungeon 10.\n'
@@ -448,11 +508,9 @@ async def embed_beginner_guide() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'BEGINNER GUIDE',
+        title = 'YOUR FIRST RUN',
         description = 'Welcome to EPIC RPG! This is a guide to help you out with your first run.'
     )
-    embed.add_field(name='GOAL OF THE GAME', value=goal, inline=False)
-    embed.add_field(name='AREAS & DUNGEONS', value=areas_dungeons, inline=False)
     embed.add_field(name='YOUR FIRST RUN', value=first_run, inline=False)
     embed.add_field(name='GRINDING & TRADES', value=grinding_trades, inline=False)
     embed.add_field(name='TIPS', value=tips, inline=False)

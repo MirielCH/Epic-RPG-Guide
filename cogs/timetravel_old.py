@@ -41,7 +41,7 @@ class timetravelCog(commands.Cog):
             tt_no = args[0]
 
         if not args:
-            tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
+            tt_no = invoked.replace(f'{ctx.prefix.lower()}timetravel','').replace(f'{ctx.prefix.lower()}tt','')
             if tt_no == '':
                 embed = await embed_timetravel_overview(ctx)
                 await ctx.send(embed=embed)

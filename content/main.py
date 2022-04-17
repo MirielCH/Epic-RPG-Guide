@@ -64,32 +64,11 @@ class HelpView(discord.ui.View):
 
 
 class LinksView(discord.ui.View):
-    """View with link buttons.
-    Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
-
-    Arguments
-    ---------
-    ctx: Context
-
-    Returns
-    -------
-    'timeout if timed out.
-    None otherwise.
-    """
-    def __init__(self, ctx: discord.ApplicationContext, interaction: Optional[discord.Interaction] = None):
-        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
-        self.value = None
-        self.interaction = interaction
-        self.user = ctx.author
+    """View with link buttons."""
+    def __init__(self):
+        super().__init__(timeout=None)
         self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=settings.LINK_INVITE, row=1))
         self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=settings.LINK_SUPPORT, row=1))
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return True
-
-    async def on_timeout(self) -> None:
-        self.value = 'timeout'
-        self.stop()
 
 
 # --- Commands ---
@@ -114,11 +93,8 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
     end_time = datetime.utcnow()
     api_latency = end_time - start_time
     embed = await embed_about(bot, ctx, api_latency)
-    view = LinksView(ctx)
-    interaction = await functions.edit_interaction(interaction, content=None, embed=embed, view=view)
-    view.interaction = interaction
-    await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    view = LinksView()
+    await functions.edit_interaction(interaction, content=None, embed=embed, view=view)
 
 
 # --- Embeds ---
@@ -140,7 +116,6 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {emojis.LOGO}`/profession guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/time-travel guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/time-travel details`\n'
-        f'{emojis.BP} {emojis.LOGO}`/trade guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/ultraining guide`\n'
     )
     trade_rates = (
@@ -158,10 +133,6 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {emojis.LOGO}`/duel weapons` : What every weapon does in duels\n'
         f'{emojis.BP} {emojis.LOGO}`/tip` : A handy dandy random tip\n'
     )
-    botlinks = (
-        f'{emojis.BP} {emojis.LOGO}`/invite` : Invite Epic RPG Guide to your server\n'
-        f'{emojis.BP} {emojis.LOGO}`/support` : Visit the support server\n'
-    )
     field_settings = (
         f'{emojis.BP} {emojis.LOGO}`/settings` : View your current settings\n'
         f'{emojis.BP} {emojis.LOGO}`/set progress` : Set your progress to get fitting guides\n'
@@ -177,7 +148,6 @@ async def embed_help_guides() -> discord.Embed:
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
     embed.add_field(name='TRADE RATES', value=trade_rates, inline=False)
     embed.add_field(name='MISC', value=misc, inline=False)
-    embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=field_settings, inline=False)
     return embed
 

@@ -102,7 +102,6 @@ COG_EXTENSIONS = [
     'cogs.professions_old',
     'cogs.settings',
     'cogs.settings_old',
-    'cogs.testing',
     'cogs.timetravel',
     'cogs.timetravel_old',
     'cogs.titles',

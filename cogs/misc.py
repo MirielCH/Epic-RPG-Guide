@@ -5,6 +5,7 @@ from discord.commands import slash_command, SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import misc
+from resources import strings
 
 
 class MiscCog(commands.Cog):
@@ -31,15 +32,25 @@ class MiscCog(commands.Cog):
 
     cmd_farming = SlashCommandGroup("farming", "Farming commands")
     @cmd_farming.command(name='guide', description='How farming works and what do with crops')
-    async def farming_guide(self, ctx: discord.ApplicationContext) -> None:
+    async def farming_guide(
+        self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                      choices=misc.TOPICS_FARMING, default=misc.TOPIC_OVERVIEW)
+    ) -> None:
         """Farming guide"""
-        await misc.command_farming_guide(ctx)
+        await misc.command_farming_guide(ctx, topic)
 
     cmd_beginner = SlashCommandGroup("beginner", "Beginner commands")
     @cmd_beginner.command(name='guide', description='How to start in the game')
-    async def beginner_guide(self, ctx: discord.ApplicationContext) -> None:
+    async def beginner_guide(
+        self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                      choices=misc.TOPICS_BEGINNER, default=misc.TOPIC_OVERVIEW)
+    ) -> None:
         """Beginner guide"""
-        await misc.command_beginner_guide(ctx)
+        await misc.command_beginner_guide(ctx, topic)
 
     @slash_command(description='A handy dandy random tip')
     async def tip(
