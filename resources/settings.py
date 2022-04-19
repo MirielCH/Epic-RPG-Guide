@@ -19,13 +19,6 @@ DB_FILE = os.path.join(BOT_DIR, 'database/erg_db.db')
 DEFAULT_DB_FILE = os.path.join(BOT_DIR, 'database/erg_db_default.db')
 LOG_FILE = os.path.join(BOT_DIR, 'logs/discord.log')
 
-# Links
-LINK_INVITE = (
-    'https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope='
-    'applications.commands%20bot'
-)
-LINK_SUPPORT = 'https://discord.gg/v7WbhnhbgN'
-
 # User & server IDs
 OWNER_ID = 619879176316649482
 DEV_GUILDS = [730115558766411857,812650049565753355,774590797214515201] # Secret Valley, Charivari, Support server

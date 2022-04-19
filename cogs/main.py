@@ -61,7 +61,7 @@ class MainCog(commands.Cog):
                 await ctx.respond(
                     f'I\'m sorry, this command is not available in this server because it needs to be able to read EPIC RPG.\n\n'
                     f'To allow this, the server admin needs to reinvite me with the necessary permissions.\n'
-                    f'To do that click [here]({settings.LINK_INVITE}).\n',
+                    f'To do that click [here]({strings.LINK_INVITE}).\n',
                     ephemeral=True
                 )
         elif isinstance(error, (commands.MissingPermissions, commands.MissingRequiredArgument,

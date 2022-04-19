@@ -383,3 +383,12 @@ CHOICES_AREA_GUIDES = [
     CHOICE_GUIDE_FULL,
     CHOICE_GUIDE_SHORT,
 ]
+
+
+# Links
+LINK_INVITE = (
+    'https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope='
+    'applications.commands%20bot'
+)
+LINK_SUPPORT = 'https://discord.gg/v7WbhnhbgN'
+LINK_VOTE = 'https://top.gg/bot/770199669141536768/vote'

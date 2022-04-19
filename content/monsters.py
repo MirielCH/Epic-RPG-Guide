@@ -21,7 +21,9 @@ async def command_monster_drops(ctx: discord.ApplicationContext) -> None:
 
 async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationContext, name: Optional[str] = None) -> None:
     """Monster search command"""
+    daily_mob_lookup = False
     if name is None:
+        daily_mob_lookup = True
         bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
@@ -41,29 +43,42 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
     if len(name) > 200:
         await ctx.respond(strings.MSG_INPUT_TOO_LONG, ephemeral=True)
         return
-    try:
-        monsters = await database.get_monsters(name)
-    except database.NoDataFound:
-        await ctx.respond(
-            'I didn\'t find any monsters with that search query, sorry. Try searching for something else.',
-            ephemeral=True
-        )
-        return
-    embeds = []
-    chunk_amount = 0
-    for chunk in range(0, len(monsters), 6):
-        monsters_chunk = monsters[chunk:chunk+6]
-        chunk_amount += 1
-        embed = await embed_monsters(len(monsters), monsters_chunk)
-        embeds.append(embed)
-    if len(embeds) > 1:
-        view = views.PaginatorView(ctx, embeds)
-        interaction = await ctx.respond(embed=embeds[0], view=view)
-        view.interaction = interaction
-        await view.wait()
-        await functions.edit_interaction(interaction, view=None)
-    else:
+    if daily_mob_lookup:
+        try:
+            monster = await database.get_monster_by_name(name)
+        except database.NoDataFound:
+            await ctx.respond(
+                f'I didn\'t find a monster with that name, sorry. This ain\'t intended, so please report this to the '
+                f'support server if convenient.',
+                ephemeral=True
+            )
+            return
+        embed = await embed_daily_monster(monster)
         await ctx.respond(embed=embed)
+    else:
+        try:
+            monsters = await database.get_monsters(name)
+        except database.NoDataFound:
+            await ctx.respond(
+                'I didn\'t find any monsters with that search query, sorry. Try searching for something else.',
+                ephemeral=True
+            )
+            return
+        embeds = []
+        chunk_amount = 0
+        for chunk in range(0, len(monsters), 6):
+            monsters_chunk = monsters[chunk:chunk+6]
+            chunk_amount += 1
+            embed = await embed_monsters(len(monsters), monsters_chunk)
+            embeds.append(embed)
+        if len(embeds) > 1:
+            view = views.PaginatorView(ctx, embeds)
+            interaction = await ctx.respond(embed=embeds[0], view=view)
+            view.interaction = interaction
+            await view.wait()
+            await functions.edit_interaction(interaction, view=None)
+        else:
+            await ctx.respond(embed=embed)
 
 
 # --- Embeds ---
@@ -85,6 +100,22 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster]):
         if monster.drop_name is not None:
             field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
         embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)
+    return embed
+
+
+async def embed_daily_monster(monster: database.Monster):
+    """Daily monster search result"""
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'DAILY MONSTER SEARCH',
+    )
+    if monster.areas[0] == monster.areas[1]:
+        field_value = f'{emojis.BP} Found in area **{monster.areas[0]}** with `{monster.activity}`'
+    else:
+        field_value = f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with `{monster.activity}`'
+    if monster.drop_name is not None:
+        field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
+    embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)
     return embed
 
 

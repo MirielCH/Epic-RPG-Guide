@@ -288,38 +288,38 @@ class TopicView(discord.ui.View):
         self.stop()
 
 
-    class PaginatorView(discord.ui.View):
-        """Paginator view with three buttons (previous, page count, next).
+class PaginatorView(discord.ui.View):
+    """Paginator view with three buttons (previous, page count, next).
 
-        Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
+    Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
 
-        Returns
-        -------
-        'timeout' on timeout.
-        None if nothing happened yet.
-        """
-        def __init__(self, ctx: discord.ApplicationContext, pages: List[discord.Embed],
-                    interaction: Optional[discord.Interaction] = None):
-            super().__init__(timeout=settings.INTERACTION_TIMEOUT)
-            self.value = None
-            self.interaction = interaction
-            self.user = ctx.author
-            self.pages = pages
-            self.active_page = 1
-            self.add_item(components.PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
-            self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
-                                            label=f'1/{len(self.pages)}'))
-            self.add_item(components.PaginatorButton(custom_id='next', label='▶', emoji=None))
+    Returns
+    -------
+    'timeout' on timeout.
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, pages: List[discord.Embed],
+                interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.pages = pages
+        self.active_page = 1
+        self.add_item(components.PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
+        self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
+                                        label=f'1/{len(self.pages)}'))
+        self.add_item(components.PaginatorButton(custom_id='next', label='▶', emoji=None))
 
-        async def interaction_check(self, interaction: discord.Interaction) -> bool:
-            if interaction.user != self.user:
-                await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-                return False
-            return True
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
 
-        async def on_timeout(self) -> None:
-            self.value = 'timeout'
-            self.stop()
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()
 
 
 class ConfirmCancelView(discord.ui.View):

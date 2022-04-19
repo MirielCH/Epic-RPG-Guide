@@ -49,8 +49,8 @@ class HelpView(discord.ui.View):
         self.active_topic = active_topic
         self.placeholder = placeholder
         self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder, row=0))
-        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=settings.LINK_INVITE, row=1))
-        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=settings.LINK_SUPPORT, row=1))
+        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=strings.LINK_INVITE, row=1))
+        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=strings.LINK_SUPPORT, row=1))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -67,8 +67,9 @@ class LinksView(discord.ui.View):
     """View with link buttons."""
     def __init__(self):
         super().__init__(timeout=None)
-        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=settings.LINK_INVITE, row=1))
-        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=settings.LINK_SUPPORT, row=1))
+        self.add_item(discord.ui.Button(label="Invite", style=discord.ButtonStyle.link, url=strings.LINK_INVITE))
+        self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=strings.LINK_SUPPORT))
+        self.add_item(discord.ui.Button(label="Vote", style=discord.ButtonStyle.link, url=strings.LINK_VOTE))
 
 
 # --- Commands ---
