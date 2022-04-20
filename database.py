@@ -178,15 +178,30 @@ class Title(NamedTuple):
     title: str
 
 
-class Monster(NamedTuple):
+@dataclass
+class Monster():
     """Container for monster data"""
     activity: str
     areas: Tuple[int, int]
     drop_emoji: str
     drop_name: str
     emoji: str
+    is_daily: bool
     name: str
 
+    async def refresh(self) -> None:
+        new_settings: Monster = await get_monster_by_name(self.name)
+        self.activity = new_settings.activity
+        self.areas = new_settings.areas
+        self.is_daily = new_settings.is_daily
+        self.drop_emoji = new_settings.drop_emoji
+        self.drop_name = new_settings.drop_name
+        self.emoji = new_settings.emoji
+
+    async def set_daily(self) -> None:
+        """Adds the current UTC date to the daily_mob_date column to mark the monster as daily. Also calls refresh()."""
+        await _set_daily_monster(self)
+        await self.refresh()
 
 class Horse(NamedTuple):
     """Container for horse data"""
@@ -370,12 +385,18 @@ async def _dict_to_monster(record: dict) -> Monster:
     """
     function_name = '_dict_to_monster'
     try:
+        is_daily = False
+        if record['daily_mob_date'] is not None:
+            today = datetime.utcnow().date()
+            daily_date = datetime.fromisoformat(record['daily_mob_date'])
+            if daily_date == today: is_daily = True
         monster = Monster(
             activity = record['activity'],
             areas = (record['area_from'], record['area_until']),
             drop_emoji = getattr(emojis, record['drop_emoji']) if record['drop_emoji'] is not None else None,
             drop_name = record['drop_name'],
             emoji = getattr(emojis, record['emoji']),
+            is_daily = is_daily,
             name = record['name'],
         )
     except Exception as error:
@@ -1365,6 +1386,35 @@ async def get_monster_by_area(area_from: int, area_until: int) -> Tuple[Monster]
     return tuple(monsters)
 
 
+async def get_daily_monster(name: str) -> Monster:
+    """Returns the daily monster from table "monsters". Returns None if no monster is set as daily.
+
+    Returns:
+        Monster object or None
+
+    Raises:
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'monsters'
+    function_name = 'get_daily_monster'
+    sql = f'SELECT * FROM {table} WHERE daily_mob_date = ?'
+    today = datetime.utcnow().date()
+    today_str = today.isoformat()
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (today_str,))
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record: return None
+    monster = await _dict_to_monster(dict(record))
+    return monster
+
+
 async def get_all_monsters() -> Tuple[Monster]:
     """Gets all monsters from the table "monsters".
 
@@ -1567,6 +1617,30 @@ async def _update_profession_level(profession: Profession, level: int, xp: int) 
         }
         sql = f'UPDATE {table} SET {xp_columns[profession.name]} = ? WHERE level = ?'
         cur.execute(sql, (xp, level))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def _set_daily_monster(monster: Monster) -> None:
+    """Sets today's daily date of a monster record. Use Monster.set_daily() to trigger this function.
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    NoArgumentsError if no kwargs are passed (need to pass at least one)
+    Also logs all errors to the database.
+    """
+    table = 'monsters'
+    function_name = '_set_daily_monster'
+    try:
+        today = datetime.utcnow().date()
+        today_str = today.isoformat()
+        cur = ERG_DB.cursor()
+        sql = f'UPDATE {table} SET daily_mob_date = ? WHERE name = ?'
+        cur.execute(sql, (today_str, monster.name))
     except sqlite3.Error as error:
         await log_error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)

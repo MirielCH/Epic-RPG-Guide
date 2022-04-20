@@ -21,41 +21,13 @@ async def command_monster_drops(ctx: discord.ApplicationContext) -> None:
 
 async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationContext, name: Optional[str] = None) -> None:
     """Monster search command"""
-    daily_mob_lookup = False
-    if name is None:
-        daily_mob_lookup = True
-        bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
-        try:
-            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='/world')
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
-        except asyncio.TimeoutError:
-            await ctx.respond(
-                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profession'),
-                ephemeral=True
-            )
+    if name is not None:
+        if len(name) < 3:
+            await ctx.respond(strings.MSG_SEARCH_QUERY_TOO_SHORT, ephemeral=True)
             return
-        if bot_message is None: return
-        name = await functions.extract_monster_name_from_world_embed(ctx, bot_message)
-    if len(name) < 3:
-        await ctx.respond(strings.MSG_SEARCH_QUERY_TOO_SHORT, ephemeral=True)
-        return
-    if len(name) > 200:
-        await ctx.respond(strings.MSG_INPUT_TOO_LONG, ephemeral=True)
-        return
-    if daily_mob_lookup:
-        try:
-            monster = await database.get_monster_by_name(name)
-        except database.NoDataFound:
-            await ctx.respond(
-                f'I didn\'t find a monster with that name, sorry. This ain\'t intended, so please report this to the '
-                f'support server if convenient.',
-                ephemeral=True
-            )
+        if len(name) > 200:
+            await ctx.respond(strings.MSG_INPUT_TOO_LONG, ephemeral=True)
             return
-        embed = await embed_daily_monster(monster)
-        await ctx.respond(embed=embed)
-    else:
         try:
             monsters = await database.get_monsters(name)
         except database.NoDataFound:
@@ -79,6 +51,35 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
             await functions.edit_interaction(interaction, view=None)
         else:
             await ctx.respond(embed=embed)
+
+    if name is None:
+        monster = await database.get_daily_monster(name)
+        if monster is None:
+            bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
+            try:
+                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
+                                                                  command='/world')
+                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+            except asyncio.TimeoutError:
+                await ctx.respond(
+                    strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='world'),
+                    ephemeral=True
+                )
+                return
+            if bot_message is None: return
+            name = await functions.extract_monster_name_from_world_embed(ctx, bot_message)
+            try:
+                monster = await database.get_monster_by_name(name)
+            except database.NoDataFound:
+                await ctx.respond(
+                    f'I didn\'t find a monster with that name, sorry. This ain\'t intended, so please report this to the '
+                    f'support server if convenient.',
+                    ephemeral=True
+                )
+                return
+            await monster.set_daily()
+        embed = await embed_daily_monster(monster)
+        await ctx.respond(embed=embed)
 
 
 # --- Embeds ---
