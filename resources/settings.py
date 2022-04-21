@@ -1,5 +1,6 @@
 # settings.py
 
+from datetime import datetime
 import os
 
 from dotenv import load_dotenv
@@ -39,3 +40,5 @@ OWNER_ID = 619879176316649482
 
 ABORT_TIMEOUT = 60
 INTERACTION_TIMEOUT = 300
+
+STARTUP_TIME = datetime.utcnow().replace(microsecond=0)

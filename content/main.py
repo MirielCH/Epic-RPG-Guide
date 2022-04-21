@@ -2,7 +2,9 @@
 """Contains the main events, error handling and the help and about commands"""
 
 from datetime import datetime
+import sys
 from typing import Optional, Tuple
+from humanfriendly import format_timespan
 
 import discord
 from discord.ext import commands
@@ -237,6 +239,12 @@ async def embed_about(
         f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
         f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
+    uptime = datetime.utcnow().replace(microsecond=0) - settings.STARTUP_TIME
+    dev_stuff = (
+        f'{emojis.BP} Library: Pycord {discord.__version__}\n'
+        f'{emojis.BP} Language: Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n'
+        f'{emojis.BP} Uptime: {format_timespan(uptime)}'
+    )
     img_raspi = discord.File(settings.IMG_RASPI, filename='raspi.png')
     image_url = 'attachment://raspi.png'
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
@@ -245,6 +253,7 @@ async def embed_about(
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
     embed.add_field(name='PRIVACY POLICY & TOS', value=documents, inline=False)
+    embed.add_field(name='DEV STUFF', value=dev_stuff, inline=False)
     embed.add_field(name='PROUDLY HOSTED ON A RASPBERRY PI 4', value=f'** **', inline=False)
     embed.set_image(url=image_url)
     return (img_raspi, embed)
