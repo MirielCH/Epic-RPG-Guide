@@ -27,10 +27,11 @@ async def edit_interaction(interaction: Union[discord.Interaction, discord.Webho
     content = kwargs.get('content', MISSING)
     embed = kwargs.get('embed', MISSING)
     view = kwargs.get('view', MISSING)
+    file = kwargs.get('file', MISSING)
     if isinstance(interaction, discord.WebhookMessage):
         await interaction.edit(content=content, embed=embed, view=view)
     else:
-        await interaction.edit_original_message(content=content, embed=embed, view=view)
+        await interaction.edit_original_message(content=content, file=file, embed=embed, view=view)
 
 
 # Design fields for embeds

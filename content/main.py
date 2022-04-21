@@ -2,7 +2,7 @@
 """Contains the main events, error handling and the help and about commands"""
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Tuple
 
 import discord
 from discord.ext import commands
@@ -93,9 +93,9 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
     interaction = await ctx.respond('Testing API latency...')
     end_time = datetime.utcnow()
     api_latency = end_time - start_time
-    embed = await embed_about(bot, ctx, api_latency)
+    image, embed = await embed_about(bot, ctx, api_latency)
     view = LinksView()
-    await functions.edit_interaction(interaction, content=None, embed=embed, view=view)
+    await functions.edit_interaction(interaction, content=None, file=image, embed=embed, view=view)
 
 
 # --- Embeds ---
@@ -203,7 +203,9 @@ async def embed_help_calculators() -> discord.Embed:
     return embed
 
 
-async def embed_about(bot: commands.Bot, ctx: discord.ApplicationContext, api_latency: datetime) -> discord.Embed:
+async def embed_about(
+    bot: commands.Bot, ctx: discord.ApplicationContext, api_latency: datetime
+) -> Tuple[discord.File, discord.Embed]:
     """Bot info embed"""
     user_count = await database.get_user_count()
     closed_shards = 0
@@ -235,10 +237,14 @@ async def embed_about(bot: commands.Bot, ctx: discord.ApplicationContext, api_la
         f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
         f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
+    img_raspi = discord.File(settings.IMG_RASPI, filename='raspi.png')
+    image_url = 'attachment://raspi.png'
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
     embed.add_field(name='PRIVACY POLICY & TOS', value=documents, inline=False)
-    return embed
+    embed.add_field(name='PROUDLY HOSTED ON A RASPBERRY PI 4', value=f'** **', inline=False)
+    embed.set_image(url=image_url)
+    return (img_raspi, embed)

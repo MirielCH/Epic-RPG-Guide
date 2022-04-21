@@ -30,10 +30,10 @@ class MonstersCog(commands.Cog):
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
-    @cmd_monster.command(name='search', description='Look up monsters by name')
+    @cmd_monster.command(name='search', description='Look up monsters')
     async def monster_search(self,
         ctx: discord.ApplicationContext,
-        name: Option(str, 'Name or part of the name of the monster(s). Looks up the daily mob if empty.',
+        name: Option(str, 'Name of the monster(s). Looks up the daily monster if empty.',
                      autocomplete=monster_searcher, default=None),
     ) -> None:
         """Command to search for a monster"""
