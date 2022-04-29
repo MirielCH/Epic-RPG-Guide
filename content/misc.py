@@ -2,6 +2,7 @@
 
 import asyncio
 from decimal import Decimal, ROUND_HALF_UP
+from pyexpat.errors import messages
 from typing import Optional
 
 import discord
@@ -103,7 +104,8 @@ async def command_calculator(ctx: discord.ApplicationContext, calculation: str) 
             f'Invalid characters. Please only use numbers and supported operators.\n'
             f'Supported operators are `+`, `-`, `/`, `*` and `%`.'
         )
-        return message
+        await ctx.respond(message, ephemeral=True)
+        return
     error_parsing = (
         f'Error while parsing your input. Please check your input.\n'
         f'Supported operators are `+`, `-`, `/`, `*` and `%`.'

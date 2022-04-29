@@ -131,7 +131,7 @@ async def embed_help_guides() -> discord.Embed:
     )
     achievements = f'{emojis.BP} {emojis.LOGO}`/title search` : Look up titles / achievements\n'
     misc = (
-        f'{emojis.BP} {emojis.LOGO}`/ask the oracle` : A very useless command\n'
+        f'{emojis.BP} {emojis.LOGO}`/ask the oracle` : A very useful command\n'
         f'{emojis.BP} {emojis.LOGO}`/badges` : All badges and how to get them\n'
         f'{emojis.BP} {emojis.LOGO}`/codes` : All current redeemable codes\n'
         f'{emojis.BP} {emojis.LOGO}`/duel weapons` : What every weapon does in duels\n'
@@ -226,7 +226,7 @@ async def embed_about(
         f'{emojis.BP} {round(bot.latency * 1000):,} ms average bot latency\n'
         f'{emojis.BP} Online for {format_timespan(uptime)}'
     )
-    if ctx.guild is not None:
+    if ctx.guild_id is not None:
         current_shard = bot.get_shard(ctx.guild.shard_id)
         bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'
         current_shard_status = (
@@ -254,7 +254,7 @@ async def embed_about(
     image_url = 'attachment://raspi.png'
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
-    if ctx.guild is not None:
+    if ctx.guild_id is not None:
         embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)

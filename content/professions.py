@@ -77,6 +77,7 @@ async def command_profession_calculator(
     """Profession calculator command"""
     current_xp = 0
     needed_xp = None
+    from_level_defined = False if from_level is None else True
     if profession is None or from_level is None:
         command = f'/professions {profession}' if profession is not None else '/professions [profession]'
         bot_message_task = asyncio.ensure_future(functions.wait_for_profession_message(bot, ctx))
@@ -103,9 +104,21 @@ async def command_profession_calculator(
             return
         if profession is None: profession = profession_found
         if from_level is None: from_level = level_found
+    profession_data: database.Profession = await database.get_profession(profession)
+    if from_level >= to_level:
+        await ctx.respond(
+            f'Calculating from level {from_level} to level {to_level} is not really a thing :thinking:\n'
+            f'The level you want to calculate **to** has to be higher than the level you calculate **from**.\n'
+            f'Please note that if you don\'t set `to_level`, I will set it to level 100.',
+            ephemeral=True
+        )
+        return
+    if profession_data.xp[from_level+1] is None and from_level_defined:
+        await ctx.respond(f'No data found for {profession} level {from_level+1}, sorry.')
+        return
     try:
-        embed = await asyncio.wait_for(embed_professions_calculator(profession, to_level, current_xp,
-                                                                    needed_xp, from_level),
+        embed = await asyncio.wait_for(embed_professions_calculator(profession_data, to_level, current_xp,
+                                                                    from_level_defined, needed_xp, from_level),
                                         timeout=3.0)
     except asyncio.TimeoutError:
         await ctx.respond('Welp, something took too long here, calculation cancelled.', ephemeral=True)
@@ -116,7 +129,7 @@ async def command_profession_calculator(
         interaction = await ctx.respond(embed=embed, view=view)
         view.interaction = interaction
         await view.wait()
-        await functions.edit_interaction(interaction, view=None)
+        if view.value == 'triggered': await functions.edit_interaction(interaction, view=None)
     else:
         await ctx.respond(embed=embed)
 
@@ -185,7 +198,8 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Level **before time traveling** with leftover materials\n'
         f'{emojis.BP} Trade everything except {emojis.LOG_ULTRA} ULTRA logs to {emojis.LOG} logs\n'
         f'{emojis.BP} Sell {emojis.LOG_ULTRA} ULTRA logs\n'
-        f'{emojis.BP} For each remaining level look up `rpg pr merchant` and calculate the XP you need for the next level\n'
+        f'{emojis.BP} For each remaining level look up {emojis.EPIC_RPG_LOGO_SMALL}`/professions merchant` and '
+        f'calculate the XP you need for the next level\n'
         f'{emojis.BP} Take 5x the XP amount and sell as many {emojis.LOG} logs\n'
         f'{emojis.BP} Once you reach level 100, focus on lootboxer and worker'
     )
@@ -194,7 +208,7 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Better lootboxes give more XP (see topic `Lootboxer`)\n'
         f'{emojis.BP} If lower than worker, consider cooking {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes\n'
         f'{emojis.BP} It\'s usually not necessary to cook {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes\n'
-        f'{emojis.BP} Use `hunt hardmode` whenever you have access (unlocks in A13)'
+        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/hunt mode: hardmode` whenever you have access (unlocks in A13)'
     )
     worker = (
         f'{emojis.BP} Level up by using work commands or cooking {emojis.FOOD_BANANA_PICKAXE} banana pickaxes\n'
@@ -488,14 +502,14 @@ async def embed_ascension() -> discord.Embed:
     return embed
 
 
-async def embed_professions_calculator(profession: str, to_level: int, current_xp: int, needed_xp: Optional[int] = None,
+async def embed_professions_calculator(profession_data: database.Profession, to_level: int, current_xp: int,
+                                       from_level_defined: bool, needed_xp: Optional[int] = None,
                                        from_level: Optional[int] = None) -> discord.Embed:
     """Professions calculator embed"""
-    from_level_defined = False if from_level is None else True
     output_total = None
-    profession_data: database.Profession = await database.get_profession(profession)
     next_level = from_level + 1
-    if profession_data.xp[next_level] is None and needed_xp is not None:
+    profession = profession_data.name
+    if profession_data.xp[next_level] is None and needed_xp is not None and not from_level_defined:
         await profession_data.update_level(next_level, needed_xp)
     if needed_xp is None: needed_xp = profession_data.xp[next_level]
 
@@ -580,7 +594,7 @@ async def embed_professions_calculator(profession: str, to_level: int, current_x
                 )
         if profession == 'enchanter':
             how_to_level = (
-                f'{emojis.BP} Use `transmute` or `transcend`\n'
+                f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/transmute` or {emojis.EPIC_RPG_LOGO_SMALL}`/transcend`\n'
                 f'{emojis.BP} It\'s not recommended to cook {FOOD_EMOJIS[profession]} {FOOD_NAMES[profession]}, '
                 f'but if you prefer doing so regardless, see the required amounts below'
             )

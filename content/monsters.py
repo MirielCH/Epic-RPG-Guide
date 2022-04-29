@@ -95,9 +95,15 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster]):
     monster = type(database.Monster)
     for monster in monsters:
         if monster.areas[0] == monster.areas[1]:
-            field_value = f'{emojis.BP} Found in area **{monster.areas[0]}** with `{monster.activity}`'
+            field_value = (
+                f'{emojis.BP} Found in area **{monster.areas[0]}** with '
+                f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+            )
         else:
-            field_value = f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with `{monster.activity}`'
+            field_value = (
+                f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
+                f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+            )
         if monster.drop_name is not None:
             field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
         embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)
@@ -111,9 +117,15 @@ async def embed_daily_monster(monster: database.Monster):
         title = 'DAILY MONSTER SEARCH',
     )
     if monster.areas[0] == monster.areas[1]:
-        field_value = f'{emojis.BP} Found in area **{monster.areas[0]}** with `{monster.activity}`'
+        field_value = (
+            f'{emojis.BP} Found in area **{monster.areas[0]}** with '
+            f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+        )
     else:
-        field_value = f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with `{monster.activity}`'
+        field_value = (
+            f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
+            f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+        )
     if monster.drop_name is not None:
         field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
     embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)

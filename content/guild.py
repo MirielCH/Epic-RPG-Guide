@@ -169,7 +169,7 @@ async def embed_stats() -> discord.Embed:
     """Stealth and energy embed"""
     stealth = (
         f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
-        f'{emojis.BP} Can be increased by using `rpg guild upgrade`\n'
+        f'{emojis.BP} Can be increased by using {emojis.EPIC_RPG_LOGO_SMALL}`/guild upgrade`\n'
         f'{emojis.BP} Maximum amount is 95\n'
         f'{emojis.BP} Each upgrade gives you 0~7 stealth\n'
         f'{emojis.BLANK} The amount decreases the more you already have\n'
@@ -177,7 +177,7 @@ async def embed_stats() -> discord.Embed:
     energy = (
         f'{emojis.BP} Energy determines your weekly rank and reward\n'
         f'{emojis.BP} You need 2,000 energy to get the max reward\n'
-        f'{emojis.BP} Can be increased by using `rpg guild raid`\n'
+        f'{emojis.BP} Can be increased by using {emojis.EPIC_RPG_LOGO_SMALL}`/guild raid`\n'
         f'{emojis.BP} Ranking over 2,000 energy doesn\'t provide any additional rewards but is advised nonetheless '
         f'so you stay over 2,000 in case you get raided'
     )

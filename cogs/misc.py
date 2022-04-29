@@ -81,7 +81,7 @@ class MiscCog(commands.Cog):
         timetravel: Option(int, 'The TT you want to calculate for. Reads from EPIC RPG if empty.',
                            min_value=1, max_value=999, default=None),
         area_no: Option(int, 'The area you want to calculate for. Reads from EPIC RPG if empty.', name='area',
-                        min_value=1, max_value=20, default=None),
+                        min_value=1, max_value=20, choices=strings.CHOICES_AREA_NO_TOP, default=None),
     ) -> None:
         await misc.command_coincap_calculator(self.bot, ctx, timetravel=timetravel, area_no=area_no)
 

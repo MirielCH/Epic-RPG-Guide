@@ -354,8 +354,10 @@ NUMBERS_ROMAN_INTEGER = {
 
 # Choices for slash commands
 CHOICES_AREA = []
+CHOICES_AREA_NO_TOP = []
 for area_no in range(1, 21):
     CHOICES_AREA.append(OptionChoice(name=f'Area {area_no}', value=area_no))
+    CHOICES_AREA_NO_TOP.append(OptionChoice(name=f'Area {area_no}', value=area_no))
 CHOICES_AREA.append(OptionChoice(name='The TOP', value=21))
 
 

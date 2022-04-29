@@ -186,9 +186,8 @@ class CraftingRecalculateButton(discord.ui.Button):
                          disabled=disabled, row=1)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        modal = modals.CraftingCalculatorAmountModal(self.view.ctx, self.view.item_name, self.view.item_emoji)
+        modal = modals.CraftingCalculatorAmountModal(self.view)
         await interaction.response.send_modal(modal)
-        self.view.stop()
 
 
 class DungeonCheckSelect(discord.ui.Select):
@@ -400,12 +399,11 @@ class PaginatorButton(discord.ui.Button):
 
 
 class CustomButton(discord.ui.Button):
-    """Custom Button"""
+    """Custom Button. Writes its custom id to the view value and stops the view."""
     def __init__(self, style: discord.ButtonStyle, custom_id: str, label: Optional[str],
                  emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=style, custom_id=custom_id, label=label, emoji=emoji)
 
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.custom_id
-        await interaction.message.edit(view=None)
         self.view.stop()

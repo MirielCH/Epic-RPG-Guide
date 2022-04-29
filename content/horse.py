@@ -139,6 +139,12 @@ async def command_horse_training_calculator(
                 ephemeral=True
             )
             return
+        if from_level >= max_level:
+            await ctx.respond(
+                'Your horse is already maxed out.',
+                ephemeral=True
+            )
+            return
         if from_level >= to_level:
             await ctx.respond(
                 'The level you want to calculate to has to be higher than your current level.',
@@ -163,7 +169,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Example: A T7 horse with lootboxer at 102 has a max level of 72\n'
         f'{emojis.BP} Leveling up increases the horse type bonus (see the [Wiki]'
         f'(https://epic-rpg.fandom.com/wiki/Horse#Horse_Types_and_Boosts))\n'
-        f'{emojis.BP} Increased by using `horse training` which costs coins\n'
+        f'{emojis.BP} Increased by using {emojis.EPIC_RPG_LOGO_SMALL}`/horse training` which costs coins\n'
         f'{emojis.BP} Training cost is reduced by leveling up lootboxer (see {emojis.LOGO}`/professions guide`)'
     )
     horse_type = (
@@ -192,51 +198,52 @@ async def embed_tiers() -> discord.Embed:
     """Horse tiers embed"""
     buff_lootbox = '{increase}% buff to lootbox drop chance'
     buff_monsters = '{increase}% buff to monster drops drop chance'
-    buff_coins = '{increase}% more coins when using `daily` and `weekly`'
-    buff_pets = '{increase}% higher chance to find pets with `training` ({total}%)'
+    buff_coins = '{increase}% more coins when using {emoji}`/daily` and {emoji}`/weekly`'
+    buff_pets = '{increase}% higher chance to find pets with {emoji}`training` ({total}%)'
     tier1 = f'{emojis.BP} No bonuses'
-    tier2 = f'{emojis.BP} {buff_coins.format(increase=5)}'
-    tier3 = f'{emojis.BP} {buff_coins.format(increase=10)}'
+    tier2 = f'{emojis.BP} {buff_coins.format(increase=5, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
+    tier3 = f'{emojis.BP} {buff_coins.format(increase=10, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     tier4 = (
-        f'{emojis.BP} Unlocks immortality in `hunt` and `adventure`\n'
-        f'{emojis.BP} {buff_coins.format(increase=20)}'
+        f'{emojis.BP} Unlocks immortality in {emojis.EPIC_RPG_LOGO_SMALL}`/hunt` '
+        f'and {emojis.EPIC_RPG_LOGO_SMALL}`/adventure`\n'
+        f'{emojis.BP} {buff_coins.format(increase=20, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     )
     tier5 = (
         f'{emojis.BP} Unlocks horse racing\n'
         f'{emojis.BP} {buff_lootbox.format(increase=20)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=30)}'
+        f'{emojis.BP} {buff_coins.format(increase=30, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     )
     tier6 = (
         f'{emojis.BP} Unlocks free access to dungeons without dungeon keys\n'
         f'{emojis.BP} {buff_lootbox.format(increase=50)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=45)}'
+        f'{emojis.BP} {buff_coins.format(increase=45, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     )
     tier7 = (
         f'{emojis.BP} {buff_monsters.format(increase=20)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=100)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=60)}'
+        f'{emojis.BP} {buff_coins.format(increase=60, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     )
     tier8 = (
         f'{emojis.BP} Unlocks higher chance to get better enchants (% unknown)\n'
         f'{emojis.BP} {buff_monsters.format(increase=50)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=200)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=80)}'
+        f'{emojis.BP} {buff_coins.format(increase=80, emoji=emojis.EPIC_RPG_LOGO_SMALL)}'
     )
     tier9 = (
-        f'{emojis.BP} {buff_pets.format(increase=150, total=10)}\n'
+        f'{emojis.BP} {buff_pets.format(increase=150, total=10, emoji=emojis.EPIC_RPG_LOGO_SMALL)}\n'
         f'{emojis.BP} {buff_monsters.format(increase=100)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=400)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=100)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=100, emoji=emojis.EPIC_RPG_LOGO_SMALL)}\n'
     )
     tier10 = (
         f'{emojis.BP} Unlocks 2 extra badge slots\n'
         f'{emojis.BP} Adds a chance for another drop after each drop (mob drops and lootboxes)\n'
         f'{emojis.BLANK} The chance is believed to be around 20-35%, depending on the item\n'
         f'{emojis.BLANK} The better the item, the lower the chance\n'
-        f'{emojis.BP} {buff_pets.format(increase=400, total=20)}\n'
+        f'{emojis.BP} {buff_pets.format(increase=400, total=20, emoji=emojis.EPIC_RPG_LOGO_SMALL)}\n'
         f'{emojis.BP} {buff_monsters.format(increase=200)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=650)}\n'
-        f'{emojis.BP} {buff_coins.format(increase=200)}\n'
+        f'{emojis.BP} {buff_coins.format(increase=200, emoji=emojis.EPIC_RPG_LOGO_SMALL)}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -280,7 +287,8 @@ async def embed_types() -> discord.Embed:
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )
     golden = (
-        f'{emojis.BP} Increases the amount of coins from `hunt` and `adventure`\n'
+        f'{emojis.BP} Increases the amount of coins from {emojis.EPIC_RPG_LOGO_SMALL}`/hunt` '
+        f'and {emojis.EPIC_RPG_LOGO_SMALL}`/adventure`\n'
         f'{emojis.BP} The higher the horse level, the higher the coin bonus\n'
         #f'{emojis.BP} ?% chance to get this type when breeding'
     )

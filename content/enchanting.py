@@ -49,7 +49,7 @@ async def embed_enchanting() -> discord.Embed:
         f'{emojis.BP} The multiplier increases the amount of rolls of all command tiers\n'
         f'{emojis.BP} The multiplier increases with {emojis.TIME_TRAVEL} TT\n'
         f'{emojis.BP} More rolls also means higher cost!\n'
-        f'{emojis.BP} You can check your current multiplier with `rpg time travel`\n'
+        f'{emojis.BP} You can check your current multiplier with {emojis.EPIC_RPG_LOGO_SMALL}`/time travel`\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

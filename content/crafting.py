@@ -85,7 +85,7 @@ async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name
     if amount == 1:
         message = f'To craft {item.emoji} `{item.name}` you need:'
     else:
-        message = f'To craft {amount:,} {item.emoji} `{item.name}` you need:'
+        message = f'To craft **{amount:,}** {item.emoji} `{item.name}` you need:'
     for ingredient in item.ingredients:
         ingredient_item: database.Item = await database.get_item(ingredient.name)
         message = f'{message}\n> {ingredient.amount * amount:,} {ingredient_item.emoji} `{ingredient_item.name}`'
@@ -93,11 +93,14 @@ async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name
         message = f'{message}\n\nRequirements\n> {item.requirements}'
     if breakdown_totals != '':
         message = f'{message}\n\n{breakdown_totals}'
-    view = views.FollowupCraftingCalculatorView(ctx, item.name, item.emoji, 'Calculate again')
-    interaction = await ctx.respond(message, view=view)
-    view.interaction = interaction
-    await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    if item.item_type in ('sword', 'armor'):
+        await ctx.respond(message)
+    else:
+        view = views.FollowupCraftingCalculatorView(ctx, item.name, item.emoji, 'Calculate again')
+        interaction = await ctx.respond(message, view=view)
+        view.interaction = interaction
+        await view.wait()
+        if view.value == 'triggered': await functions.edit_interaction(interaction, view=None)
 
 
 async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_name: str, amount: str) -> None:
@@ -133,7 +136,7 @@ async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_n
     if amount == 1:
         message = f'By dismantling {item.emoji} `{item.name}` you get:'
     else:
-        message = f'By dismantling {amount:,} {item.emoji} `{item.name}` you get:'
+        message = f'By dismantling **{amount:,}** {item.emoji} `{item.name}` you get:'
     for ingredient in item.ingredients:
         ingredient_item: database.Item = await database.get_item(ingredient.name)
         message = f'{message}\n> {int(ingredient.amount * amount * 0.8):,} {ingredient_item.emoji} `{ingredient_item.name}`'
@@ -186,6 +189,7 @@ async def command_inventory_calculator(bot: discord.Bot, ctx: discord.Applicatio
         await view.wait()
         if view.value == 'followup':
             await trading.command_trade_calculator(ctx, area_no, material, str(amount))
+            await functions.edit_interaction(interaction, view=None)
     else:
         await ctx.respond(message)
 

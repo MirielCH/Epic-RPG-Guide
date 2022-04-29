@@ -26,19 +26,19 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
         full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
     if tt_no is not None: user.tt = tt_no
     if ascension is not None:
-        if user.tt == 0 and ascension == strings.CHOICE_ASCENDED:
-            await ctx.respond(
-                f'Invalid combination. You can\'t ascend in {emojis.TIME_TRAVEL} TT 0.',
-                ephemeral=True
-            )
-            return
-        if user.tt >= 25 and ascension == strings.CHOICE_NOT_ASCENDED:
-            await ctx.respond(
-                f'Invalid combination. {emojis.TIME_TRAVEL} TT 25+ needs to be ascended.',
-                ephemeral=True
-            )
-            return
         user.ascended = True if ascension == strings.CHOICE_ASCENDED else False
+    if user.tt == 0 and user.ascended:
+        await ctx.respond(
+            f'Invalid combination. You can\'t ascend in {emojis.TIME_TRAVEL} TT 0.',
+            ephemeral=True
+        )
+        return
+    if user.tt >= 25 and not user.ascended:
+        await ctx.respond(
+            f'Invalid combination. {emojis.TIME_TRAVEL} TT 25+ needs to be ascended.',
+            ephemeral=True
+        )
+        return
     view = views.AreaGuideView(ctx, area_no, user, full_guide, embed_area_guide)
     embed = await embed_area_guide(ctx, area_no, user, full_guide)
     if interaction is None:
