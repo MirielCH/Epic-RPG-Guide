@@ -79,7 +79,7 @@ async def command_tip(ctx: discord.ApplicationContext, tip_id: Optional[int] = N
     try:
         tip: database.Tip = await database.get_tip(tip_id)
     except database.NoDataFound:
-        await ctx.respond('There is no tip with that ID :cry:', ephemeral=True)
+        await ctx.respond('There is no tip with that ID yet :cry:', ephemeral=True)
         return
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

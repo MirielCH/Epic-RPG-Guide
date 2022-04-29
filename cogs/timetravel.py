@@ -13,11 +13,11 @@ class TimeTravelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_tt = SlashCommandGroup("time-travel", "Time travel commands")
-    cmd_tj = SlashCommandGroup("time-jump", "Time jump commands")
-    cmd_score = cmd_tj.create_subgroup("score", "Subcommand of the time jump command")
+    cmd_time = SlashCommandGroup("time", "Time travel commands")
+    cmd_travel = cmd_time.create_subgroup("travel", "Time travel sub commands")
+    cmd_jump = cmd_time.create_subgroup("jump", "Time jump sub commands")
 
-    @cmd_tt.command(name='guide', description='All you need to know about time travels and super time travels')
+    @cmd_travel.command(name='guide', description='All you need to know about time travels and super time travels')
     async def timetravel_guide(
         self,
         ctx: discord.ApplicationContext,
@@ -27,19 +27,19 @@ class TimeTravelCog(commands.Cog):
         """Time travel guide"""
         await timetravel_content.command_time_travel_guide(ctx, topic)
 
-    @cmd_tt.command(name='details', description='Unlocks & bonuses of a certain time travel and how to prepare for it')
-    async def timetravel_details(
+    @cmd_travel.command(name='bonuses', description='Unlocks & bonuses of a certain time travel and how to prepare for it')
+    async def timetravel_bonuses(
         self,
         ctx: discord.ApplicationContext,
         timetravel: Option(int, 'The TT you want to look up. Shows your current TT if empty.',
                            min_value=0, max_value=1000, default=None),
     ) -> None:
         """Time travel details"""
-        await timetravel_content.command_time_travel_details(ctx, timetravel=timetravel)
+        await timetravel_content.command_time_travel_bonuses(ctx, timetravel=timetravel)
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
-    @cmd_score.command(name='calculator', description='Calculates the theoretical time jump score of your inventory')
+    @cmd_jump.command(name='calculator', description='Calculates the theoretical time jump score of your inventory')
     async def tj_score_calculator(
         self,
         ctx: discord.ApplicationContext,

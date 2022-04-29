@@ -6,9 +6,8 @@ from typing import Optional
 
 import discord
 
-from content import crafting
 import database
-from resources import modals, emojis, functions, settings, strings, views
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -47,7 +46,7 @@ FOOD_NAMES = {
 
 
 # --- Commands ---
-async def command_profession_guide(ctx: discord.ApplicationContext, topic: str) -> None:
+async def command_professions_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Profession guide command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_professions_overview,
@@ -67,7 +66,7 @@ async def command_profession_guide(ctx: discord.ApplicationContext, topic: str) 
     await functions.edit_interaction(interaction, view=None)
 
 
-async def command_profession_calculator(
+async def command_professions_calculator(
     bot: discord.Bot,
     ctx: discord.ApplicationContext,
     profession: Optional[str] = None,
@@ -164,7 +163,7 @@ async def embed_professions_overview() -> discord.Embed:
         f'{emojis.BP} For more details see topic `Enchanter`'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -229,7 +228,7 @@ async def embed_professions_leveling() -> discord.Embed:
         f'{emojis.BP} Increase crafter and merchant to 101, then focus exclusively on worker\n'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -271,7 +270,7 @@ async def embed_professions_crafter() -> discord.Embed:
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Crafter)'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -328,7 +327,7 @@ async def embed_professions_enchanter() -> discord.Embed:
         f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` to check your TT multiplier'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -371,7 +370,7 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: Unknown\n'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -406,7 +405,7 @@ async def embed_professions_merchant() -> discord.Embed:
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Merchant)'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -452,7 +451,7 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`: 18 XP'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -485,7 +484,7 @@ async def embed_ascension() -> discord.Embed:
         f'{emojis.EPIC_RPG_LOGO_SMALL}`/help topic: [material]` to see the area they unlock in.'
     )
     calculator = (
-        f'{emojis.BP} Use {emojis.LOGO}`/profession calculator` to calculate what you need to level up'
+        f'{emojis.BP} Use {emojis.LOGO}`/professions calculator` to calculate what you need to level up'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

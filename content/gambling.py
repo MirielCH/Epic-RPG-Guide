@@ -207,7 +207,7 @@ async def embed_multidice() -> discord.Embed:
     note = (
         f'{emojis.BP} This command is unlocked in area 5\n'
         f'{emojis.BP} This is basically a gambling version of `give`\n'
-        f'{emojis.BP} The amount you can bet is limited by your coin cap (see {emojis.LOGO}`/coin-cap calculator`)'
+        f'{emojis.BP} The amount you can bet is limited by your coin cap (see {emojis.LOGO}`/coin cap calculator`)'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

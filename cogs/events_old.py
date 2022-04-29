@@ -9,7 +9,7 @@ from resources import functions
 
 
 # events commands (cog)
-class EventsOldCog(commands.Cog):
+class eventsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -37,6 +37,7 @@ class EventsOldCog(commands.Cog):
         'ruby','rubydragon','working','work','nothing',
         'failedseed','farmevent',
         'returning','ret',
+        'bunny','bunnyboss',
     )
 
     # Command "events"
@@ -139,6 +140,14 @@ class EventsOldCog(commands.Cog):
             embed = await embed_event_returning(ctx.prefix)
             await ctx.send(embed=embed)
             return
+        elif (invoked.find('bunnyboss') > -1):
+            embed = await embed_event_bunnyboss(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
+        elif (invoked.find('bunny') > -1):
+            embed = await embed_event_bunny(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
         else:
             if args:
                 event_name = ''
@@ -215,6 +224,12 @@ class EventsOldCog(commands.Cog):
                 elif (event_name.find('ret') > -1):
                     embed = await embed_event_returning(ctx.prefix)
                     await ctx.send(embed=embed)
+                elif (event_name.find('bunny') > -1) and (event_name.find('boss') > -1):
+                    embed = await embed_event_bunnyboss(ctx.prefix)
+                    await ctx.send(embed=embed)
+                elif (event_name.find('bunny') > -1):
+                    embed = await embed_event_bunny(ctx.prefix)
+                    await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')
             else:
@@ -224,7 +239,7 @@ class EventsOldCog(commands.Cog):
 
 # Initialization
 def setup(bot):
-    bot.add_cog(EventsOldCog(bot))
+    bot.add_cog(eventsCog(bot))
 
 
 # --- Redundancies ---
@@ -246,8 +261,9 @@ events_footer = 'Use {prefix}events to see a list of all events.'
 # Events overview
 async def embed_events_overview(prefix):
 
-    xmas_event = (
-        f'{emojis.BP} `snowball`'
+    seasonal_event = (
+        f'{emojis.BP} `bunny`\n'
+        f'{emojis.BP} `bunny boss`\n'
     )
 
     sp_events = (
@@ -291,7 +307,7 @@ async def embed_events_overview(prefix):
     )
 
     embed.set_footer(text=await functions.default_footer(prefix))
-    #embed.add_field(name=f'CHRISTMAS {emojis.XMAS_TREE}', value=xmas_event, inline=False)
+    embed.add_field(name=f'EASTER {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -1105,14 +1121,14 @@ async def embed_event_snowball(prefix):
 # Bunny event (easter)
 async def embed_event_bunny(prefix):
 
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (0.75 % chance)'
+    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)' # was 0.75% last year
 
     answers = (
         f'{emojis.BP} The bunny has a {emojis.PET_HAPPINESS} happiness and :carrot: hunger stat\n'
         f'{emojis.BP} You can enter a line of commands to influence these stats\n'
-        f'{emojis.BP} `feed` decreases hunger by 18-22\n'
-        f'{emojis.BP} `pat` increases happiness by 8-12\n'
-        f'{emojis.BP} Example: `feed feed pat pat pat`\n'
+        f'{emojis.BLANK} `feed` decreases hunger by 18-22\n'
+        f'{emojis.BLANK} `pat` increases happiness by 8-12\n'
+        f'{emojis.BLANK} Example: `feed feed pat pat pat`\n'
         f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
         f'{emojis.BP} You can only use up to 6 commands\n'
         f'{emojis.BP} Less commands = 15 {emojis.EASTER_EGG} easter eggs for every command not used'
@@ -1120,12 +1136,15 @@ async def embed_event_bunny(prefix):
 
     rewards = (
         f'{emojis.BP} {emojis.EASTER_BUNNY} Bunny (used in crafting {emojis.EASTER_SPAWNER} boss spawners)\n'
-        f'{emojis.BP} {emojis.PET_GOLDEN_BUNNY} Fake golden bunny. Gifts you a {emojis.EASTER_SPAWNER} boss spawner every day.'
+        f'{emojis.BP} {emojis.PET_GOLDEN_BUNNY} Fake golden bunny. '
+        f'Gifts you a {emojis.EASTER_SPAWNER} boss spawner every day.'
     )
 
     note =(
-        f'{emojis.BP} You can increase the chance of this event by crafting {emojis.EASTER_RAINBOW_CARROT} rainbow carrots\n'
-        f'{emojis.BP} You can craft up to 5 carrots which gives you a 3 % spawn chance'
+        f'{emojis.BP} You can increase the chance of this event by crafting'
+        f'{emojis.EASTER_RAINBOW_CARROT} rainbow carrots\n'
+        f'{emojis.BP} You can craft up to 10 carrots'
+        #f'{emojis.BP} You can craft up to 5 carrots which gives you a 3 % spawn chance'
     )
 
     embed = discord.Embed(
@@ -1148,7 +1167,7 @@ async def embed_event_bunnyboss(prefix):
     trigger = (
         f'{emojis.BP} Craft a {emojis.EASTER_SPAWNER} boss spawner\n'
         f'{emojis.BP} Use `egg use boss spawner` or `egg buy instant spawn`\n'
-        f'{emojis.BP} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
+        f'{emojis.BLANK} If you don\'t buy an instant spawn, this will use your dungeon cooldown'
     )
 
     answers = (
@@ -1162,7 +1181,8 @@ async def embed_event_bunnyboss(prefix):
         f'{emojis.BP} {emojis.ARENA_COOKIE} Arena cookies\n'
         f'{emojis.BP} {emojis.EPIC_COIN} EPIC coins\n'
         f'{emojis.BP} {emojis.EASTER_LOOTBOX} Easter lootboxes\n'
-        f'{emojis.BP} The participants have a chance to get a few {emojis.EASTER_EGG} easter eggs and {emojis.ARENA_COOKIE} cookies'
+        f'{emojis.BP} The participants have a chance to get a few {emojis.EASTER_EGG} easter eggs '
+        f'and {emojis.ARENA_COOKIE} cookies'
     )
 
     note = (

@@ -13,20 +13,20 @@ class PetsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_pet = SlashCommandGroup("pet", "Pet commands")
+    cmd_pets = SlashCommandGroup("pets", "Pet commands")
 
-    @cmd_pet.command(name='guide', description='All about pets')
-    async def pet_guide(
+    @cmd_pets.command(name='guide', description='All about pets')
+    async def pets_guide(
         self,
         ctx: discord.ApplicationContext,
         topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
                            choices=pets.TOPICS, default=pets.TOPIC_OVERVIEW),
     ) -> None:
         """Professions guides"""
-        await pets.command_pet_guide(ctx, topic)
+        await pets.command_pets_guide(ctx, topic)
 
-    @cmd_pet.command(name='fuse', description='Pet fusion recommendations for a target tier')
-    async def pet_fuse(
+    @cmd_pets.command(name='fuse', description='Pet fusion recommendations for a target tier')
+    async def pets_fuse(
         self,
         ctx: discord.ApplicationContext,
         pet_tier: Option(int, 'The pet tier you want to get', min_value=1, max_value=20),
@@ -34,7 +34,7 @@ class PetsCog(commands.Cog):
                            min_value=0, max_value=999, default=None),
     ) -> None:
         """Pet fuse recommendations"""
-        await pets.command_pet_fuse(ctx, pet_tier, timetravel=timetravel)
+        await pets.command_pets_fuse(ctx, pet_tier, timetravel=timetravel)
 
 
 # Initialization

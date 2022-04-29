@@ -116,10 +116,10 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {emojis.LOGO}`/gambling guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/guild guide`\n'
         f'{emojis.BP} {emojis.LOGO}`/horse guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/pet guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/profession guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/time-travel guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/time-travel details`\n'
+        f'{emojis.BP} {emojis.LOGO}`/pets guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/professions guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/time travel guide`\n'
+        f'{emojis.BP} {emojis.LOGO}`/time travel details`\n'
         f'{emojis.BP} {emojis.LOGO}`/ultraining guide`\n'
     )
     trade_rates = (
@@ -163,7 +163,7 @@ async def embed_help_calculators() -> discord.Embed:
         f'{emojis.BP} {emojis.LOGO}`/dungeon check` : Check if you\'re ready for a dungeon\n'
     )
     coincap = (
-        f'{emojis.BP} {emojis.LOGO}`/coin-cap calculator` : Calculate the coin cap for a TT/area\n'
+        f'{emojis.BP} {emojis.LOGO}`/coin cap calculator` : Calculate the coin cap for a TT/area\n'
     )
     crafting = (
         f'{emojis.BP} {emojis.LOGO}`/crafting calculator` : Recipes mats calculator\n'
@@ -171,18 +171,18 @@ async def embed_help_calculators() -> discord.Embed:
         f'{emojis.BP} {emojis.LOGO}`/inventory calculator` : Convert your inventory into one material\n'
     )
     timetravel = (
-        f'{emojis.BP} {emojis.LOGO}`/time-jump score calculator` : Calculate the time jump score of your inventory\n'
+        f'{emojis.BP} {emojis.LOGO}`/time jump calculator` : Calculate the time jump score of your inventory\n'
     )
     horse = (
         f'{emojis.BP} {emojis.LOGO}`/horse boost calculator` : Calculate horse boosts\n'
         f'{emojis.BP} {emojis.LOGO}`/horse training calculator` : Calculate horse training cost\n'
     )
     pet = (
-        f'{emojis.BP} {emojis.LOGO}`/pet fuse` : See the recommended tiers for a pet fusion\n'
+        f'{emojis.BP} {emojis.LOGO}`/pets fuse` : See the recommended tiers for a pet fusion\n'
     )
     drop_chance = f'{emojis.BP} {emojis.LOGO}`/dropchance calculator` : Calculate your monster drop chance\n'
     trading = f'{emojis.BP} {emojis.LOGO}`/trade calculator` : Calculate materials after trading'
-    professions = f'{emojis.BP} {emojis.LOGO}`/profession calculator` : Calculate what you need to level professions'
+    professions = f'{emojis.BP} {emojis.LOGO}`/professions calculator` : Calculate what you need to level professions'
     ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining stats calculator` : Calculate stats for an ultraining stage'
     misc = (
         f'{emojis.BP} {emojis.LOGO}`/calculator` : A basic calculator\n'

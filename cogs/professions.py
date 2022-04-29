@@ -13,9 +13,9 @@ class ProfessionsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_profession = SlashCommandGroup("profession", "Profession commands")
+    cmd_professions = SlashCommandGroup("professions", "Profession commands")
 
-    @cmd_profession.command(name='guide', description='All you need to know about professions')
+    @cmd_professions.command(name='guide', description='All you need to know about professions')
     async def professions_guide(
         self,
         ctx: discord.ApplicationContext,
@@ -23,13 +23,13 @@ class ProfessionsCog(commands.Cog):
                       choices=professions.TOPICS, default=professions.TOPIC_OVERVIEW),
     ) -> None:
         """Profession guide"""
-        await professions.command_profession_guide(ctx, topic)
+        await professions.command_professions_guide(ctx, topic)
 
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
-    @cmd_profession.command(name='calculator', description='Calculates what you need to level up your professions')
-    async def profession_calculator(
+    @cmd_professions.command(name='calculator', description='Calculates what you need to level up your professions')
+    async def professions_calculator(
         self,
         ctx: discord.ApplicationContext,
         profession: Option(str, 'The profession you want to calculate for. Reads from EPIC RPG if empty.',
@@ -40,7 +40,7 @@ class ProfessionsCog(commands.Cog):
                          min_value = 2, max_value = 200, default=100),
     ) -> None:
         """Profession calculator"""
-        await professions.command_profession_calculator(self.bot, ctx, profession=profession, from_level=from_level,
+        await professions.command_professions_calculator(self.bot, ctx, profession=profession, from_level=from_level,
                                                         to_level=to_level)
 
 

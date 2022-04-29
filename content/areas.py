@@ -137,7 +137,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     if tt.tt_area == area.area_no:
         quick_guide = (
             f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel '
-            f'(see {emojis.LOGO}`/time-travel details`)'
+            f'(see {emojis.LOGO}`/time travel bonuses`)'
         )
         return quick_guide
 
@@ -652,7 +652,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             f'{emojis.BP} **You can not reach this area in your current TT**\n'
             f'{emojis.BP} This area is unlocked in {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt}'
             )
-        footer = f'Tip: See "/time-travel guide" for details about time traveling'
+        footer = f'Tip: See "/time travel guide" for details about time traveling'
 
     # Area requirements
     unseal_time = {
@@ -673,7 +673,8 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     elif area.area_no == 16:
         area_req = (
             f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
-            f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
+            f'{emojis.BP} This area needs to be unsealed by players from the TOP '
+            f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/void info`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
@@ -683,7 +684,8 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     elif 17 <= area.area_no <= 20:
         area_req = (
             f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
-            f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
+            f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1} '
+            f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/void info`)\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'

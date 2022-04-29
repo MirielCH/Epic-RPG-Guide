@@ -141,7 +141,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'Yo, hey, I now support slash commands! Use {emojis.LOGO}`/help` to check it out.\n'
         f'If you can\'t see of any of my slash commands, click [here]({strings.LINK_INVITE}) to reinvite me with '
         f'the proper permissions.\n'
-        f'Note that development on these old commands is now halted. Any new or improved features will be slash only.'
+        f'Note that development on the old commands is now halted. Any new or improved features will be slash only.'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

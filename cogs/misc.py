@@ -71,10 +71,11 @@ class MiscCog(commands.Cog):
         """Basic calculator"""
         await misc.command_calculator(ctx, calculation)
 
-    cmd_coincap = SlashCommandGroup("coin-cap", "Coincap commands")
+    cmd_coin = SlashCommandGroup("coin", "Coincap commands")
+    cmd_cap = cmd_coin.create_subgroup("cap", "Coincap subcommands")
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
-    @cmd_coincap.command(name='calculator', description='Calculate the coin cap for a TT/area')
+    @cmd_cap.command(name='calculator', description='Calculate the coin cap for a TT/area')
     async def coincap_calculator(
         self,
         ctx: discord.ApplicationContext,

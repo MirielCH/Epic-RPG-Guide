@@ -611,7 +611,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see {emojis.LOGO}`/area guide`)'
     elif dungeon_no == 15:
         rewards = (
-            f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see {emojis.LOGO}`/time-travel guide`)'
+            f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see {emojis.LOGO}`/time travel guide`)'
         )
     elif dungeon_no == 15.2:
         rewards = (

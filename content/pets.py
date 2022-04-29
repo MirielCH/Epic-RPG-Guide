@@ -30,7 +30,7 @@ TOPICS = [
 
 
 # --- Commands ---
-async def command_pet_guide(ctx: discord.ApplicationContext, topic: str) -> None:
+async def command_pets_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Pet guide command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_pets_overview,
@@ -49,7 +49,7 @@ async def command_pet_guide(ctx: discord.ApplicationContext, topic: str) -> None
     await functions.edit_interaction(interaction, view=None)
 
 
-async def command_pet_fuse(ctx: discord.ApplicationContext, pet_tier: int, timetravel: Optional[int] = None) -> None:
+async def command_pets_fuse(ctx: discord.ApplicationContext, pet_tier: int, timetravel: Optional[int] = None) -> None:
     """Pet fuse command"""
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
@@ -175,7 +175,7 @@ async def embed_pets_fusion() -> discord.Embed:
         f'{emojis.BP} Exception: You can not lose {emojis.SKILL_ASCENDED} ascended and {emojis.SKILL_FIGHTER} fighter'
     )
     tiers = (
-        f'{emojis.BP} Check {emojis.LOGO}`/pet fuse` on what to fuse to get a tier up\n'
+        f'{emojis.BP} Check {emojis.LOGO}`/pets fuse` on what to fuse to get a tier up\n'
         f'{emojis.BP} For the highest chance of a tier up, fuse 2 pets of the **same** tier\n'
         f'{emojis.BP} The chance to tier up gets lower the higher your tier is'
     )
@@ -449,7 +449,7 @@ async def embed_fuse(pet_tier: int, timetravel: int) -> discord.Embed:
         f'{emojis.BP} Lower fusions _might_ be possible but are rarely successful.\n'
         f'{emojis.BP} If you want the maximum chance, do same-tier fusions.\n'
         f'{emojis.BP} You can lose skills in fusions!\n'
-        f'{emojis.BP} If you are unsure about fusions, see {emojis.LOGO}`/pet guide`'
+        f'{emojis.BP} If you are unsure about fusions, see {emojis.LOGO}`/pets guide`'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
