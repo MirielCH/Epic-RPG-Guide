@@ -1,5 +1,6 @@
 # bot.py
 
+from datetime import datetime
 import sys
 import traceback
 
@@ -7,7 +8,11 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import settings, logs
+from resources import functions, settings, logs
+
+
+startup_time = datetime.isoformat(datetime.utcnow().replace(microsecond=0), sep=' ')
+functions.await_coroutine(database.update_setting('startup_time', startup_time))
 
 
 intents = discord.Intents.none()

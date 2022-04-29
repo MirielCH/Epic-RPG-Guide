@@ -93,7 +93,11 @@ async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name
         message = f'{message}\n\nRequirements\n> {item.requirements}'
     if breakdown_totals != '':
         message = f'{message}\n\n{breakdown_totals}'
-    await ctx.respond(message)
+    view = views.FollowupCraftingCalculatorView(ctx, item.name, item.emoji, 'Calculate again')
+    interaction = await ctx.respond(message, view=view)
+    view.interaction = interaction
+    await view.wait()
+    await functions.edit_interaction(interaction, view=None)
 
 
 async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_name: str, amount: str) -> None:

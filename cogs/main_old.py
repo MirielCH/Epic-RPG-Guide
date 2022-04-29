@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 
 import database
 from resources import emojis
-from resources import logs, settings
+from resources import logs, settings, strings
 
 
 class MainOldCog(commands.Cog):
@@ -22,9 +22,6 @@ class MainOldCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def main_help(self, ctx: commands.Context):
         """Main help command"""
-        await ctx.send('Yo, this is now a slash command bot, try `/help` instead.')
-        return
-        prefix = await database.get_prefix(ctx)
         embed = await embed_main_help(ctx)
         await ctx.send(embed=embed)
 
@@ -92,7 +89,7 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
-    seasonal_event = f'{emojis.BP} `{prefix}love` : Valentine event guide\n'
+    seasonal_event = f'{emojis.BP} `{prefix}easter` / `{prefix}egg` : Easter event guide\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
@@ -140,13 +137,20 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'{emojis.BP} `{prefix}setprogress` / `{prefix}sp` : Change your user settings\n'
         f'{emojis.BP} `{prefix}prefix` : Check/set the prefix'
     )
+    field_slash_info = (
+        f'Yo, hey, I now support slash commands! Use {emojis.LOGO}`/help` to check it out.\n'
+        f'If you can\'t see of any of my slash commands, click [here]({strings.LINK_INVITE}) to reinvite me with '
+        f'the proper permissions.\n'
+        f'Note that development on these old commands is now halted. Any new or improved features will be slash only.'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'EPIC RPG GUIDE',
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    #embed.add_field(name=f'VALENTINE EVENT 2022 {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
+    embed.add_field(name='SLASH COMMANDS ARE HERE!', value=field_slash_info, inline=False)
+    embed.add_field(name=f'EASTER EVENT 2022 {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)

@@ -322,6 +322,23 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
     return bot_message
 
 
+async def wait_for_fun_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for a fun message"""
+    def check(message):
+        correct_message = False
+        try:
+            if 'y u ignore me' in message.content.lower() and ctx.author == message.author:
+                correct_message = True
+        except:
+            pass
+
+        return (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
 async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profession overview embed from EPIC RPG"""
     def epic_rpg_check(message):

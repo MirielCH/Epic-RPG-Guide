@@ -5,6 +5,7 @@ from datetime import datetime
 import sys
 from typing import Optional, Tuple
 from humanfriendly import format_timespan
+import psutil
 
 import discord
 from discord.ext import commands
@@ -182,7 +183,7 @@ async def embed_help_calculators() -> discord.Embed:
     drop_chance = f'{emojis.BP} {emojis.LOGO}`/dropchance calculator` : Calculate your monster drop chance\n'
     trading = f'{emojis.BP} {emojis.LOGO}`/trade calculator` : Calculate materials after trading'
     professions = f'{emojis.BP} {emojis.LOGO}`/profession calculator` : Calculate what you need to level professions'
-    ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining calculator` : Calculate EPIC NPC damage in ultraining'
+    ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining stats calculator` : Calculate stats for an ultraining stage'
     misc = (
         f'{emojis.BP} {emojis.LOGO}`/calculator` : A basic calculator\n'
     )
@@ -216,19 +217,23 @@ async def embed_about(
             if shard.is_closed(): closed_shards += 1
         else:
             closed_shards += 1
+    settings_db = await database.get_settings()
+    uptime = datetime.utcnow().replace(microsecond=0) - datetime.fromisoformat(settings_db['startup_time'])
     general = (
         f'{emojis.BP} {len(bot.guilds):,} servers\n'
         f'{emojis.BP} {user_count:,} users\n'
         f'{emojis.BP} {len(bot.shards):,} shards ({closed_shards:,} shards offline)\n'
         f'{emojis.BP} {round(bot.latency * 1000):,} ms average bot latency\n'
+        f'{emojis.BP} Online for {format_timespan(uptime)}'
     )
-    current_shard = bot.get_shard(ctx.guild.shard_id)
-    bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'
-    current_shard_status = (
-        f'{emojis.BP} Shard: {ctx.guild.shard_id + 1} of {len(bot.shards):,}\n'
-        f'{emojis.BP} Bot latency: {bot_latency}\n'
-        f'{emojis.BP} API latency: {round(api_latency.total_seconds() * 1000):,} ms'
-    )
+    if ctx.guild is not None:
+        current_shard = bot.get_shard(ctx.guild.shard_id)
+        bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'
+        current_shard_status = (
+            f'{emojis.BP} Shard: {ctx.guild.shard_id + 1} of {len(bot.shards):,}\n'
+            f'{emojis.BP} Bot latency: {bot_latency}\n'
+            f'{emojis.BP} API latency: {round(api_latency.total_seconds() * 1000):,} ms'
+        )
     creator = f'{emojis.BP} Miriel#0001'
     thanks = (
         f'{emojis.BP} FlyingPanda#0328\n'
@@ -239,21 +244,22 @@ async def embed_about(
         f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
         f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
-    uptime = datetime.utcnow().replace(microsecond=0) - settings.STARTUP_TIME
     dev_stuff = (
-        f'{emojis.BP} Library: Pycord {discord.__version__}\n'
         f'{emojis.BP} Language: Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n'
-        f'{emojis.BP} Uptime: {format_timespan(uptime)}'
+        f'{emojis.BP} Library: Pycord {discord.__version__}\n'
+        f'{emojis.BP} System CPU usage: {psutil.cpu_percent()}%\n'
+        f'{emojis.BP} System RAM usage: {psutil.virtual_memory()[2]}%\n'
     )
     img_raspi = discord.File(settings.IMG_RASPI, filename='raspi.png')
     image_url = 'attachment://raspi.png'
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
-    embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
+    if ctx.guild is not None:
+        embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
     embed.add_field(name='PRIVACY POLICY & TOS', value=documents, inline=False)
     embed.add_field(name='DEV STUFF', value=dev_stuff, inline=False)
-    embed.add_field(name='PROUDLY HOSTED ON A RASPBERRY PI 4', value=f'** **', inline=False)
+    embed.add_field(name='PROUDLY HOSTED ON THIS RASPBERRY PI 4', value=f'** **', inline=False)
     embed.set_image(url=image_url)
     return (img_raspi, embed)

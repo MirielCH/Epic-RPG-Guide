@@ -134,7 +134,8 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
     watermelon_max = int(greenhouse_watermelon_max)
     super_fish = int(bigboat_superfish)
     ultimate_logs = int(chainsaw_ultimate)
-    if ultimate_logs == 0: ultimate_logs = 1
+    if ultimate_logs <= 0: ultimate_logs = 1
+    if super_fish <= 0: super_fish = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
     tt_enchant_multipliers = {
         15: 6,
@@ -170,14 +171,17 @@ async def embed_time_travel_details(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
         f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
-        f'{emojis.BP} Higher chance to get +1 tier in {emojis.EPIC_RPG_LOGO_SMALL}`/horse breeding` and '
-        f'{emojis.EPIC_RPG_LOGO_SMALL}`/pets fusion` (chance unknown)\n'
     )
+    if tt.tt > 0:
+        unlocks = (
+            f'{unlocks}\n'
+            f'{emojis.BP} Higher chance to get +1 tier in {emojis.EPIC_RPG_LOGO_SMALL}`/horse breeding` and '
+            f'{emojis.EPIC_RPG_LOGO_SMALL}`/pets fusion` (chance unknown)\n'
+        )
     coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
     field_coin_cap = (
         f'{emojis.BP} ~**{coin_cap}** {emojis.COIN} coins\n'
-        f'{emojis.BP} You can not receive coins from other players that exceed this cap\n'
-        f'{emojis.BP} There is also a cap for boosted minibosses which is a bit higher (but unknown)'
+        f'{emojis.BP} Use {emojis.LOGO}`/coin-cap calculator` to see your exact cap\n'
     )
     work_multiplier = (
         f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '

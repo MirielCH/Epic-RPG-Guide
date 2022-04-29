@@ -405,7 +405,7 @@ class FollowupCraftingCalculatorView(discord.ui.View):
     'timeout' on timeout.
     None if nothing happened yet.
     """
-    def __init__(self, ctx: discord.ApplicationContext, item_name: str, item_emoji: str,
+    def __init__(self, ctx: discord.ApplicationContext, item_name: str, item_emoji: str, label: str,
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
@@ -414,12 +414,7 @@ class FollowupCraftingCalculatorView(discord.ui.View):
         self.user = ctx.author
         self.item_name = item_name
         self.item_emoji = item_emoji
-
-    @discord.ui.button(label='Crafting calculator', style=discord.ButtonStyle.grey)
-    async def button_callback(self, button, interaction):
-        modal = modals.CraftingCalculatorAmountModal(self.ctx, self.item_name, self.item_emoji)
-        await interaction.response.send_modal(modal)
-        self.stop()
+        self.add_item(components.CraftingRecalculateButton(custom_id='craft', label=label))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:

@@ -1,7 +1,9 @@
 # database.py
 
+from argparse import ArgumentError
 from dataclasses import dataclass
 from datetime import datetime
+from multiprocessing.sharedctypes import Value
 import sqlite3
 from typing import NamedTuple, Optional, Tuple, Union
 
@@ -176,6 +178,12 @@ class Title(NamedTuple):
     source: str
     tip: str
     title: str
+
+
+class Setting(NamedTuple):
+    """Container for a setting"""
+    name: str
+    value: str
 
 
 @dataclass
@@ -1522,6 +1530,38 @@ async def get_titles(search_string: str) -> Tuple[Title]:
     return tuple(titles)
 
 
+async def get_settings() -> Setting:
+    """Returns all setting from table "settings".
+
+    Returns:
+       dict with all settings.
+
+    Raises:
+        sqlite3.Error if something goes wrong.
+        NoDataFound if no data was found.
+    """
+    table = 'settings'
+    function_name = 'get_settings'
+    sql = f'SELECT * FROM {table}'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        records = cur.fetchall()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not records:
+        await log_error(
+            INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
+        )
+        raise NoDataFound('No settings not found in database.')
+
+    return dict(records)
+
+
 # --- Write Data ---
 # # Set new prefix
 async def set_prefix(ctx, new_prefix):
@@ -1617,6 +1657,40 @@ async def _update_profession_level(profession: Profession, level: int, xp: int) 
         }
         sql = f'UPDATE {table} SET {xp_columns[profession.name]} = ? WHERE level = ?'
         cur.execute(sql, (xp, level))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def update_setting(name: str, value: str) -> None:
+    """Updates a setting record.
+
+    Arguments
+    ---------
+    level: int
+    value: str
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    ArgumentError if value is None
+    Also logs all errors to the database.
+    """
+    table = 'settings'
+    function_name = 'update_setting'
+    if name is None or value is None:
+        await log_error(
+            INTERNAL_ERROR_INVALID_ARGUMENTS.format(
+                value=f'value: {value}, name: {name}', argument='name / value', table=table, function=function_name
+            )
+        )
+        raise ArgumentError('Arguments can\'t be None.')
+    try:
+        cur = ERG_DB.cursor()
+        sql = f'UPDATE {table} SET value = ? WHERE name = ?'
+        cur.execute(sql, (value, name))
     except sqlite3.Error as error:
         await log_error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)

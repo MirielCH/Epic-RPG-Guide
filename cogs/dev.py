@@ -35,6 +35,9 @@ class DevCog(commands.Cog):
         modules: Option(str, 'Cogs or modules to reload'),
     ) -> None:
         """Reloads cogs or modules"""
+        if ctx.author.id != settings.OWNER_ID:
+            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
+            return
         modules = modules.split(' ')
         actions = []
         for module in modules:
@@ -66,6 +69,9 @@ class DevCog(commands.Cog):
     @dev.command()
     async def shutdown(self, ctx: discord.ApplicationContext):
         """Shuts down the bot"""
+        if ctx.author.id != settings.OWNER_ID:
+            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
+            return
         view = views.ConfirmCancelView(ctx)
         interaction = await ctx.respond(f'**{ctx.author.name}**, are you **SURE**?', view=view)
         view.interaction = interaction
@@ -82,13 +88,16 @@ class DevCog(commands.Cog):
     @dev.command(name='sync-commands')
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:
         """Manually sync commands"""
+        if ctx.author.id != settings.OWNER_ID:
+            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
+            return
         await ctx.defer()
         if settings.DEBUG_MODE:
-            await self.bot.sync_commands(commands=[], guild_ids=settings.DEV_GUILDS)
-            await self.bot.sync_commands(guild_ids=settings.DEV_GUILDS)
+            #await self.bot.sync_commands(commands=[], guild_ids=settings.DEV_GUILDS)
+            await self.bot.sync_commands(guild_ids=settings.DEV_GUILDS, force=True)
         else:
-            await self.bot.sync_commands(commands=[], force=False)
-            await self.bot.sync_commands(force=False)
+            #await self.bot.sync_commands(commands=[], force=False)
+            await self.bot.sync_commands(force=True)
         await ctx.respond('Done')
 
 

@@ -6,7 +6,7 @@ from typing import Optional
 import discord
 
 from content import areas, dungeons
-from resources import strings
+from resources import strings, modals
 
 
 class AreaCheckSelect(discord.ui.Select):
@@ -186,34 +186,9 @@ class CraftingRecalculateButton(discord.ui.Button):
                          disabled=disabled, row=1)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-
-        if self.custom_id == 'prev':
-            self.view.active_area -= 1
-            if self.view.active_area == 1: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'next':
-                    child.disabled = False
-                    break
-        elif self.custom_id == 'next':
-            self.view.active_area += 1
-            if self.view.active_area == 21: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
-        else:
-            return
-        for child in self.view.children:
-            if child.custom_id == 'select_area':
-                options = []
-                for area_no in range(1,22):
-                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
-                    emoji = '🔹' if area_no == self.view.active_area else None
-                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-                child.options = options
-                break
-        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
-        await interaction.response.edit_message(embed=embed, view=self.view)
+        modal = modals.CraftingCalculatorAmountModal(self.view.ctx, self.view.item_name, self.view.item_emoji)
+        await interaction.response.send_modal(modal)
+        self.view.stop()
 
 
 class DungeonCheckSelect(discord.ui.Select):

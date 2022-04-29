@@ -12,7 +12,7 @@ async def command_ultraining_guide(ctx: discord.ApplicationContext) -> None:
     embed = await embed_ultraining_guide()
     await ctx.respond(embed=embed)
 
-async def command_ultraining_calculator(ctx: discord.ApplicationContext, stage: int) -> None:
+async def command_ultraining_stats_calculator(ctx: discord.ApplicationContext, stage: int) -> None:
     """Ultraining calculator command"""
     npc_at_base = 5 * (stage ** 1.25)
     npc_def_base = 6 * (stage ** 1.25)

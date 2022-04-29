@@ -14,6 +14,7 @@ class UltrainingCog(commands.Cog):
         self.bot = bot
 
     cmd_ultraining = SlashCommandGroup("ultraining", "Ultraining commands")
+    cmd_stats = cmd_ultraining.create_subgroup("stats", "Stats subcommand of the ultraining command")
 
     # Commands
     @cmd_ultraining.command(name='guide', description='All about ultraining')
@@ -21,15 +22,15 @@ class UltrainingCog(commands.Cog):
         """Ultraining guide"""
         await ultraining.command_ultraining_guide(ctx)
 
-    @cmd_ultraining.command(name='calculator', description='Calculates the EPIC NPC damage in ultraining')
-    async def ultraining_calculator(
+    @cmd_stats.command(name='calculator', description='Calculates the stats for an ultraining stage')
+    async def ultraining_stats_calculator(
         self,
         ctx: discord.ApplicationContext,
-        stage: Option(int, 'The ultraining stage you want to calculate the damage of',
+        stage: Option(int, 'The ultraining stage you want to calculate the stats for',
                       min_value=1, max_value=63_096)
         ) -> None:
-        """Ultraining stage calculator"""
-        await ultraining.command_ultraining_calculator(ctx, stage)
+        """Ultraining stats calculator"""
+        await ultraining.command_ultraining_stats_calculator(ctx, stage)
 
 
 # Initialization

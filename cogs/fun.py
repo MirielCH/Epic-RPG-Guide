@@ -21,7 +21,7 @@ class FunCog(commands.Cog):
     @cmd_the.command(description='Ask the oracle any yes/no question! Just don\'t expect a useful answer.')
     async def oracle(self, ctx: discord.ApplicationContext, question: str) -> None:
         """Ask the oracle (and get nonsense in return)"""
-        await fun.command_oracle(ctx, question)
+        await fun.command_oracle(self.bot, ctx, question)
 
 
 # Initialization

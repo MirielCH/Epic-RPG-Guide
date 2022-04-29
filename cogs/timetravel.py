@@ -32,7 +32,7 @@ class TimeTravelCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         timetravel: Option(int, 'The TT you want to look up. Shows your current TT if empty.',
-                           min_value=1, max_value=1000, default=None),
+                           min_value=0, max_value=1000, default=None),
     ) -> None:
         """Time travel details"""
         await timetravel_content.command_time_travel_details(ctx, timetravel=timetravel)

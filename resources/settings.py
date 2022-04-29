@@ -1,6 +1,5 @@
 # settings.py
 
-from datetime import datetime
 import os
 
 from dotenv import load_dotenv
@@ -30,15 +29,12 @@ IMG_DUNGEON_11 = os.path.join(BOT_DIR, 'images/dungeon11.png')
 IMG_DUNGEON_13 = os.path.join(BOT_DIR, 'images/dungeon13.png')
 IMG_RASPI = os.path.join(BOT_DIR, 'images/raspi.png')
 
-DEFAULT_PREFIX = '$'
-
 EPIC_RPG_ID = 555955826880413696
+
+DEFAULT_PREFIX = '$'
 
 EMBED_COLOR = 0x8914FF
 
-OWNER_ID = 619879176316649482
-
 ABORT_TIMEOUT = 60
-INTERACTION_TIMEOUT = 300
 
-STARTUP_TIME = datetime.utcnow().replace(microsecond=0)
+INTERACTION_TIMEOUT = 300

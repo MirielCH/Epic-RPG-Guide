@@ -69,8 +69,8 @@ class MainCog(commands.Cog):
             await send_error()
         elif isinstance(error, commands.BotMissingPermissions):
             await ctx.respond(
-                f'You can\'t use this command here, because I can\'t read EPIC RPG in this channel.\n'
-                f'To enable this, I need to have a role and that role needs the permission `View Channel` / '
+                f'You can\'t use this command in this channel, because I can\'t read EPIC RPG here.\n'
+                f'To enable this, I need the permission `View Channel` / '
                 f'`Read Messages` in this channel.',
                 ephemeral=True
             )

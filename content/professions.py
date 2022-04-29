@@ -111,7 +111,8 @@ async def command_profession_calculator(
         await ctx.respond('Welp, something took too long here, calculation cancelled.', ephemeral=True)
         return
     if profession in ('enchanter', 'lootboxer', 'worker'):
-        view = views.FollowupCraftingCalculatorView(ctx, FOOD_NAMES[profession], FOOD_EMOJIS[profession])
+        view = views.FollowupCraftingCalculatorView(ctx, FOOD_NAMES[profession], FOOD_EMOJIS[profession],
+                                                    'Crafting calculator')
         interaction = await ctx.respond(embed=embed, view=view)
         view.interaction = interaction
         await view.wait()
