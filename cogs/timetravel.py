@@ -41,7 +41,7 @@ class timetravelCog(commands.Cog):
             tt_no = args[0]
 
         if not args:
-            tt_no = invoked.replace(f'{ctx.prefix}timetravel','').replace(f'{ctx.prefix}tt','')
+            tt_no = invoked.replace(f'{ctx.prefix.lower()}timetravel','').replace(f'{ctx.prefix.lower()}tt','')
             if tt_no == '':
                 embed = await embed_timetravel_overview(ctx)
                 await ctx.send(embed=embed)
@@ -347,11 +347,14 @@ class timetravelCog(commands.Cog):
         for log_amount in areas_log_amounts:
             if log_amount[0] == 15:
                 a15 = log_amount
-            elif log_amount[0] == 16:
+            elif log_amount[0] == 21:
                 a16 = log_amount
         log_a15 = a15[1]
         ruby_rate_a15 = a15[2]
-        ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        try:
+            ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        except ZeroDivisionError:
+            ruby_a15 = 0
         log_a16 = a16[1]
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
@@ -556,6 +559,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
     greenhouse_watermelon_min = dynamite_rubies * 2
     greenhouse_watermelon_max = dynamite_rubies * 3
+    bigboat_superfish = dynamite_rubies / 1.15
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
@@ -564,6 +568,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     rubies = int(dynamite_rubies)
     watermelon_min = int(greenhouse_watermelon_min)
     watermelon_max = int(greenhouse_watermelon_max)
+    super_fish = int(bigboat_superfish)
     ultimate_logs = int(chainsaw_ultimate)
     if ultimate_logs == 0: ultimate_logs = 1
     # Enchant multiplier formula is from a player, tested up to TT120 + 194 + 200. TT15 only one found to be wrong so far.
@@ -617,7 +622,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with `greenhouse`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.FISH_SUPER} with `bigboat`\n'
+        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with `bigboat`\n'
         f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
     )
 

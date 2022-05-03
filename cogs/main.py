@@ -138,7 +138,7 @@ def setup(bot):
 async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     """Main menu embed"""
     prefix = ctx.prefix
-    seasonal_event = f'{emojis.BP} `{prefix}anniversary` / `{prefix}anni` : Anniversary event guide\n'
+    seasonal_event = f'{emojis.BP} `{prefix}easter` / `{prefix}egg` : Easter event guide\n'
     progress = (
         f'{emojis.BP} `{prefix}start` : Starter guide for new players\n'
         f'{emojis.BP} `{prefix}areas` / `{prefix}a` : Area guides overview\n'
@@ -192,7 +192,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    #embed.add_field(name=f'ANNIVERSARY EVENT 2022 {emojis.LB_ANNIVERSARY}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'EASTER EVENT 2022 {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
     embed.add_field(name='HORSE & PETS', value=animals, inline=False)
@@ -236,14 +236,14 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
         f'{emojis.BP} r5#2253\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )
-    privacy = (
-        f'{emojis.BP} You can find this bot\'s privacy policy [here]'
-        f'(https://docs.google.com/document/d/1CStt8k902m5s5CUb2RyPTTN-dmb-N2FAONfxzm7eAio/edit?usp=sharing).\n'
+    documents = (
+        f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
+        f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
     embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)
-    embed.add_field(name='PRIVACY POLICY', value=privacy, inline=False)
+    embed.add_field(name='PRIVACY POLICY & TOS', value=documents, inline=False)
     return embed

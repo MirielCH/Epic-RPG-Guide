@@ -211,7 +211,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
 
     if area.area_no == 21:
         quick_guide_sword = (
-            f'{emojis.BP} Craft {emojis.SWORD_GODLYCOOKIE} GODLY cookie if you want to do the "final" dungeon'
+            f'{emojis.BP} Craft {emojis.SWORD_GODLYCOOKIE} GODLY cookie if you want to do the EPIC NPC fight'
         )
 
     if tt.tt_area == area.area_no:
@@ -679,7 +679,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         )
     elif area.area_no == 16:
         area_req = (
-            f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
+            f'{emojis.BP} Complete the EPIC NPC fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP (see `rpg void`)\n'
             f'{emojis.BLANK} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
@@ -687,7 +687,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
-            f'{emojis.BP} Complete the "final" fight in the TOP once (see `{prefix}dtop`)\n'
+            f'{emojis.BP} Complete the EPIC NPC fight in the TOP once (see `{prefix}dtop`)\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1}(see `rpg void`)\n'
             f'{emojis.BLANK} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
@@ -816,7 +816,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
 
     area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
     next_area_no_str = 'THE TOP' if area.area_no == 15 else f'AREA {area.area_no + 1}'
-    dungeon_no_str = 'THE "FINAL" FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
+    dungeon_no_str = 'EPIC NPC FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
 
     # Note
     guide_area = 'top' if area.area_no == 21 else area.area_no
