@@ -1,15 +1,27 @@
 # strings.py
 
+from discord.commands import OptionChoice
 
+
+MSG_ABORTED = 'Aborted.'
 MSG_ABORTING = 'Aborting.'
 MSG_BOT_MESSAGE_NOT_FOUND = '**{user}**, couldn\'t find your {information} information, RIP.'
 MSG_ERROR = 'Whelp, something went wrong here, sorry.'
+MSG_INTERACTION_ERROR = 'You are not allowed to use this interaction.'
+MSG_INVALID_AMOUNT = 'That\'s not a valid amount.'
+MSG_AMOUNT_TOO_HIGH = 'Are you trying to break me or something? :thinking:'
 MSG_SYNTAX = 'The command syntax is `{syntax}`'
-MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}` (or `abort` to abort)'
+MSG_SEARCH_QUERY_TOO_SHORT = 'The search query needs to be at least 3 characters long.'
+MSG_INPUT_TOO_LONG = 'Really.'
+MSG_WAIT_FOR_INPUT = '**{user}**, please type `{command}`'
+MSG_WAIT_FOR_INPUT_SLASH = '**{user}**, please use {emoji}`{command}`'
 MSG_WRONG_INPUT = 'Wrong input. Aborting.'
 
+DEFAULT_FOOTER = 'Use /help to see all available guides.'
 
-item_aliases = {
+ARGUMENT_TOPIC_DESCRIPTION = 'The topic you want to read about'
+
+ITEM_ALIASES = {
     'ed sw': 'edgy sword',
     'edgy sw': 'edgy sword',
     'omega sw': 'omega sword',
@@ -293,3 +305,96 @@ item_columns_names = {
     'wolf_skin': 'wolf skin',
     'zombie_eye': 'zombie eye',
 }
+
+
+PROFESSIONS = (
+    'crafter',
+    'enchanter',
+    'lootboxer',
+    'merchant',
+    'worker',
+)
+
+
+DUNGEONS = (
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    15.2,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+)
+
+
+NUMBERS_ROMAN_INTEGER = {
+    'ix': 1,
+    'ii': 2,
+    'iii': 3,
+    'iv': 4,
+    'v': 5,
+    'vi': 6,
+    'vii': 7,
+    'viii': 8,
+    'ix': 9,
+    'x': 10,
+}
+
+
+# Choices for slash commands
+CHOICES_AREA = []
+CHOICES_AREA_NO_TOP = []
+for area_no in range(1, 21):
+    CHOICES_AREA.append(OptionChoice(name=f'Area {area_no}', value=area_no))
+    CHOICES_AREA_NO_TOP.append(OptionChoice(name=f'Area {area_no}', value=area_no))
+CHOICES_AREA.append(OptionChoice(name='The TOP', value=21))
+
+
+CHOICES_DUNGEON = []
+for dungeon_no in range(1, 21):
+    if dungeon_no == 15:
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon 15', value=15))
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon 15-2', value=15.2))
+    else:
+        CHOICES_DUNGEON.append(OptionChoice(name=f'Dungeon {dungeon_no}', value=dungeon_no))
+CHOICES_DUNGEON.append(OptionChoice(name='EPIC NPC fight', value=21))
+
+
+CHOICE_ASCENDED = 'Ascended'
+CHOICE_NOT_ASCENDED = 'Not ascended'
+CHOICES_ASCENSION = [
+    CHOICE_ASCENDED,
+    CHOICE_NOT_ASCENDED,
+]
+
+
+CHOICE_GUIDE_FULL = 'Full'
+CHOICE_GUIDE_SHORT = 'Short'
+CHOICES_AREA_GUIDES = [
+    CHOICE_GUIDE_FULL,
+    CHOICE_GUIDE_SHORT,
+]
+
+
+# Links
+LINK_INVITE = (
+    'https://discord.com/api/oauth2/authorize?client_id=770199669141536768&permissions=313344&scope='
+    'applications.commands%20bot'
+)
+LINK_SUPPORT = 'https://discord.gg/v7WbhnhbgN'
+LINK_VOTE = 'https://top.gg/bot/770199669141536768/vote'
