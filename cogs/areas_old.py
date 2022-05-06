@@ -36,7 +36,7 @@ class AreasOldCog(commands.Cog):
             f'Examples: `{prefix}a5 tt5`, `{prefix}a3 8 asc`'
         )
 
-        error_area_no = 'There is no area {area_no}, lol.'
+        error_area_no = 'There is no area "{area_no}", lol.'
         error_general = 'Oops. Something went wrong here.'
 
         if invoked == 'areas':
@@ -58,6 +58,12 @@ class AreasOldCog(commands.Cog):
                 else:
                     if arg1 == 'top':
                         area_no = 21
+                    elif arg1 == 'check':
+                        await ctx.send(
+                            f'This command doesn\'t exist.\n'
+                            f'You are probably looking for the slash command {emojis.LOGO}`/area check`.'
+                        )
+                        return
                     else:
                         await ctx.send(error_area_no.format(area_no=arg1))
                         return
@@ -347,7 +353,7 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
             )
         else:
             if money_nohorse is None:
-                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_poor}`'
+                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_rich}`'
             else:
                 if user.tt < 25:
                     work_commands = (
@@ -762,7 +768,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Monster damage - (AT + DEF) = Actual damage'
+            f'{emojis.BLANK} Use {emojis.LOGO}`/area check` to see your actual damage'
         )
 
     # Lootboxes

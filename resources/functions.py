@@ -295,6 +295,8 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
             bot_message = bot_message_task.result()
         except asyncio.CancelledError:
             pass
+        except asyncio.TimeoutError as error:
+            raise
         except Exception as error:
             await database.log_error(error, ctx)
             raise

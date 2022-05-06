@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from multiprocessing.sharedctypes import Value
 import sqlite3
+import traceback
 from typing import NamedTuple, Optional, Tuple, Union
 
 import discord
@@ -28,9 +29,11 @@ INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: 
 INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\SQL: {sql}'
 
 
-class FirstTimeUser(commands.CommandError):
+class FirstTimeUser(Exception):
     """Custom exception for first time users so they stop spamming my database"""
-    pass
+    def __init__(self, message="New user registered. This exception shouldn't be seen."):
+        self.message = message
+        super().__init__(self.message)
 
 
 class NoDataFound(Exception):
@@ -496,7 +499,7 @@ async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, settings.DEFAULT_PREFIX,))
             prefix = settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return commands.when_mentioned_or(prefix)(bot, ctx)
 
@@ -511,7 +514,7 @@ async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> st
         prefix = record[0] if record else settings.DEFAULT_PREFIX
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx_or_guild, error)
+        await log_error(error, ctx_or_guild)
 
     return prefix
 
@@ -605,11 +608,11 @@ async def get_dungeon_check_data(ctx, dungeon_no=0):
         if record:
             dungeon_check_data = record
         else:
-            await log_error(ctx, 'No recommended dungeon check data found in database.')
+            await log_error('No recommended dungeon check data found in database.', ctx)
 
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return dungeon_check_data
 
@@ -977,10 +980,10 @@ async def get_tt_unlocks(ctx, user_tt):
         if record:
             tt_unlock_data = record
         else:
-            await log_error(ctx, 'No tt_unlock data found in database.')
+            await log_error('No tt_unlock data found in database.', ctx)
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return tt_unlock_data
 
@@ -1001,16 +1004,16 @@ async def get_traderate_data(ctx, areas):
             cur.execute('SELECT area, trade_fish_log, trade_apple_log, trade_ruby_log FROM areas WHERE area BETWEEN ? and ?', (areas[0],areas[1],))
             record = cur.fetchall()
         else:
-            await log_error(ctx, 'Parameter \'areas\' has an invalid format, could not get traderate data.')
+            await log_error('Parameter \'areas\' has an invalid format, could not get traderate data.', ctx)
             return
 
         if record:
             traderate_data = record
         else:
-            await log_error(ctx, 'No trade rate data found in database.')
+            await log_error('No trade rate data found in database.', ctx)
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return traderate_data
 
@@ -1183,7 +1186,7 @@ async def get_all_codes() -> Tuple[Code]:
         code = Code(
             code = record['code'],
             contents = record['contents'],
-            temporary = bool(record['temporary'])
+            temporary = True if record['temporary'] == 'True' else False
         )
         codes.append(code)
 
@@ -1202,10 +1205,10 @@ async def get_codes(ctx):
             codes = records
         else:
             codes = []
-            await log_error(ctx, 'No codes data found in database.')
+            await log_error('No codes data found in database.', ctx)
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return codes
 
@@ -1220,10 +1223,10 @@ async def get_user_number(ctx):
         if record:
             user_number = record
         else:
-            await log_error(ctx, 'No user data found in database.')
+            await log_error('No user data found in database.', ctx)
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
     return user_number
 
@@ -1577,7 +1580,7 @@ async def set_prefix(ctx, new_prefix):
             cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
     except sqlite3.Error as error:
         logs.logger.error(error)
-        await log_error(ctx, error)
+        await log_error(error, ctx)
 
 
 async def _update_user(user: User, **kwargs) -> None:
@@ -1752,9 +1755,26 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         user_settings = 'N/A'
         command_name = 'N/A'
         command_data = 'N/A'
+    if hasattr(error, 'message'):
+        error_message = error.message
+    else:
+        error_message = str(error)
+    try:
+        module = error.__class__.__module__
+        if module is None or module == str.__class__.__module__:
+            error_message = error.__class__.__name__
+        error_message = (
+            f'{error_message}\n\n'
+            f'Exception type:\n'
+            f'{module}.{error.__class__.__name__}\n\n'
+            f'Traceback:\n'
+            f'{"".join(traceback.format_tb(error.__traceback__))}'
+        )
+    except Exception as error:
+        error_message = f'{error_message}\n\nGot the following error while trying to get type and traceback:\n{error}'
     try:
         cur=ERG_DB.cursor()
-        cur.execute(sql, (timestamp, command_name, command_data, str(error), user_settings))
+        cur.execute(sql, (timestamp, command_name, command_data, error_message, user_settings))
     except sqlite3.Error as error:
         logs.logger.error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql),

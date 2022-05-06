@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 
 from content import main
 import database
-from resources import logs, settings, strings
+from resources import emojis, logs, settings, strings
 
 
 class MainCog(commands.Cog):
@@ -41,10 +41,10 @@ class MainCog(commands.Cog):
         """Runs when an error occurs and handles them accordingly.
         Interesting errors get written to the database for further review.
         """
+        command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
         async def send_error() -> None:
             """Sends error message as embed"""
             embed = discord.Embed(title='An error occured')
-            command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
             embed.add_field(name='Command', value=f'`{command_name}`', inline=False)
             embed.add_field(name='Error', value=f'```py\n{error}\n```', inline=False)
             await ctx.respond(embed=embed, ephemeral=True)
@@ -79,9 +79,22 @@ class MainCog(commands.Cog):
                 f'Yo hey, calm down, this is an oracle, not a spam box, wait another {error.retry_after:.1f}s, will ya.',
                 ephemeral=True
             )
+        elif isinstance(error, database.FirstTimeUser):
+            await ctx.respond(
+                f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
+                f'I have set your progress to **TT 0**, **not ascended**.\n\n'
+                f'** --> Please use {emojis.LOGO}`/{command_name}` again to use the bot.**\n\n'
+                f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. '
+                f'Check out {emojis.LOGO}`/time travel guide` for some details.\n'
+                f'• If you are in a higher TT, please use {emojis.LOGO}`/set progress` '
+                f'to change your settings.\n\n'
+                f'These settings are used by some guides (like the area guides) to only show you what is relevant '
+                f'to your current progress.',
+                ephemeral=True
+            )
         else:
             await database.log_error(error, ctx)
-            if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()
+            if settings.DEBUG_MODE or ctx.author.id in settings.DEV_IDS: await send_error()
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:

@@ -1,15 +1,15 @@
 # main.py
 """Contains the main events, error handling and the help and about commands"""
 
-import aiohttp
 from datetime import datetime
+from typing import List
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 import database
 from resources import emojis
-from resources import logs, settings, strings
+from resources import settings, strings
 
 
 class MainOldCog(commands.Cog):
@@ -22,8 +22,8 @@ class MainOldCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def main_help(self, ctx: commands.Context):
         """Main help command"""
-        embed = await embed_main_help(ctx)
-        await ctx.send(embed=embed)
+        embeds = await embed_main_help(ctx)
+        await ctx.send(embeds=embeds)
 
     @commands.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats','privacy'))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
@@ -76,7 +76,7 @@ class MainOldCog(commands.Cog):
                 f'to your current progress.'
             )
         else:
-            await database.log_error(ctx, error)
+            await database.log_error(error, ctx)
             if settings.DEBUG_MODE or ctx.author.id == settings.OWNER_ID: await send_error()
 
 
@@ -86,7 +86,7 @@ def setup(bot):
 
 
 # --- Embeds ---
-async def embed_main_help(ctx: commands.Context) -> discord.Embed:
+async def embed_main_help(ctx: commands.Context) -> List[discord.Embed]:
     """Main menu embed"""
     prefix = ctx.prefix
     seasonal_event = f'{emojis.BP} `{prefix}easter` / `{prefix}egg` : Easter event guide\n'
@@ -141,7 +141,12 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         f'Yo, hey, I now support slash commands! Use {emojis.LOGO}`/help` to check it out.\n'
         f'If you can\'t see of any of my slash commands, click [here]({strings.LINK_INVITE}) to reinvite me with '
         f'the proper permissions.\n'
-        f'Note that development on the old commands is now halted. Any new or improved features will be slash only.'
+        f'Note that new or improved features will be slash only.'
+    )
+    embed_slash = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title='SLASH COMMANDS ARE HERE!',
+        description=field_slash_info
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -149,7 +154,6 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
         description = f'Hey **{ctx.author.name}**, what do you want to know?'
     )
     embed.set_footer(text='Note: This is not an official guide bot.')
-    embed.add_field(name='SLASH COMMANDS ARE HERE!', value=field_slash_info, inline=False)
     embed.add_field(name=f'EASTER EVENT 2022 {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
     embed.add_field(name='PROGRESS', value=progress, inline=False)
     embed.add_field(name='CRAFTING', value=crafting, inline=False)
@@ -163,7 +167,7 @@ async def embed_main_help(ctx: commands.Context) -> discord.Embed:
     embed.add_field(name='MISC', value=misc, inline=False)
     embed.add_field(name='LINKS', value=botlinks, inline=False)
     embed.add_field(name='SETTINGS', value=field_settings, inline=False)
-    return embed
+    return [embed_slash, embed]
 
 
 async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: datetime) -> discord.Embed:
@@ -191,6 +195,7 @@ async def embed_about(bot: commands.Bot, ctx: commands.Context, api_latency: dat
     creator = f'{emojis.BP} Miriel#0001'
     thanks = (
         f'{emojis.BP} FlyingPanda#0328\n'
+        f'{emojis.BP} r5#2253\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )
     documents = (

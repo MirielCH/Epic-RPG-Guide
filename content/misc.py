@@ -232,21 +232,19 @@ async def command_coincap_calculator(
 
 # --- Embeds ---
 async def embed_codes():
-    """Redeemable codes"""
-    temporary_value = temporary_value_2 = permanent_value = ''
-    second_event_field = False
+    """Codes"""
+    temporary_value = temporary_value_2 = temporary_value_3 = permanent_value = ''
     codes = await database.get_all_codes()
     for code in codes:
         if code.temporary:
-            if second_event_field:
+            temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+            temporary_value_2_check = f'{temporary_value_2}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+            if len(temporary_value_2_check) > 1024:
+                temporary_value_3 = f'{temporary_value_3}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+            elif len(temporary_value_check) > 1024:
                 temporary_value_2 = f'{temporary_value_2}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
             else:
-                temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-                if len(temporary_value_check) > 1024:
-                    temporary_value_2 = f'{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-                    second_event_field = True
-                else:
-                    temporary_value = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+                temporary_value = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
         else:
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
     if permanent_value == '': permanent_value = f'{emojis.BP} No codes currently known'
@@ -258,10 +256,12 @@ async def embed_codes():
             f'Every code can only be redeemed once.'
         )
     )
-    if temporary_value != '':
+    if not temporary_value == '':
         embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
-    if second_event_field:
+    if temporary_value_2 != '':
         embed.add_field(name='MORE EVENT CODES', value=temporary_value_2, inline=False)
+    if temporary_value_3 != '':
+        embed.add_field(name='EVEN MORE EVENT CODES', value=temporary_value_3, inline=False)
     embed.add_field(name='PERMANENT CODES', value=permanent_value, inline=False)
     return embed
 

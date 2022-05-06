@@ -562,7 +562,8 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     bigboat_superfish = dynamite_rubies / 1.15
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
-    greenhouse_watermelon = Decimal(greenhouse_watermelon).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    greenhouse_watermelon_max = Decimal(greenhouse_watermelon_max).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     chainsaw_ultimate = Decimal(chainsaw_ultimate).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
     watermelon_min = int(greenhouse_watermelon_min)
@@ -628,7 +629,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
         f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
-        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with {emojis.EPIC_RPG_LOGO_SMALL}`/bigboat`\n'
+        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with `bigboat`\n'
         f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with `chainsaw`\n'
     )
 

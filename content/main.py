@@ -180,7 +180,7 @@ async def embed_help_calculators() -> discord.Embed:
     pet = (
         f'{emojis.BP} {emojis.LOGO}`/pets fuse` : See the recommended tiers for a pet fusion\n'
     )
-    drop_chance = f'{emojis.BP} {emojis.LOGO}`/dropchance calculator` : Calculate your monster drop chance\n'
+    drop_chance = f'{emojis.BP} {emojis.LOGO}`/drop chance calculator` : Calculate your monster drop chance\n'
     trading = f'{emojis.BP} {emojis.LOGO}`/trade calculator` : Calculate materials after trading'
     professions = f'{emojis.BP} {emojis.LOGO}`/professions calculator` : Calculate what you need to level professions'
     ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining stats calculator` : Calculate stats for an ultraining stage'
@@ -226,7 +226,7 @@ async def embed_about(
         f'{emojis.BP} {round(bot.latency * 1000):,} ms average bot latency\n'
         f'{emojis.BP} Online for {format_timespan(uptime)}'
     )
-    if ctx.guild_id is not None:
+    if ctx.guild is not None:
         current_shard = bot.get_shard(ctx.guild.shard_id)
         bot_latency = f'{round(current_shard.latency * 1000):,} ms' if current_shard is not None else 'N/A'
         current_shard_status = (
@@ -254,7 +254,7 @@ async def embed_about(
     image_url = 'attachment://raspi.png'
     embed = discord.Embed(color = settings.EMBED_COLOR, title = 'ABOUT EPIC RPG GUIDE')
     embed.add_field(name='BOT STATS', value=general, inline=False)
-    if ctx.guild_id is not None:
+    if ctx.guild is not None:
         embed.add_field(name='CURRENT SHARD', value=current_shard_status, inline=False)
     embed.add_field(name='CREATOR', value=creator, inline=False)
     embed.add_field(name='SPECIAL THANKS TO', value=thanks, inline=False)

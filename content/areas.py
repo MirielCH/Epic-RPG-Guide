@@ -270,7 +270,7 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
             )
         else:
             if money_nohorse is None:
-                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_poor}`'
+                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_rich}`'
             else:
                 if user.tt < 25:
                     work_commands = (

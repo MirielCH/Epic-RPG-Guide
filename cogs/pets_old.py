@@ -618,7 +618,7 @@ async def embed_pets_adventures(prefix):
 # Pet fusion recommendations
 async def embed_fuse(ctx: commands.Context, pet_tier: int, user_tt: int) -> discord.Embed:
 
-    pet_data: database.PetTier = await database.get_pet_tier(ctx, pet_tier, user_tt)
+    pet_data: database.PetTier = await database.get_pet_tier(pet_tier, user_tt)
 
     if pet_data.fusion_to_get_tier.fusion != 'None':
         how_to_get_tier = f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'

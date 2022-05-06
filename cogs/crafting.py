@@ -42,14 +42,15 @@ class CraftingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_dropchance = SlashCommandGroup("dropchance", "Dropchance commands")
+    cmd_drop = SlashCommandGroup("drop", "Drop commands")
+    cmd_chance = cmd_drop.create_subgroup("chance", "Drop chance subcommands")
     cmd_inventory = SlashCommandGroup("inventory", "Inventory commands")
     cmd_crafting = SlashCommandGroup("crafting", "Crafting commands")
     cmd_dismantling = SlashCommandGroup("dismantling", "Dismantling commands")
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
-    @cmd_dropchance.command(name='calculator', description='Calculates your dropchance')
+    @cmd_chance.command(name='calculator', description='Calculates your dropchance')
     async def dropchance_calculator(
         self,
         ctx: discord.ApplicationContext,

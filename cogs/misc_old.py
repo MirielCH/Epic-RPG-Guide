@@ -416,21 +416,20 @@ async def embed_codes(prefix, codes):
 
     temporary_value = ''
     temporary_value_2 = ''
+    temporary_value_3 = ''
     permanent_value = ''
-    second_event_field = False
 
     for code in codes:
         temporary_code = code[2]
         if temporary_code == 'True':
-            if second_event_field:
+            temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+            temporary_value_2_check = f'{temporary_value_2}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+            if len(temporary_value_2_check) > 1024:
+                temporary_value_3 = f'{temporary_value_3}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+            elif len(temporary_value_check) > 1024:
                 temporary_value_2 = f'{temporary_value_2}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
             else:
-                temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-                if len(temporary_value_check) > 1024:
-                    temporary_value_2 = f'{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-                    second_event_field = True
-                else:
-                    temporary_value = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+                temporary_value = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
         else:
             permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
 
@@ -449,8 +448,10 @@ async def embed_codes(prefix, codes):
 
     if not temporary_value == '':
         embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
-    if second_event_field:
+    if temporary_value_2 != '':
         embed.add_field(name='MORE EVENT CODES', value=temporary_value_2, inline=False)
+    if temporary_value_3 != '':
+        embed.add_field(name='EVEN MORE EVENT CODES', value=temporary_value_3, inline=False)
     embed.add_field(name='PERMANENT CODES', value=permanent_value, inline=False)
 
     return embed

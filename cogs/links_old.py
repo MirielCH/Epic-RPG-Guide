@@ -29,7 +29,7 @@ class LinksOldCog(commands.Cog):
             title = 'NEED A GUIDE?',
             description = (
                 f'I\'d be flattered to visit your server, **{ctx.author.name}**.\n'
-                f'You can invite me [here]({settings.LINK_INVITE}).'
+                f'You can invite me [here]({strings.LINK_INVITE}).'
             )
         )
         embed.set_footer(text=await functions.default_footer(ctx.prefix))
