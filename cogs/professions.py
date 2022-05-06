@@ -36,8 +36,8 @@ class ProfessionsCog(commands.Cog):
                            choices=strings.PROFESSIONS, default=None),
         from_level: Option(int, 'The profession level you want to calculate from. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 200, default=None),
-        to_level: Option(int, 'The profession level you want to calculate a total for. Uses 100 if empty.',
-                         min_value = 2, max_value = 200, default=100),
+        to_level: Option(int, 'The profession level you want to calculate a total for.',
+                         min_value = 2, max_value = 200, default=None),
     ) -> None:
         """Profession calculator"""
         await professions.command_professions_calculator(self.bot, ctx, profession=profession, from_level=from_level,
