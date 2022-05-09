@@ -1,7 +1,7 @@
 # crafting.py
 
 import asyncio
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 
@@ -37,19 +37,23 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
     await ctx.respond(embed=embed)
 
 
-async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name: str, amount: str) -> None:
+async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name: str, amount: Union[str, int]) -> None:
     """Craft command"""
     item_name = item_name.replace('\n',' ')
     if len(item_name) > 200:
         await ctx.respond('Really?', ephemeral=True)
         return
-    amount = await functions.calculate_amount(amount)
-    if amount is None:
-        await ctx.respond(strings.MSG_INVALID_AMOUNT, ephemeral=True)
-        return
-    if amount > 100_000_000_000:
-        await ctx.respond(strings.MSG_AMOUNT_TOO_HIGHT, ephemeral=True)
-        return
+    if isinstance(amount, str):
+        amount = await functions.calculate_amount(amount)
+        if amount is None:
+            await ctx.respond(strings.MSG_INVALID_AMOUNT, ephemeral=True)
+            return
+        if amount < 1:
+            await ctx.respond(strings.MSG_AMOUNT_TOO_LOW, ephemeral=True)
+            return
+        if amount > 999_000_000_000_000:
+            await ctx.respond(strings.MSG_AMOUNT_TOO_HIGH, ephemeral=True)
+            return
     #await ctx.defer()
     original_item_name = item_name
     item_name = item_name.lower()
@@ -113,7 +117,7 @@ async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_n
     if amount is None:
         await ctx.respond(strings.MSG_INVALID_AMOUNT, ephemeral=True)
         return
-    if amount > 100_000_000_000:
+    if amount > 999_000_000_000_000:
         await ctx.respond(strings.MSG_AMOUNT_TOO_HIGHT, ephemeral=True)
         return
     await ctx.defer()

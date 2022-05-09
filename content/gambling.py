@@ -6,6 +6,7 @@ from resources import emojis, functions, settings, views
 
 
 # --- Topics ---
+TOPIC_BIGDICE = 'Big dice'
 TOPIC_BLACKJACK = 'Blackjack'
 TOPIC_COINFLIP = 'Coinflip'
 TOPIC_CUPS = 'Cups'
@@ -15,6 +16,7 @@ TOPIC_SLOTS = 'Slots'
 TOPIC_WHEEL = 'Wheel'
 
 TOPICS = [
+    TOPIC_BIGDICE,
     TOPIC_BLACKJACK,
     TOPIC_COINFLIP,
     TOPIC_CUPS,
@@ -29,6 +31,7 @@ TOPICS = [
 async def command_gambling_guide(ctx: discord.ApplicationContext, topic: str):
     """Gambling guide command"""
     topics_functions = {
+        TOPIC_BIGDICE: embed_bigdice,
         TOPIC_BLACKJACK: embed_blackjack,
         TOPIC_COINFLIP: embed_coinflip,
         TOPIC_CUPS: embed_cups,
@@ -46,6 +49,39 @@ async def command_gambling_guide(ctx: discord.ApplicationContext, topic: str):
 
 
 # --- Embeds ---
+async def embed_bigdice() -> discord.Embed:
+    """Big dice embed"""
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/big dice`'
+    rules = (
+        f'{emojis.BP} You roll a die that can go from 1 to infinity\n'
+        f'{emojis.BLANK} The higher the pot, the higher the amount of sides\n'
+        f'{emojis.BLANK} Increasing your bet lowers the amount of sides\n'
+        f'{emojis.BP} No matter the outcome, **you always lose your bet**\n'
+        f'{emojis.BLANK} Therefore never bet higher than the pot\n'
+        f'{emojis.BP} Half of your bet goes into the pot\n'
+        f'{emojis.BLANK} If you win, the pot is increased _after_ your payout\n'
+        f'{emojis.BP} You need to get side 6 or lower to win\n'
+        f'{emojis.BP} The pot doesn\'t get reset if someone wins\n'
+    )
+    outcomes = (
+        f'{emojis.BP} {emojis.GAME_DIE}**- 6** or lower • You win the whole pot but lose your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 7** or higher • You lose your bet\n'
+    )
+    note = (
+        f'{emojis.BP} This command is unlocked in area 14\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'BIG DICE',
+        description = 'There is but one good throw upon the dice, which is, to throw them away.'
+    )
+    embed.add_field(name='COMMAND', value=command, inline=False)
+    embed.add_field(name='RULES', value=rules, inline=False)
+    embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
 async def embed_blackjack() -> discord.Embed:
     """Blackjack embed"""
     command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/blackjack`\n'

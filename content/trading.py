@@ -34,7 +34,7 @@ async def command_trade_calculator(ctx: discord.ApplicationContext, area_no: int
     if amount is None:
         await ctx.respond(strings.MSG_INVALID_AMOUNT, ephemeral=True)
         return
-    if amount > 100_000_000_000 or amount <= 0:
+    if amount > 999_000_000_000_000 or amount <= 0:
         await ctx.respond(strings.MSG_AMOUNT_TOO_HIGH, ephemeral=True)
         return
 

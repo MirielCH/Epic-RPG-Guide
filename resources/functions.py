@@ -237,6 +237,11 @@ async def calculate_amount(amount: str) -> int:
             amount = int(float(amount.replace('b','')) * 1_000_000_000)
         except:
             return None
+    elif amount.endswith('t'):
+        try:
+            amount = int(float(amount.replace('t','')) * 1_000_000_000_000)
+        except:
+            return None
     else:
         try:
             amount = int(amount)
@@ -625,7 +630,7 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     -------
     Tuple[
         current tt: int,
-        max area: int
+        max area: int (21 for top)
     ]
 
     Raises
@@ -638,7 +643,9 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     area_search = re.search('max: (.+?)\)', progress_field.value.lower())
     try:
         tt = int(tt_search.group(1)) if tt_search is not None else 0
-        area = int(area_search.group(1))
+        area = area_search.group(1)
+        if area.lower() == 'top': area = '21'
+        area = int(area)
     except Exception as error:
         await database.log_error(
             f'Error extracting progress data in profile or progress message: {progress_field}',

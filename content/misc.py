@@ -222,8 +222,9 @@ async def command_coincap_calculator(
         if area_no is None: area_no = area_found
     coin_cap = pow(timetravel, 4) * 500_000_000 + pow(area_no, 2) * 100_000
     if area_no == 1: coin_cap += 1
+    area_str = 'the TOP' if area_no == 21 else f'area {area_no}'
     await ctx.respond(
-        f'The coin cap for **TT {timetravel}**, **area {area_no}** is '
+        f'The coin cap for **TT {timetravel}**, **{area_str}** is '
         f'**{coin_cap:,}** {emojis.COIN} coins.\n'
         f'You can not receive coins with {emojis.EPIC_RPG_LOGO_SMALL}`/give`, {emojis.EPIC_RPG_LOGO_SMALL}`/multidice` '
         f'or {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss` if you would exceed this cap.'

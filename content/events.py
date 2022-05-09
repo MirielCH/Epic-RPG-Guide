@@ -356,8 +356,10 @@ async def embed_event_coinrain() -> discord.Embed:
     answers = f'{emojis.BP} `catch`'
     rewards = (
         f'{emojis.BP} {emojis.COIN} coins\n'\
-        f'{emojis.BP} The amount depends on the level of the player who triggered it, the amount of people that '
-        f'participate and some RNG'
+        f'{emojis.BLANK} The amount depends on the level of the player who triggered it, the amount of people that '
+        f'participate and some RNG\n'
+        f'{emojis.BP} There is a small chance for one player to get lucky\n'
+        f'{emojis.BLANK} Getting lucky means getting more {emojis.COIN} coins than the others\n'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -385,7 +387,9 @@ async def embed_event_epictree() -> discord.Embed:
     answers = f'{emojis.BP} `chop`'
     rewards = (
         f'{emojis.BP} {emojis.LOG} wooden logs\n'
-        f'{emojis.BP} The amount depends on the amount of people that participate and some RNG'
+        f'{emojis.BLANK} The amount depends on the amount of people that participate and some RNG\n'
+        f'{emojis.BP} There is a small chance for one player to get lucky\n'
+        f'{emojis.BLANK} Getting lucky means getting more {emojis.LOG} logs than the others\n'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -471,8 +475,10 @@ async def embed_event_lootboxsummoning() -> discord.Embed:
     answers = f'{emojis.BP} `summon`'
     rewards = (
         f'{emojis.BP} A lootbox for every player that entered\n'
-        f'{emojis.BP} The lootbox tier depends on the amount of players that participate\n'
-        f'{emojis.BP} The lootbox tier ranges from {emojis.LB_COMMON} common to {emojis.LB_EDGY} EDGY'
+        f'{emojis.BLANK} The lootbox tier depends on the amount of players that participate\n'
+        f'{emojis.BLANK} The lootbox tier ranges from {emojis.LB_COMMON} common to {emojis.LB_EDGY} EDGY\n'
+        f'{emojis.BP} There is a small chance for one player to get lucky\n'
+        f'{emojis.BLANK} Getting lucky means getting more rewards than the others\n'
     )
     note = (
         f'{emojis.BP} {events_rare}\n'
@@ -502,7 +508,9 @@ async def embed_event_megalodon() -> discord.Embed:
     answers = f'{emojis.BP} `fish`'
     rewards = (
         f'{emojis.BP} {emojis.FISH} normie fish\n'
-        f'{emojis.BP} The amount depends on the amount of people that participate and some RNG'
+        f'{emojis.BLANK} The amount depends on the amount of people that participate and some RNG\n'
+        f'{emojis.BP} There is a small chance for one player to get lucky\n'
+        f'{emojis.BLANK} Getting lucky means getting more {emojis.FISH} fish than the others\n'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'

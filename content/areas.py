@@ -657,10 +657,10 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     # Area requirements
     unseal_time = {
         16: 15,
-        17: 10,
-        18: 5,
-        19: 3,
-        20: 2
+        17: 13,
+        18: 11,
+        19: 9,
+        20: 7
     } # area: days
     if 2 <= area.area_no <= 15:
         area_req = (

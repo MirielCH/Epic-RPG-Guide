@@ -626,7 +626,7 @@ async def embed_timetravel_specific(ctx: commands.Context, tt: database.TimeTrav
     )
 
     work_multiplier = (
-        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
+        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with `greenhouse`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with `dynamite`\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with `chainsaw`\n'
         f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with `bigboat`\n'

@@ -311,7 +311,7 @@ class craftingCog(commands.Cog):
                 if amount <= 0:
                     await ctx.send(f'You wanna do _what_? Craft **{arg}** items?? Have some :bread: instead.')
                     return
-                if amount >= 100_000_000_000:
+                if amount >= 999_000_000_000_000:
                     await ctx.send(f'Are you trying to break me or something? :thinking:')
                     return
 
@@ -395,7 +395,7 @@ class craftingCog(commands.Cog):
                 if amount <= 0:
                     await ctx.send(f'You wanna do _what_? Dismantle **{arg}** items?? Have some :bread: instead.')
                     return
-                if amount >= 100_000_000_000:
+                if amount >= 999_000_000_000_000:
                     await ctx.send(f'Are you trying to break me or something? :thinking:')
                     return
 
@@ -1067,8 +1067,7 @@ async def embed_drops(prefix):
 
     dark_energy = (
         f'{emojis.BP} Areas: 16~20\n'
-        f'{emojis.BP} Source: {emojis.MOB_VOID_SHARD}{emojis.MOB_ABYSS_BUG}{emojis.MOB_CORRUPTED_UNICORN}'
-        f'{emojis.MOB_NEUTRON_STAR}{emojis.MOB_TIME_ALTERATION}\n'
+        f'{emojis.BP} Source: All monsters\n'
         f'{emojis.BP} Value: 5,000,000\n'
         f'{emojis.BLANK}'
     )

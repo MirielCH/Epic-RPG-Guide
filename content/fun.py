@@ -2,6 +2,7 @@
 """Contains some silly and useless fun commands"""
 
 import asyncio
+from cgitb import text
 import discord
 
 import database
@@ -19,6 +20,7 @@ async def command_oracle(bot: discord.Bot, ctx: discord.ApplicationContext, ques
         title = question,
         description = answer.answer if answer.answer is not None else discord.Embed.Empty
     )
+    embed.set_author(icon_url=ctx.author.avatar.url, name=f'{ctx.author.name} is consulting the oracle')
     if answer.image_url is not None:
         embed.set_image(url=answer.image_url)
     await ctx.respond(embed=embed)

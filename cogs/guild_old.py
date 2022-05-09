@@ -275,12 +275,26 @@ async def embed_guild_progress(prefix):
 # Guild shop
 async def embed_guild_shop(prefix):
 
-    rewards = (
+    rewards_old = (
         f'{emojis.BP} {emojis.GUILD_BUFF} **ENERGY buff**: Increases {emojis.GUILD_ENERGY} guild energy by 400  (2 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.CD_COOLDOWN} **Cooldown reset**: Resets the guild raid/upgrade cooldown (3 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.GUILD_LOOTBOXST} **Lootboxst**: All members get a random lootbox (up to EDGY) in duels for 24h (5 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All EPIC RPG players get +20% lootbox drop chance for 45m (20 {emojis.GUILD_COIN}).\n'
         f'{emojis.BP} {emojis.OMEGA_HORSE_TOKEN} **OMEGA horse token**: All members get an {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token which resets the horse breed/race cooldown (15 {emojis.GUILD_COIN})\n'
+    )
+    rewards_new = (
+        f'{emojis.BP} {emojis.LB_EPIC} **EPIC lootbox**: 1 EPIC lootbox (4 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.LB_EDGY} **EDGY lootbox**: 1 EDGY lootbox (20 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.COOKIE_RAIN} **Cookie rain**: Up to 200 cookies (25 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.SEED} **Special seed**: 1 bread, carrot or potato seed (35 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.GUILD_ACHIEVEMENT} **Achievement**: Unlocks achievement `180` '
+        f'(100 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.OMEGA_HORSE_TOKEN} **Omega horse token**: Resets the horse breed/race cooldown '
+        f'(150 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All players get +20% lootbox drop chance for 45m '
+        f'(200 {emojis.GUILD_RING})\n'
+        f'{emojis.BP} {emojis.GUILD_TOOTHBRUSH} **Legendary toothbrush**: Starts a lootbox summoning '
+        f'(350 {emojis.GUILD_RING})\n'
     )
 
     guides = (
@@ -291,20 +305,21 @@ async def embed_guild_shop(prefix):
         f'{emojis.BP} {guide_weekly.format(prefix=prefix)}\n'
     )
 
-
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'GUILD SHOP',
         description = (
-            f'All items in the guild shop cost {emojis.GUILD_COIN} guild coins which you get by getting high enough {emojis.GUILD_ENERGY} energy in the weekly guild event.\n'
-            f'Note that only the guild owner can buy rewards from the guild shop.'
+            f'The items in the guild shop cost {emojis.GUILD_RING} guild rings which you get by getting high enough '
+            f'{emojis.GUILD_ENERGY} energy in the weekly guild event.\n'
+            f'These rewards are personal and do not affect other guild members.\n\n'
+            f'If your guild still has {emojis.GUILD_COIN} guild coins, the guild owner must spend **all** of them '
+            f'to unlock the ring shop.'
         )
     )
-
     embed.set_footer(text=await functions.default_footer(prefix))
-    embed.add_field(name='AVAILABLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='AVAILABLE REWARDS', value=rewards_new, inline=False)
+    embed.add_field(name='OLD GUILD COIN REWARDS', value=rewards_old, inline=False)
     embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
-
     return embed
 
 # Guild stats
@@ -353,9 +368,9 @@ async def embed_guild_stats(prefix):
 async def embed_guild_weekly(prefix):
 
     rewards = (
-        f'{emojis.BP} 2,000 {emojis.GUILD_ENERGY}: 200 guild XP, 10 {emojis.GUILD_COIN} guild coins\n'
-        f'{emojis.BP} 1,000 {emojis.GUILD_ENERGY}: 150 guild XP, 5 {emojis.GUILD_COIN} guild coins\n'
-        f'{emojis.BP} 500 {emojis.GUILD_ENERGY}: 100 guild XP, 2 {emojis.GUILD_COIN} guild coins\n'
+        f'{emojis.BP} 2,000 {emojis.GUILD_ENERGY}: 200 guild XP, 100 {emojis.GUILD_RING} guild rings\n'
+        f'{emojis.BP} 1,000 {emojis.GUILD_ENERGY}: 150 guild XP, 50 {emojis.GUILD_RING} guild rings\n'
+        f'{emojis.BP} 500 {emojis.GUILD_ENERGY}: 100 guild XP, 20 {emojis.GUILD_RING} guild rings\n'
         f'{emojis.BP} 250 {emojis.GUILD_ENERGY}: 75 guild XP\n'
         f'{emojis.BP} 100 {emojis.GUILD_ENERGY}: 50 guild XP\n'
         f'{emojis.BP} 50 {emojis.GUILD_ENERGY}: 25 guild XP\n'
@@ -426,9 +441,9 @@ async def embed_guild_tasks(prefix: str) -> discord.Embed:
     )
 
     rewards = (
-        f'{emojis.BP} Stage 1: 1 {emojis.GUILD_COIN} guild coin + 25 guild XP\n'
-        f'{emojis.BP} Stage 2: 1 {emojis.GUILD_COIN} guild coin + 20 guild XP\n'
-        f'{emojis.BP} Stage 3: 1 {emojis.GUILD_COIN} guild coin + 15 guild XP\n'
+        f'{emojis.BP} Stage 1: 10 {emojis.GUILD_RING} guild rings + 25 guild XP\n'
+        f'{emojis.BP} Stage 2: 8 {emojis.GUILD_RING} guild rings + 20 guild XP\n'
+        f'{emojis.BP} Stage 3: 6 {emojis.GUILD_RING} guild rings + 15 guild XP\n'
     )
 
     notes = (

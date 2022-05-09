@@ -152,6 +152,12 @@ class TradingOldCog(commands.Cog):
                         found_number = True
                     except:
                         found_number = False
+                elif arg.endswith('t'):
+                    try:
+                        amount = int(float(arg.replace('t','')) * 1_000_000_000_000)
+                        found_number = True
+                    except:
+                        found_number = False
                 else:
                     try:
                         amount = int(arg)
@@ -166,7 +172,7 @@ class TradingOldCog(commands.Cog):
             if amount is None:
                 await ctx.send(invalid_amount)
                 return
-            if amount > 100_000_000_000:
+            if amount > 999_000_000_000_000:
                 await ctx.send('Are you trying to break me or something? :thinking:')
                 return
 

@@ -448,6 +448,6 @@ async def embed_horse_training_calculator(horse_tier: int, from_level: int, to_l
             f'Lootboxer level: **{lootboxer_level}**'
         )
     )
-    embed.add_field(name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False)
     embed.add_field(name='NEXT LEVELS', value=output, inline=False)
+    embed.add_field(name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False)
     return embed

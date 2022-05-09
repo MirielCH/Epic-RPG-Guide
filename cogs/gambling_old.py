@@ -28,9 +28,13 @@ class GamblingOldCog(commands.Cog):
             elif arg.find('cup') > -1:
                 embed = await embed_cups(ctx.prefix)
                 await ctx.send(embed=embed)
-            elif arg == 'dice':
-                embed = await embed_dice(ctx.prefix)
-                await ctx.send(embed=embed)
+            elif arg.endswith('dice'):
+                if arg.startswith('big'):
+                    embed = await embed_bigdice(ctx.prefix)
+                    await ctx.send(embed=embed)
+                else:
+                    embed = await embed_dice(ctx.prefix)
+                    await ctx.send(embed=embed)
             elif arg == 'multidice':
                 embed = await embed_multidice(ctx.prefix)
                 await ctx.send(embed=embed)
@@ -75,6 +79,13 @@ class GamblingOldCog(commands.Cog):
         embed = await embed_dice(ctx.prefix)
         await ctx.send(embed=embed)
 
+    # Command "bigdice"
+    @commands.command()
+    @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
+    async def bigdice(self, ctx):
+        embed = await embed_bigdice(ctx.prefix)
+        await ctx.send(embed=embed)
+
     # Command "multidice"
     @commands.command()
     @commands.bot_has_permissions(send_messages=True, embed_links=True, external_emojis=True)
@@ -115,6 +126,7 @@ async def embed_gambling_menu(ctx):
     prefix = ctx.prefix
 
     trading = (
+        f'{emojis.BP} `{prefix}bigdice` : Big dice guide\n'
         f'{emojis.BP} `{prefix}blackjack` / `{prefix}bj` : Blackjack guide\n'
         f'{emojis.BP} `{prefix}coinflip` / `{prefix}cf` : Coinflip guide\n'
         f'{emojis.BP} `{prefix}cups` : Cups guide\n'
@@ -134,6 +146,45 @@ async def embed_gambling_menu(ctx):
     embed.add_field(name='GAMBLING', value=trading, inline=False)
 
     return embed
+
+
+# Big dice
+async def embed_bigdice(prefix: str) -> discord.Embed:
+    """Big dice embed"""
+    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`rpg big dice [$]`'
+    rules = (
+        f'{emojis.BP} You roll a die that can go from 1 to infinity\n'
+        f'{emojis.BLANK} The higher the pot, the higher the amount of sides\n'
+        f'{emojis.BLANK} Increasing your bet lowers the amount of sides\n'
+        f'{emojis.BP} No matter the outcome, **you always lose your bet**\n'
+        f'{emojis.BLANK} Therefore never bet higher than the pot\n'
+        f'{emojis.BP} Half of your bet goes into the pot\n'
+        f'{emojis.BLANK} If you win, the pot is increased _after_ your payout\n'
+        f'{emojis.BP} You need to get side 6 or lower to win\n'
+        f'{emojis.BP} The pot doesn\'t get reset if someone wins\n'
+    )
+    outcomes = (
+        f'{emojis.BP} {emojis.GAME_DIE}**- 6** or lower • You win the whole pot but lose your bet\n'
+        f'{emojis.BP} {emojis.GAME_DIE}**- 7** or higher • You lose your bet\n'
+    )
+    note = (
+        f'{emojis.BP} This command is unlocked in area 14\n'
+    )
+    guides = (
+        f'{emojis.BP} {guide_gambling.format(prefix=prefix)}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'BIG DICE',
+        description = 'There is but one good throw upon the dice, which is, to throw them away.'
+    )
+    embed.add_field(name='COMMAND', value=command, inline=False)
+    embed.add_field(name='RULES', value=rules, inline=False)
+    embed.add_field(name='POSSIBLE OUTCOMES', value=outcomes, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='ADDITIONAL GUIDES', value=guides, inline=False)
+    return embed
+
 
 # Blackjack
 async def embed_blackjack(prefix):
