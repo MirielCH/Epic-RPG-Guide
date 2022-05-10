@@ -47,7 +47,11 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
         await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
+    if view.value != 'switched':
+        try:
+            await functions.edit_interaction(interaction, view=None)
+        except discord.errors.NotFound:
+                pass
 
 
 async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
@@ -89,7 +93,11 @@ async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, 
         await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
+    if view.value != 'switched':
+        try:
+            await functions.edit_interaction(interaction, view=None)
+        except discord.errors.NotFound:
+            pass
 
 
 # --- Functions ---

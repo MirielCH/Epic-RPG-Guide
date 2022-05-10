@@ -1533,7 +1533,7 @@ async def get_titles(search_string: str) -> Tuple[Title]:
     return tuple(titles)
 
 
-async def get_settings() -> Setting:
+async def get_settings() -> dict:
     """Returns all setting from table "settings".
 
     Returns:
@@ -1672,7 +1672,7 @@ async def update_setting(name: str, value: str) -> None:
 
     Arguments
     ---------
-    level: int
+    name: str
     value: str
 
     Raises
@@ -1751,6 +1751,14 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
             user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
         except:
             user_settings = 'N/A'
+    elif isinstance(ctx, commands.Context):
+        command_name = f'{ctx.prefix}{ctx.invoked_with}'
+        command_data = " ".join(ctx.args[2:])
+        try:
+            user = await get_user(ctx.author.id)
+            user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
+        except:
+            user_settings = 'N/A'
     else:
         user_settings = 'N/A'
         command_name = 'N/A'
@@ -1763,12 +1771,16 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         module = error.__class__.__module__
         if module is None or module == str.__class__.__module__:
             error_message = error.__class__.__name__
+        if hasattr(error, '__traceback__'):
+            traceback = "".join(traceback.format_tb(error.__traceback__))
+        else:
+            traceback = 'N/A'
         error_message = (
             f'{error_message}\n\n'
             f'Exception type:\n'
             f'{module}.{error.__class__.__name__}\n\n'
             f'Traceback:\n'
-            f'{"".join(traceback.format_tb(error.__traceback__))}'
+            f'{traceback}'
         )
     except Exception as error:
         error_message = f'{error_message}\n\nGot the following error while trying to get type and traceback:\n{error}'

@@ -45,7 +45,10 @@ async def command_guild_guide(ctx: discord.ApplicationContext, topic: str) -> No
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 # --- Redundancies ---

@@ -63,7 +63,10 @@ async def command_professions_guide(ctx: discord.ApplicationContext, topic: str)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 async def command_professions_calculator(
@@ -128,7 +131,11 @@ async def command_professions_calculator(
         interaction = await ctx.respond(embed=embed, view=view)
         view.interaction = interaction
         await view.wait()
-        if view.value == 'triggered': await functions.edit_interaction(interaction, view=None)
+        if view.value == 'triggered':
+            try:
+                await functions.edit_interaction(interaction, view=None)
+            except discord.errors.NotFound:
+                pass
     else:
         await ctx.respond(embed=embed)
 

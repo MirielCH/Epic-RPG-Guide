@@ -166,7 +166,7 @@ class TradingOldCog(commands.Cog):
                         found_number = False
 
                 if not found_number:
-                    mat = f'{mat}{arg}'
+                    mat = f'{mat} {arg}'
                     original_argument = f'{mat} {arg}'
 
             if amount is None:
@@ -176,7 +176,7 @@ class TradingOldCog(commands.Cog):
                 await ctx.send('Are you trying to break me or something? :thinking:')
                 return
 
-            mat = mat.lower()
+            mat = mat.lower().strip()
             aliases = {
                 'f': 'fish',
                 'fishes': 'fish',

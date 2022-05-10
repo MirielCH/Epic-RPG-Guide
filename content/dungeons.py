@@ -31,7 +31,11 @@ async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: flo
         await functions.edit_interaction(interaction, embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    if view.value != 'switched': await functions.edit_interaction(interaction, view=None)
+    if view.value != 'switched':
+        try:
+            await functions.edit_interaction(interaction, view=None)
+        except discord.errors.NotFound:
+            pass
 
 
 async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContext, dungeon_no: float,
@@ -74,7 +78,10 @@ async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContex
     view.interaction = interaction
     await view.wait()
     if view.value != 'switched':
-        await functions.edit_interaction(interaction, view=None)
+        try:
+            await functions.edit_interaction(interaction, view=None)
+        except discord.errors.NotFound:
+            pass
 
 
 # --- Functions ---

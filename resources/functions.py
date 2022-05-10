@@ -295,7 +295,10 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
             except asyncio.CancelledError:
                 pass
     if view.value in ('abort','timeout'):
-        await edit_interaction(interaction, content=strings.MSG_ABORTED, view=None)
+        try:
+            await edit_interaction(interaction, content=strings.MSG_ABORTED, view=None)
+        except discord.errors.NotFound:
+            pass
     elif view.value is None:
         view.stop()
         asyncio.ensure_future(edit_interaction(interaction, view=None))

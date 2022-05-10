@@ -509,20 +509,23 @@ async def embed_timetravel_overview(ctx: commands.Context) -> discord.Embed:
     )
 
     keptitems = (
-        f'{emojis.BP} Coins (this includes your bank account)\n'
-        f'{emojis.BP} Epic Coins\n'
-        f'{emojis.BP} Items bought from the epic shop\n'
         f'{emojis.BP} Arena cookies \n'
+        f'{emojis.BP} Coins (this includes your bank account)\n'
         f'{emojis.BP} Dragon essences\n'
-        f'{emojis.BP} TIME dragon essences\n'
-        f'{emojis.BP} OMEGA horse tokens\n'
-        f'{emojis.BP} GODLY horse tokens\n'
+        f'{emojis.BP} Epic coins\n'
+        f'{emojis.BP} Epic shop items\n'
         f'{emojis.BP} Event items (if an event is active)\n'
-        f'{emojis.BP} Your horse\n'
-        f'{emojis.BP} Your pets\n'
-        f'{emojis.BP} Your marriage partner\n'
-        f'{emojis.BP} Your guild\n'
+        f'{emojis.BP} GODLY horse tokens\n'
+        f'{emojis.BP} Guild rings\n'
+        f'{emojis.BP} Legendary toothbrushes\n'
+        f'{emojis.BP} Magic chairs\n'
         f'{emojis.BP} Profession levels\n'
+        f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} TIME dragon essences\n'
+        f'{emojis.BP} Your guild\n'
+        f'{emojis.BP} Your horse\n'
+        f'{emojis.BP} Your marriage partner\n'
+        f'{emojis.BP} Your pets\n'
     )
 
     guides = (

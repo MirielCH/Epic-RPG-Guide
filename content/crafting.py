@@ -104,7 +104,11 @@ async def command_crafting_calculator(ctx: discord.ApplicationContext, item_name
         interaction = await ctx.respond(message, view=view)
         view.interaction = interaction
         await view.wait()
-        if view.value == 'triggered': await functions.edit_interaction(interaction, view=None)
+        if view.value == 'triggered':
+            try:
+                await functions.edit_interaction(interaction, view=None)
+            except discord.errors.NotFound:
+                pass
 
 
 async def command_dismantling_calculator(ctx: discord.ApplicationContext, item_name: str, amount: str) -> None:

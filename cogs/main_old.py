@@ -49,6 +49,7 @@ class MainOldCog(commands.Cog):
             embed.add_field(name='Error', value=f'```\n{error}\n```', inline=False)
             await ctx.send(embed=embed)
 
+        error = getattr(error, 'original', error)
         if isinstance(error, (commands.CommandNotFound, commands.NotOwner, database.DirectMessageError)):
             return
         elif isinstance(error, commands.DisabledCommand):

@@ -87,7 +87,10 @@ async def command_help(ctx: discord.ApplicationContext, topic: str) -> None:
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> None:

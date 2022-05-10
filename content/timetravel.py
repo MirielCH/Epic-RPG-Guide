@@ -35,7 +35,10 @@ async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
-    await functions.edit_interaction(interaction, view=None)
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetravel: Optional[int] = None) -> None:
@@ -83,26 +86,29 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 25+: Beat dungeon 15-1\n'
     )
     keptitems = (
-        f'{emojis.BP} Coins (this includes your bank account)\n'
-        f'{emojis.BP} Epic Coins\n'
-        f'{emojis.BP} Items bought from the epic shop\n'
         f'{emojis.BP} Arena cookies \n'
+        f'{emojis.BP} Coins (this includes your bank account)\n'
         f'{emojis.BP} Dragon essences\n'
-        f'{emojis.BP} TIME dragon essences\n'
-        f'{emojis.BP} OMEGA horse tokens\n'
-        f'{emojis.BP} GODLY horse tokens\n'
+        f'{emojis.BP} Epic coins\n'
+        f'{emojis.BP} Epic shop items\n'
         f'{emojis.BP} Event items (if an event is active)\n'
-        f'{emojis.BP} Your horse\n'
-        f'{emojis.BP} Your pets\n'
-        f'{emojis.BP} Your marriage partner\n'
-        f'{emojis.BP} Your guild\n'
+        f'{emojis.BP} GODLY horse tokens\n'
+        f'{emojis.BP} Guild rings\n'
+        f'{emojis.BP} Legendary toothbrushes\n'
+        f'{emojis.BP} Magic chairs\n'
         f'{emojis.BP} Profession levels\n'
+        f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} TIME dragon essences\n'
+        f'{emojis.BP} Your guild\n'
+        f'{emojis.BP} Your horse\n'
+        f'{emojis.BP} Your marriage partner\n'
+        f'{emojis.BP} Your pets\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
         description = (
-            f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
+            f'Resets your character to level 1 / area 1 but unlocks new game featuresP and increases XP and drop chances.\n'
             f'To time travel, use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` while meeting the requirements.\n'
             f'Warning: **You will lose everything except the items mentioned below**. So make sure you have done all '
             f'you want to do. You can check what you should do before time traveling by looking up the TT you are '

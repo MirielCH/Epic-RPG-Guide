@@ -140,14 +140,6 @@ class eventsCog(commands.Cog):
             embed = await embed_event_returning(ctx.prefix)
             await ctx.send(embed=embed)
             return
-        elif (invoked.find('bunnyboss') > -1):
-            embed = await embed_event_bunnyboss(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
-        elif (invoked.find('bunny') > -1):
-            embed = await embed_event_bunny(ctx.prefix)
-            await ctx.send(embed=embed)
-            return
         else:
             if args:
                 event_name = ''
@@ -223,12 +215,6 @@ class eventsCog(commands.Cog):
                     await ctx.send(embed=embed)
                 elif (event_name.find('ret') > -1):
                     embed = await embed_event_returning(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif (event_name.find('bunny') > -1) and (event_name.find('boss') > -1):
-                    embed = await embed_event_bunnyboss(ctx.prefix)
-                    await ctx.send(embed=embed)
-                elif (event_name.find('bunny') > -1):
-                    embed = await embed_event_bunny(ctx.prefix)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send(f'I can\'t find any event with that name\nUse `{ctx.prefix}events` to see a list of all events.')
@@ -307,7 +293,7 @@ async def embed_events_overview(prefix):
     )
 
     embed.set_footer(text=await functions.default_footer(prefix))
-    embed.add_field(name=f'EASTER {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'EASTER {emojis.EASTER_EGG}', value=seasonal_event, inline=False)
     embed.add_field(name='PERSONAL', value=sp_events, inline=True)
     embed.add_field(name='MULTIPLAYER', value=mp_events, inline=True)
     embed.add_field(name='GLOBAL', value=global_events, inline=True)
@@ -471,7 +457,7 @@ async def embed_event_lootbox(prefix):
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'LOOTBOX EVENT',
-        description = 'This is a rare random personal event in which a lootboxes refuses to open.'
+        description = 'This is a rare random personal event in which a lootbox refuses to open.'
     )
 
     embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')

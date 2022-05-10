@@ -61,7 +61,9 @@ class AreasOldCog(commands.Cog):
                     elif arg1 == 'check':
                         await ctx.send(
                             f'This command doesn\'t exist.\n'
-                            f'You are probably looking for the slash command {emojis.LOGO}`/area check`.'
+                            f'You are probably looking for the slash command {emojis.LOGO}`/area check`.\n'
+                            f'If you can\'t see my slash commands, I either need to be reinvited to activate them or '
+                            f'a server admin disabled them.\n'
                         )
                         return
                     else:

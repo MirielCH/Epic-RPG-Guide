@@ -7,9 +7,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import emojis
-from resources import settings
-from resources import functions
+from resources import emojis, functions, settings, strings
 
 
 # Miscellaneous commands (cog)
@@ -231,26 +229,27 @@ class MiscOldCog(commands.Cog):
     @commands.command(aliases=('tips',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def tip(self, ctx, *args):
-
+        id = None
         if args:
             if len(args)==1:
-                id = args[0]
-                if id.isnumeric():
-                    id = int(id)
-                    tip = await database.get_tip(id)
+                if args[0].isnumeric():
+                    id = int(args[0])
+                    if id < 1 or id > 1_000_000:
+                        await ctx.send(strings.MSG_AMOUNT_TOO_HIGH)
+                        return
                 else:
-                    tip = await database.get_tip()
-            else:
-                tip = await database.get_tip()
-        else:
-            tip = await database.get_tip()
-
+                    await ctx.send('That\'s really not a valid tip ID.')
+                    return
+        try:
+            tip: database.Tip = await database.get_tip(id)
+        except database.NoDataFound:
+            await ctx.send('There is no tip with that ID yet :cry:')
+            return
         embed = discord.Embed(
             color = settings.EMBED_COLOR,
             title = 'TIP',
             description = tip.tip
         )
-
         await ctx.send(embed=embed)
 
     # Command "coincap" - Calculate the coin cap

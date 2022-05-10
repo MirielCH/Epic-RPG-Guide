@@ -1,6 +1,7 @@
 # views.py
 """Contains global interaction views"""
 
+from dis import disco
 from typing import Callable, List, Optional, Union
 
 import discord
@@ -355,7 +356,10 @@ class ConfirmCancelView(discord.ui.View):
     async def on_timeout(self):
         self.value = None
         if self.interaction is not None:
-            await functions.edit_interaction(self.interaction, view=None)
+            try:
+                await functions.edit_interaction(self.interaction, view=None)
+            except discord.errors.NotFound:
+                pass
         self.stop()
 
 
@@ -390,7 +394,10 @@ class FollowupCommandView(discord.ui.View):
     async def on_timeout(self) -> None:
         self.value = 'timeout'
         if self.interaction is not None:
-            await functions.edit_interaction(self.interaction, view=None)
+            try:
+                await functions.edit_interaction(self.interaction, view=None)
+            except discord.errors.NotFound:
+                pass
         self.stop()
 
 
@@ -425,5 +432,8 @@ class FollowupCraftingCalculatorView(discord.ui.View):
     async def on_timeout(self) -> None:
         self.value = 'timeout'
         if self.interaction is not None:
-            await functions.edit_interaction(self.interaction, view=None)
+            try:
+                await functions.edit_interaction(self.interaction, view=None)
+            except discord.errors.NotFound:
+                pass
         self.stop()
