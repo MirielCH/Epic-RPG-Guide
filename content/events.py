@@ -473,7 +473,8 @@ async def embed_event_lootboxsummoning() -> discord.Embed:
     """Lootbox summoning event"""
     trigger = (
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
-        f'(chance unknown)'
+        f'(chance unknown)\n'
+        f'{emojis.BP} By using a {emojis.GUILD_TOOTHBRUSH} legendary toothbrush'
     )
     answers = f'{emojis.BP} `summon`'
     rewards = (

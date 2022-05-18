@@ -1,5 +1,5 @@
-# views.py
-"""Contains global interaction views"""
+# components.py
+"""Contains global interaction components"""
 
 from typing import Optional
 

@@ -1772,15 +1772,15 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         if module is None or module == str.__class__.__module__:
             error_message = error.__class__.__name__
         if hasattr(error, '__traceback__'):
-            traceback = "".join(traceback.format_tb(error.__traceback__))
+            traceback_str = "".join(traceback.format_tb(error.__traceback__))
         else:
-            traceback = 'N/A'
+            traceback_str = 'N/A'
         error_message = (
             f'{error_message}\n\n'
             f'Exception type:\n'
             f'{module}.{error.__class__.__name__}\n\n'
             f'Traceback:\n'
-            f'{traceback}'
+            f'{traceback_str}'
         )
     except Exception as error:
         error_message = f'{error_message}\n\nGot the following error while trying to get type and traceback:\n{error}'

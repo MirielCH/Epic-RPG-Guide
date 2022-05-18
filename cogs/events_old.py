@@ -699,7 +699,10 @@ async def embed_event_legendary(prefix):
 # Lootbox summoning event
 async def embed_event_lootboxsummoning(prefix):
 
-    trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)\n'
+        f'{emojis.BP} By using a {emojis.GUILD_TOOTHBRUSH} legendary toothbrush'
+    )
 
     answers = f'{emojis.BP} `summon`'
 

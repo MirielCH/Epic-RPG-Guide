@@ -1,13 +1,12 @@
 # views.py
 """Contains global interaction views"""
 
-from dis import disco
 from typing import Callable, List, Optional, Union
 
 import discord
 
 import database
-from resources import components, functions, modals, settings, strings
+from resources import components, functions, settings, strings
 
 
 class AbortView(discord.ui.View):
@@ -257,8 +256,8 @@ class TopicView(discord.ui.View):
     Arguments
     ---------
     ctx: Context.
-    topics: Topics to select from - dict (description: function). The functions need to return an embed and have one
-    argument (context)
+    topics: Topics to select from - dict (description: function). The functions need to return an embed and have no
+    arguments
     active_topic: Currently chosen topic
 
     Returns

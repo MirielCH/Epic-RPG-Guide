@@ -151,7 +151,7 @@ async def embed_shop_old() -> discord.Embed:
         f'(1 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.CD_COOLDOWN} **Cooldown reset**: Resets the guild raid/upgrade cooldown '
         f'(3 {emojis.GUILD_COIN})\n'
-        f'{emojis.BP} {emojis.GUILD_LOOTBOXST} **Lootboxst**: All members get a random lootbox (up to EDGY) in duels '
+        f'{emojis.BP} {emojis.GUILD_LOOTBOXST} **Lootbooxst**: All members get a random lootbox (up to EDGY) in duels '
         f'for 24h (5 {emojis.GUILD_COIN})\n'
         f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All EPIC RPG players get +20% lootbox drop chance for 45m '
         f'(20 {emojis.GUILD_COIN}).\n'

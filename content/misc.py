@@ -103,7 +103,7 @@ async def command_calculator(ctx: discord.ApplicationContext, calculation: str) 
         else:
             num = num.quantize(Decimal('1.1234567890'), rounding=ROUND_HALF_UP)
             return num
-
+    calculation = calculation.replace(' ','')
     allowedchars = set('1234567890.-+/*%()')
     if not set(calculation).issubset(allowedchars) or '**' in calculation:
         message = (
@@ -386,7 +386,6 @@ async def embed_farming_overview() -> discord.Embed:
     )
     note = (
         f'{emojis.BP} Farming is unlocked in area 4\n'
-        f'{emojis.BP} The command can be used in area 1+ when ascended\n'
         f'{emojis.BP} The amount of items you gain increases with your TT\n'
         f'{emojis.BP} You can not farm in the TOP'
     )
