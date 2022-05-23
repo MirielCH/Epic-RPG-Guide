@@ -243,7 +243,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
         quick_guide = f'{quick_guide}\n{quick_guide_armor}{quick_guide_enchant_armor}'
         if area.area_no == 7: quick_guide = f'{quick_guide} **(*)**'
     quick_guide = f'{quick_guide}\n{emojis.BP} Check below to see which lootboxes to buy, keep or open'
-    if area.area_no in (3,5,7,9,10,11) and tt.tt_area != area.area_no:
+    if area.area_no in (3,5,7,8,9,10,11) and tt.tt_area != area.area_no:
         quick_guide = f'{quick_guide}\n{emojis.BP} Trade before leaving (see trades below)'
 
     return quick_guide

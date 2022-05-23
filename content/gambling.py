@@ -65,6 +65,7 @@ async def embed_bigdice() -> discord.Embed:
         f'{emojis.BLANK} If you win, the pot is increased _after_ your payout\n'
         f'{emojis.BP} You need to get side 6 or lower to win\n'
         f'{emojis.BP} The pot doesn\'t get reset if someone wins\n'
+        f'{emojis.BLANK} The pot instead resets every monday at 00:00 UTC\n'
     )
     outcomes = (
         f'{emojis.BP} {emojis.GAME_DIE}**- 6** or lower • You win the whole pot but lose your bet\n'

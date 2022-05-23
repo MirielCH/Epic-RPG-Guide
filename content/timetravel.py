@@ -176,11 +176,16 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'
         f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
-        f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)'
+        f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
     )
+    if tt.tt > 1:
+        unlocks = (
+            f'{unlocks.strip()}\n'
+            f'{emojis.BP} **{tt.tt + 5}** pet slots'
+        )
     if tt.tt > 0:
         unlocks = (
-            f'{unlocks}\n'
+            f'{unlocks.strip()}\n'
             f'{emojis.BP} Higher chance to get +1 tier in {emojis.EPIC_RPG_LOGO_SMALL}`/horse breeding` and '
             f'{emojis.EPIC_RPG_LOGO_SMALL}`/pets fusion` (chance unknown)\n'
         )
