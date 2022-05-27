@@ -413,27 +413,21 @@ async def embed_duels(prefix):
 # Redeemable codes
 async def embed_codes(prefix, codes):
 
-    temporary_value = ''
-    temporary_value_2 = ''
-    temporary_value_3 = ''
-    permanent_value = ''
-
+    permanent_codes = ''
+    field_no = 1
+    temp_codes = {field_no: ''}
+    codes = await database.get_all_codes()
     for code in codes:
-        temporary_code = code[2]
-        if temporary_code == 'True':
-            temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-            temporary_value_2_check = f'{temporary_value_2}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-            if len(temporary_value_2_check) > 1024:
-                temporary_value_3 = f'{temporary_value_3}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-            elif len(temporary_value_check) > 1024:
-                temporary_value_2 = f'{temporary_value_2}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-            else:
-                temporary_value = f'{temporary_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
+        code_value = f'{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+        if code.temporary:
+            if len(temp_codes[field_no]) + len(code_value) > 1020:
+                field_no += 1
+                temp_codes[field_no] = ''
+            temp_codes[field_no] = f'{temp_codes[field_no]}\n{code_value}'
         else:
-            permanent_value = f'{permanent_value}\n{emojis.BP} `{code[0]}`{emojis.BLANK}{code[1]}'
-
-    if permanent_value == '': permanent_value = f'{emojis.BP} No codes currently known'
-
+            permanent_codes = f'{permanent_codes}\n{code_value}'
+    if permanent_codes == '': permanent_codes = f'{emojis.BP} No codes currently known'
+    if temp_codes[field_no] == '': temp_codes[field_no] = f'{emojis.BP} No codes currently known'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
@@ -442,17 +436,11 @@ async def embed_codes(prefix, codes):
             f'Every code can only be redeemed once.'
         )
     )
-
     embed.set_footer(text=await functions.default_footer(prefix))
-
-    if not temporary_value == '':
-        embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
-    if temporary_value_2 != '':
-        embed.add_field(name='MORE EVENT CODES', value=temporary_value_2, inline=False)
-    if temporary_value_3 != '':
-        embed.add_field(name='EVEN MORE EVENT CODES', value=temporary_value_3, inline=False)
-    embed.add_field(name='PERMANENT CODES', value=permanent_value, inline=False)
-
+    for field_no, temp_field in temp_codes.items():
+        field_name = f'EVENT CODES {field_no}' if field_no > 1 else 'EVENT CODES'
+        embed.add_field(name=field_name, value=temp_field.strip(), inline=False)
+    embed.add_field(name='PERMANENT CODES', value=permanent_codes, inline=False)
     return embed
 
 # Coolness

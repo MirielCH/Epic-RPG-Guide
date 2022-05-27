@@ -31,9 +31,9 @@ EVENTS_PERSONAL = [
 
 # Multiplayer events
 EVENT_ARENA = 'Arena'
+EVENT_COIN_DROP = 'Coin drop (god)'
 EVENT_CATCH = 'Coin rain (catch)'
 EVENT_CHOP = 'Epic tree (chop)'
-EVENT_GOD = 'God'
 EVENT_LEGENDARY_BOSS = 'Legendary Boss (time to fight)'
 EVENT_LB_SUMMON = 'Lootbox summoning (summon)'
 EVENT_FISH = 'Megalodon (fish)'
@@ -41,9 +41,9 @@ EVENT_MINIBOSS = 'Miniboss'
 
 EVENTS_MULTIPLAYER = [
     EVENT_ARENA,
+    EVENT_COIN_DROP,
     EVENT_CATCH,
     EVENT_CHOP,
-    EVENT_GOD,
     EVENT_LEGENDARY_BOSS,
     EVENT_LB_SUMMON,
     EVENT_FISH,
@@ -90,12 +90,12 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
     events_functions = {
         EVENT_ARENA: embed_event_arena,
         EVENT_BIG_ARENA: embed_event_bigarena,
+        EVENT_COIN_DROP: embed_event_coin_drop,
         EVENT_CATCH: embed_event_coinrain,
         EVENT_ENCHANT: embed_event_enchant,
         EVENT_EPIC_GUARD: embed_event_epicguard,
         EVENT_CHOP: embed_event_epictree,
         EVENT_FARM: embed_event_farm,
-        EVENT_GOD: embed_event_god,
         EVENT_HEAL: embed_event_heal,
         EVENT_HORSE_RACE: embed_event_horserace,
         EVENT_HUNT: embed_event_hunt,
@@ -410,8 +410,8 @@ async def embed_event_epictree() -> discord.Embed:
     return embed
 
 
-async def embed_event_god() -> discord.Embed:
-    """God event"""
+async def embed_event_coin_drop() -> discord.Embed:
+    """Coin drop (god) event"""
     trigger = (
         f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
         f'(chance unknown)'
@@ -422,8 +422,8 @@ async def embed_event_god() -> discord.Embed:
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Events#God_Events)'
     )
     rewards = (
-        f'{emojis.BP} {emojis.COIN} Coins (amount depends on your highest area)\n'
-        f'{emojis.BP} {emojis.EPIC_COIN} EPIC coin'
+        f'{emojis.BP} {emojis.COIN} Coins (amount depends on your level)\n'
+        f'{emojis.BP} 1 {emojis.EPIC_COIN} EPIC coin'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -431,7 +431,7 @@ async def embed_event_god() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'GOD EVENT',
+        title = 'COIN DROP EVENT',
         description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one '
         f'player can snatch up.'
     )
@@ -677,7 +677,7 @@ async def embed_event_horserace() -> discord.Embed:
 async def embed_event_pettournament() -> discord.Embed:
     """Pet tournament event"""
     schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
-    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/pets tournament'
+    answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/pets tournament`'
     rewards = (
         f'{emojis.BP} + 1 pet tier\n'
         f'{emojis.BP} You only get the reward if you **win** the tournament'

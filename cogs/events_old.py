@@ -21,6 +21,7 @@ class eventsCog(commands.Cog):
         'heal','healevent',
         'arena','arenaevent',
         'coinrain','rain','cointrumpet','trumpet','catch','catchevent',
+        'coindrop',
         'epictree','tree','epicseed','chop','chopevent',
         'god','godevent',
         'boss','legendary','legendaryboss','bossevent','legendarybossevent',
@@ -71,8 +72,8 @@ class eventsCog(commands.Cog):
             embed = await embed_event_epictree(ctx.prefix)
             await ctx.send(embed=embed)
             return
-        elif invoked.find('god') > -1:
-            embed = await embed_event_god(ctx.prefix)
+        elif (invoked.find('god') > -1) or (invoked.find('drop') > -1):
+            embed = await embed_event_coin_drop(ctx.prefix)
             await ctx.send(embed=embed)
             return
         elif (invoked in ('boss','bossevent')) or (invoked.find('legendary') > -1):
@@ -152,8 +153,8 @@ class eventsCog(commands.Cog):
                 elif (event_name.find('guard') > -1) or (event_name.find('jail') > -1):
                     embed = await embed_event_epicguard(ctx.prefix)
                     await ctx.send(embed=embed)
-                elif event_name.find('god') > -1:
-                    embed = await embed_event_god(ctx.prefix)
+                elif (event_name.find('god') > -1) or (event_name.find('drop') > -1):
+                    embed = await embed_event_coin_drop(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif (event_name.find('heal') > -1) or (event_name.find('mysterious') > -1) or (event_name.find('potion') > -1):
                     embed = await embed_event_heal(ctx.prefix)
@@ -174,7 +175,7 @@ class eventsCog(commands.Cog):
                 elif event_name == 'arena':
                     embed = await embed_event_arena(ctx.prefix)
                     await ctx.send(embed=embed)
-                elif (event_name.find('coin') > -1) or (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
+                elif (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
                     embed = await embed_event_coinrain(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif (event_name.find('tree') > -1) or (event_name.find('epicseed') > -1) or (event_name.find('chop') > -1):
@@ -633,7 +634,7 @@ async def embed_event_epictree(prefix):
     return embed
 
 # God event
-async def embed_event_god(prefix):
+async def embed_event_coin_drop(prefix):
 
     trigger = f'{emojis.BP} `hunt`, `adventure` and work commands (chance unknown)'
 
@@ -643,8 +644,8 @@ async def embed_event_god(prefix):
     )
 
     rewards = (
-        f'{emojis.BP} {emojis.COIN} Coins (amount depends on your highest area)\n'
-        f'{emojis.BP} {emojis.EPIC_COIN} EPIC coin'
+        f'{emojis.BP} {emojis.COIN} Coins (amount depends on your level)\n'
+        f'{emojis.BP} 1 {emojis.EPIC_COIN} EPIC coin'
     )
 
     note = (
@@ -654,7 +655,7 @@ async def embed_event_god(prefix):
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'GOD EVENT',
+        title = 'COIN DROP EVENT',
         description = 'This is a random multiplayer event in which god gets clumsy and drops some coins that one player can snatch up.'
     )
 

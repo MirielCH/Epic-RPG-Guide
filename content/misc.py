@@ -240,21 +240,21 @@ async def command_coincap_calculator(
 # --- Embeds ---
 async def embed_codes():
     """Codes"""
-    temporary_value = temporary_value_2 = temporary_value_3 = permanent_value = ''
+    permanent_codes = ''
+    field_no = 1
+    temp_codes = {field_no: ''}
     codes = await database.get_all_codes()
     for code in codes:
+        code_value = f'{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
         if code.temporary:
-            temporary_value_check = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-            temporary_value_2_check = f'{temporary_value_2}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-            if len(temporary_value_2_check) > 1024:
-                temporary_value_3 = f'{temporary_value_3}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-            elif len(temporary_value_check) > 1024:
-                temporary_value_2 = f'{temporary_value_2}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-            else:
-                temporary_value = f'{temporary_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
+            if len(temp_codes[field_no]) + len(code_value) > 1020:
+                field_no += 1
+                temp_codes[field_no] = ''
+            temp_codes[field_no] = f'{temp_codes[field_no]}\n{code_value}'
         else:
-            permanent_value = f'{permanent_value}\n{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
-    if permanent_value == '': permanent_value = f'{emojis.BP} No codes currently known'
+            permanent_codes = f'{permanent_codes}\n{code_value}'
+    if permanent_codes == '': permanent_codes = f'{emojis.BP} No codes currently known'
+    if temp_codes[field_no] == '': temp_codes[field_no] = f'{emojis.BP} No codes currently known'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
@@ -263,13 +263,10 @@ async def embed_codes():
             f'Every code can only be redeemed once.'
         )
     )
-    if not temporary_value == '':
-        embed.add_field(name='EVENT CODES', value=temporary_value, inline=False)
-    if temporary_value_2 != '':
-        embed.add_field(name='MORE EVENT CODES', value=temporary_value_2, inline=False)
-    if temporary_value_3 != '':
-        embed.add_field(name='EVEN MORE EVENT CODES', value=temporary_value_3, inline=False)
-    embed.add_field(name='PERMANENT CODES', value=permanent_value, inline=False)
+    for field_no, temp_field in temp_codes.items():
+        field_name = f'EVENT CODES {field_no}' if field_no > 1 else 'EVENT CODES'
+        embed.add_field(name=field_name, value=temp_field.strip(), inline=False)
+    embed.add_field(name='PERMANENT CODES', value=permanent_codes, inline=False)
     return embed
 
 
@@ -504,7 +501,7 @@ async def embed_beginner_first_run() -> discord.Embed:
         f'different trade rates, so every time you advance, your trade rates change (see {emojis.LOGO}`/trade rates`). '
         f'You can **not** go back to earlier trade rates, these are tied to your highest unlocked area.\n'
         f'This means you can save a lot of time and materials if you farm **early** and exploit the trade rate '
-        f'changes to multiply your inventory. See {emojis.LOGO}`/trade guide` for more trading info.\n'
+        f'changes to multiply your inventory. See {emojis.LOGO}`/area guide` to see what to trade in each area.\n'
         f'In TT0 the most important area is **area 5**. You want to stay there until you have the recommended '
         f'materials (see {emojis.LOGO}`/area guide area: 5`).\n'
         f'If you do this, you will save a ton of time later on and be able to craft that EDGY gear as soon as '

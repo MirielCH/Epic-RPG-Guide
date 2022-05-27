@@ -108,7 +108,7 @@ async def embed_time_travel() -> discord.Embed:
         color = settings.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
         description = (
-            f'Resets your character to level 1 / area 1 but unlocks new game featuresP and increases XP and drop chances.\n'
+            f'Resets your character to level 1 / area 1 but unlocks new game features and increases XP and drop chances.\n'
             f'To time travel, use {emojis.EPIC_RPG_LOGO_SMALL}`/time travel` while meeting the requirements.\n'
             f'Warning: **You will lose everything except the items mentioned below**. So make sure you have done all '
             f'you want to do. You can check what you should do before time traveling by looking up the TT you are '
@@ -409,7 +409,7 @@ async def embed_time_jump_score() -> discord.Embed:
         description = (
             f'The score points for the starter bonuses of time jump are calculated based on your level, '
             f'inventory and your gear.\n'
-            f'You can calculate the score of your inventory with {emojis.LOGO}`/time-jump score calculator`.'
+            f'You can calculate the score of your inventory with {emojis.LOGO}`/time jump calculator`.'
         )
     )
     embed.add_field(name='BASE SCORE', value=base, inline=False)
