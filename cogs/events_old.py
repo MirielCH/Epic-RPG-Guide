@@ -39,6 +39,7 @@ class eventsCog(commands.Cog):
         'failedseed','farmevent',
         'returning','ret',
         'bunny','bunnyboss',
+        'trainingevent','voidevent',
     )
 
     # Command "events"
@@ -141,6 +142,10 @@ class eventsCog(commands.Cog):
             embed = await embed_event_returning(ctx.prefix)
             await ctx.send(embed=embed)
             return
+        elif (invoked.find('training') > -1) or (invoked.find('void') > -1):
+            embed = await embed_event_training(ctx.prefix)
+            await ctx.send(embed=embed)
+            return
         else:
             if args:
                 event_name = ''
@@ -174,6 +179,9 @@ class eventsCog(commands.Cog):
                         await ctx.send(embed=embed)
                 elif event_name == 'arena':
                     embed = await embed_event_arena(ctx.prefix)
+                    await ctx.send(embed=embed)
+                elif (event_name.find('training') > -1) or (event_name.find('void') > -1):
+                    embed = await embed_event_training(ctx.prefix)
                     await ctx.send(embed=embed)
                 elif (event_name.find('rain') > -1) or (event_name.find('trumpet') > -1) or (event_name.find('catch') > -1):
                     embed = await embed_event_coinrain(ctx.prefix)
@@ -908,7 +916,7 @@ async def embed_event_horserace(prefix):
     answers = f'{emojis.BP} `horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
 
     rewards = (
-        f'{emojis.BP} T1 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
+        f'{emojis.BP} T5 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
         f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +1 horse level or +1 horse tier\n'
         f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T5)\n'
         f'{emojis.BP} You **only** get rewards if you place third or higher'
@@ -1075,6 +1083,35 @@ async def embed_event_hunt(prefix):
     embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
 
+    return embed
+
+
+async def embed_event_training(prefix) -> discord.Embed:
+    """Training event embed"""
+    trigger = f'{emojis.BP} `training` in areas 16+ (chance unknown)'
+    answers = (
+        f'{emojis.BP} `cry`: A mysterious player saves you, you get nothing\n'
+        f'{emojis.BP} `fly`: High chance to die and lose a level, low chance to get a lot of {emojis.DARK_ENERGY} dark energy\n'
+        f'{emojis.BP} `teleport`: High chance to set your commands on random cooldowns. No other outcome known so far.'
+    )
+    rec_answer = (
+        f'{emojis.BP} `fly` if you need the dark energy as losing one level is peanuts\n'
+        f'{emojis.BP} `cry` otherwise\n'
+    )
+    note = (
+        f'{emojis.BP} Your training cooldown is not used up by this event\n'
+        f'{emojis.BP} {events_personal}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'TRAINING EVENT (VOID)',
+        description = 'This is a rare random personal event in which you fall into the void. Mind yer step, will ya?'
+    )
+    embed.set_footer(text=f'{events_footer.format(prefix=prefix)}')
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 
 

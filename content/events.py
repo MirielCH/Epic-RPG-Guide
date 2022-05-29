@@ -15,6 +15,7 @@ EVENT_HUNT = 'Hunt (zombie horde)'
 EVENT_LB_OPEN = 'Lootbox opening'
 EVENT_RETURNING = 'Returning'
 EVENT_TRADE = 'Special trade'
+EVENT_TRAINING = 'Training (void)'
 EVENT_WORK = 'Work (ruby dragon)'
 
 EVENTS_PERSONAL = [
@@ -26,6 +27,7 @@ EVENTS_PERSONAL = [
     EVENT_LB_OPEN,
     EVENT_RETURNING,
     EVENT_TRADE,
+    EVENT_TRAINING,
     EVENT_WORK,
 ]
 
@@ -108,6 +110,7 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
         EVENT_MININTBOSS: embed_event_minintboss,
         EVENT_TOURNAMENT: embed_event_pettournament,
         EVENT_TRADE: embed_event_specialtrade,
+        EVENT_TRAINING: embed_event_training,
         EVENT_RETURNING: embed_event_returning,
         EVENT_WORK: embed_event_rubydragon,
     }
@@ -649,7 +652,7 @@ async def embed_event_horserace() -> discord.Embed:
     schedule = f'{emojis.BP} Every even hour (= every 2 hours)'
     answers = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/horse race` (unlocked with a {emojis.HORSE_T5} T5+ horse)'
     rewards = (
-        f'{emojis.BP} T1 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
+        f'{emojis.BP} T5 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
         f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +1 horse level or +1 horse tier\n'
         f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T5)\n'
         f'{emojis.BP} You **only** get rewards if you place third or higher'
@@ -777,6 +780,34 @@ async def embed_event_hunt() -> discord.Embed:
         color = settings.EMBED_COLOR,
         title = 'HUNT EVENT (ZOMBIE HORDE)',
         description = 'This is a rare random personal event in which you encounter a zombie horde.'
+    )
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
+    embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_event_training() -> discord.Embed:
+    """Training event embed"""
+    trigger = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/training` in areas 16+ (chance unknown)'
+    answers = (
+        f'{emojis.BP} `cry`: A mysterious player saves you, you get nothing\n'
+        f'{emojis.BP} `fly`: High chance to die and lose a level, low chance to get a lot of {emojis.DARK_ENERGY} dark energy\n'
+        f'{emojis.BP} `teleport`: High chance to set your commands on random cooldowns. No other outcome known so far.'
+    )
+    rec_answer = (
+        f'{emojis.BP} `fly` if you need the dark energy as losing one level is peanuts\n'
+        f'{emojis.BP} `cry` otherwise\n'
+    )
+    note = (
+        f'{emojis.BP} Your training cooldown is not used up by this event\n'
+        f'{emojis.BP} {events_personal}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'TRAINING EVENT (VOID)',
+        description = 'This is a rare random personal event in which you fall into the void. Mind yer step, will ya?'
     )
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
