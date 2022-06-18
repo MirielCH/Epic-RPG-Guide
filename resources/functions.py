@@ -3,7 +3,7 @@
 from argparse import ArgumentError
 import asyncio
 import re
-from typing import Union, Tuple
+from typing import List, Union, Tuple
 
 import discord
 from discord.utils import MISSING
@@ -37,6 +37,17 @@ async def edit_interaction(interaction: Union[discord.Interaction, discord.Webho
 def round_school(number: float) -> int:
     quotient, rest = divmod(number, 1)
     return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
+
+
+# --- Regex ---
+async def get_match_from_patterns(patterns: List[str], string: str) -> re.Match:
+    """Searches a string for a regex patterns out of a list of patterns and returns the first match.
+    Returns None if no match is found.
+    """
+    for pattern in patterns:
+        match = re.search(pattern, string, re.IGNORECASE)
+        if match is not None: break
+    return match
 
 
 # Design fields for embeds
@@ -325,7 +336,16 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             field2 = message.embeds[0].fields[1]
-            if f'{ctx_author}\'s professions' in embed_author and 'about this profession' in field2.name.lower():
+            search_strings_author = [
+                f'{ctx_author}\'s professions', #English
+                f'{ctx_author} — professions', #Spanish
+            ]
+            search_strings_field = [
+                'about this profession', #English
+                'acerca de esta profesión', #Spanish
+            ]
+            if (any(search_string in embed_author for search_string in search_strings_author)
+                and any(search_string in field2.name.lower() for search_string in search_strings_field)):
                 correct_message = True
         except:
             pass
@@ -362,8 +382,16 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             description = message.embeds[0].description
-            if (f'{ctx_author}\'s professions' in embed_author
-                and 'more information about a profession' in description.lower()):
+            search_strings_author = [
+                f'{ctx_author}\'s professions', #English
+                f'{ctx_author} — professions', #Spanish
+            ]
+            search_strings_description = [
+                'more information about a profession', #English
+                'más información acerca de una profesión', #Spanish
+            ]
+            if (any(search_string in embed_author for search_string in search_strings_author)
+                and any(search_string in description.lower() for search_string in search_strings_description)):
                 correct_message = True
         except:
             pass
@@ -381,7 +409,12 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
         correct_message = False
         try:
             field2 = message.embeds[0].fields[1]
-            if 'daily monster' in field2.name.lower(): correct_message = True
+            search_strings = [
+                'daily monster', #English
+                'monstruo diario', #Spanish
+            ]
+            if any(search_string in field2.name.lower() for search_string in search_strings):
+                correct_message = True
         except:
             pass
 
@@ -399,7 +432,11 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s horse' in embed_author:
+            search_strings = [
+                f'{ctx_author}\'s horse', #English
+                f'{ctx_author} — horse', #Spanish
+            ]
+            if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
         except:
             pass
@@ -418,7 +455,13 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s profile' in embed_author or f'{ctx_author}\'s progress' in embed_author:
+            search_strings = [
+                f'{ctx_author}\'s profile', #English profile
+                f'{ctx_author}\'s progress', #English progress
+                f'{ctx_author} — profile', #Spanish profile
+                f'{ctx_author} — progress', #Spanish progress, UNCONFIRMED
+            ]
+            if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
         except:
             pass
@@ -437,7 +480,13 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s profile' in embed_author or f'{ctx_author}\'s stats' in embed_author:
+            search_strings = [
+                f'{ctx_author}\'s profile', #English profile
+                f'{ctx_author}\'s stats', #English stats
+                f'{ctx_author} — profile', #Spanish profile
+                f'{ctx_author} — stats', #Spanish stats, UNCONFIRMED
+            ]
+            if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
         except:
             pass
@@ -456,7 +505,11 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
-            if f'{ctx_author}\'s inventory' in embed_author:
+            search_strings = [
+                f'{ctx_author}\'s inventory', #English
+                f'{ctx_author} — inventory', #Spanish
+            ]
+            if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
         except:
             pass
@@ -497,13 +550,16 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
     for profession in strings.PROFESSIONS:
         if profession in pr_field.name.lower():
             profession_found = profession
-
-    level_search = re.search('level\*\*: (.+?) \(', pr_field.value.lower())
-    xp_search = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
+    search_patterns_level = [
+        'level\*\*: (.+?) \(', #English
+        'nivel\*\*: (.+?) \(', #Spanish
+    ]
+    level_match = await get_match_from_patterns(search_patterns_level, pr_field.value.lower())
+    xp_match = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
     try:
-        level = int(level_search.group(1))
-        current_xp = int(xp_search.group(1).replace(',',''))
-        needed_xp = int(xp_search.group(2).replace(',',''))
+        level = int(level_match.group(1))
+        current_xp = int(xp_match.group(1).replace(',',''))
+        needed_xp = int(xp_match.group(2).replace(',',''))
     except Exception as error:
         await database.log_error(f'{profession_found.capitalize} data not found in profession message: {pr_field}', ctx)
         raise ValueError(error)
@@ -540,8 +596,13 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
     fields = bot_message.embeds[0].fields
     for field in fields:
         if profession in field.name.lower():
+            search_patterns = [
+                'lv (.+?) \|', #English
+                'nv (.+?) \|', #Spanish
+            ]
+            level_match = await get_match_from_patterns(search_patterns, field.name.lower())
             try:
-                level = re.search('lv (.+?) \|', field.name.lower()).group(1)
+                level = level_match.group(1)
                 level = int(level)
             except Exception as error:
                 await database.log_error(
@@ -605,14 +666,22 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
     Also logs the errors to the database.
     """
     data_field = bot_message.embeds[0].fields[0]
-    tier_search = re.search('tier\*\* - (.+?) <', data_field.value.lower())
-    level_search = re.search('level\*\* - (.+?) \(', data_field.value.lower())
-    if level_search is None:
-        level_search = re.search('level\*\* - (.+?)\\n', data_field.value.lower())
+    search_patterns_tier = [
+        'tier\*\* - (.+?) <', #English
+        'tier de caballo\*\* - (.+?) <', #Spanish
+    ]
+    search_patterns_level = [
+        'level\*\* - (.+?) \(', #English 1
+        'level\*\* - (.+?)\\n', #English 2
+        'nivel de caballo\*\* - (.+?) \(', #Spanish 1
+        'nivel de caballo\*\* - (.+?)\\n', #Spanish 2
+    ]
+    tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
+    level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
     try:
-        tier = tier_search.group(1)
+        tier = tier_match.group(1)
         tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
-        level = int(level_search.group(1))
+        level = int(level_match.group(1))
     except Exception as error:
         await database.log_error(f'Error extracting horse data in horse message: {data_field}', ctx)
         raise ValueError(error)
@@ -642,11 +711,18 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     Also logs the errors to the database.
     """
     progress_field = bot_message.embeds[0].fields[0]
-    tt_search = re.search('time travels\*\*: (.+?)$', progress_field.value.lower())
-    area_search = re.search('max: (.+?)\)', progress_field.value.lower())
+    search_patterns_tt = [
+        'time travels\*\*: (.+?)$', #English
+        'viajes en el tiempo\*\*: (.+?)$', #Spanish
+    ]
+    search_patterns_area = [
+        'max: (.+?)\)', #English & Spanish
+    ]
+    tt_match = await get_match_from_patterns(search_patterns_tt, progress_field.value.lower())
+    area_match = await get_match_from_patterns(search_patterns_area, progress_field.value.lower())
     try:
-        tt = int(tt_search.group(1)) if tt_search is not None else 0
-        area = area_search.group(1)
+        tt = int(tt_match.group(1)) if tt_match is not None else 0
+        area = area_match.group(1)
         if area.lower() == 'top': area = '21'
         area = int(area)
     except Exception as error:
