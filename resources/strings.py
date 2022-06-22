@@ -308,13 +308,18 @@ item_columns_names = {
 }
 
 
-PROFESSIONS = (
-    'crafter',
-    'enchanter',
-    'lootboxer',
-    'merchant',
-    'worker',
-)
+PROFESSIONS = {
+    'crafter': 'crafter', #English
+    'enchanter': 'enchanter',
+    'lootboxer': 'lootboxer',
+    'merchant': 'merchant',
+    'worker': 'worker',
+    'crafteador': 'crafter', #Spanish
+    'encantador': 'enchanter',
+    'lootboxeador': 'lootboxer',
+    'comerciante': 'merchant',
+    'trabajador': 'worker',
+}
 
 
 DUNGEONS = (

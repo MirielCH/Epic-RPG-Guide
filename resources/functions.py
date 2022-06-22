@@ -459,7 +459,7 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
                 f'{ctx_author}\'s profile', #English profile
                 f'{ctx_author}\'s progress', #English progress
                 f'{ctx_author} — profile', #Spanish profile
-                f'{ctx_author} — progress', #Spanish progress, UNCONFIRMED
+                f'{ctx_author} — progress', #Spanish progress
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -484,7 +484,7 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
                 f'{ctx_author}\'s profile', #English profile
                 f'{ctx_author}\'s stats', #English stats
                 f'{ctx_author} — profile', #Spanish profile
-                f'{ctx_author} — stats', #Spanish stats, UNCONFIRMED
+                f'{ctx_author} — stats', #Spanish stats
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -547,9 +547,9 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
     """
     pr_field = bot_message.embeds[0].fields[0]
     profession_found = None
-    for profession in strings.PROFESSIONS:
+    for profession in strings.PROFESSIONS.keys():
         if profession in pr_field.name.lower():
-            profession_found = profession
+            profession_found = strings.PROFESSIONS[profession]
     search_patterns_level = [
         'level\*\*: (.+?) \(', #English
         'nivel\*\*: (.+?) \(', #Spanish
