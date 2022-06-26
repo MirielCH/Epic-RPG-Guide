@@ -241,10 +241,13 @@ class craftingCog(commands.Cog):
             f'{emojis.BP} With active world buff _and_ mob as daily mob: __{drop_chance_energy_worldbuff_daily_hm:g}%__\n'
         )
 
-        field_hunting_chance = (
-            f'{emojis.BP} The drop chance is the chance to get an item from a mob that can drop one\n'
-            f'{emojis.BP} You have a 50% chance of encountering such a mob when hunting\n'
+        field_encounter_chance = (
+            f'{emojis.BP} You have a 50% chance of encountering a mob that can drop an item\n'
             f'{emojis.BP} Thus, the chance to get an item while hunting is __half__ of the values above\n'
+        )
+        field_encounter_chance_energy = (
+            f'{emojis.BP} Every mob you encounter can drop this item\n'
+            f'{emojis.BP} Thus, the chance to get an item while hunting equals the values above\n'
         )
 
         embed = discord.Embed(
@@ -272,6 +275,11 @@ class craftingCog(commands.Cog):
             inline=False
         )
         embed.add_field(
+            name=f'ENCOUNTER CHANCE FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}',
+            value=field_encounter_chance,
+            inline=False
+        )
+        embed.add_field(
             name=f'DROP CHANCES FOR {emojis.DARK_ENERGY}',
             value=field_drop_chance_energy,
             inline=False
@@ -281,7 +289,11 @@ class craftingCog(commands.Cog):
             value=field_drop_chance_energy_hardmode,
             inline=False
         )
-        embed.add_field(name='NOTES', value=field_hunting_chance, inline=False)
+        embed.add_field(
+            name=f'ENCOUNTER CHANCE FOR {emojis.DARK_ENERGY}',
+            value=field_encounter_chance_energy,
+            inline=False
+        )
         await ctx.send(embed=embed)
 
     @commands.command(aliases=('cook','forge',))
