@@ -653,7 +653,10 @@ async def embed_dropchance(timetravel: int, horse_tier: int) -> discord.Embed:
         inline=False
     )
     embed.add_field(
-        name=f'ENCOUNTER CHANCE FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}',
+        name=(
+            f'ENCOUNTER CHANCE FOR {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}'
+            f'{emojis.MERMAID_HAIR}{emojis.CHIP}{emojis.DRAGON_SCALE}'
+        ),
         value=field_encounter_chance,
         inline=False
     )
