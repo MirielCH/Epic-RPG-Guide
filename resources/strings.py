@@ -319,6 +319,11 @@ PROFESSIONS = {
     'lootboxeador': 'lootboxer',
     'comerciante': 'merchant',
     'trabajador': 'worker',
+    'craftador': 'crafter', #Portuguese
+    'encantador': 'enchanter',
+    'lootboxador': 'lootboxer',
+    'comerciante': 'merchant',
+    'trabalhador': 'worker',
 }
 
 

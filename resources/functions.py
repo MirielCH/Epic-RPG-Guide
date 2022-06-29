@@ -384,11 +384,12 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
             description = message.embeds[0].description
             search_strings_author = [
                 f'{ctx_author}\'s professions', #English
-                f'{ctx_author} — professions', #Spanish
+                f'{ctx_author} — professions', #Spanish, Portuguese
             ]
             search_strings_description = [
                 'more information about a profession', #English
                 'más información acerca de una profesión', #Spanish
+                'mais informações sobre uma profissão', #Portuguese
             ]
             if (any(search_string in embed_author for search_string in search_strings_author)
                 and any(search_string in description.lower() for search_string in search_strings_description)):
@@ -412,6 +413,7 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
             search_strings = [
                 'daily monster', #English
                 'monstruo diario', #Spanish
+                'monstro diário', #Portuguese
             ]
             if any(search_string in field2.name.lower() for search_string in search_strings):
                 correct_message = True
@@ -434,7 +436,7 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
                 f'{ctx_author}\'s horse', #English
-                f'{ctx_author} — horse', #Spanish
+                f'{ctx_author} — horse', #Spanish, Portuguese
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -458,8 +460,8 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
             search_strings = [
                 f'{ctx_author}\'s profile', #English profile
                 f'{ctx_author}\'s progress', #English progress
-                f'{ctx_author} — profile', #Spanish profile
-                f'{ctx_author} — progress', #Spanish progress
+                f'{ctx_author} — profile', #Spanish, Portuguese profile
+                f'{ctx_author} — progress', #Spanish, Portuguese progress
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -483,8 +485,8 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
             search_strings = [
                 f'{ctx_author}\'s profile', #English profile
                 f'{ctx_author}\'s stats', #English stats
-                f'{ctx_author} — profile', #Spanish profile
-                f'{ctx_author} — stats', #Spanish stats
+                f'{ctx_author} — profile', #Spanish, Portuguese profile
+                f'{ctx_author} — stats', #Spanish, Portuguese stats
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -507,7 +509,7 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
                 f'{ctx_author}\'s inventory', #English
-                f'{ctx_author} — inventory', #Spanish
+                f'{ctx_author} — inventory', #Spanish, Portuguese
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -553,6 +555,7 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
     search_patterns_level = [
         'level\*\*: (.+?) \(', #English
         'nivel\*\*: (.+?) \(', #Spanish
+        'nível\*\*: (.+?) \(', #Portuguese
     ]
     level_match = await get_match_from_patterns(search_patterns_level, pr_field.value.lower())
     xp_match = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
@@ -598,7 +601,7 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
         if profession in field.name.lower():
             search_patterns = [
                 'lv (.+?) \|', #English
-                'nv (.+?) \|', #Spanish
+                'nv (.+?) \|', #Spanish, Portuguese
             ]
             level_match = await get_match_from_patterns(search_patterns, field.name.lower())
             try:
@@ -669,12 +672,15 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
     search_patterns_tier = [
         'tier\*\* - (.+?) <', #English
         'tier de caballo\*\* - (.+?) <', #Spanish
+        'tier de cavalo\*\* - (.+?) <', #Portuguese
     ]
     search_patterns_level = [
         'level\*\* - (.+?) \(', #English 1
         'level\*\* - (.+?)\\n', #English 2
         'nivel de caballo\*\* - (.+?) \(', #Spanish 1
         'nivel de caballo\*\* - (.+?)\\n', #Spanish 2
+        'nível do cavalo\*\* - (.+?) \(', #Portuguese 1
+        'nível do cavalo\*\* - (.+?)\\n', #Portuguese 2
     ]
     tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
     level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
@@ -714,6 +720,7 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     search_patterns_tt = [
         'time travels\*\*: (.+?)$', #English
         'viajes en el tiempo\*\*: (.+?)$', #Spanish
+        'viagens no tempo\*\*: (.+?)$', #Portuguese
     ]
     search_patterns_area = [
         'max: (.+?)\)', #English & Spanish
