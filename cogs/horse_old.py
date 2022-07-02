@@ -112,7 +112,7 @@ class HorseOldCog(commands.Cog):
             try:
                 ctx_author = functions.format_string(str(user_name))
                 embed_author = functions.format_string(str(m.embeds[0].author))
-                if f'{ctx_author}\'s horse' in embed_author:
+                if f'{ctx_author} u2014 horse' in embed_author:
                     correct_embed = True
             except:
                 pass
@@ -246,7 +246,7 @@ class HorseOldCog(commands.Cog):
             try:
                 ctx_author = functions.format_string(str(user_name))
                 embed_author = functions.format_string(str(m.embeds[0].author))
-                if f'{ctx_author}\'s horse' in embed_author:
+                if f'{ctx_author} u2014 horse' in embed_author:
                     correct_embed = True
             except:
                 pass
@@ -257,7 +257,7 @@ class HorseOldCog(commands.Cog):
             try:
                 ctx_author = functions.format_string(str(user_name))
                 embed_author = functions.format_string(str(m.embeds[0].author))
-                if f'{ctx_author}\'s professions' in embed_author:
+                if f'{ctx_author} u2014 professions' in embed_author:
                     correct_embed = True
             except:
                 pass
@@ -434,7 +434,7 @@ class HorseOldCog(commands.Cog):
             try:
                 ctx_author = functions.format_string(str(user_name))
                 embed_author = functions.format_string(str(m.embeds[0].author))
-                if f'{ctx_author}\'s horse' in embed_author:
+                if f'{ctx_author} u2014 horse' in embed_author:
                     correct_embed = True
             except:
                 pass
@@ -445,7 +445,7 @@ class HorseOldCog(commands.Cog):
             try:
                 ctx_author = functions.format_string(str(user_name))
                 embed_author = functions.format_string(str(m.embeds[0].author))
-                if f'{ctx_author}\'s professions' in embed_author:
+                if f'{ctx_author} u2014 professions' in embed_author:
                     correct_embed = True
             except:
                 pass

@@ -185,7 +185,7 @@ class DungeonsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s profile') > 1) or (embed_author.find(f'{ctx_author}\'s stats') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 profile') > 1) or (embed_author.find(f'{ctx_author} u2014 stats') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -335,7 +335,7 @@ class DungeonsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s profile') > 1) or (embed_author.find(f'{ctx_author}\'s stats') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 profile') > 1) or (embed_author.find(f'{ctx_author} u2014 stats') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -875,7 +875,9 @@ async def embed_dungeon(ctx: commands.Context, dungeon: database.Dungeon) -> Tup
     else:
         boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
-    if 16 <= dungeon_no <= 20: boss_at = 'Unknown'
+    if 16 <= dungeon_no <= 20:
+        boss_at = 'Unknown'
+        boss_life = 'Unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price

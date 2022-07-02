@@ -664,11 +664,11 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
 
     # Area requirements
     unseal_time = {
-        16: 15,
-        17: 13,
-        18: 11,
-        19: 9,
-        20: 7
+        16: 21,
+        17: 18,
+        18: 15,
+        19: 12,
+        20: 9
     } # area: days
     if 2 <= area.area_no <= 15:
         area_req = (
@@ -834,6 +834,12 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             f'{note}\n'
             f'{emojis.BP} **(*)** This armor is expensive. If you don\'t want to craft it, find a carry or '
             f'cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
+        )
+    if 16 <= area.area_no <= 19:
+        note = (
+            f'{note}\n'
+            f'{emojis.BP} If you time travel in this area, you get an additional {area.area_no - 15} '
+            f'{emojis.TIME_TRAVEL} time travels'
         )
 
     # Title

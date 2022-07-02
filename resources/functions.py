@@ -337,12 +337,12 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
             embed_author = format_string(str(message.embeds[0].author))
             field2 = message.embeds[0].fields[1]
             search_strings_author = [
-                f'{ctx_author}\'s professions', #English
-                f'{ctx_author} — professions', #Spanish
+                f'{ctx_author} u2014 professions', #All languages
             ]
             search_strings_field = [
                 'about this profession', #English
                 'acerca de esta profesión', #Spanish
+                'sobre esta profissão', #Portuguese
             ]
             if (any(search_string in embed_author for search_string in search_strings_author)
                 and any(search_string in field2.name.lower() for search_string in search_strings_field)):
@@ -383,8 +383,7 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
             embed_author = format_string(str(message.embeds[0].author))
             description = message.embeds[0].description
             search_strings_author = [
-                f'{ctx_author}\'s professions', #English
-                f'{ctx_author} — professions', #Spanish, Portuguese
+                f'{ctx_author} u2014 professions', #All languages
             ]
             search_strings_description = [
                 'more information about a profession', #English
@@ -435,8 +434,7 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
-                f'{ctx_author}\'s horse', #English
-                f'{ctx_author} — horse', #Spanish, Portuguese
+                f'{ctx_author} u2014 horse', ##All languages
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -458,10 +456,8 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
-                f'{ctx_author}\'s profile', #English profile
-                f'{ctx_author}\'s progress', #English progress
-                f'{ctx_author} — profile', #Spanish, Portuguese profile
-                f'{ctx_author} — progress', #Spanish, Portuguese progress
+                f'{ctx_author} u2014 profile', ##All languages
+                f'{ctx_author} u2014 progress', ##All languages
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -483,10 +479,8 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
-                f'{ctx_author}\'s profile', #English profile
-                f'{ctx_author}\'s stats', #English stats
-                f'{ctx_author} — profile', #Spanish, Portuguese profile
-                f'{ctx_author} — stats', #Spanish, Portuguese stats
+                f'{ctx_author} u2014 profile', ##All languages
+                f'{ctx_author} u2014 stats', ##All languages
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -508,8 +502,7 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
             search_strings = [
-                f'{ctx_author}\'s inventory', #English
-                f'{ctx_author} — inventory', #Spanish, Portuguese
+                f'{ctx_author} u2014 inventory', ##All languages
             ]
             if any(search_string in embed_author for search_string in search_strings):
                 correct_message = True
@@ -596,25 +589,30 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
     profession = profession.lower()
     if profession not in strings.PROFESSIONS:
         raise ArgumentError(f'Profession {profession} is not a valid profession.')
+    profession_translations = []
+    for translation, profession_en in strings.PROFESSIONS.items():
+        if profession_en == profession:
+            profession_translations.append(translation)
     fields = bot_message.embeds[0].fields
     for field in fields:
-        if profession in field.name.lower():
-            search_patterns = [
-                'lv (.+?) \|', #English
-                'nv (.+?) \|', #Spanish, Portuguese
-            ]
-            level_match = await get_match_from_patterns(search_patterns, field.name.lower())
-            try:
-                level = level_match.group(1)
-                level = int(level)
-            except Exception as error:
-                await database.log_error(
-                    f'{profession.capitalize} data not found in profession overview message field: {field}',
-                    ctx
-                )
-                await database.log_error(error, ctx)
-                raise ValueError(error)
-            break
+        for profession_translation in profession_translations:
+            if profession_translation in field.name.lower():
+                search_patterns = [
+                    'lv (.+?) \|', #English
+                    'nv (.+?) \|', #Spanish, Portuguese
+                ]
+                level_match = await get_match_from_patterns(search_patterns, field.name.lower())
+                try:
+                    level = level_match.group(1)
+                    level = int(level)
+                except Exception as error:
+                    await database.log_error(
+                        f'{profession.capitalize} data not found in profession overview message field: {field}',
+                        ctx
+                    )
+                    await database.log_error(error, ctx)
+                    raise ValueError(error)
+                break
     return (profession, level)
 
 
@@ -672,7 +670,7 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
     search_patterns_tier = [
         'tier\*\* - (.+?) <', #English
         'tier de caballo\*\* - (.+?) <', #Spanish
-        'tier de cavalo\*\* - (.+?) <', #Portuguese
+        'tier do cavalo\*\* - (.+?) <', #Portuguese
     ]
     search_patterns_level = [
         'level\*\* - (.+?) \(', #English 1

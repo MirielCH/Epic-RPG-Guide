@@ -108,7 +108,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -231,7 +231,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -355,7 +355,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find('Merchant') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find('Merchant') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -462,7 +462,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -587,7 +587,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Enchanter') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -813,7 +813,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Lootboxer') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -1040,7 +1040,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Merchant') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -1225,7 +1225,7 @@ class ProfessionsOldCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 professions') > 1) and (str(m.embeds[0].fields[0]).find(f'Worker') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False

@@ -843,6 +843,12 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             f'{emojis.BP} **(*)** This armor is expensive. If you don\'t want to craft it, find a carry or '
             f'cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
         )
+    if 16 <= area.area_no <= 19:
+        note = (
+            f'{note}\n'
+            f'{emojis.BP} If you time travel in this area, you get an additional {area.area_no - 15} '
+            f'{emojis.TIME_TRAVEL} time travels'
+        )
 
     # Title
     title = f'{area_no_str}  •  TT {user.tt}'

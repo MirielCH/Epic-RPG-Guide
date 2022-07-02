@@ -501,7 +501,9 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     else:
         boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
     boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
-    if 16 <= dungeon_no <= 20: boss_at = 'Unknown'
+    if 16 <= dungeon_no <= 20:
+        boss_at = 'Unknown'
+        boss_life = 'Unknown'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price

@@ -43,7 +43,7 @@ class craftingCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if embed_author.find(f'{ctx_author}\'s horse') > 1:
+                if embed_author.find(f'{ctx_author} u2014 horse') > 1:
                     correct_embed = True
                 else:
                     correct_embed = False
@@ -462,7 +462,7 @@ class craftingCog(commands.Cog):
             try:
                 ctx_author = str(ctx.author.name).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
                 embed_author = str(m.embeds[0].author).encode('unicode-escape',errors='ignore').decode('ASCII').replace('\\','')
-                if (embed_author.find(f'{ctx_author}\'s inventory') > 1):
+                if (embed_author.find(f'{ctx_author} u2014 inventory') > 1):
                     correct_embed = True
                 else:
                     correct_embed = False
