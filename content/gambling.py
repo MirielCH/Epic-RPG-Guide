@@ -240,7 +240,7 @@ async def embed_multidice() -> discord.Embed:
         f'{emojis.BP} **You roll the same** • You tie, noone wins or loses anything\n'
     )
     chances = (
-        f'{emojis.BP} 41,67% to win\n'
+        f'{emojis.BP} 41.67% to win\n'
         f'{emojis.BP} 41.67%% to lose\n'
         f'{emojis.BP} 16.67% to get a tie'
     )

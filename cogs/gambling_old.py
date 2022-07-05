@@ -405,7 +405,7 @@ async def embed_multidice(prefix):
     )
 
     chances = (
-        f'{emojis.BP} 41,67% to win\n'
+        f'{emojis.BP} 41.67% to win\n'
         f'{emojis.BP} 41.67%% to lose\n'
         f'{emojis.BP} 16.67% to get a tie'
     )
