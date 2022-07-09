@@ -81,11 +81,20 @@ async def command_professions_calculator(
     needed_xp = None
     from_level_defined = False if from_level is None else True
     if profession is None or from_level is None:
-        command = f'/professions {profession}' if profession is not None else '/professions [profession]'
+        if profession is not None:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
+                                                              command=f'</professions {profession}:959942193747992586>')
+        else:
+            content = (
+                f'**{ctx.author.name}**, please use one of the following commands:\n'
+                f'{emojis.EPIC_RPG_LOGO_SMALL}</professions crafter:959942193747992586>\n'
+                f'{emojis.EPIC_RPG_LOGO_SMALL}</professions enchanter:959942193747992586>\n'
+                f'{emojis.EPIC_RPG_LOGO_SMALL}</professions lootboxer:959942193747992586>\n'
+                f'{emojis.EPIC_RPG_LOGO_SMALL}</professions merchant:959942193747992586>\n'
+                f'{emojis.EPIC_RPG_LOGO_SMALL}</professions worker:959942193747992586>\n'
+            )
         bot_message_task = asyncio.ensure_future(functions.wait_for_profession_message(bot, ctx))
         try:
-            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command=command)
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
         except asyncio.TimeoutError:
             await ctx.respond(

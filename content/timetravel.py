@@ -60,7 +60,7 @@ async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.Application
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
         content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                          command='/inventory')
+                                                          command='</inventory:958555797590265896>')
         bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
     except asyncio.TimeoutError:
         await ctx.respond(

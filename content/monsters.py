@@ -61,7 +61,7 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
             bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
             try:
                 content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                                  command='/world')
+                                                                  command='</world:953370104236761108>')
                 bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
             except asyncio.TimeoutError:
                 await ctx.respond(

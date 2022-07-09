@@ -52,7 +52,7 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
         bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='/horse stats')
+                                                              command='</horse stats:966961638378987540>')
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
         except asyncio.TimeoutError:
             await ctx.respond(
@@ -101,7 +101,7 @@ async def command_horse_training_calculator(
             bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
             try:
                 content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='/horse stats')
+                                                              command='</horse stats:966961638378987540>')
                 bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
             except asyncio.TimeoutError:
                 await ctx.respond(
@@ -117,7 +117,7 @@ async def command_horse_training_calculator(
             bot_message_task = asyncio.ensure_future(functions.wait_for_profession_overview_message(bot, ctx))
             try:
                 content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='/professions stats')
+                                                              command='</professions stats:959942193747992586>')
                 bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
             except asyncio.TimeoutError:
                 await ctx.respond(

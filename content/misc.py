@@ -211,8 +211,8 @@ async def command_coincap_calculator(
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_progress_message(bot, ctx))
         try:
             content = (
-                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}`/profile` '
-                f'or {emojis.EPIC_RPG_LOGO_SMALL}`/progress`\n'
+                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}</profile:958554803422781460> '
+                f'or {emojis.EPIC_RPG_LOGO_SMALL}</progress:958558817921159251>\n'
                 f'Note that profile backgrounds are not supported.'
             )
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)

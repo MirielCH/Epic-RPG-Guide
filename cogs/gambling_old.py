@@ -151,7 +151,7 @@ async def embed_gambling_menu(ctx):
 # Big dice
 async def embed_bigdice(prefix: str) -> discord.Embed:
     """Big dice embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`rpg big dice [$]`'
+    command = f'{emojis.BP} `rpg big dice [$]`'
     rules = (
         f'{emojis.BP} You roll a die that can go from 1 to infinity\n'
         f'{emojis.BLANK} The higher the pot, the higher the amount of sides\n'

@@ -33,7 +33,7 @@ class ProfessionsCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         profession: Option(str, 'The profession you want to calculate for. Reads from EPIC RPG if empty.',
-                           choices=strings.PROFESSIONS, default=None),
+                           choices=strings.PROFESSIONS_EN, default=None),
         from_level: Option(int, 'The profession level you want to calculate from. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 200, default=None),
         to_level: Option(int, 'The profession level you want to calculate a total for.',
