@@ -382,7 +382,7 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} {emojis.LB_EPIC} EPIC lootbox: 30 XP\n'
         f'{emojis.BP} {emojis.LB_EDGY} EDGY lootbox: 65 XP\n'
         f'{emojis.BP} {emojis.LB_OMEGA} OMEGA lootbox: 800 XP\n'
-        f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15004 XP\n'
+        f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15,000 XP\n'
         f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: -1000 XP\n'
     )
     calculator = (
