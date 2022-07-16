@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, functions, settings, views
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -54,7 +54,7 @@ async def command_gambling_guide(ctx: discord.ApplicationContext, topic: str):
 # --- Embeds ---
 async def embed_bigdice() -> discord.Embed:
     """Big dice embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/big dice`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["big dice"]}'
     rules = (
         f'{emojis.BP} You roll a die that can go from 1 to infinity\n'
         f'{emojis.BLANK} The higher the pot, the higher the amount of sides\n'
@@ -88,7 +88,7 @@ async def embed_bigdice() -> discord.Embed:
 
 async def embed_blackjack() -> discord.Embed:
     """Blackjack embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/blackjack`\n'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["blackjack"]}\n'
     rules = (
         f'{emojis.BP} Both the dealer (the bot) and you have 2 cards on hand\n'
         f'{emojis.BP} The goal is go get 21 or a number close to it (but not exceed it)\n'
@@ -128,7 +128,7 @@ async def embed_blackjack() -> discord.Embed:
 
 async def embed_coinflip() -> discord.Embed:
     """Coinflip embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/coinflip`\n'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["coinflip"]}\n'
     rules = (
         f'{emojis.BP} You flip a coin and bet on heads or tails\n'
         f'{emojis.BP} The coin can either be heads, tails or land on the side'
@@ -163,7 +163,7 @@ async def embed_coinflip() -> discord.Embed:
 
 async def embed_cups() -> discord.Embed:
     """Cups embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/cups`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["cups"]}'
     rules = (
         f'{emojis.BP} You are presented with three {emojis.CUPS} cups\n'
         f'{emojis.BP} You have to enter either `1`, `2` or `3` to pick one of the cups\n'
@@ -190,7 +190,7 @@ async def embed_cups() -> discord.Embed:
 
 async def embed_dice() -> discord.Embed:
     """Dice embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/dice`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dice"]}'
     rules = (
         f'{emojis.BP} You roll a die that can go from 1 to 7\n'
         f'{emojis.BP} If you get a 1, 2 or 3, you lose\n'
@@ -229,7 +229,7 @@ async def embed_dice() -> discord.Embed:
 
 async def embed_multidice() -> discord.Embed:
     """Multidice embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/multidice`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["multidice"]}'
     rules = (
         f'{emojis.BP} You roll a die against another player\n'
         f'{emojis.BP} Whoever gets the higher roll, wins'
@@ -247,7 +247,8 @@ async def embed_multidice() -> discord.Embed:
     note = (
         f'{emojis.BP} This command is unlocked in area 5\n'
         f'{emojis.BP} This is basically a gambling version of `give`\n'
-        f'{emojis.BP} The amount you can bet is limited by your coin cap (see {emojis.LOGO}`/coin cap calculator`)'
+        f'{emojis.BP} The amount you can bet is limited by your coin cap (see '
+        f'{strings.SLASH_COMMANDS_GUIDE["coin cap calculator"]})'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -264,12 +265,13 @@ async def embed_multidice() -> discord.Embed:
 
 async def embed_slots() -> discord.Embed:
     """Slots embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/slots`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["slots"]}'
     rules = (
         f'{emojis.BP} The slot machine gives you a row of 5 emojis\n'
         f'{emojis.BP} If you get **3 or more** of the same emoji, you win (see below)\n'
         f'{emojis.BP} If you get 2 or less of the same emoji, you lose 100% of your bet\n'
-        f'{emojis.BP} There are five possible emojis: {emojis.SLOTS_DIAMOND}{emojis.SLOTS_100}{emojis.SLOTS_CLOVER}{emojis.SLOTS_GIFT}{emojis.SLOTS_SPARKLES}'
+        f'{emojis.BP} There are five possible emojis: {emojis.SLOTS_DIAMOND}{emojis.SLOTS_100}{emojis.SLOTS_CLOVER}'
+        f'{emojis.SLOTS_GIFT}{emojis.SLOTS_SPARKLES}'
     )
     rewards_five = (
         f'{emojis.BP}{emojis.SLOTS_DIAMOND} • **20x** your bet\n'
@@ -311,7 +313,7 @@ async def embed_slots() -> discord.Embed:
 
 async def embed_wheel() -> discord.Embed:
     """Wheel embed"""
-    command = f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/wheel`'
+    command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["wheel"]}'
     rules = (
         f'{emojis.BP} This is a simple wheel of fortune\n'
         f'{emojis.BP} The wheel lands on one of 7 possible colors\n'

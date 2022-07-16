@@ -53,8 +53,8 @@ async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContex
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
         try:
             content = (
-                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}</profile:958554803422781460> '
-                f'or {emojis.EPIC_RPG_LOGO_SMALL}</stats:958558818831315004>\n'
+                f'**{ctx.author.name}**, please use {strings.SLASH_COMMANDS_EPIC_RPG["profile"]} '
+                f'or {strings.SLASH_COMMANDS_EPIC_RPG["stats"]}.\n'
                 f'Note that profile backgrounds are not supported.'
             )
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
@@ -290,13 +290,13 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
         if dungeon_no == 10:
             check_results = (
                 f'{check_results}\n'
-                f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+                f'{emojis.BP} This dungeon has gear requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})'
             )
         elif dungeon_no in (15,15.2):
             dungeon_no = str(dungeon_no).replace('.','-')
             check_results = (
                 f'{check_results}\n'
-                f'{emojis.BP} This dungeon has various requirements (see {emojis.LOGO}`/dungeon guide`)'
+                f'{emojis.BP} This dungeon has various requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})'
             )
     elif dungeon_no == 11:
         if user_at_check_result == 'fail':
@@ -341,7 +341,7 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                         f'{emojis.BP} Note: You need a {emojis.LIFE_BOOST} LIFE boost C to reach recommended **LIFE**'
                     )
         check_results = (
-            f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+            f'{check_results}\n{emojis.BP} This dungeon has gear requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})'
         )
     elif dungeon_no == 12:
         if (user_def_check_result == 'fail') or (check_life == 'fail'):
@@ -379,7 +379,7 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
             )
         check_results = (
             f'{check_results}\n'
-            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+            f'{emojis.BP} This dungeon has gear requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})'
         )
     elif dungeon_no == 13:
         if user_life_check_result == 'fail':
@@ -393,7 +393,7 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
             check_results = f'{emojis.BP} Your stats are high enough for this dungeon'
         check_results = (
             f'{check_results}\n'
-            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)'
+            f'{emojis.BP} This dungeon has gear requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})'
         )
 
     elif dungeon_no == 14:
@@ -429,7 +429,7 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                 )
         check_results = (
             f'{check_results}\n'
-            f'{emojis.BP} This dungeon has gear requirements (see {emojis.LOGO}`/dungeon guide`)\n'
+            f'{emojis.BP} This dungeon has gear requirements (see {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]})\n'
             f'{emojis.BP} If you are using a helper bot, 1,500 LIFE or less are usually enough'
         )
 
@@ -617,14 +617,15 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
 
     # Rewards
     if 1 <= dungeon_no <= 14:
-        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see {emojis.LOGO}`/area guide`)'
+        rewards = f'{emojis.BP} Unlocks area {dungeon_no + 1:g} (see {strings.SLASH_COMMANDS_GUIDE["area guide"]})'
     elif dungeon_no == 15:
         rewards = (
-            f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see {emojis.LOGO}`/time travel guide`)'
+            f'{emojis.BP} {emojis.TIME_KEY} TIME key to unlock time jumping (see '
+            f'{strings.SLASH_COMMANDS_GUIDE["time travel guide"]})'
         )
     elif dungeon_no == 15.2:
         rewards = (
-            f'{emojis.BP} Unlocks the TOP (see {emojis.LOGO}`/area guide`)\n'
+            f'{emojis.BP} Unlocks the TOP (see {strings.SLASH_COMMANDS_GUIDE["area guide"]})\n'
             f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n'
             f'{emojis.BLANK} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie to beat the EPIC NPC\n'
             f'{emojis.BLANK} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump to get to area 16\n'

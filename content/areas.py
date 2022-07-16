@@ -69,8 +69,8 @@ async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, 
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_stats_message(bot, ctx))
         try:
             content = (
-                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}</profile:958554803422781460> '
-                f'or {emojis.EPIC_RPG_LOGO_SMALL}</stats:958558818831315004>\n'
+                f'**{ctx.author.name}**, please use {strings.SLASH_COMMANDS_EPIC_RPG["profile"]} '
+                f'or {strings.SLASH_COMMANDS_EPIC_RPG["stats"]}.\n'
                 f'Note that profile backgrounds are not supported.'
             )
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
@@ -145,7 +145,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
     if tt.tt_area == area.area_no:
         quick_guide = (
             f'{emojis.BP} {emojis.TIME_TRAVEL} Prepare for time travel '
-            f'(see {emojis.LOGO}`/time travel bonuses`)'
+            f'(see {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]})'
         )
         return quick_guide
 
@@ -158,7 +158,7 @@ async def design_field_quick_guide(ctx: commands.Context, area: database.Area, d
         quick_guide = (
             f'{quick_guide}\n'
             f'{emojis.BP} Go back to previous areas if you are missing materials for crafting the armor '
-            f'(see {emojis.LOGO}`/monster drops`)'
+            f'(see {strings.SLASH_COMMANDS_GUIDE["monster drops"]})'
         )
     if quick_guide_sword != '' or quick_guide_enchant_sword != '':
         quick_guide = f'{quick_guide}\n{quick_guide_sword}{quick_guide_enchant_sword}'
@@ -192,15 +192,18 @@ async def design_field_debuffs(area: database.Area) -> str:
         debuffs = (
             f'{debuffs}\n'
             f'{emojis.BP} Every command drains 1% LIFE\n'
-            f'{emojis.BP} `heal` reduces max LIFE\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]} reduces max LIFE\n'
             f'{emojis.BP} Lootboxes contain no items\n'
         )
     elif area.area_no == 17:
         debuffs = (
             f'{debuffs}\n'
             f'{emojis.BP} Every command drains 0.75% of your levels\n'
-            f'{emojis.BP} `farm` has a high chance to give no items\n'
-            f'{emojis.BP} `craft`, `dismantle`, `forge`, `cook`, `eat`, `withdraw` and `deposit` can fail\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} has a high chance to give no items\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["craft"]}, {strings.SLASH_COMMANDS_EPIC_RPG["dismantle"]}, '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["forge"]}, {strings.SLASH_COMMANDS_EPIC_RPG["cook"]}, '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["eat"]}, {strings.SLASH_COMMANDS_EPIC_RPG["withdraw"]} '
+            f'and {strings.SLASH_COMMANDS_EPIC_RPG["deposit"]} can fail\n'
             f'{emojis.BLANK }If this happens, you will lose the items from that command'
         )
     elif area.area_no == 18:
@@ -209,14 +212,16 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} Monsters can drop a negative amount of items\n'
             f'{emojis.BP} Command cooldowns are randomized when the area is unsealed\n'
             f'{emojis.BP} Enchants may randomly disappear / reappear\n'
-            f'{emojis.BP} `cook` has a chance to have the opposite effect\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["cook"]} has a chance to have the opposite effect\n'
         )
     elif area.area_no == 19:
         debuffs = (
             f'{debuffs}\n'
             f'{emojis.BP} Items have a chance to randomly vanish from inventory\n'
-            f'{emojis.BP} `dice` and `coinflip` do not work properly\n'
-            f'{emojis.BP} `heal`, `cook`, `farm` and all work commands do not work at all\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dice"]} and {strings.SLASH_COMMANDS_EPIC_RPG["coinflip"]} '
+            f'do not work properly\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}, {strings.SLASH_COMMANDS_EPIC_RPG["cook"]}, '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["farm"]} and all work commands do not work at all\n'
             f'{emojis.BP} Your horse buff is not available\n'
         )
     elif area.area_no == 20:
@@ -226,7 +231,8 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} Every command has a chance of removing 1 {emojis.TIME_TRAVEL} TT\n'
             f'{emojis.BP} Your horse has a chance of losing levels\n'
             f'{emojis.BP} Recently obtained pets (up to T5) have a chance of losing a tier or vanishing\n'
-            f'{emojis.BP} `time travel` and `super time travel` do not work\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["time travel"]} and '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["time jump"]} do not work\n'
             f'{emojis.BP} Command cooldowns can randomly change and be displayed wrong\n'
             f'{emojis.BP} While this area is unsealed, A20 monsters have a 0.01% chance of appearing in all areas '
             f'down to A1\n'
@@ -239,16 +245,15 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
     """Returns the best work commands for the area embed"""
 
     work_commands = None
-    emoji = emojis.EPIC_RPG_LOGO_SMALL
 
     if 16 <= area.area_no <= 20:
         if area.area_no in (16,18):
             work_commands = (
-                f'{emojis.BP} {emoji}`/bigboat` if you need {emojis.FISH_SUPER} SUPER fish\n'
-                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["bigboat"]} if you need {emojis.FISH_SUPER} SUPER fish\n'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} otherwise'
             )
         elif area.area_no in (17,20):
-            work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+            work_commands = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}'
         elif area.area_no == 19:
             work_commands = None
         return work_commands
@@ -269,74 +274,83 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
     if not user.ascended or (user.ascended and user.tt == 1):
         if user.tt == 0 and area.area_no == 11:
             work_commands = (
-                f'{emojis.BP} {emoji}`/drill` if you need coins\n'
-                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["drill"]} if you need coins\n'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} otherwise'
             )
         elif user.tt == 2 and 6 <= area.area_no <= 8:
             work_commands = (
-               f'{emojis.BP} {emoji}`/pickaxe`'
+               f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["pickaxe"]}'
             )
         else:
             if money_nohorse is None:
-                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_rich}`'
+                work_commands = (
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG[area.work_cmd_rich]}'
+                )
             else:
                 if user.tt < 25:
                     work_commands = (
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG[area.work_cmd_poor]} '
+                        f'if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG[area.work_cmd_poor]} '
+                        f'if < {money_t6horse}m coins and horse is T6+'
                     )
                 else:
                     work_commands = (
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins'
+                        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG[area.work_cmd_poor]} if < {money_t6horse}m coins'
                     )
-                work_commands = f'{work_commands}\n{emojis.BP} {emoji}`{area.work_cmd_rich}` otherwise'
+                work_commands = (
+                    f'{work_commands}\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG[area.work_cmd_rich]} otherwise'
+                )
 
     if user.ascended:
         if 1 <= area.area_no <= 9:
             if user.tt == 1:
-                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+                work_commands = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}'
             elif 1 <= area.area_no <= 3:
-                work_commands = f'{emojis.BP} {emoji}`/dynamite`'
+                work_commands = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}'
             elif 4 <= area.area_no <= 5:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/chainsaw` if worker 115 or higher\n'
-                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} if worker 115 or higher\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} otherwise'
                 )
             elif 6 <= area.area_no <= 7:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/greenhouse` if worker 102 or higher\n'
-                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]} if worker 102 or higher\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} otherwise'
                 )
             elif area.area_no == 8:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/chainsaw` if worker 109 or higher\n'
-                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} if worker 109 or higher\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} otherwise'
                 )
             elif area.area_no == 9:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/greenhouse` if worker 107 or higher\n'
-                    f'{emojis.BP} {emoji}`/dynamite` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]} if worker 107 or higher\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} otherwise'
                 )
         elif area.area_no == 10:
             if user.tt == 1:
-                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+                work_commands = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}'
             else:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                    f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} '
+                    f'if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} otherwise'
                 )
         elif area.area_no == 11:
             if user.tt == 1:
-                work_commands = f'{emojis.BP} {emoji}`/chainsaw`'
+                work_commands = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}'
             else:
                 work_commands = (
-                    f'{emojis.BP} {emoji}`/dynamite` if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
-                    f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} '
+                    f'if you have all the {emojis.LOG_ULTRA} ULTRA logs you need for forging\n'
+                    f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} otherwise'
                 )
         else:
             work_commands = (
-                f'{emojis.BP} {emoji}`/dynamite` if you need coins\n'
-                f'{emojis.BP} {emoji}`/chainsaw` otherwise'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} if you need coins\n'
+                f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]} otherwise'
             )
 
     return work_commands
@@ -682,23 +696,23 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         area_req = (
             f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
             f'{emojis.BP} This area needs to be unsealed by players from the TOP '
-            f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/void info`)\n'
+            f'(see {strings.SLASH_COMMANDS_EPIC_RPG["void info"]})\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
-            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.BLANK} EPIC jumps are found in the {strings.SLASH_COMMANDS_EPIC_RPG["shop"]} and in dungeons 16-20\n'
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
             f'{emojis.BP} Complete the EPIC NPC fight in the TOP once\n'
             f'{emojis.BP} This area needs to be unsealed by players from area {area.area_no-1} '
-            f'(see {emojis.EPIC_RPG_LOGO_SMALL}`/void info`)\n'
+            f'(see {strings.SLASH_COMMANDS_EPIC_RPG["void info"]})\n'
             f'{emojis.BP} Once unsealed, the area will stay open for {unseal_time[area.area_no]} days\n'
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
-            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.BLANK} EPIC jumps are found in the {strings.SLASH_COMMANDS_EPIC_RPG["shop"]} and in dungeons 16-20\n'
         )
     if area.unlocked_in_tt > 0:
         area_req = (
@@ -733,7 +747,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     if show_new_commands:
         for new_command in area.new_commands:
             if new_command is not None:
-                new_commands = f'{new_commands}, {emojis.EPIC_RPG_LOGO_SMALL}`{new_command}`'
+                new_commands = f'{new_commands}, {strings.SLASH_COMMANDS_EPIC_RPG.get(new_command, f"`/{new_command}`")}'
         if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command
@@ -764,7 +778,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Use {emojis.LOGO}`/area check` to see your actual damage'
+            f'{emojis.BLANK} Use {strings.SLASH_COMMANDS_GUIDE["area check"]} to see your actual damage'
         )
 
     # Lootboxes
@@ -827,7 +841,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     # Note
     guide_area = 'top' if area.area_no == 21 else area.area_no
     note = (
-        f'{emojis.BP} To change your personal TT settings, use {emojis.LOGO}`/set progress`.'
+        f'{emojis.BP} To change your personal TT settings, use {strings.SLASH_COMMANDS_GUIDE["set progress"]}.'
     )
     if area.area_no in (7,8):
         note = (

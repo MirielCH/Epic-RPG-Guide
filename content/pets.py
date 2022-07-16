@@ -6,7 +6,7 @@ from typing import Optional
 import discord
 
 import database
-from resources import emojis, functions, settings, views
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -106,7 +106,7 @@ async def embed_pets_overview() -> discord.Embed:
     )
     score = (
         f'{emojis.BP} The pet score increases your chance to win pet tournaments\n'
-        f'{emojis.BP} See {emojis.LOGO}`/event guide` for details about tournaments\n'
+        f'{emojis.BP} See {strings.SLASH_COMMANDS_GUIDE["event guide"]} for details about tournaments\n'
         f'{emojis.BP} The pet score is influenced by tier, skills and skill ranks\n'
         f'{emojis.BP} For details see the [Wiki](https://epic-rpg.fandom.com/wiki/Pets#Pet_Score)'
     )
@@ -132,7 +132,7 @@ async def embed_pets_overview() -> discord.Embed:
 async def embed_pets_catch() -> discord.Embed:
     """Pet catching guide"""
     source = (
-        f'{emojis.BP} After using {emojis.EPIC_RPG_LOGO_SMALL}`/training`\n'
+        f'{emojis.BP} After using {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
         f'{emojis.BLANK} 4% base encounter chance\n'
         f'{emojis.BLANK} 10% chance with {emojis.HORSE_T9} T9 horse\n'
         f'{emojis.BLANK} 20% chance with {emojis.HORSE_T10} T10 horse\n'
@@ -169,7 +169,7 @@ async def embed_pets_catch() -> discord.Embed:
 async def embed_pets_fusion() -> discord.Embed:
     """Pet fusion guide"""
     general = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/pets fusion`\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]}\n'
         f'{emojis.BP} You can fuse more than 2 pets but you should only do that if you want to maximize the chance to '
         f'keep certain skills or want to control the type you get\n'
         f'{emojis.BP} You can **not** lose tiers when fusing\n'
@@ -178,7 +178,7 @@ async def embed_pets_fusion() -> discord.Embed:
         f'{emojis.BP} Exception: You can not lose {emojis.SKILL_ASCENDED} ascended and {emojis.SKILL_FIGHTER} fighter'
     )
     tiers = (
-        f'{emojis.BP} Check {emojis.LOGO}`/pets fuse` on what to fuse to get a tier up\n'
+        f'{emojis.BP} Check {strings.SLASH_COMMANDS_GUIDE["pets fuse"]} on what to fuse to get a tier up\n'
         f'{emojis.BP} For the highest chance of a tier up, fuse 2 pets of the **same** tier\n'
         f'{emojis.BP} The chance to tier up gets lower the higher your tier is'
     )
@@ -272,7 +272,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
         f'{emojis.BLANK} The chance is 11.11...% per rank (100% at SS+)\n'
-        f'{emojis.BP} This skill has to be unlocked with {emojis.EPIC_RPG_LOGO_SMALL}`/pets ascend`\n'
+        f'{emojis.BP} This skill has to be unlocked with {strings.SLASH_COMMANDS_EPIC_RPG["pets ascend"]}\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
         f'{emojis.BP} **You will lose all other skills when ascending**\n'
@@ -377,8 +377,8 @@ async def embed_pets_skills_unique() -> discord.Embed:
 async def embed_pets_adventures() -> discord.Embed:
     """Pet adventure guide"""
     usage = (
-        f'{emojis.BP} Command: {emojis.EPIC_RPG_LOGO_SMALL}`/pets adventure`\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/pets adventure action: cancel` to cancel an adventure\n'
+        f'{emojis.BP} Command: {strings.SLASH_COMMANDS_EPIC_RPG["pets adventure"]}\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["pets adventure"]} `action: cancel` to cancel an adventure\n'
         f'{emojis.BP} You can only send **1** pet unless you have the {emojis.SKILL_EPIC} EPIC skill\n'
         f'{emojis.BP} Note: To send all EPIC pets at once, use pet ID `epic`\n'
         f'{emojis.BP} Note: You can not cancel an adventure if the pet has the {emojis.SKILL_TRAVELER} '
@@ -452,7 +452,7 @@ async def embed_fuse(pet_tier: int, timetravel: int) -> discord.Embed:
         f'{emojis.BP} Lower fusions _might_ be possible but are rarely successful.\n'
         f'{emojis.BP} If you want the maximum chance, do same-tier fusions.\n'
         f'{emojis.BP} You can lose skills in fusions!\n'
-        f'{emojis.BP} If you are unsure about fusions, see {emojis.LOGO}`/pets guide`'
+        f'{emojis.BP} If you are unsure about fusions, see {strings.SLASH_COMMANDS_GUIDE["pets guide"]}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

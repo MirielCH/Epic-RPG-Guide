@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, functions, settings, views
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Topics ---
@@ -74,7 +74,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Allows you to participate in completing weekly guild tasks\n'
     )
     how_to_join = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/guild create` to create your own guild\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["guild create"]} to create your own guild\n'
         f'{emojis.BP} Ask a guild owner to invite you in their guild'
     )
     embed = discord.Embed(
@@ -92,21 +92,21 @@ async def embed_overview() -> discord.Embed:
 async def embed_commands() -> discord.Embed:
     """Commands embed"""
     owner = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild buy` : Buy something from the guild shop\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild changeowner` : Transfer guild ownership\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild create` : Create a guild\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild delete` : Delete a guild\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild invite` : Invite a player to your guild\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild kick` : Kick a player from your guild'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild buy"]} : Buy something from the guild shop\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild changeowner"]} : Transfer guild ownership\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild create"]} : Create a guild\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild delete"]} : Delete a guild\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild invite"]} : Invite a player to your guild\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild kick"]} : Kick a player from your guild'
     )
     member = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild leave` : Leave the guild\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild list` : List all members of the guild\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild raid` : Start a guild raid\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild ranking` : Opens the global guild leaderboard\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild shop` : Opens the guild shop\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild tasks` : Show/claim the weekly guild tasks\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/guild upgrade` : Upgrade guild {emojis.GUILD_STEALTH} stealth\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild leave"]} : Leave the guild\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild list"]} : List all members of the guild\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild raid"]} : Start a guild raid\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild ranking"]} : Opens the global guild leaderboard\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild shop"]} : Opens the guild shop\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild tasks"]} : Show/claim the weekly guild tasks\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["guild upgrade"]} : Upgrade guild {emojis.GUILD_STEALTH} stealth\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -213,7 +213,7 @@ async def embed_stats() -> discord.Embed:
     """Stealth and energy embed"""
     stealth = (
         f'{emojis.BP} Decreases the likelihood of getting raided by 1% per STEALTH\n'
-        f'{emojis.BP} Can be increased by using {emojis.EPIC_RPG_LOGO_SMALL}`/guild upgrade`\n'
+        f'{emojis.BP} Can be increased by using {strings.SLASH_COMMANDS_EPIC_RPG["guild upgrade"]}\n'
         f'{emojis.BP} Maximum amount is 95\n'
         f'{emojis.BP} Each upgrade gives you 0~7 stealth\n'
         f'{emojis.BLANK} The amount decreases the more you already have\n'
@@ -221,7 +221,7 @@ async def embed_stats() -> discord.Embed:
     energy = (
         f'{emojis.BP} Energy determines your weekly rank and reward\n'
         f'{emojis.BP} You need 2,000 energy to get the max reward\n'
-        f'{emojis.BP} Can be increased by using {emojis.EPIC_RPG_LOGO_SMALL}`/guild raid`\n'
+        f'{emojis.BP} Can be increased by using {strings.SLASH_COMMANDS_EPIC_RPG["guild raid"]}\n'
         f'{emojis.BP} Ranking over 2,000 energy doesn\'t provide any additional rewards but is advised nonetheless '
         f'so you stay over 2,000 in case you get raided'
     )

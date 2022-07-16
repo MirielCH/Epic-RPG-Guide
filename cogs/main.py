@@ -42,6 +42,7 @@ class MainCog(commands.Cog):
         Interesting errors get written to the database for further review.
         """
         command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
+        command_name = strings.SLASH_COMMANDS_GUIDE.get(command_name, f'`/{command_name}`')
         async def send_error() -> None:
             """Sends error message as embed"""
             embed = discord.Embed(title='An error occured')
@@ -83,10 +84,10 @@ class MainCog(commands.Cog):
             await ctx.respond(
                 f'Hey there, **{ctx.author.name}**. Looks like we haven\'t met before.\n'
                 f'I have set your progress to **TT 0**, **not ascended**.\n\n'
-                f'** --> Please use {emojis.LOGO}`/{command_name}` again to use the bot.**\n\n'
+                f'** --> Please use {command_name} again to use the bot.**\n\n'
                 f'• If you don\'t know what this means, you probably haven\'t time traveled yet and are in TT 0. '
-                f'Check out {emojis.LOGO}`/time travel guide` for some details.\n'
-                f'• If you are in a higher TT, please use {emojis.LOGO}`/set progress` '
+                f'Check out {strings.SLASH_COMMANDS_GUIDE["time travel guide"]} for some details.\n'
+                f'• If you are in a higher TT, please use {strings.SLASH_COMMANDS_GUIDE["set progress"]} '
                 f'to change your settings.\n\n'
                 f'These settings are used by some guides (like the area guides) to only show you what is relevant '
                 f'to your current progress.',

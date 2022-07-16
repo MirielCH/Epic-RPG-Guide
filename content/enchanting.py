@@ -2,7 +2,7 @@
 
 import discord
 
-from resources import emojis, settings
+from resources import emojis, settings, strings
 
 
 # --- Commands ---
@@ -32,10 +32,10 @@ async def embed_enchanting() -> discord.Embed:
         f'{emojis.BP} **VOID** - 300% buff, unlocked in {emojis.TIME_TRAVEL} TT 15\n'
     )
     commands_tiers = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/enchant`: area 2+, rolls `1 * TT multiplier` enchants\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/refine`: area 7+, rolls `10 * TT multiplier` enchants\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transmute`: area 13+, rolls `100 * TT multiplier` enchants\n'
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/transcend`: area 15+, rolls `1,000 * TT multiplier` enchants'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["enchant"]}: area 2+, rolls `1 * TT multiplier` enchants\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["refine"]}: area 7+, rolls `10 * TT multiplier` enchants\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["transmute"]}: area 13+, rolls `100 * TT multiplier` enchants\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["transcend"]}: area 15+, rolls `1,000 * TT multiplier` enchants'
     )
     how_enchanting_works = (
         f'{emojis.BP} Each command rolls a certain amount of enchants\n'
@@ -49,7 +49,7 @@ async def embed_enchanting() -> discord.Embed:
         f'{emojis.BP} The multiplier increases the amount of rolls of all command tiers\n'
         f'{emojis.BP} The multiplier increases with {emojis.TIME_TRAVEL} TT\n'
         f'{emojis.BP} More rolls also means higher cost!\n'
-        f'{emojis.BP} You can check your current multiplier with {emojis.EPIC_RPG_LOGO_SMALL}`/time travel`\n'
+        f'{emojis.BP} You can check your current multiplier with {strings.SLASH_COMMANDS_EPIC_RPG["time travel"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

@@ -7,6 +7,7 @@ import database
 from resources import emojis
 from resources import settings
 from resources import functions
+from resources import strings
 
 
 # area commands (cog)
@@ -61,7 +62,7 @@ class AreasOldCog(commands.Cog):
                     elif arg1 == 'check':
                         await ctx.send(
                             f'This command doesn\'t exist.\n'
-                            f'You are probably looking for the slash command {emojis.LOGO}`/area check`.\n'
+                            f'You are probably looking for the slash command {strings.SLASH_COMMANDS_GUIDE["area check"]}.\n'
                             f'If you can\'t see my slash commands, I either need to be reinvited to activate them or '
                             f'a server admin disabled them.\n'
                         )
@@ -355,18 +356,18 @@ async def design_field_work_commands(area: database.Area, user: database.User) -
             )
         else:
             if money_nohorse is None:
-                work_commands = f'{emojis.BP} {emoji}`{area.work_cmd_rich}`'
+                work_commands = f'{emojis.BP} {emoji}`/{area.work_cmd_rich}`'
             else:
                 if user.tt < 25:
                     work_commands = (
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
+                        f'{emojis.BP} {emoji}`/{area.work_cmd_poor}` if < {money_nohorse}m coins and horse is < T6\n'
+                        f'{emojis.BP} {emoji}`/{area.work_cmd_poor}` if < {money_t6horse}m coins and horse is T6+'
                     )
                 else:
                     work_commands = (
-                        f'{emojis.BP} {emoji}`{area.work_cmd_poor}` if < {money_t6horse}m coins'
+                        f'{emojis.BP} {emoji}`/{area.work_cmd_poor}` if < {money_t6horse}m coins'
                     )
-                work_commands = f'{work_commands}\n{emojis.BP} {emoji}`{area.work_cmd_rich}` otherwise'
+                work_commands = f'{work_commands}\n{emojis.BP} {emoji}`/{area.work_cmd_rich}` otherwise'
 
     if user.ascended:
         if 1 <= area.area_no <= 9:
@@ -739,7 +740,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
     if show_new_commands:
         for new_command in area.new_commands:
             if new_command is not None:
-                new_commands = f'{new_commands}, {emojis.EPIC_RPG_LOGO_SMALL}`{new_command}`'
+                new_commands = f'{new_commands}, {emojis.EPIC_RPG_LOGO_SMALL}`/{new_command}`'
         if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command
@@ -770,7 +771,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Use {emojis.LOGO}`/area check` to see your actual damage'
+            f'{emojis.BLANK} Use {strings.SLASH_COMMANDS_GUIDE["area check"]} to see your actual damage'
         )
 
     # Lootboxes

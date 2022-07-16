@@ -22,8 +22,8 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
     if horse_tier is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
         try:
-            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='</horse stats:966961638378987540>')
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                              command=strings.SLASH_COMMANDS_EPIC_RPG["horse stats"])
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
         except asyncio.TimeoutError:
             await ctx.respond(
@@ -158,8 +158,8 @@ async def command_inventory_calculator(bot: discord.Bot, ctx: discord.Applicatio
     """Inventory calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
-        content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                              command='</inventory:958555797590265896>')
+        content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                          command=strings.SLASH_COMMANDS_EPIC_RPG["inventory"])
         bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
     except asyncio.TimeoutError:
         await ctx.respond(

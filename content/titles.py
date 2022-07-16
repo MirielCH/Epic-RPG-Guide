@@ -71,7 +71,10 @@ async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> disc
             field_value = f'{emojis.BP} **ID**: `{title.achievement_id}`'
         field_value = f'{field_value}\n{emojis.BP} **{ach_or_req}**: {title.requirements}'
         if title.command is not None:
-            field_value = f'{field_value}\n{emojis.BP} **Command**: {emojis.EPIC_RPG_LOGO_SMALL}`{title.command}`'
+            command = strings.SLASH_COMMANDS_EPIC_RPG.get(title.command, f"`{title.command}`")
+            if title.command_page is not None:
+                command = f'{command} `page: {title.command_page}`'
+            field_value = f'{field_value}\n{emojis.BP} **Command**: {command}'
         if title.tip is not None:
             field_value = f'{field_value}\n{emojis.BP} **Tip**: {title.tip}'
         if title.requires_id is not None:

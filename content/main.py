@@ -109,40 +109,40 @@ async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = f'{emojis.BP} {emojis.LOGO}`/valentine guide` : Valentine event guide\n'
     guides = (
-        f'{emojis.BP} {emojis.LOGO}`/area guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/beginner guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/coolness guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/dungeon guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/enchanting guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/event guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/farming guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/gambling guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/guild guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/horse guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/pets guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/professions guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/time travel guide`\n'
-        f'{emojis.BP} {emojis.LOGO}`/time travel details`\n'
-        f'{emojis.BP} {emojis.LOGO}`/ultraining guide`\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungoen guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["enchanting guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["event guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["farming guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["gambling guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["guild guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["horse guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["pets guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["professions guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining guide"]}\n'
     )
     trade_rates = (
-        f'{emojis.BP} {emojis.LOGO}`/trade rates` : Overview of all trade rates\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade rates"]} : Overview of all trade rates\n'
     )
     monsters = (
-        f'{emojis.BP} {emojis.LOGO}`/monster drops` : Monster drops and where to find them\n'
-        f'{emojis.BP} {emojis.LOGO}`/monster search` : Look up monsters or the daily monster\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["monster drops"]} : Monster drops and where to find them\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["monster search"]} : Look up monsters or the daily monster\n'
     )
-    achievements = f'{emojis.BP} {emojis.LOGO}`/title search` : Look up titles / achievements\n'
+    achievements = f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["title search"]} : Look up titles / achievements\n'
     misc = (
-        f'{emojis.BP} {emojis.LOGO}`/ask the oracle` : A very useful command\n'
-        f'{emojis.BP} {emojis.LOGO}`/badges` : All badges and how to get them\n'
-        f'{emojis.BP} {emojis.LOGO}`/codes` : All current redeemable codes\n'
-        f'{emojis.BP} {emojis.LOGO}`/duel weapons` : What every weapon does in duels\n'
-        f'{emojis.BP} {emojis.LOGO}`/tip` : A handy dandy random tip\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ask the oracle"]} : A very useful command\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["badges"]} : All badges and how to get them\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["codes"]} : All current redeemable codes\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["duel weapons"]} : What every weapon does in duels\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["tip"]} : A handy dandy random tip\n'
     )
     field_settings = (
-        f'{emojis.BP} {emojis.LOGO}`/settings` : View your current settings\n'
-        f'{emojis.BP} {emojis.LOGO}`/set progress` : Set your progress to get fitting guides\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["settings"]} : View your current settings\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["set progress"]} : Set your progress to get fitting guides\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -162,33 +162,41 @@ async def embed_help_guides() -> discord.Embed:
 async def embed_help_calculators() -> discord.Embed:
     """Main menu embed"""
     checks = (
-        f'{emojis.BP} {emojis.LOGO}`/area check` : Check if you\'re ready for an area\n'
-        f'{emojis.BP} {emojis.LOGO}`/dungeon check` : Check if you\'re ready for a dungeon\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area check"]} : Check if you\'re ready for an area\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungeon check"]} : Check if you\'re ready for a dungeon\n'
     )
     coincap = (
-        f'{emojis.BP} {emojis.LOGO}`/coin cap calculator` : Calculate the coin cap for a TT/area\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["coin cap calculator"]} : Calculate the coin cap for a TT/area\n'
     )
     crafting = (
-        f'{emojis.BP} {emojis.LOGO}`/crafting calculator` : Recipes mats calculator\n'
-        f'{emojis.BP} {emojis.LOGO}`/dismantling calculator` : Dismantling calculator\n'
-        f'{emojis.BP} {emojis.LOGO}`/inventory calculator` : Convert your inventory into one material\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["crafting calculator"]} : Recipes mats calculator\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dismantling calculator"]} : Dismantling calculator\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["inventory calculator"]} : Convert your inventory into one material\n'
     )
     timetravel = (
-        f'{emojis.BP} {emojis.LOGO}`/time jump calculator` : Calculate the time jump score of your inventory\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time jump calculator"]} : Calculate the time jump score of your inventory\n'
     )
     horse = (
-        f'{emojis.BP} {emojis.LOGO}`/horse boost calculator` : Calculate horse boosts\n'
-        f'{emojis.BP} {emojis.LOGO}`/horse training calculator` : Calculate horse training cost\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["horse boost calculator"]} : Calculate horse boosts\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["horse training calculator"]} : Calculate horse training cost\n'
     )
     pet = (
-        f'{emojis.BP} {emojis.LOGO}`/pets fuse` : See the recommended tiers for a pet fusion\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["pets fuse"]} : See the recommended tiers for a pet fusion\n'
     )
-    drop_chance = f'{emojis.BP} {emojis.LOGO}`/drop chance calculator` : Calculate your monster drop chance\n'
-    trading = f'{emojis.BP} {emojis.LOGO}`/trade calculator` : Calculate materials after trading'
-    professions = f'{emojis.BP} {emojis.LOGO}`/professions calculator` : Calculate what you need to level professions'
-    ultraining = f'{emojis.BP} {emojis.LOGO}`/ultraining stats calculator` : Calculate stats for an ultraining stage'
+    drop_chance = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]} : Calculate your monster drop chance\n'
+    )
+    trading = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade calculator"]} : Calculate materials after trading'
+    )
+    professions = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} : Calculate what you need to level professions'
+    )
+    ultraining = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining stats calculator"]} : Calculate stats for an ultraining stage'
+    )
     misc = (
-        f'{emojis.BP} {emojis.LOGO}`/calculator` : A basic calculator\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["calculator"]} : A basic calculator\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

@@ -60,8 +60,8 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
         if monster is None:
             bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
             try:
-                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name, emoji=emojis.EPIC_RPG_LOGO_SMALL,
-                                                                  command='</world:953370104236761108>')
+                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                                  command=strings.SLASH_COMMANDS_EPIC_RPG["world"])
                 bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
             except asyncio.TimeoutError:
                 await ctx.respond(
@@ -100,12 +100,12 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster]):
         if monster.areas[0] == monster.areas[1]:
             field_value = (
                 f'{emojis.BP} Found in area **{monster.areas[0]}** with '
-                f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+                f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         else:
             field_value = (
                 f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
-                f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+                f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         if monster.drop_name is not None:
             field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
@@ -122,12 +122,12 @@ async def embed_daily_monster(monster: database.Monster):
     if monster.areas[0] == monster.areas[1]:
         field_value = (
             f'{emojis.BP} Found in area **{monster.areas[0]}** with '
-            f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+            f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
         )
     else:
         field_value = (
             f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
-            f'{emojis.EPIC_RPG_LOGO_SMALL}`/{monster.activity}`'
+            f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
         )
     if monster.drop_name is not None:
         field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
@@ -188,14 +188,15 @@ async def embed_monster_drops() -> discord.Embed:
         f'{emojis.BP} A {emojis.HORSE_T8} T8 horse increases the drop chance by 50%\n'
         f'{emojis.BP} A {emojis.HORSE_T9} T9 horse increases the drop chance by 100%\n'
         f'{emojis.BP} A {emojis.HORSE_T10} T10 horse increases the drop chance by 200%\n'
-        f'{emojis.BP} To see your drop chance, use {emojis.LOGO}`/dropchance calculator`\n{emojis.BLANK}'
+        f'{emojis.BP} To see your drop chance, use {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]}\n'
+        f'{emojis.BLANK}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
-            f'These items drop when using {emojis.EPIC_RPG_LOGO_SMALL}`/hunt` or when opening lootboxes.\n'
-            f'You can move to other areas with {emojis.EPIC_RPG_LOGO_SMALL}`/area`.\n'
+            f'These items drop when using {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} or when opening lootboxes.\n'
+            f'You can move to other areas with {strings.SLASH_COMMANDS_EPIC_RPG["area"]}.\n'
             f'{emojis.BLANK}'
         )
     )

@@ -80,7 +80,11 @@ async def embed_titles(prefix: str, search_string: str, titles: Tuple[database.T
         else:
             field_value = f'{emojis.BP} **ID**: `{title.achievement_id}`'
         field_value = f'{field_value}\n{emojis.BP} **{ach_or_req}**: {title.requirements}'
-        if title.command is not None: field_value = f'{field_value}\n{emojis.BP} **Command**: `{title.command}`'
+        if title.command is not None:
+            command = f"{emojis.EPIC_RPG_LOGO_SMALL}`/{title.command}`"
+            if title.command_page is not None:
+                command = f'{command} `page: {title.command_page}`'
+            field_value = f'{field_value}\n{emojis.BP} **Command**: {command}'
         if title.tip is not None:
             tip = title.tip.format(prefix=prefix) if '{prefix}' in title.tip else title.tip
             field_value = f'{field_value}\n{emojis.BP} **Tip**: {tip}'

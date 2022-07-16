@@ -139,7 +139,7 @@ async def embed_main_help(ctx: commands.Context) -> List[discord.Embed]:
         f'{emojis.BP} `{prefix}prefix` : Check/set the prefix'
     )
     field_slash_info = (
-        f'Yo, hey, I now support slash commands! Use {emojis.LOGO}`/help` to check it out.\n'
+        f'Yo, hey, I now support slash commands! Use {strings.SLASH_COMMANDS_GUIDE["help"]} to check it out.\n'
         f'If you can\'t see of any of my slash commands, click [here]({strings.LINK_INVITE}) to reinvite me with '
         f'the proper permissions.\n'
         f'Note that new or improved features will be slash only.'

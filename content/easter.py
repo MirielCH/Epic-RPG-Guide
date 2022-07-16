@@ -3,7 +3,7 @@
 import discord
 
 from content import events
-from resources import emojis, settings, functions, views
+from resources import emojis, settings, functions, strings, views
 
 
 # --- Topics ---
@@ -40,8 +40,8 @@ async def easter_guide(ctx: discord.ApplicationContext, topic: str) -> None:
 async def embed_overview() -> discord.Embed:
     """Embed with easter guide"""
     activities = (
-        f'{emojis.BP} Get {emojis.EASTER_EGG} easter eggs in {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, '
-        f'{emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and all fish command tiers\n'
+        f'{emojis.BP} Get {emojis.EASTER_EGG} easter eggs in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} and all fish command tiers\n'
         f'{emojis.BP} Tame bunnies in the new random **bunny event** (see topic `Bunny event`)\n'
         f'{emojis.BP} Defeat the {emojis.EASTER_BUNNY_BOSS} **bunny boss** to get {emojis.EASTER_EGG_GOLDEN} '
         f'golden eggs (see topic `Bunny boss event`)\n'
@@ -81,8 +81,8 @@ async def embed_overview() -> discord.Embed:
 async def embed_event_bunny() -> discord.Embed:
     """Embed with bunny event"""
     trigger = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/hunt`, {emojis.EPIC_RPG_LOGO_SMALL}`/adventure` and work commands '
-        f'(0.75 % chance)'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
+        f'and work commands (0.75 % chance)'
     )
     answers = (
         f'{emojis.BP} The bunny has a {emojis.PET_HAPPINESS} happiness and :carrot: hunger stat\n'

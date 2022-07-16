@@ -176,6 +176,7 @@ class Title(NamedTuple):
     """Container for title data"""
     achievement_id: int
     command: str
+    command_page: int
     requirements: str
     requires_id: int
     source: str
@@ -1522,6 +1523,7 @@ async def get_titles(search_string: str) -> Tuple[Title]:
         title = Title(
             achievement_id = record['id'],
             command = record['command'],
+            command_page = record['command_page'],
             requirements = record['requirements'],
             requires_id = record['requires_id'],
             source = record['source'],

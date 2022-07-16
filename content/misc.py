@@ -211,8 +211,8 @@ async def command_coincap_calculator(
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_or_progress_message(bot, ctx))
         try:
             content = (
-                f'**{ctx.author.name}**, please use {emojis.EPIC_RPG_LOGO_SMALL}</profile:958554803422781460> '
-                f'or {emojis.EPIC_RPG_LOGO_SMALL}</progress:958558817921159251>\n'
+                f'**{ctx.author.name}**, please use {strings.SLASH_COMMANDS_EPIC_RPG["profile"]} '
+                f'or {strings.SLASH_COMMANDS_EPIC_RPG["progress"]}.\n'
                 f'Note that profile backgrounds are not supported.'
             )
             bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
@@ -232,8 +232,9 @@ async def command_coincap_calculator(
     await ctx.respond(
         f'The coin cap for **TT {timetravel}**, **{area_str}** is '
         f'**{coin_cap:,}** {emojis.COIN} coins.\n'
-        f'You can not receive coins with {emojis.EPIC_RPG_LOGO_SMALL}`/give`, {emojis.EPIC_RPG_LOGO_SMALL}`/multidice` '
-        f'or {emojis.EPIC_RPG_LOGO_SMALL}`/miniboss` if you would exceed this cap.'
+        f'You can not receive coins with {strings.SLASH_COMMANDS_EPIC_RPG["give"]}, '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["multidice"]} '
+        f'or {strings.SLASH_COMMANDS_EPIC_RPG["miniboss"]} if you would exceed this cap.'
     )
 
 
@@ -259,7 +260,7 @@ async def embed_codes():
         color = settings.EMBED_COLOR,
         title = 'REDEEMABLE CODES',
         description = (
-            f'Use these codes with {emojis.EPIC_RPG_LOGO_SMALL}`/code` to get some free goodies.\n'
+            f'Use these codes with {strings.SLASH_COMMANDS_EPIC_RPG["code"]} to get some free goodies.\n'
             f'Every code can only be redeemed once.'
         )
     )
@@ -299,15 +300,15 @@ async def embed_badges() -> discord.Embed:
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
     )
     howtouse = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/badge list` to see all badges\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/badge unlocked` to see the badges you unlocked\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/badge claim` to claim a badge\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/badge select` to activate or deactivate a badge'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge list"]} to see all badges\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge unlocked"]} to see the badges you unlocked\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge claim"]} to claim a badge\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge select"]} to activate or deactivate a badge'
     )
     note = (
         f'{emojis.BP} You can have 3 badges active (5 with a {emojis.HORSE_T10} T10 horse)\n'
         f'{emojis.BP} You can only claim badges you have unlocked\n'
-        f'{emojis.BP} If you don\'t know how to get coolness, see {emojis.LOGO}`/coolness guide`'
+        f'{emojis.BP} If you don\'t know how to get coolness, see {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -325,13 +326,13 @@ async def embed_badges() -> discord.Embed:
 async def embed_coolness_guide() -> discord.Embed:
     """Coolness guide"""
     usage = (
-        f'{emojis.BP} Unlocks cosmetic only profile badges (see {emojis.LOGO}`/badges`)\n'
+        f'{emojis.BP} Unlocks cosmetic only profile badges (see {strings.SLASH_COMMANDS_GUIDE["badges"]})\n'
         f'{emojis.BP} You need at least 2,000 coolness for dungeon 15-2'
     )
     req = f'{emojis.BP} Unlocks when you reach area 12 in {emojis.TIME_TRAVEL}TT 1'
     howtoget = (
-        f'{emojis.BP} {emojis.EPIC_RPG_LOGO_SMALL}`/ultraining` awards 2 coolness per stage '
-        f'(see {emojis.LOGO}`/ultraining guide`)\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["ultraining"]} awards 2 coolness per stage '
+        f'(see {strings.SLASH_COMMANDS_GUIDE["ultraining guide"]})\n'
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
         f'{emojis.BP} Get HYPER, ULTRA or ULTIMATE logs from work commands\n'
@@ -342,8 +343,8 @@ async def embed_coolness_guide() -> discord.Embed:
     note = (
         f'{emojis.BP} You don\'t lose coolness when you time travel\n'
         f'{emojis.BP} You can get coolness in every area once it\'s unlocked\n'
-        f'{emojis.BP} If you have 100+, you get less (except from {emojis.EPIC_RPG_LOGO_SMALL}`/ultraining`)\n'
-        f'{emojis.BP} You can check your coolness by using {emojis.EPIC_RPG_LOGO_SMALL}`/ultraining progress: true`\n'
+        f'{emojis.BP} If you have 100+, you get less (except from {strings.SLASH_COMMANDS_EPIC_RPG["ultraining"]})\n'
+        f'{emojis.BP} You can check your coolness by using {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -360,7 +361,7 @@ async def embed_coolness_guide() -> discord.Embed:
 async def embed_farming_overview() -> discord.Embed:
     """Farming guide overview"""
     planting_normal = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/farm` to plant {emojis.SEED} seeds. '
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} to plant {emojis.SEED} seeds. '
         f'Buy seeds in the shop for 4,000 coins.\n'
         f'{emojis.BP} This gives you XP and either {emojis.BREAD} bread, {emojis.CARROT} carrots or '
         f'{emojis.POTATO} potatoes\n'
@@ -370,8 +371,8 @@ async def embed_farming_overview() -> discord.Embed:
     planting_special = (
         f'{emojis.BP} There are three special seeds: {emojis.SEED_BREAD} bread, {emojis.SEED_CARROT} carrot and '
         f'{emojis.SEED_POTATO} potato seed\n'
-        f'{emojis.BP} You can plant them with {emojis.EPIC_RPG_LOGO_SMALL}`/farm` '
-        f'(e.g. {emojis.EPIC_RPG_LOGO_SMALL}`/farm seed: carrot`)\n'
+        f'{emojis.BP} You can plant them with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} '
+        f'(e.g. {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} `seed: carrot`)\n'
         f'{emojis.BP} The crop will be the same type (e.g. a {emojis.SEED_CARROT} carrot seed gives you '
         f'{emojis.CARROT} carrots)\n'
         f'{emojis.BP} You have a 65% chance to get 1 seed and a 10% chance to get 2 seeds back'
@@ -408,7 +409,7 @@ async def embed_farming_usage() -> discord.Embed:
         f'160 {emojis.CARROT}\n'
         f'{emojis.BP} Can be sold for 3,000 coins and 3 merchant XP\n'
         f'{emojis.BP} Heals the player and gives a temporary +5 LIFE when eaten '
-        f'({emojis.EPIC_RPG_LOGO_SMALL}`/heal item: bread`)'
+        f'({strings.SLASH_COMMANDS_EPIC_RPG["heal"]} `item: bread`)'
     )
     usage_carrot = (
         f'{emojis.BP} {emojis.FOOD_CARROT_BREAD} `Carrot Bread` (+1 Level) ➜ 1 {emojis.BREAD} + **160** '
@@ -417,7 +418,7 @@ async def embed_farming_usage() -> discord.Embed:
         f'{emojis.BP} {emojis.FOOD_CARROTATO_CHIPS} `Carrotato Chips` (+25 random profession XP) ➜ 80 {emojis.POTATO} '
         f'+ **80** {emojis.CARROT}\n'
         f'{emojis.BP} Can be sold for 2,500 coins and 3 merchant XP\n'
-        f'{emojis.BP} Can be used to change the horse name with {emojis.EPIC_RPG_LOGO_SMALL}`/horse feed`'
+        f'{emojis.BP} Can be used to change the horse name with {strings.SLASH_COMMANDS_EPIC_RPG["horse feed"]}'
     )
     usage_potato = (
         f'{emojis.BP} {emojis.SWORD_RUBY} `Ruby Sword` ➜ 4 {emojis.RUBY} + 1 {emojis.LOG_MEGA} + **36** '
@@ -459,13 +460,13 @@ async def embed_beginner_overview() -> discord.Embed:
     goal = (
         f'The goal is to advance until you reach your highest reachable area. At that point you can time travel.\n'
         f'Think of this as new game+. This resets your progress but unlocks more of the game. For more information '
-        f'see {emojis.LOGO}`/timetravel guide`.\n'
-        f'To check out the available commands in this game, use {emojis.EPIC_RPG_LOGO_SMALL}`/start` '
-        f'and {emojis.EPIC_RPG_LOGO_SMALL}`/help`.'
+        f'see {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}.\n'
+        f'To check out the available commands in this game, use {strings.SLASH_COMMANDS_EPIC_RPG["start"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["help"]}.'
     )
     areas_dungeons = (
         f'You advance by moving through areas. You can check what you should do in each area in the area guides '
-        f'(see {emojis.LOGO}`/area guide`).\n'
+        f'(see {strings.SLASH_COMMANDS_GUIDE["area guide"]}).\n'
         f'To leave an area and advance to the next one you have to beat the dungeon for that area (so to leave area 1 '
         f'you do dungeon 1).\n'
         f'Dungeons 1 to 9 are simple tank and spank affairs, there is no gear check. So, if needed, you can enter them '
@@ -492,18 +493,20 @@ async def embed_beginner_first_run() -> discord.Embed:
         f'{emojis.SWORD_EDGY} EDGY Sword (requires 1 {emojis.LOG_ULTRA} ULTRA log)\n'
         f'{emojis.ARMOR_EDGY} EDGY Armor (requires a lot of mob drops)\n'
         f'The ULTRA log needed for the sword equals 250,000 wooden logs and the mob drops for the armor are pretty '
-        f'rare (see {emojis.LOGO}`/monster drops`).\n'
+        f'rare (see {strings.SLASH_COMMANDS_GUIDE["monster drops"]}).\n'
         f'This means that your main goal in TT0 is to farm enough materials to be able to craft this shiny EDGY gear.'
     )
     grinding_trades = (
         f'Grinding all those materials takes time, so you want to do this smartly.\n'
         f'Trade rates are the single most important thing in this game to help you saving time. Every area has '
-        f'different trade rates, so every time you advance, your trade rates change (see {emojis.LOGO}`/trade rates`). '
+        f'different trade rates, so every time you advance, your trade rates change '
+        f'(see {strings.SLASH_COMMANDS_GUIDE["trade rates"]}). '
         f'You can **not** go back to earlier trade rates, these are tied to your highest unlocked area.\n'
         f'This means you can save a lot of time and materials if you farm **early** and exploit the trade rate '
-        f'changes to multiply your inventory. See {emojis.LOGO}`/area guide` to see what to trade in each area.\n'
+        f'changes to multiply your inventory. See {strings.SLASH_COMMANDS_GUIDE["area guide"]} '
+        f'to see what to trade in each area.\n'
         f'In TT0 the most important area is **area 5**. You want to stay there until you have the recommended '
-        f'materials (see {emojis.LOGO}`/area guide area: 5`).\n'
+        f'materials (see {strings.SLASH_COMMANDS_GUIDE["area guide"]} `area: 5`).\n'
         f'If you do this, you will save a ton of time later on and be able to craft that EDGY gear as soon as '
         f'you reach areas 9 and 10. Don\'t forget to check out the area guides for other recommendations.'
     )
