@@ -1,7 +1,8 @@
 # areas.py
 
 import asyncio
-from typing import Optional, Union
+import re
+from typing import Optional
 
 import discord
 from discord.ext import commands
@@ -747,7 +748,13 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     if show_new_commands:
         for new_command in area.new_commands:
             if new_command is not None:
-                new_commands = f'{new_commands}, {strings.SLASH_COMMANDS_EPIC_RPG.get(new_command, f"`/{new_command}`")}'
+                arguments_match = re.search(r'^(.+)\s+(\w+:.+)$', new_command)
+                if arguments_match:
+                    command, arguments = arguments_match.groups()
+                    command = f'{strings.SLASH_COMMANDS_EPIC_RPG.get(command, f"/{command}")} `{arguments}`'
+                else:
+                    command = strings.SLASH_COMMANDS_EPIC_RPG.get(new_command, f"/{new_command}")
+                new_commands = f'{new_commands}, {command}'
         if new_commands != '': new_commands = f'{emojis.BP} {new_commands.lstrip(", ")}'
 
     # Best work command

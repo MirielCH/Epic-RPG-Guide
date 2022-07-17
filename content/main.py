@@ -112,7 +112,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}\n'
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungoen guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["enchanting guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["event guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["farming guide"]}\n'
