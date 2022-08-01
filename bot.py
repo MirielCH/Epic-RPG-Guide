@@ -94,6 +94,8 @@ COG_EXTENSIONS = [
     'cogs.gambling_old',
     'cogs.horse',
     'cogs.horse_old',
+    'cogs.horse_festival',
+    'cogs.horse_festival_old',
     'cogs.links_old',
     'cogs.main',
     'cogs.main_old',

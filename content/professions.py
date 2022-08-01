@@ -408,8 +408,8 @@ async def embed_professions_merchant() -> discord.Embed:
     )
     level_101 =(
         f'{emojis.BP} You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'
-        f'{emojis.BP} You get 1 dragon scale per 50 mob drops at level 101 (2%)\n'
-        f'{emojis.BP} This increases by 2% for every level\n'
+        f'{emojis.BP} You get 1.5 dragon scales per 50 mob drops at level 101 (3%)\n'
+        f'{emojis.BP} This increases by 3% for every level\n'
     )
     how_to_get_xp = (
         f'{emojis.BP} Sell materials\n'

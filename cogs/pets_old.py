@@ -183,14 +183,14 @@ async def embed_pets_overview(prefix):
     )
 
     normalskills = (
-        f'{emojis.BP} There are 8 normal skills (see `{prefix}pet skills`)\n'
+        f'{emojis.BP} See `{prefix}pet skills` for a list of normal skills\n'
         f'{emojis.BP} Skills have a rank that ranges from F to SS+\n'
         f'{emojis.BP} Mainly found by fusing pets (see `{prefix}pet fusion`)\n'
         f'{emojis.BP} Small chance of getting a skill when catching pets'
     )
 
     specialskills = (
-        f'{emojis.BP} There are 7 special skills (see `{prefix}pet skills special`)\n'
+        f'{emojis.BP} See `{prefix}pet skills special` for a list of special skills\n'
         f'{emojis.BP} Special skills don\'t have a rank and can **not** be lost\n'
         f'{emojis.BP} Only available on special event reward pets\n'
         f'{emojis.BP} Each special skill is unique to a certain special pet'

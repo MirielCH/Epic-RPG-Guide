@@ -1021,7 +1021,7 @@ async def embed_event_notsominiboss(prefix):
 
     answers = f'{emojis.BP} `minintboss join` (unlocked in area 10)'
 
-    rewards = f'{emojis.BP} 2-4 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
+    rewards = f'{emojis.BP} 11-13 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
 
     note = (
         f'{emojis.BP} {events_official_server}\n'

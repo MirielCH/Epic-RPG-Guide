@@ -737,7 +737,7 @@ async def embed_event_minintboss() -> discord.Embed:
     """Not so mini boss event"""
     schedule = f'{emojis.BP} Tuesday, Thursday, Saturday at 18:00 UTC'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["minintboss"]} `join: true` (unlocked in area 10)'
-    rewards = f'{emojis.BP} 2-4 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
+    rewards = f'{emojis.BP} 11-13 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
