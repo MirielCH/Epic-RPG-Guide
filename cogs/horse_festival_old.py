@@ -72,7 +72,6 @@ async def embed_festival_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} Horse breed cooldown is reduced by 35%\n'
         f'{emojis.BP} You can use `rpg hf lightspeed` to reduce your active cooldowns by half.\n'
         f'{emojis.BLANK} This consumes 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token and your horse cooldown.\n'
-        f'{emojis.BLANK} Your horse cooldown will be set to 5h after use.\n'
         f'{emojis.BLANK} This does not affect `vote` and `guild`.\n'
     )
     whattodo = (
@@ -126,26 +125,36 @@ async def embed_megarace(prefix: str) -> discord.Embed:
         f'{emojis.BP} Bottleneck: **C**\n'
         f'{emojis.BP} Cliff: **B**\n'
         f'{emojis.BP} Cooldown: **A**\n'
-        f'{emojis.BP} Dinosaur: **B**\n'
-        f'{emojis.BP} EPIC Guards: **A** (**C** for gamblers)\n'
+        f'{emojis.BP} Dinosaur: **C**\n'
+        f'{emojis.BP} EPIC Dealer: **C** (**A** for gamblers)\n'
+        f'{emojis.BP} EPIC Guards: **A** (**B** for gamblers)\n'
+        f'{emojis.BP} EPIC Horse Trainer: **A** or **C**\n'
+        f'{emojis.BP} EPIC NPC: **C**\n'
+        f'{emojis.BP} Giant Life Potion: **C**\n'
+        f'{emojis.BP} Horseless Racer: **B**\n'
+        f'{emojis.BP} Hot Air Balloons: **B**\n'
         f'{emojis.BP} Injured Racers: **C**\n'
-        f'{emojis.BP} Legendary Boss: **C**\n'
-        f'{emojis.BP} Many Horses: **B**\n'
+        f'{emojis.BP} Legendary Boss: **A** (**C** for gamblers)\n'
     )
     best_answers_2 = (
-        f'{emojis.BP} Mountains: **C** (**A** for gamblers)\n'
+        f'{emojis.BP} Many Horses: **B**\n'
+        f'{emojis.BP} Mountains: **C**\n'
         f'{emojis.BP} Mysterious Racer: All answers are the same\n'
-        f'{emojis.BP} Nothing: **C** (**A** for gamblers)\n'
+        f'{emojis.BP} Nothing: **A**\n'
         f'{emojis.BP} Party: **B** (**A** for gamblers)\n'
-        f'{emojis.BP} Plane: **B**\n'
-        f'{emojis.BP} Rainy: **A** (**C** for gamblers)\n'
-        f'{emojis.BP} Sandstorm: **B** (**A** for gamblers)\n'
-        f'{emojis.BP} Sleepy: **A** (**B** for gamblers)\n'
+        f'{emojis.BP} Plane: **A** (**B** for gamblers)\n'
+        f'{emojis.BP} Quicksand: **C**\n'
+        f'{emojis.BP} Racer^-1: **A** (**C** for gamblers)\n'
+        f'{emojis.BP} Rainy: **A**\n'
+        f'{emojis.BP} Sandstorm: **B**\n'
         f'{emojis.BP} Snowy: **C**\n'
-        f'{emojis.BP} Team: **B**\n'
-        f'{emojis.BP} The EPIC NPC: **C**\n'
+        f'{emojis.BP} Sus: **B** (**A** for gamblers)\n'
+        f'{emojis.BP} Suspicious Horse: **B**\n'
+        f'{emojis.BP} Sleepy: **A** (**B** for gamblers)\n'
+        f'{emojis.BP} Team: **B** (**A** for gamblers)\n'
+        f'{emojis.BP} Waterfall: **A** (**B** for gamblers)\n'
         f'{emojis.BP} World Border: **A**\n'
-        f'{emojis.BP} Zombie Horde: **B** (**C** for gamblers)\n'
+        f'{emojis.BP} Zombie Horde: **B**\n'
     )
     note = (
         f'{emojis.BP} The answers for gamblers are better **if** you get lucky, otherwise they are worse\n'
@@ -155,9 +164,6 @@ async def embed_megarace(prefix: str) -> discord.Embed:
         f'{emojis.BP} You can find a boost in commands while you are in a megarace\n'
         f'{emojis.BP} If you accept it, it will slightly lower or increase your remaining time\n'
     )
-    note_start = (
-        f'{emojis.BP} The best answers for the questions are not known yet\n'
-    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MEGARACE',
@@ -165,10 +171,10 @@ async def embed_megarace(prefix: str) -> discord.Embed:
     )
     embed.set_footer(text=await functions.default_footer(prefix))
     embed.add_field(name='OVERVIEW', value=overview, inline=False)
-    #embed.add_field(name='SHORTEST ANSWERS (1)', value=best_answers_1, inline=False)
-    #embed.add_field(name='SHORTEST ANSWERS (2)', value=best_answers_2, inline=False)
+    embed.add_field(name='SHORTEST ANSWERS (1)', value=best_answers_1, inline=False)
+    embed.add_field(name='SHORTEST ANSWERS (2)', value=best_answers_2, inline=False)
     embed.add_field(name=f'MEGARACE BOOST {emojis.MEGARACE_BOOST}', value=megarace_boost, inline=False)
-    embed.add_field(name='NOTE', value=note_start, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 
 
@@ -204,7 +210,7 @@ async def embed_minirace(prefix: str) -> discord.Embed:
         f'{emojis.BLANK} You can join a new minirace next day.\n'
     )
     race_win = (
-        f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.SLEEPY_POTION},\n'
+        f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.SLEEPY_POTION}.\n'
         f'{emojis.BLANK} Higher tiered tournaments play exactly the same.\n'
         f'{emojis.BP} If you manage to win a tier III tournament, you get an exclusive background\n'
     )
