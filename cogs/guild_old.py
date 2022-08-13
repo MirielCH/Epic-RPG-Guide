@@ -294,7 +294,7 @@ async def embed_guild_shop(prefix):
         f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All players get +20% lootbox drop chance for 45m '
         f'(200 {emojis.GUILD_RING})\n'
         f'{emojis.BP} {emojis.GUILD_TOOTHBRUSH} **Legendary toothbrush**: Starts a lootbox summoning '
-        f'(350 {emojis.GUILD_RING})\n'
+        f'(325 {emojis.GUILD_RING})\n'
     )
 
     guides = (

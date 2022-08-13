@@ -1,6 +1,6 @@
 # trading.py
 
-import asyncio
+from math import floor
 from operator import itemgetter
 
 import discord
@@ -507,14 +507,14 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
 
             if current_mat == 'log':
                 if trade_best_change == 0:
-                    trade_amount = trade_amount / trade_fish_rate
-                    trade_amount = trade_amount * trade_fish_rate_next
+                    trade_amount = floor(trade_amount / trade_fish_rate)
+                    trade_amount = floor(trade_amount * trade_fish_rate_next)
                 elif trade_best_change == 1:
-                    trade_amount = trade_amount / trade_apple_rate
-                    trade_amount = trade_amount * trade_apple_rate_next
+                    trade_amount = floor(trade_amount / trade_apple_rate)
+                    trade_amount = floor(trade_amount * trade_apple_rate_next)
                 elif trade_best_change == 2:
-                    trade_amount = trade_amount / trade_ruby_rate
-                    trade_amount = trade_amount * trade_ruby_rate_next
+                    trade_amount = floor(trade_amount / trade_ruby_rate)
+                    trade_amount = floor(trade_amount * trade_ruby_rate_next)
 
             areas_log_amounts.append([trade_area+1, trade_amount, current_mat,'0'])
 
@@ -540,14 +540,14 @@ async def embed_tradecalc(traderate_data, areamats, prefix):
 
         if original_mat == 'log':
             if trade_best_change == 0:
-                trade_amount = trade_amount / trade_fish_rate
-                trade_amount = trade_amount * trade_fish_rate_past
+                trade_amount = floor(trade_amount / trade_fish_rate)
+                trade_amount = floor(trade_amount * trade_fish_rate_past)
             elif trade_best_change == 1:
-                trade_amount = trade_amount / trade_apple_rate
-                trade_amount = trade_amount * trade_apple_rate_past
+                trade_amount = floor(trade_amount / trade_apple_rate)
+                trade_amount = floor(trade_amount * trade_apple_rate_past)
             elif trade_best_change == 2:
-                trade_amount = trade_amount / trade_ruby_rate
-                trade_amount = trade_amount * trade_ruby_rate_past
+                trade_amount = floor(trade_amount / trade_ruby_rate)
+                trade_amount = floor(trade_amount * trade_ruby_rate_past)
 
         if not trade_area == 1:
             areas_log_amounts.append([trade_area-1, trade_amount, original_mat,'0'])

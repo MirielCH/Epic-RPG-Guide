@@ -624,7 +624,7 @@ async def embed_event_specialtrade() -> discord.Embed:
 async def embed_event_bigarena() -> discord.Embed:
     """Big arena event"""
     schedule = f'{emojis.BP} Monday, Wednesday, Friday at 18:00 UTC'
-    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["big arena"]} `join: true` (unlocked in area 7)'
+    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["big arena"]} (unlocked in area 7)'
     rewards = (
         f'{emojis.BP} ~1000+ {emojis.ARENA_COOKIE} arena cookies for the winner\n'
         f'{emojis.BP} ~200+ {emojis.ARENA_COOKIE} arena cookies for second and third place\n'
@@ -690,7 +690,8 @@ async def embed_event_pettournament() -> discord.Embed:
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
-        f'{emojis.BP} You can only enter **1** pet per cycle\n'
+        f'{emojis.BP} You can only enter **1** pet per cycle.\n'
+        f'{emojis.BLANK} Entering a pet will replace an already entered pet.\n'
         f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
         f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see {strings.SLASH_COMMANDS_GUIDE["pets guide"]})\n'
         f'{emojis.BP} The tournament will not happen if there are less than 50 pets'
@@ -736,7 +737,7 @@ async def embed_event_lottery() -> discord.Embed:
 async def embed_event_minintboss() -> discord.Embed:
     """Not so mini boss event"""
     schedule = f'{emojis.BP} Tuesday, Thursday, Saturday at 18:00 UTC'
-    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["minintboss"]} `join: true` (unlocked in area 10)'
+    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["minintboss"]} (unlocked in area 10)'
     rewards = f'{emojis.BP} 11-13 {emojis.DRAGON_SCALE} dragon scales **if** the boss dies'
     note = (
         f'{emojis.BP} {events_official_server}\n'

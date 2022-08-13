@@ -962,6 +962,7 @@ async def embed_event_pettournament(prefix):
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
         f'{emojis.BP} You can only enter **1** pet per cycle\n'
+        f'{emojis.BLANK} Entering a pet will replace an already entered pet.\n'
         f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
         f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see `{prefix}pet`)\n'
         f'{emojis.BP} The tournament will not happen if there are less than 50 pets'

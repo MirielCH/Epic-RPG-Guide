@@ -77,9 +77,9 @@ async def embed_festival_overview(prefix: str) -> discord.Embed:
     whattodo = (
         f'{emojis.BP} Play in the minirace every day\n'
         f'{emojis.BP} Do megarace whenever a stage is available\n'
-        f'{emojis.BP} Optional: Melt 4 {emojis.STEEL} and craft the {emojis.COWBOY_ARMOR}{emojis.COWBOY_SWORD} cowboy gear.\n'
+        f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.COWBOY_ARMOR}{emojis.COWBOY_SWORD} cowboy gear.\n'
         f'{emojis.BLANK} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
-        f'{emojis.BLANK} Materials required: 100 {emojis.HORSESHOE}\n'
+        f'{emojis.BLANK} Materials required: 25 {emojis.HORSESHOE}\n'
         f'{emojis.BP} Melt 21 {emojis.STEEL} and 4 {emojis.GOLD} and craft the {emojis.HORSE_ARMOR} horse armor.\n'
         f'{emojis.BLANK} This will increase your luck in the megarace.\n'
         f'{emojis.BLANK} Materials required: 525 {emojis.HORSESHOE} and 8 {emojis.HORSESHOE_GOLDEN}\n'
@@ -193,15 +193,22 @@ async def embed_minirace(prefix: str) -> discord.Embed:
         f'{emojis.BP} Use `rpg hf minirace` after the round ended to see the players\n'
     )
     actions = (
-        f'{emojis.BP} `RIDE` beats `SUS`\n'
-        f'{emojis.BP} `SUS` beats `SPEEDRUN`\n'
-        f'{emojis.BP} `SPEEDRUN` beats `RIDE`\n'
+        f'{emojis.BP} `RIDE` vs `SUS`: `RIDE` has higher chance to win\n'
+        f'{emojis.BP} `SUS` vs `SPEEDRUN`: `SUS` has higher chance to win\n'
+        f'{emojis.BP} `SPEEDRUN` vs `RIDE`: `SPEEDRUN` has higher chance to win\n'
         f'{emojis.BP} `RIDE` vs `RIDE`: Winner is RNG\n'
         f'{emojis.BP} `SUS` vs `SUS`: Both players lose\n'
         f'{emojis.BP} `SPEEDRUN` vs `SPEEDRUN`: Player with lower horse fatigue wins.\n'
-        f'{emojis.BLANK} Check `rpg hf minirace` to see your horse fatigue.\n'
         f'{emojis.BLANK} If both players have the same value, winner is RNG.\n'
         f'{emojis.BP} If your opponent doesn\'t answer, you win\n'
+    )
+    debuffs = (
+        f'{emojis.BP} Suspiciousness lowers the chance to win using `SUS`\n'
+        f'{emojis.BLANK} `SPEEDRUN` lowers your suspiciousness greatly\n'
+        f'{emojis.BLANK} `RIDE` lowers your suspiciousness slightly\n'
+        f'{emojis.BP} Horse fatigue lowers the chance to win using `SPEEDRUN`\n'
+        f'{emojis.BLANK} `SUS` lowers your horse fatigue greatly\n'
+        f'{emojis.BLANK} `RIDE` lowers your horse fatigue slightly\n'
     )
     round_win = (
         f'{emojis.BP} If you win a round, you will stay in the minirace.\n'
@@ -223,6 +230,7 @@ async def embed_minirace(prefix: str) -> discord.Embed:
     embed.add_field(name='OVERVIEW', value=overview, inline=False)
     embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
     embed.add_field(name='POSSIBLE ACTIONS', value=actions, inline=False)
+    embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
     embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
     embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
     return embed

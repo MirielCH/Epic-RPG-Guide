@@ -189,7 +189,7 @@ async def embed_shop() -> discord.Embed:
         f'{emojis.BP} {emojis.MAGIC_CHAIR} **Magic chair**: All players get +20% lootbox drop chance for 45m '
         f'(200 {emojis.GUILD_RING})\n'
         f'{emojis.BP} {emojis.GUILD_TOOTHBRUSH} **Legendary toothbrush**: Starts a lootbox summoning '
-        f'(350 {emojis.GUILD_RING})\n'
+        f'(325 {emojis.GUILD_RING})\n'
     )
     note = (
         f'{emojis.BP} To unlock this shop the guild owner must spend **all** {emojis.GUILD_COIN} guild coins.\n'
