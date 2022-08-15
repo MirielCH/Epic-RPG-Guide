@@ -61,7 +61,7 @@ async def embed_festival_overview(prefix: str) -> discord.Embed:
         f'and all fish command tiers\n'
         f'{emojis.BP} Get {emojis.HORSESHOE} horseshoes and {emojis.HORSESHOE_GOLDEN} golden horseshoes in the daily '
         f'and weekly **tasks** (see `rpg hf tasks`)\n'
-        f'{emojis.BP} Play in the daily **minirace** (see `{prefix}hf minirace`)\n'
+        #f'{emojis.BP} Play in the daily **minirace** (see `{prefix}hf minirace`)\n'
         f'{emojis.BP} Play in the weekly **megarace** (see `{prefix}hf megarace`)\n'
         f'{emojis.BP} Defeat the {emojis.HORSLIME} **horslime** in `hunt` '
         f'(drops 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token)\n'
@@ -75,7 +75,7 @@ async def embed_festival_overview(prefix: str) -> discord.Embed:
         f'{emojis.BLANK} This does not affect `vote` and `guild`.\n'
     )
     whattodo = (
-        f'{emojis.BP} Play in the minirace every day\n'
+        #f'{emojis.BP} Play in the minirace every day\n'
         f'{emojis.BP} Do megarace whenever a stage is available\n'
         f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.COWBOY_ARMOR}{emojis.COWBOY_SWORD} cowboy gear.\n'
         f'{emojis.BLANK} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
@@ -221,16 +221,20 @@ async def embed_minirace(prefix: str) -> discord.Embed:
         f'{emojis.BLANK} Higher tiered tournaments play exactly the same.\n'
         f'{emojis.BP} If you manage to win a tier III tournament, you get an exclusive background\n'
     )
+    disabled = (
+        f'{emojis.BP} Miniraces are not available anymore due to bugs.\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MINIRACE',
         description = 'Good luck with that background, lol.'
     )
     embed.set_footer(text=await functions.default_footer(prefix))
-    embed.add_field(name='OVERVIEW', value=overview, inline=False)
-    embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
-    embed.add_field(name='POSSIBLE ACTIONS', value=actions, inline=False)
-    embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
-    embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
-    embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
+    #embed.add_field(name='OVERVIEW', value=overview, inline=False)
+    #embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
+    #embed.add_field(name='POSSIBLE ACTIONS', value=actions, inline=False)
+    #embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
+    #embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
+    #embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
+    embed.add_field(name='NOTE', value=disabled, inline=False)
     return embed
