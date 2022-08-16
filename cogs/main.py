@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 
 from content import main
 import database
-from resources import emojis, logs, settings, strings
+from resources import logs, settings, strings
 
 
 class MainCog(commands.Cog):

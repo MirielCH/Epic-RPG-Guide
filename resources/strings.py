@@ -668,6 +668,7 @@ SLASH_COMMANDS_EPIC_RPG_NEW = {
 }
 
 SLASH_COMMANDS_GUIDE = {
+    'about': f'{emojis.LOGO}`/about`',
     'area check': f'{emojis.LOGO}`/area check`',
     'area guide': f'{emojis.LOGO}`/area guide`',
     'ask the oracle': f'{emojis.LOGO}`/ask the oracle`',
@@ -713,6 +714,7 @@ SLASH_COMMANDS_GUIDE = {
 }
 
 SLASH_COMMANDS_GUIDE_NEW = {
+    'about': '</about:972045824869679138>',
     'area check': '</area check:972045824806760468>',
     'area guide': '</area guide:972045824806760468>',
     'ask the oracle': '</ask the oracle:972045824806760477>',

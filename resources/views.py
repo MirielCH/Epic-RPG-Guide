@@ -4,6 +4,7 @@
 from typing import Callable, List, Optional, Union
 
 import discord
+from discord.ext import commands
 
 import database
 from resources import components, functions, settings, strings
@@ -435,4 +436,56 @@ class FollowupCraftingCalculatorView(discord.ui.View):
                 await functions.edit_interaction(self.interaction, view=None)
             except discord.errors.NotFound:
                 pass
+        self.stop()
+
+
+class ComplainView(discord.ui.View):
+    """View with button to complain. Because yes.
+
+    Also needs the message of the response with the view, so do ComplainView.message = await ctx.send('foo').
+
+    Returns
+    -------
+    'timeout' on timeout.
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: commands.Context, message: Optional[discord.Message] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.ctx = ctx
+        self.message = message
+
+    @discord.ui.button(custom_id="complain", style=discord.ButtonStyle.grey, label='Complain')
+    async def button_complain(self, button: discord.ui.Button, interaction: discord.Interaction):
+        """Complain button"""
+        response = (
+            f'What the hell is this nonsense, where are my old commands??!!!??\n'
+            f'Seriously, I can\'t live without my old commands EVERYTHING IS NEW AND DIFFERENT AND OMG AAAHHHHHHHHHH\n\n'
+            f'**THE DEV IS A BLOODY GOBSHITE!** :rage:\n\n'
+            f'**BRING ME THE MANAGER!** :rage:\n\n'
+            f'**I DEMAND MY MONEY BACK!** :rage:\n\n'
+        )
+        embed = discord.Embed(
+            color = settings.EMBED_COLOR,
+            title = f'{self.ctx.author.name} IS COMPLAINING'.upper(),
+            description = response
+        )
+        image = discord.File(settings.IMG_CRANKY, filename='cranky.png')
+        image_url = 'attachment://cranky.png'
+        embed.set_image(url=image_url)
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(view=self)
+        await interaction.response.send_message(embed=embed, file=image)
+        self.stop()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.ctx.author:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        await self.message.edit(view=None)
         self.stop()
