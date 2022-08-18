@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import functions, settings, strings
+from resources import emojis, functions, settings, strings
 
 
 class MainOldCog(commands.Cog):
@@ -18,7 +18,23 @@ class MainOldCog(commands.Cog):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     async def main_help(self, ctx: commands.Context):
         """Main help command"""
-        await functions.send_slash_migration_message(ctx, 'help')
+        prefix = ctx.prefix
+        field_slash_info = (
+            f'This bot now uses slash commands. Use {strings.SLASH_COMMANDS_GUIDE["help"]} to see all commands.'
+        )
+        field_prefix = (
+            f'You can use `{prefix}prefix` to change the prefix.\n\n'
+            f'If you use a legacy command, the bot will tell you which new command to use which is why the prefix '
+            f'setting is still available.\n'
+            f'This will be removed soon.'
+        )
+        embed = discord.Embed(
+            color = settings.EMBED_COLOR,
+            title='IT\'S ALL SLASH NOW',
+            description=field_slash_info
+        )
+        embed.add_field(name='LOOKING FOR PREFIX SETTING?', value=field_prefix, inline=False)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=('statistic','statistics,','devstat','ping','devstats','info','stats','privacy'))
     @commands.bot_has_permissions(send_messages=True, embed_links=True)

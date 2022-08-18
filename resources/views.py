@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import components, functions, settings, strings
+from resources import components, emojis, functions, settings, strings
 
 
 class AbortView(discord.ui.View):
@@ -461,9 +461,9 @@ class ComplainView(discord.ui.View):
         response = (
             f'What the hell is this nonsense, where are my old commands??!!!??\n'
             f'Seriously, I can\'t live without my old commands EVERYTHING IS NEW AND DIFFERENT AND OMG AAAHHHHHHHHHH\n\n'
-            f'**THE DEV IS A BLOODY GOBSHITE!** :rage:\n\n'
-            f'**BRING ME THE MANAGER!** :rage:\n\n'
-            f'**I DEMAND MY MONEY BACK!** :rage:\n\n'
+            f'**THE DEV IS A BLOODY GOBSHITE!** {emojis.SAD_ANGRY}\n\n'
+            f'**BRING ME THE MANAGER!** {emojis.PEPE_ANGRY_POLICE}\n\n'
+            f'**I DEMAND MY MONEY BACK!** {emojis.PEPE_TABLESLAM}\n\n'
         )
         embed = discord.Embed(
             color = settings.EMBED_COLOR,
@@ -472,7 +472,7 @@ class ComplainView(discord.ui.View):
         )
         image = discord.File(settings.IMG_CRANKY, filename='cranky.png')
         image_url = 'attachment://cranky.png'
-        embed.set_image(url=image_url)
+        embed.set_thumbnail(url=image_url)
         for child in self.children:
             child.disabled = True
         await self.message.edit(view=self)

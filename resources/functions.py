@@ -42,19 +42,20 @@ def round_school(number: float) -> int:
 async def send_slash_migration_message(ctx: commands.Context, new_command: str) -> None:
     """Sends a message telling the user to use slash."""
     description = (
-        f'Use 🡺 **{strings.SLASH_COMMANDS_GUIDE[new_command]}** 🡸 instead.\n'
+        f'{emojis.BLANK} ➜ **{strings.SLASH_COMMANDS_GUIDE[new_command]}**\n'
         f'{emojis.BLANK}'
     )
     explanation = (
         f'Since September 1, 2022 verified Discord bots are required to use slash commands.\n'
         f'Press `/` to see a list of all available slash commands.\n'
-        f'To see a list of my slash commands, use {strings.SLASH_COMMANDS_GUIDE["help"]}.'
+        f'To see a list of my slash commands, use {strings.SLASH_COMMANDS_GUIDE["help"]}.\n'
+        f'{emojis.BLANK}'
     )
     help = (
-        f'If you can\'t see any slash commands, a server admin needs to enable them.\n'
-        f'If you are an admin, try [reinviting me]({strings.LINK_INVITE}) to make sure slash commands are enabled.\n'
-        f'You can read more about slash permissions on the official [Discord blog]'
-        f'(https://discord.com/blog/slash-commands-permissions-discord-apps-bots).'
+        f'If you can\'t see my slash commands, a server admin needs to enable them.\n'
+        f'If you _are_ an admin, try [reinviting me]({strings.LINK_INVITE}).\n'
+        f'You can also set slash permissions (see this [blog article]'
+        f'(https://discord.com/blog/slash-commands-permissions-discord-apps-bots)).'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -62,7 +63,7 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
         description = description
     )
     embed.add_field(name='SAY WHAT NOW?', value=explanation, inline=False)
-    embed.add_field(name='I DON\'T SEE ANY SLASH COMMANDS', value=help, inline=False)
+    embed.add_field(name='I CAN\'T SEE THE SLASH COMMANDS, HELP!', value=help, inline=False)
 
     view = views.ComplainView(ctx)
     interaction_message = await ctx.send(embed=embed, view=view)
