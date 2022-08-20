@@ -20,7 +20,7 @@ class TradingOldCog(commands.Cog):
     @commands.command(aliases=trades_aliases)
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def trades(self, ctx, *args):
-        await functions.send_slash_migration_message(ctx, 'trade summary')
+        await functions.send_slash_migration_message(ctx, 'trade guide')
 
     # Command "traderates" - Returns trade rates of all areas
     @commands.command(aliases=('trr','rates','rate','traderate',))
