@@ -123,6 +123,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["professions guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining guide"]}\n'
     )
     trade_rates = (
