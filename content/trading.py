@@ -46,7 +46,6 @@ async def command_trade_calculator(ctx: discord.ApplicationContext, area_no: int
         'wooden log': emojis.LOG
     }
 
-    mat_output = f'{materials_emojis[material]} {material}'
     areas = await database.get_all_areas()
     embed = await embed_trade_calculator(areas, area_no, material, amount)
     await ctx.respond(embed=embed)
@@ -55,11 +54,8 @@ async def command_trade_calculator(ctx: discord.ApplicationContext, area_no: int
 # --- Embeds ---
 async def embed_trades_area_specific(user: database.User, area: database.Area) -> discord.Embed:
     """Embed with trades before leaving area X"""
-    if area.area_no == 11:
-        if user.tt == 0:
-            description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
-        else:
-            description = await functions.design_field_trades(area, user)
+    if (area.area_no == 11 and user.tt == 0) or (area.area_no == 15 and user.tt < 25):
+        description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'
     else:
         description = await functions.design_field_trades(area, user)
     area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
@@ -80,7 +76,7 @@ async def embed_trades_all_areas(user: database.User) -> discord.Embed:
         description = (
             f'This page lists all trades you should do before leaving each area.\n'
             f'Areas not listed here don\'t have any recommended trades.\n'
-            f'Everything that isn\'t mentioned can be ignored.'
+            f'Materials not mentioned can be ignored.'
         )
     )
     embed.set_footer(text='Use "/area guide" to see the full area guides')

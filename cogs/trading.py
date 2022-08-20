@@ -22,17 +22,15 @@ class TradingCog(commands.Cog):
 
     cmd_trade = SlashCommandGroup("trade", "Trade commands")
 
-    """
-    @cmd_trade.command(name='guide', description='Trades you have to do before leaving areas')
-    async def trade_guide(
+    @cmd_trade.command(name='guide', description='Recommended trades before leaving areas.')
+    async def trade_summary(
         self,
         ctx: discord.ApplicationContext,
         area_no: Option(int, 'The area you want to see the trades for. Shows all areas if empty.', name='area',
-                        min_value=1, max_value=21, choices=strings.CHOICES_AREA, default=None),
+                        min_value=0, max_value=21, choices=strings.CHOICES_AREA, default=None),
     ) -> None:
-        """"""Trade guide""""""
+        """Trade summary"""
         await trading.command_trade_guide(ctx, area_no)
-    """
 
     @cmd_trade.command(name='rates', description='All trade rates in one handy overview')
     async def trade_rates(self, ctx: discord.ApplicationContext) -> None:
