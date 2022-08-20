@@ -23,7 +23,7 @@ class TradingCog(commands.Cog):
     cmd_trade = SlashCommandGroup("trade", "Trade commands")
 
     @cmd_trade.command(name='guide', description='Recommended trades before leaving areas.')
-    async def trade_summary(
+    async def trade_guide(
         self,
         ctx: discord.ApplicationContext,
         area_no: Option(int, 'The area you want to see the trades for. Shows all areas if empty.', name='area',

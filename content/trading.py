@@ -16,11 +16,10 @@ async def command_trade_guide(ctx: discord.ApplicationContext, area_no: Optional
     user = await database.get_user(ctx.author.id)
     if area_no is not None:
         area = await database.get_area(area_no)
-        embed = await embed_trades_area_specific(user, area)
-        await ctx.respond(embed=embed)
+        embed = await embed_trades_area_specific(area, user)
     else:
         embed = await embed_trades_all_areas(user)
-        await ctx.respond(embed=embed)
+    await ctx.respond(embed=embed)
 
 
 async def command_trade_rates(ctx: discord.ApplicationContext) -> None:
@@ -52,7 +51,7 @@ async def command_trade_calculator(ctx: discord.ApplicationContext, area_no: int
 
 
 # --- Embeds ---
-async def embed_trades_area_specific(user: database.User, area: database.Area) -> discord.Embed:
+async def embed_trades_area_specific(area: database.Area, user: database.User) -> discord.Embed:
     """Embed with trades before leaving area X"""
     if (area.area_no == 11 and user.tt == 0) or (area.area_no == 15 and user.tt < 25):
         description = f'{emojis.BP} No trades because of {emojis.TIME_TRAVEL} time travel'

@@ -5,7 +5,7 @@ import importlib
 import sys
 
 import discord
-from discord.commands import SlashCommandGroup, CommandPermission, Option
+from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
 from resources import functions, settings, views
@@ -20,15 +20,11 @@ class DevCog(commands.Cog):
         "dev",
         "Development commands",
         guild_ids=settings.DEV_GUILDS,
-        permissions=[
-            CommandPermission(
-                "owner", 2, True
-            )
-        ],
     )
 
     # Commands
     @dev.command()
+    @discord.default_permissions(administrator=True)
     async def reload(
         self,
         ctx: discord.ApplicationContext,
@@ -67,6 +63,7 @@ class DevCog(commands.Cog):
         await ctx.respond(f'```diff\n{message}\n```')
 
     @dev.command()
+    @discord.default_permissions(administrator=True)
     async def shutdown(self, ctx: discord.ApplicationContext):
         """Shuts down the bot"""
         if ctx.author.id != settings.OWNER_ID:
@@ -86,6 +83,7 @@ class DevCog(commands.Cog):
             await functions.edit_interaction(interaction, content='Shutdown aborted.', view=None)
 
     @dev.command(name='sync-commands')
+    @discord.default_permissions(administrator=True)
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:
         """Manually sync commands"""
         if ctx.author.id != settings.OWNER_ID:
