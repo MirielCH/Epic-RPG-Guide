@@ -97,6 +97,28 @@ class FunOldCog(commands.Cog):
         await ctx.send(f'Do I look like a moderation bot {emojis.SUS}')
 
     @commands.command()
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def blacklist(self, ctx: commands.Context) -> None:
+        """Blacklist"""
+        if not len(ctx.message.mentions) == 1:
+            await ctx.send(f'The syntax of this very important command is `{ctx.prefix}blacklist [@User]`.')
+            return
+        await ctx.send(
+            f'**{ctx.message.mentions[0].name}** was banned from EPIC RPG for having too much luck.\n'
+            f'The likes of them are not welcome among the unlucky.\n'
+            f'No appeal.'
+        )
+
+    @commands.command()
+    @commands.bot_has_permissions(send_messages=True, embed_links=True)
+    async def unblacklist(self, ctx: commands.Context) -> None:
+        """Unblacklist"""
+        if not ctx.message.mentions:
+            await ctx.send(f'The syntax of this very important command is `{ctx.prefix}unblacklist [@User]`.')
+            return
+        await ctx.send('I said no appeal.')
+
+    @commands.command()
     @commands.is_owner()
     @commands.bot_has_permissions(send_messages=True)
     async def hey(self, ctx: commands.Context) -> None:

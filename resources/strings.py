@@ -709,6 +709,7 @@ SLASH_COMMANDS_GUIDE = {
     'title search': f'{emojis.LOGO}`/title search`',
     'trade calculator': f'{emojis.LOGO}`/trade calculator`',
     'trade rates': f'{emojis.LOGO}`/trade rates`',
+    'trade summary': f'{emojis.LOGO}`/trade summary`',
     'ultraining guide': f'{emojis.LOGO}`/ultraining guide`',
     'ultraining stats calculator': f'{emojis.LOGO}`/ultraining stats calculator`',
 }
@@ -755,6 +756,7 @@ SLASH_COMMANDS_GUIDE_NEW = {
     'title search': '</title search:972045824940965907>',
     'trade calculator': '</trade calculator:972045824999690301>',
     'trade rates': '</trade rates:972045824999690301>',
+    'trade summary': '</trade summary:972045824999690301>',
     'ultraining guide': '</ultraining guide:972045824999690302>',
     'ultraining stats calculator': '</ultraining stats calculator:972045824999690302>',
 }

@@ -46,7 +46,7 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
         f'{emojis.BLANK}'
     )
     explanation = (
-        f'Since September 1, 2022 verified Discord bots are required to use slash commands.\n'
+        f'On September 1, 2022, most verified Discord bots switched to slash commands.\n'
         f'Press `/` to see a list of all available slash commands.\n'
         f'To see a list of my slash commands, use {strings.SLASH_COMMANDS_GUIDE["help"]}.\n'
         f'{emojis.BLANK}'
@@ -63,7 +63,7 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
         description = description
     )
     embed.add_field(name='SAY WHAT NOW?', value=explanation, inline=False)
-    embed.add_field(name='I CAN\'T SEE THE SLASH COMMANDS, HELP!', value=help, inline=False)
+    embed.add_field(name='WELP, I CAN\'T SEE THE SLASH COMMANDS', value=help, inline=False)
 
     view = views.ComplainView(ctx)
     interaction_message = await ctx.send(embed=embed, view=view)

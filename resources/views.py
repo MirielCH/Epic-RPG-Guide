@@ -473,8 +473,7 @@ class ComplainView(discord.ui.View):
         image = discord.File(settings.IMG_CRANKY, filename='cranky.png')
         image_url = 'attachment://cranky.png'
         embed.set_thumbnail(url=image_url)
-        for child in self.children:
-            child.disabled = True
+        self.disable_all_items()
         await self.message.edit(view=self)
         await interaction.response.send_message(embed=embed, file=image)
         self.stop()
