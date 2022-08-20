@@ -516,6 +516,32 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
     return bot_message
 
 
+async def wait_for_guild_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the guild stats embed from EPIC RPG
+    Note that this embed does not contain any user information, so this supports slash command only.
+    """
+    def epic_rpg_check(message):
+        correct_message = False
+        try:
+            if message.interaction is not None and message.embeds:
+                embed_footer = message.embeds[0].footer.text
+                search_strings = [
+                    'your guild was raided', #English
+                    'tu guild fue raideado', #Spanish
+                    'sua guild foi raidad', #Portuguese
+                ]
+                if (any(search_string in embed_footer.lower() for search_string in search_strings)
+                    and message.interaction.user == ctx.author):
+                    correct_message = True
+        except:
+            pass
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
+
+    return bot_message
+
+
 # Extract values from game embeds
 async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
                                              bot_message: discord.Message) -> Tuple[str, int, int, int]:
@@ -782,3 +808,41 @@ async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationCont
         raise ValueError(error)
 
     return (user_at, user_def, user_life)
+
+
+async def extract_duel_bonus_from_guild_embed(ctx: discord.ApplicationContext,
+                                              bot_message: discord.Message) -> int:
+    """Extracts the guild duel bonus from a guild stats embed.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    int
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    progress_field = bot_message.embeds[0].fields[0]
+    search_patterns = [
+        'duel bonus\*\*: (.+?)%', #English
+        'bonus en duel\*\*: (.+?)%', #Spanish
+        'bônus de duel\*\*: (.+?)%', #Portuguese
+    ]
+    duel_bonus_match = await get_match_from_patterns(search_patterns, progress_field.value.lower())
+    if duel_bonus_match:
+        duel_bonus = int(duel_bonus_match.group(1))
+    else:
+        error = f'Error extracting duel bonus in guild stats message: {progress_field}'
+        await database.log_error(
+            f'Error extracting duel bonus in guild stats message: {progress_field}',
+            ctx
+        )
+        raise ValueError(error)
+
+    return duel_bonus
