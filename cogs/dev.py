@@ -20,20 +20,18 @@ class DevCog(commands.Cog):
         "dev",
         "Development commands",
         guild_ids=settings.DEV_GUILDS,
+        default_member_permissions=discord.Permissions(administrator=True)
     )
 
     # Commands
     @dev.command()
-    @discord.default_permissions(administrator=True)
+    @commands.is_owner()
     async def reload(
         self,
         ctx: discord.ApplicationContext,
         modules: Option(str, 'Cogs or modules to reload'),
     ) -> None:
         """Reloads cogs or modules"""
-        if ctx.author.id != settings.OWNER_ID:
-            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
-            return
         modules = modules.split(' ')
         actions = []
         for module in modules:
@@ -63,12 +61,9 @@ class DevCog(commands.Cog):
         await ctx.respond(f'```diff\n{message}\n```')
 
     @dev.command()
-    @discord.default_permissions(administrator=True)
+    @commands.is_owner()
     async def shutdown(self, ctx: discord.ApplicationContext):
         """Shuts down the bot"""
-        if ctx.author.id != settings.OWNER_ID:
-            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
-            return
         view = views.ConfirmCancelView(ctx)
         interaction = await ctx.respond(f'**{ctx.author.name}**, are you **SURE**?', view=view)
         view.interaction = interaction
@@ -83,12 +78,9 @@ class DevCog(commands.Cog):
             await functions.edit_interaction(interaction, content='Shutdown aborted.', view=None)
 
     @dev.command(name='sync-commands')
-    @discord.default_permissions(administrator=True)
+    @commands.is_owner()
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:
         """Manually sync commands"""
-        if ctx.author.id != settings.OWNER_ID:
-            await ctx.respond('As you might have guessed, you are not allowed to use this command.', ephemeral=True)
-            return
         await ctx.defer()
         if settings.DEBUG_MODE:
             #await self.bot.sync_commands(commands=[], guild_ids=settings.DEV_GUILDS)

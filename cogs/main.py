@@ -93,6 +93,11 @@ class MainCog(commands.Cog):
                 f'to your current progress.',
                 ephemeral=True
             )
+        elif isinstance(error, commands.NotOwner):
+            await ctx.respond(
+                f'As you might have guessed, you are not allowed to use this command.',
+                ephemeral=True
+            )
         else:
             await database.log_error(error, ctx)
             if settings.DEBUG_MODE or ctx.author.id in settings.DEV_IDS: await send_error()
@@ -111,12 +116,9 @@ class MainCog(commands.Cog):
     async def on_guild_join(self, guild: discord.Guild) -> None:
         """Sends welcome message on guild join"""
         try:
-            prefix = await database.get_prefix(self.bot, guild, True)
             welcome_message = (
                 f'Hello **{guild.name}**! I\'m here to provide some guidance!\n\n'
-                f'To get a list of all topics, type `{prefix}guide` (or `{prefix}g` for short).\n'
-                f'If you don\'t like this prefix, use `{prefix}setprefix` to change it.\n\n'
-                f'Tip: If you ever forget the prefix, simply ping me with a command.\n\n'
+                f'To get a list of all topics, see {strings.SLASH_COMMANDS_GUIDE["help"]}.\n'
             )
             await guild.system_channel.send(welcome_message)
         except:

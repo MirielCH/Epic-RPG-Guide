@@ -2,6 +2,7 @@
 """Contains internal dev commands"""
 
 import asyncio
+from datetime import datetime, timedelta
 import importlib
 import sys
 
@@ -238,6 +239,17 @@ class DevOldCog(commands.Cog):
         guild = await self.bot.fetch_guild(830928381100556338)
         members = await guild.fetch_members(limit=10).flatten()
         await ctx.send(str(members))
+
+    @dev.command()
+    @commands.is_owner()
+    @commands.bot_has_permissions(send_messages=True)
+    async def none(self, ctx: commands.Context) -> None:
+        now = datetime.now()
+        now_plus = now + timedelta(seconds=2)
+        now_minus = now + timedelta(seconds=-2)
+        from resources import views
+        view = views.ConfirmCancelView(ctx)
+        await ctx.send(view=view)
 
 
 
