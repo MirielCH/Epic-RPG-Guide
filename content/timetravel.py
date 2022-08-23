@@ -69,7 +69,9 @@ async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.Application
         )
         return
     if bot_message is None: return
-    inventory = str(bot_message.embeds[0].fields)
+    inventory = ''
+    for field in bot_message.embeds[0].fields:
+        inventory = f'{inventory}{field.value}\n'
     embed = await embed_tj_score_calculator(area_no, inventory.lower())
     await ctx.respond(embed=embed)
 
@@ -428,6 +430,7 @@ async def embed_time_jump_score() -> discord.Embed:
 
 async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Embed:
     """STT score calculator embed"""
+    inventory = inventory.lower()
     fish = await functions.inventory_get(inventory, 'normie fish')
     fishgolden = await functions.inventory_get(inventory, 'golden fish')
     fishepic = await functions.inventory_get(inventory, 'epic fish')

@@ -168,7 +168,9 @@ async def command_inventory_calculator(bot: discord.Bot, ctx: discord.Applicatio
         )
         return
     if bot_message is None: return
-    inventory = str(bot_message.embeds[0].fields)
+    inventory = ''
+    for field in bot_message.embeds[0].fields:
+        inventory = f'{inventory}{field.value}\n'
     item: database.Item = await database.get_item(material)
     area: database.Area = await database.get_area(area_no)
     amount = await get_inventory_value(area, item, inventory)

@@ -385,7 +385,6 @@ async def embed_farming_overview() -> discord.Embed:
     note = (
         f'{emojis.BP} Farming is unlocked in area 4\n'
         f'{emojis.BP} The amount of items you gain increases with your TT\n'
-        f'{emojis.BP} You can not farm in the TOP'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

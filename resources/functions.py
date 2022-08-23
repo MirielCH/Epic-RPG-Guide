@@ -3,7 +3,7 @@
 from argparse import ArgumentError
 import asyncio
 import re
-from typing import List, Union, Tuple
+from typing import Any, List, Optional, Union, Tuple
 
 import discord
 from discord.utils import MISSING
@@ -37,6 +37,28 @@ async def edit_interaction(interaction: Union[discord.Interaction, discord.Webho
 def round_school(number: float) -> int:
     quotient, rest = divmod(number, 1)
     return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
+
+
+async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:
+    """Returns the first result from several running asyncio tasks."""
+    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    for task in pending:
+        if not task.done():
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+    try:
+        result = list(done)[0].result()
+    except asyncio.CancelledError:
+        pass
+    except asyncio.TimeoutError as error:
+        raise
+    except Exception as error:
+        await database.log_error(error, ctx)
+        raise
+    return result
 
 
 # --- Regex ---
@@ -187,25 +209,11 @@ async def design_field_rec_stats(dungeon: database.Dungeon, short_version: bool 
     return field_value
 
 
-# Get amount of material in inventory
-async def inventory_get(inventory, material):
+async def inventory_get(inventory: str, material: str) -> int:
+    """Extracts the amount of a material from an inventory"""
+    material_match = re.search(fr'\*\*{material}\*\*: (.+?)\n', inventory)
+    return int(material_match.group(1).replace(',','')) if material_match else 0
 
-    if inventory.find(f'**{material}**:') > -1:
-        mat_start = inventory.find(f'**{material}**:') + len(f'**{material}**:')+1
-        mat_end = inventory.find(f'\\', mat_start)
-        mat_end_bottom = inventory.find(f'\'', mat_start)
-        mat = inventory[mat_start:mat_end].replace(',','')
-        mat_bottom = inventory[mat_start:mat_end_bottom].replace(',','')
-        if mat.isnumeric():
-            mat = int(mat)
-        elif mat_bottom.isnumeric():
-            mat = int(mat_bottom)
-        else:
-            mat = 0
-    else:
-        mat = 0
-
-    return mat
 
 
 def round_school(number: float) -> int:
@@ -330,8 +338,9 @@ async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_tas
 
 async def wait_for_profession_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profession detail embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -352,9 +361,12 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_fun_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
@@ -376,8 +388,9 @@ async def wait_for_fun_message(bot: commands.Bot, ctx: discord.ApplicationContex
 
 async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profession overview embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -398,15 +411,19 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the world embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             field2 = message.embeds[0].fields[1]
             search_strings = [
@@ -421,15 +438,19 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the horse embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -443,15 +464,19 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profile embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -466,15 +491,19 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the profile OR the stats embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -489,15 +518,19 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the inventory embed from EPIC RPG"""
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             ctx_author = format_string(str(ctx.author.name))
             embed_author = format_string(str(message.embeds[0].author))
@@ -511,17 +544,21 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 async def wait_for_guild_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the guild stats embed from EPIC RPG
     Note that this embed does not contain any user information, so this supports slash command only.
     """
-    def epic_rpg_check(message):
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
+        message = message_after if message_after is not None else message_before
         try:
             if message.interaction is not None and message.embeds:
                 embed_footer = message.embeds[0].footer.text
@@ -537,9 +574,12 @@ async def wait_for_guild_message(bot: commands.Bot, ctx: discord.ApplicationCont
             pass
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
-    bot_message = await bot.wait_for('message', check=epic_rpg_check, timeout = settings.ABORT_TIMEOUT)
-
-    return bot_message
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
 
 
 # Extract values from game embeds

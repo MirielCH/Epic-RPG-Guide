@@ -542,7 +542,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'weekly': f'{emojis.EPIC_RPG_LOGO_SMALL}`/weekly`',
     'wheel': f'{emojis.EPIC_RPG_LOGO_SMALL}`/wheel`',
     'withdraw': f'{emojis.EPIC_RPG_LOGO_SMALL}`/withdraw`',
-    'world': f'{emojis.EPIC_RPG_LOGO_SMALL}`/world`',
+    'world': f'{emojis.EPIC_RPG_LOGO_SMALL}`/world status`',
 }
 
 SLASH_COMMANDS_EPIC_RPG_NEW = {
@@ -664,7 +664,7 @@ SLASH_COMMANDS_EPIC_RPG_NEW = {
     'weekly': '</weekly:956658465185603645>',
     'wheel': '</wheel:959916179525341194>',
     'withdraw': '</withdraw:958554805020794880>',
-    'world': '</world:953370104236761108>',
+    'world': '</world status:953370104236761108>',
 }
 
 SLASH_COMMANDS_GUIDE = {

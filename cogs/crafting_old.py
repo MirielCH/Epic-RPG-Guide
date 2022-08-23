@@ -538,11 +538,10 @@ class craftingCog(commands.Cog):
             answer = answer.lower()
             if answer in ('rpg i','rpg inventory','rpg inv',):
                 answer_bot_inv = await self.bot.wait_for('message', check=epic_rpg_check, timeout = 5)
-                try:
-                    inventory = str(answer_bot_inv.embeds[0].fields).lower()
-                except:
-                    await ctx.send('Whelp, something went wrong here, sorry.')
-                    return
+                inventory = ''
+                for field in answer_bot_inv.embeds[0].fields:
+                    inventory = f'{inventory}{field.value}\n'
+                inventory = inventory.lower()
                 fish = await functions.inventory_get(inventory, 'normie fish')
                 fishgolden = await functions.inventory_get(inventory, 'golden fish')
                 fishepic = await functions.inventory_get(inventory, 'epic fish')
