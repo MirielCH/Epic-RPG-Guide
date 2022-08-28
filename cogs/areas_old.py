@@ -21,13 +21,9 @@ class AreasOldCog(commands.Cog):
         """Command for areas, can be invoked with "aX", "a X", "areaX" and "area X".
         Optional parameters for TT and ascension
         """
-        invoked = ctx.invoked_with.lower()
-        prefix = ctx.prefix.lower()
-        area_no = arg_tt = None
-        arg_asc = False
+        await functions.send_slash_migration_message(ctx, 'area guide')
 
 
 # Initialization
 def setup(bot):
-<<<<<<< HEAD
     bot.add_cog(AreasOldCog(bot))

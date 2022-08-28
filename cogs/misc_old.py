@@ -74,9 +74,9 @@ class MiscOldCog(commands.Cog):
     @commands.command(aliases=('coin',))
     @commands.bot_has_permissions(send_messages=True, external_emojis=True)
     async def coincap(self, ctx, *args):
+        await functions.send_slash_migration_message(ctx, 'coin cap calculator')
 
 
 # Initialization
 def setup(bot):
-<<<<<<< HEAD
     bot.add_cog(MiscOldCog(bot))

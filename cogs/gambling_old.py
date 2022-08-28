@@ -64,6 +64,7 @@ class GamblingOldCog(commands.Cog):
     async def wheel(self, ctx):
         await functions.send_slash_migration_message(ctx, 'gambling guide')
 
+
 # Initialization
 def setup(bot):
     bot.add_cog(GamblingOldCog(bot))

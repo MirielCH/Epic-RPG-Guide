@@ -34,6 +34,7 @@ class TradingOldCog(commands.Cog):
     async def tradecalc(self, ctx, *args):
         await functions.send_slash_migration_message(ctx, 'trade calculator')
 
+
 # Initialization
 def setup(bot):
     bot.add_cog(TradingOldCog(bot))
