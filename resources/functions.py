@@ -41,7 +41,10 @@ def round_school(number: float) -> int:
 
 async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:
     """Returns the first result from several running asyncio tasks."""
-    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    try:
+        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    except asyncio.CancelledError:
+        return
     for task in pending:
         if not task.done():
             task.cancel()

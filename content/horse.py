@@ -245,8 +245,8 @@ async def embed_tiers() -> discord.Embed:
     tier10 = (
         f'{emojis.BP} Unlocks 2 extra badge slots\n'
         f'{emojis.BP} Adds a chance for another drop after each drop (mob drops and lootboxes)\n'
-        f'{emojis.BLANK} The chance is believed to be around 20-35%, depending on the item\n'
-        f'{emojis.BLANK} The better the item, the lower the chance\n'
+        f'{emojis.DETAIL} The chance is believed to be around 20-35%, depending on the item\n'
+        f'{emojis.DETAIL} The better the item, the lower the chance\n'
         f'{emojis.BP} {buff_pets.format(increase=400, total=20, training=command_training)}\n'
         f'{emojis.BP} {buff_monsters.format(increase=200)}\n'
         f'{emojis.BP} {buff_lootbox.format(increase=650)}\n'

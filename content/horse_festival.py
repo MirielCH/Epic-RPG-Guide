@@ -56,23 +56,23 @@ async def embed_overview() -> discord.Embed:
     bonuses = (
         f'{emojis.BP} Horse breed cooldown is reduced by 35%\n'
         f'{emojis.BP} You can use {emojis.EPIC_RPG_LOGO_SMALL}`/hf lightspeed` to reduce your active cooldowns by half.\n'
-        f'{emojis.BLANK} This consumes 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token and your horse cooldown.\n'
-        f'{emojis.BLANK} This does not affect `vote` and `guild`.\n'
+        f'{emojis.DETAIL} This consumes 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token and your horse cooldown.\n'
+        f'{emojis.DETAIL} This does not affect `vote` and `guild`.\n'
     )
     whattodo = (
         #f'{emojis.BP} Play in the minirace every day\n'
         f'{emojis.BP} Do megarace whenever a stage is available\n'
         f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.COWBOY_ARMOR}{emojis.COWBOY_SWORD} cowboy gear.\n'
-        f'{emojis.BLANK} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
-        f'{emojis.BLANK} Materials required: 25 {emojis.HORSESHOE}\n'
+        f'{emojis.DETAIL} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
+        f'{emojis.DETAIL} Materials required: 25 {emojis.HORSESHOE}\n'
         f'{emojis.BP} Melt 21 {emojis.STEEL} and 4 {emojis.GOLD} and craft the {emojis.HORSE_ARMOR} horse armor.\n'
-        f'{emojis.BLANK} This will increase your luck in the megarace.\n'
-        f'{emojis.BLANK} Materials required: 525 {emojis.HORSESHOE} and 8 {emojis.HORSESHOE_GOLDEN}\n'
+        f'{emojis.DETAIL} This will increase your luck in the megarace.\n'
+        f'{emojis.DETAIL} Materials required: 525 {emojis.HORSESHOE} and 8 {emojis.HORSESHOE_GOLDEN}\n'
         f'{emojis.BP} Complete the event quest and get showered in stuff'
     )
     chances = (
         f'{emojis.BP} 0.5% to encounter a {emojis.HORSLIME} with {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.BLANK} 0.05% extra chance with each cowboy item, so 0.6% chance max\n'
+        f'{emojis.DETAIL} 0.05% extra chance with each cowboy item, so 0.6% chance max\n'
     )
     schedule = (
         f'{emojis.BP} Event started on August 1, 2022\n'
@@ -183,26 +183,26 @@ async def embed_minirace() -> discord.Embed:
         f'{emojis.BP} `RIDE` vs `RIDE`: Winner is RNG\n'
         f'{emojis.BP} `SUS` vs `SUS`: Both players lose\n'
         f'{emojis.BP} `SPEEDRUN` vs `SPEEDRUN`: Player with lower horse fatigue wins.\n'
-        f'{emojis.BLANK} If both players have the same value, winner is RNG.\n'
+        f'{emojis.DETAIL} If both players have the same value, winner is RNG.\n'
         f'{emojis.BP} If your opponent doesn\'t answer, you win\n'
     )
     debuffs = (
         f'{emojis.BP} Suspiciousness lowers the chance to win using `SUS`\n'
-        f'{emojis.BLANK} `SPEEDRUN` lowers your suspiciousness greatly\n'
-        f'{emojis.BLANK} `RIDE` lowers your suspiciousness slightly\n'
+        f'{emojis.DETAIL} `SPEEDRUN` lowers your suspiciousness greatly\n'
+        f'{emojis.DETAIL} `RIDE` lowers your suspiciousness slightly\n'
         f'{emojis.BP} Horse fatigue lowers the chance to win using `SPEEDRUN`\n'
-        f'{emojis.BLANK} `SUS` lowers your horse fatigue greatly\n'
-        f'{emojis.BLANK} `RIDE` lowers your horse fatigue slightly\n'
+        f'{emojis.DETAIL} `SUS` lowers your horse fatigue greatly\n'
+        f'{emojis.DETAIL} `RIDE` lowers your horse fatigue slightly\n'
     )
     round_win = (
         f'{emojis.BP} If you win a round, you will stay in the minirace.\n'
-        f'{emojis.BLANK} You can fight the next round next day.\n'
+        f'{emojis.DETAIL} You can fight the next round next day.\n'
         f'{emojis.BP} If you lose a round, you will drop out of the minirace.\n'
-        f'{emojis.BLANK} You can join a new minirace next day.\n'
+        f'{emojis.DETAIL} You can join a new minirace next day.\n'
     )
     race_win = (
         f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.SLEEPY_POTION}.\n'
-        f'{emojis.BLANK} Higher tiered tournaments play exactly the same.\n'
+        f'{emojis.DETAIL} Higher tiered tournaments play exactly the same.\n'
         f'{emojis.BP} If you manage to win a tier III tournament, you get an exclusive background\n'
     )
     disabled = (

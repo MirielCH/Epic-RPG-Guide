@@ -57,15 +57,15 @@ async def embed_bigdice() -> discord.Embed:
     command = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["big dice"]}'
     rules = (
         f'{emojis.BP} You roll a die that can go from 1 to infinity\n'
-        f'{emojis.BLANK} The higher the pot, the higher the amount of sides\n'
-        f'{emojis.BLANK} Increasing your bet lowers the amount of sides\n'
+        f'{emojis.DETAIL} The higher the pot, the higher the amount of sides\n'
+        f'{emojis.DETAIL} Increasing your bet lowers the amount of sides\n'
         f'{emojis.BP} No matter the outcome, **you always lose your bet**\n'
-        f'{emojis.BLANK} Therefore never bet higher than the pot\n'
+        f'{emojis.DETAIL} Therefore never bet higher than the pot\n'
         f'{emojis.BP} Half of your bet goes into the pot\n'
-        f'{emojis.BLANK} If you win, the pot is increased _after_ your payout\n'
+        f'{emojis.DETAIL} If you win, the pot is increased _after_ your payout\n'
         f'{emojis.BP} You need to get side 6 or lower to win\n'
         f'{emojis.BP} The pot doesn\'t get reset if someone wins\n'
-        f'{emojis.BLANK} The pot instead resets every monday at 00:00 UTC\n'
+        f'{emojis.DETAIL} The pot instead resets every monday at 00:00 UTC\n'
     )
     outcomes = (
         f'{emojis.BP} {emojis.GAME_DIE}**- 6** or lower • You win the whole pot but lose your bet\n'
@@ -145,7 +145,7 @@ async def embed_coinflip() -> discord.Embed:
     )
     note = (
         f'{emojis.BP} There is an extremely low chance that the event fails\n'
-        f'{emojis.BLANK} If this happens, your coin will land in another area, and you will lose 1 coin\n'
+        f'{emojis.DETAIL} If this happens, your coin will land in another area, and you will lose 1 coin\n'
         f'{emojis.BP} This command doesn\'t work in area 19'
     )
     embed = discord.Embed(

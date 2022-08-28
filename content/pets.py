@@ -72,9 +72,9 @@ async def embed_pets_overview() -> discord.Embed:
     tier = (
         f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
-        f'{emojis.BLANK} Tier I and higher has a chance of returning up to 1 ULTRA log\n'
-        f'{emojis.BLANK} Tier X and higher has a chance of returning up to 2 ULTRA logs\n'
-        f'{emojis.BLANK} Tier XX has a chance of returning up to 3 ULTRA logs\n'
+        f'{emojis.DETAIL} Tier I and higher has a chance of returning up to 1 ULTRA log\n'
+        f'{emojis.DETAIL} Tier X and higher has a chance of returning up to 2 ULTRA logs\n'
+        f'{emojis.DETAIL} Tier XX has a chance of returning up to 3 ULTRA logs\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see topic `Fusing pets`)'
@@ -133,9 +133,9 @@ async def embed_pets_catch() -> discord.Embed:
     """Pet catching guide"""
     source = (
         f'{emojis.BP} After using {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
-        f'{emojis.BLANK} 4% base encounter chance\n'
-        f'{emojis.BLANK} 10% chance with {emojis.HORSE_T9} T9 horse\n'
-        f'{emojis.BLANK} 20% chance with {emojis.HORSE_T10} T10 horse\n'
+        f'{emojis.DETAIL} 4% base encounter chance\n'
+        f'{emojis.DETAIL} 10% chance with {emojis.HORSE_T9} T9 horse\n'
+        f'{emojis.DETAIL} 20% chance with {emojis.HORSE_T10} T10 horse\n'
         f'{emojis.BP} By ranking at least 3rd in {emojis.HORSE_T9} T9 or {emojis.HORSE_T10} T10 horse races\n'
         f'{emojis.BP} In some seasonal events (these are not TT locked)\n'
         f'{emojis.BP} In some dev giveaways (these are not TT locked)\n'
@@ -146,8 +146,8 @@ async def embed_pets_catch() -> discord.Embed:
     catch =  (
         f'{emojis.BP} Pets you encounter have a {emojis.PET_HAPPINESS} happiness and {emojis.PET_HUNGER} hunger stat\n'
         f'{emojis.BP} You can use actions to influence these stats\n'
-        f'{emojis.BLANK} 1 `feed` decreases hunger by 18-22\n'
-        f'{emojis.BLANK} 1 `pat` increases happiness by 8-12\n'
+        f'{emojis.DETAIL} 1 `feed` decreases hunger by 18-22\n'
+        f'{emojis.DETAIL} 1 `pat` increases happiness by 8-12\n'
         f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
         f'{emojis.BP} You can use up to 6 actions\n'
         f'{emojis.BP} If you use less than 6 actions, you have a 25% chance at getting skills\n'
@@ -196,9 +196,9 @@ async def embed_pets_fusion() -> discord.Embed:
     type = (
         f'{emojis.BP} The resulting type depends on the most used type in the fusion\n'
         f'{emojis.BP} If you fuse different types evenly, the result is randomly one of those types\n'
-        f'{emojis.BLANK} Example 1: {emojis.PET_CAT} + {emojis.PET_CAT} results in {emojis.PET_CAT}\n'
-        f'{emojis.BLANK} Example 2: {emojis.PET_DOG} + {emojis.PET_CAT} + {emojis.PET_DOG} results in {emojis.PET_DOG}\n'
-        f'{emojis.BLANK} Example 3: {emojis.PET_CAT} + {emojis.PET_DOG} results in {emojis.PET_CAT} **or** {emojis.PET_DOG}\n'
+        f'{emojis.DETAIL} Example 1: {emojis.PET_CAT} + {emojis.PET_CAT} results in {emojis.PET_CAT}\n'
+        f'{emojis.DETAIL} Example 2: {emojis.PET_DOG} + {emojis.PET_CAT} + {emojis.PET_DOG} results in {emojis.PET_DOG}\n'
+        f'{emojis.DETAIL} Example 3: {emojis.PET_CAT} + {emojis.PET_DOG} results in {emojis.PET_CAT} **or** {emojis.PET_DOG}\n'
         f'{emojis.BP} Exception: Fusing an event pet will always give you the event pet back\n'
         f'{emojis.BP} Note: You can only fuse multiple event pets if they all are the **same** type'
     )
@@ -242,7 +242,7 @@ async def embed_pets_skills_normal() -> discord.Embed:
     )
     skillranks = (
         f'{emojis.BP} Every skill has 9 possible ranks\n'
-        f'{emojis.BLANK} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
+        f'{emojis.DETAIL} The ranks are F, E, D, C, B, A, S, SS and SS+\n'
         f'{emojis.BP} To rank up skills, do adventures (see topic `Pet adventures`)\n'
         f'{emojis.BP} Higher ranks increase the skill bonus\n'
         f'{emojis.BP} Higher ranks increase the chance to keep a skill when fusing'
@@ -271,7 +271,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     """Special skills guide"""
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
-        f'{emojis.BLANK} The chance is 11.11...% per rank (100% at SS+)\n'
+        f'{emojis.DETAIL} The chance is 11.11...% per rank (100% at SS+)\n'
         f'{emojis.BP} This skill has to be unlocked with {strings.SLASH_COMMANDS_EPIC_RPG["pets ascend"]}\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
@@ -284,8 +284,8 @@ async def embed_pets_skills_special() -> discord.Embed:
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
         f'{emojis.BP} You have a 25% base chance to get an essence after the dungeon\n'
-        f'{emojis.BLANK} This chance increases by 7.5% per rank\n'
-        f'{emojis.BLANK} Multiple fighter pets do not stack\n'
+        f'{emojis.DETAIL} This chance increases by 7.5% per rank\n'
+        f'{emojis.DETAIL} Multiple fighter pets do not stack\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
@@ -351,8 +351,8 @@ async def embed_pets_skills_unique() -> discord.Embed:
         f'it has a chance to reset **all** pets on an adventure\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_VOIDOG} VOIDog pet\n'
         f'{emojis.BP} This pet can drop in dungeons 16 to 20.\n'
-        f'{emojis.BLANK} The drop chance increases with higher dungeons.\n'
-        f'{emojis.BLANK} You can get multiple, but each time you get one, the drop chance lowers.\n'
+        f'{emojis.DETAIL} The drop chance increases with higher dungeons.\n'
+        f'{emojis.DETAIL} You can get multiple, but each time you get one, the drop chance lowers.\n'
     )
     skillranks = f'{emojis.BP} Unique skills can not be ranked up'
     embed = discord.Embed(
@@ -397,7 +397,7 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} **Coins**: ~ 700k+\n'
         f'{emojis.BP} **Skill rank**: +1 rank of 1 skill the pet has\n'
         f'{emojis.BP} **Pet**: Random T1-3 pet (only if pet has {emojis.SKILL_ASCENDED} ascended skill)\n'
-        f'{emojis.BLANK} You get a pet **in addition** to the other reward'
+        f'{emojis.DETAIL} You get a pet **in addition** to the other reward'
     )
     normalskillsimpact = (
         f'{emojis.BP} {emojis.SKILL_FAST} **Fast**: Reduces the time to do adventures\n'

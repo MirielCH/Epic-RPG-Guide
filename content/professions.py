@@ -312,8 +312,8 @@ async def embed_professions_enchanter() -> discord.Embed:
     )
     how_to_get_xp = (
         f'{emojis.BP} Use enchanting commands\n'
-        f'{emojis.BLANK} The XP formula is [tt multiplier] * [command multiplier] * [enchantment xp]\n'
-        f'{emojis.BLANK} Ex: If you enchant **Perfect** with {strings.SLASH_COMMANDS_EPIC_RPG["transmute"]} in TT6, '
+        f'{emojis.DETAIL} The XP formula is [tt multiplier] * [command multiplier] * [enchantment xp]\n'
+        f'{emojis.DETAIL} Ex: If you enchant **Perfect** with {strings.SLASH_COMMANDS_EPIC_RPG["transmute"]} in TT6, '
         f'you get `2 * 100 * 7` XP\n'
         f'{emojis.BP} ~~Cook {emojis.FOOD_FRUIT_ICE_CREAM} fruit ice cream (100 XP each)~~ (don\'t do that)'
     )
@@ -581,7 +581,7 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 if level_xp is None:
                     output_total = (
                         f'{emojis.BP} Not enough data yet.\n'
-                        f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
+                        f'{emojis.DETAIL} I currently have data for up to level **{current_level-1}**.'
                     )
                     break
                 xp_total += level_xp
@@ -659,7 +659,7 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 if level_xp is None:
                     output_total = (
                         f'{emojis.BP} Not enough data yet.\n'
-                        f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
+                        f'{emojis.DETAIL} I currently have data for up to level **{current_level-1}**.'
                     )
                     break
                 xp_total += level_xp
@@ -727,7 +727,7 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
         how_to_level = (
             f'{emojis.BP} Repeatedly craft & dismantle {emojis.LOG_EPIC} EPIC logs.\n'
             f'{emojis.BP} Due to the chance to get logs back, you should craft in batches.\n'
-            f'{emojis.BLANK} The smaller the batches, the lower the overall risk.'
+            f'{emojis.DETAIL} The smaller the batches, the lower the overall risk.'
         )
 
         returned_percentage = returned_percentages[from_level] if from_level > 100 else 0.1
@@ -765,7 +765,7 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 if level_xp is None:
                     output_total = (
                         f'{emojis.BP} Not enough data yet.\n'
-                        f'{emojis.BLANK} I currently have data for up to level **{current_level-1}**.'
+                        f'{emojis.DETAIL} I currently have data for up to level **{current_level-1}**.'
                     )
                     break
                 xp_total += level_xp

@@ -307,7 +307,7 @@ async def embed_xmas_overview(prefix):
     bonuses = (
         f'{emojis.BP} Arena cooldown is lowered to 12h\n'
         f'{emojis.BP} Double XP when eating {emojis.ARENA_COOKIE} arena cookies (**not** super cookies!)\n'
-        f'{emojis.BLANK} Note that even at double XP 1 super cookie is still worth more than 1000 cookies\n'
+        f'{emojis.DETAIL} Note that even at double XP 1 super cookie is still worth more than 1000 cookies\n'
     )
 
     guide = (

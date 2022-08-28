@@ -532,9 +532,9 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
             f'{emojis.BP} No gear (having a sword or armor results in instant death)\n'
             f'{emojis.BP} 750,000+ {emojis.LOG} wooden logs to sell during the fight\n'
             f'{emojis.BP} **4** T10 or higher pets to send on adventures\n'
-            f'{emojis.BLANK} At least **3** of these pets **must** have the {emojis.SKILL_EPIC} EPIC skill\n'
-            f'{emojis.BLANK} Only **1** can have a {emojis.SKILL_TRAVELER} time traveler skill\n'
-            f'{emojis.BLANK} If a pet has the {emojis.SKILL_TRAVELER} time traveler skill, it must also be '
+            f'{emojis.DETAIL} At least **3** of these pets **must** have the {emojis.SKILL_EPIC} EPIC skill\n'
+            f'{emojis.DETAIL} Only **1** can have a {emojis.SKILL_TRAVELER} time traveler skill\n'
+            f'{emojis.DETAIL} If a pet has the {emojis.SKILL_TRAVELER} time traveler skill, it must also be '
             f'{emojis.SKILL_EPIC} EPIC\n'
             f'{emojis.BP} No active pet adventures before the fight\n'
             f'{emojis.BP} 1,000+ {emojis.LIFE_POTION} life potions'
@@ -627,8 +627,8 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         rewards = (
             f'{emojis.BP} Unlocks the TOP (see {strings.SLASH_COMMANDS_GUIDE["area guide"]})\n'
             f'{emojis.BP} {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n'
-            f'{emojis.BLANK} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie to beat the EPIC NPC\n'
-            f'{emojis.BLANK} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump to get to area 16\n'
+            f'{emojis.DETAIL} Used to craft the {emojis.SWORD_GODLYCOOKIE} GODLY cookie to beat the EPIC NPC\n'
+            f'{emojis.DETAIL} Used in the `shop` to buy {emojis.EPIC_JUMP} EPIC jump to get to area 16\n'
         )
     elif 16 <= dungeon_no <= 20:
         if 16 <= dungeon_no <= 19:
@@ -641,23 +641,23 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
             )
         rewards = (
             f'{rewards}\n'
-            f'{emojis.BLANK} Note: You can not have more than 1 in your inventory.\n'
+            f'{emojis.DETAIL} Note: You can not have more than 1 in your inventory.\n'
             f'{emojis.BP} Unlocks the ability to get 1 additional {emojis.TIME_TRAVEL} TT every {21 - dungeon_no:g} TTs.\n'
-            f'{emojis.BLANK} This reward is permanent.\n'
+            f'{emojis.DETAIL} This reward is permanent.\n'
             f'{emojis.BP} Chance to get a {emojis.PET_VOIDOG} VOIDog pet\n'
         )
     elif dungeon_no == 21:
         rewards = (
             f'{emojis.BP} {emojis.EPIC_JUMP} EPIC jump to move to area 16 (if unsealed)\n'
             f'{emojis.BP} Unlocks the ability to buy {emojis.EPIC_JUMP} EPIC jumps in the `shop`.\n'
-            f'{emojis.BLANK} This reward is permanent.'
+            f'{emojis.DETAIL} This reward is permanent.'
         )
 
     # Notes
     if dungeon_no == 15.2:
         notes = (
             f'{emojis.BP} To enter this dungeon, you need to equip the {emojis.SWORD_GODLY} GODLY sword and start D15.\n'
-            f'{emojis.BLANK} Once you beat part 1, part 2 will automatically start.\n'
+            f'{emojis.DETAIL} Once you beat part 1, part 2 will automatically start.\n'
         )
     elif 16 <= dungeon_no <= 20:
         notes = (

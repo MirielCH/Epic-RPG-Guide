@@ -54,7 +54,7 @@ async def embed_ultraining_guide():
         f'{emojis.BP} Note: You can **not** get pets in ultraining\n'
     )
     calculators = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining calculator"]}: Calculate EPIC NPC damage in ultraining\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining stats calculator"]}: Calculate EPIC NPC damage in ultraining\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

@@ -132,7 +132,7 @@ async def embed_progress() -> discord.Embed:
     guild_xp = (
         f'{emojis.BP} Participate in the weekly contest (see topic `Raiding and upgrading`)\n'
         f'{emojis.BP} Win duels against players **not** in your guild (1~3 XP)\n'
-        f'{emojis.BLANK} To get 3 XP, duel against players +/- 50% of your level\n'
+        f'{emojis.DETAIL} To get 3 XP, duel against players +/- 50% of your level\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -193,7 +193,7 @@ async def embed_shop() -> discord.Embed:
     )
     note = (
         f'{emojis.BP} To unlock this shop the guild owner must spend **all** {emojis.GUILD_COIN} guild coins.\n'
-        f'{emojis.BLANK} Check topic `Shop: Guild coins` to see the old rewards.'
+        f'{emojis.DETAIL} Check topic `Shop: Guild coins` to see the old rewards.'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -216,7 +216,7 @@ async def embed_stats() -> discord.Embed:
         f'{emojis.BP} Can be increased by using {strings.SLASH_COMMANDS_EPIC_RPG["guild upgrade"]}\n'
         f'{emojis.BP} Maximum amount is 95\n'
         f'{emojis.BP} Each upgrade gives you 0~7 stealth\n'
-        f'{emojis.BLANK} The amount decreases the more you already have\n'
+        f'{emojis.DETAIL} The amount decreases the more you already have\n'
     )
     energy = (
         f'{emojis.BP} Energy determines your weekly rank and reward\n'

@@ -264,7 +264,7 @@ async def design_field_debuffs(area: database.Area) -> str:
 
     debuffs = (
         f'{emojis.BP} AT, DEF and LIFE are capped\n'
-        f'{emojis.BLANK} Equipment ignores this cap'
+        f'{emojis.DETAIL} Equipment ignores this cap'
     )
     if area.area_no == 16:
         debuffs = (
@@ -279,7 +279,7 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} Every command drains 0.75% of your levels\n'
             f'{emojis.BP} `farm` has a high chance to give no items\n'
             f'{emojis.BP} `craft`, `dismantle`, `forge`, `cook`, `eat`, `withdraw` and `deposit` can fail\n'
-            f'{emojis.BLANK }If this happens, you will lose the items from that command'
+            f'{emojis.DETAIL }If this happens, you will lose the items from that command'
         )
     elif area.area_no == 18:
         debuffs = (
@@ -695,7 +695,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             #f'{emojis.BP} To contribute, use `void add 16 [item] [amount]` while in the TOP\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from the TOP\n'
-            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.DETAIL} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     elif 17 <= area.area_no <= 20:
         area_req = (
@@ -705,7 +705,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             #f'{emojis.BP} To contribute, use `void add {area.area_no} [item] [amount]` while in area {area.area_no-1}\n'
             #f'{emojis.BP} Check `void` to see the current status and requirements\n'
             f'{emojis.BP} Requires an {emojis.EPIC_JUMP} EPIC jump to move to this area from area {area.area_no-1}\n'
-            f'{emojis.BLANK} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
+            f'{emojis.DETAIL} EPIC jumps are found in the `shop` and in dungeons 16-20\n'
         )
     if area.unlocked_in_tt > 0:
         area_req = (
@@ -771,7 +771,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             )
         area_dmg = (
             f'{area_dmg}\n'
-            f'{emojis.BLANK} Use {strings.SLASH_COMMANDS_GUIDE["area check"]} to see your actual damage'
+            f'{emojis.DETAIL} Use {strings.SLASH_COMMANDS_GUIDE["area check"]} to see your actual damage'
         )
 
     # Lootboxes
@@ -799,7 +799,7 @@ async def embed_area(ctx: commands.Context, area: database.Area, user: database.
             materials = f'{materials}\n{emojis.BP} {tt.a3_fish:,} {emojis.FISH} normie fish'
             if user.ascended: materials = f'{materials} (1 {emojis.RUBY} = 225 {emojis.FISH})'
         if user.tt >= 25:
-            materials = f'{materials}\n{emojis.BLANK} Note: This does not include materials for STT score.'
+            materials = f'{materials}\n{emojis.DETAIL} Note: This does not include materials for STT score.'
 
     if area.area_no == 8:
         materials = f'{emojis.BP} 30 {emojis.MERMAID_HAIR} mermaid hairs\n'

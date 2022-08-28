@@ -36,7 +36,7 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} Complete the daily quest to get EVEN MORE coins\n'
         f'{emojis.BP} Increase your coins by 5% with `rpg cel multiply` (12h cooldown)\n'
         f'{emojis.BP} Unlock the title **500,000** title with `rpg cel title` at 250,000 coins\n'
-        f'{emojis.BLANK} This does **not** use up the coins\n'
+        f'{emojis.DETAIL} This does **not** use up the coins\n'
         f'{emojis.BP} Get a big reward at the end of the event based on coins you gathered\n'
     )
     bonuses = (
@@ -52,7 +52,7 @@ async def embed_celebration_overview(prefix: str) -> discord.Embed:
         f'{emojis.BP} Multiply your celebration coins every 12h (`rpg cel multiply`)\n'
         f'{emojis.BP} Get the event title with `rpg cel title` once you reach 250,000 coins\n'
         f'{emojis.BP} Use `rpg cel trade` to get your reward after February 5\n'
-        f'{emojis.BLANK} Tip: Try to be in A1-A5 when you get the reward\n'
+        f'{emojis.DETAIL} Tip: Try to be in A1-A5 when you get the reward\n'
     )
     chances = (
         f'{emojis.BP} 30% to get coins with `hunt`\n'

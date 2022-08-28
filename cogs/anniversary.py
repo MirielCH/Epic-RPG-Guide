@@ -30,15 +30,15 @@ async def embed_anniversary_overview(prefix: str) -> discord.Embed:
     """Anniversary overview embed"""
     activities = (
         f'{emojis.BP} Duel other players to get {emojis.LB_ANNIVERSARY} anniversary lootboxes\n'
-        f'{emojis.BLANK} You do **not** lose these lootboxes when TTing\n'
+        f'{emojis.DETAIL} You do **not** lose these lootboxes when TTing\n'
     )
     bonuses = (
         f'{emojis.BP} Command cooldowns except `vote`, `guild`, `daily`, `weekly` are reduced by 50%\n'
-        f'{emojis.BLANK} This lowers by 10% per day of the event\n'
+        f'{emojis.DETAIL} This lowers by 10% per day of the event\n'
     )
     lb_content = (
         f'{emojis.BP} 1 {emojis.PET_HAMSTER} hamster pet (max 1 in the event)\n'
-        f'{emojis.BLANK} The chance to get the pet increases each time you don\'t get it\n'
+        f'{emojis.DETAIL} The chance to get the pet increases each time you don\'t get it\n'
         f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox\n'
         f'{emojis.BP} 1 {emojis.LB_OMEGA} OMEGA lootbox\n'
         f'{emojis.BP} 3 or 5 {emojis.LB_EDGY} EDGY lootboxes\n'
