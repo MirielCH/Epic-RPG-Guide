@@ -423,7 +423,7 @@ LINK_VOTE = 'https://top.gg/bot/770199669141536768/vote'
 
 
 # Slash commands
-SLASH_COMMANDS_EPIC_RPG = {
+SLASH_COMMANDS_EPIC_RPG_OLD = {
     'achievements dungeons': f'{emojis.EPIC_RPG_LOGO_SMALL}`/achievements dungeons`',
     'achievements events': f'{emojis.EPIC_RPG_LOGO_SMALL}`/achievements events`',
     'achievements misc': f'{emojis.EPIC_RPG_LOGO_SMALL}`/achievements misc`',
@@ -545,7 +545,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'world': f'{emojis.EPIC_RPG_LOGO_SMALL}`/world`',
 }
 
-SLASH_COMMANDS_EPIC_RPG_NEW = {
+SLASH_COMMANDS_EPIC_RPG = {
     'achievements dungeons': '</achievements dungeons:959915736892076042>',
     'achievements events': '</achievements events:959915736892076042>',
     'achievements misc': '</achievements misc:959915736892076042>',
@@ -667,7 +667,7 @@ SLASH_COMMANDS_EPIC_RPG_NEW = {
     'world': '</world:953370104236761108>',
 }
 
-SLASH_COMMANDS_GUIDE = {
+SLASH_COMMANDS_GUIDE_OLD = {
     'about': f'{emojis.LOGO}`/about`',
     'area check': f'{emojis.LOGO}`/area check`',
     'area guide': f'{emojis.LOGO}`/area guide`',
@@ -714,7 +714,7 @@ SLASH_COMMANDS_GUIDE = {
     'ultraining stats calculator': f'{emojis.LOGO}`/ultraining stats calculator`',
 }
 
-SLASH_COMMANDS_GUIDE_NEW = {
+SLASH_COMMANDS_GUIDE = {
     'about': '</about:972045824869679138>',
     'area check': '</area check:972045824806760468>',
     'area guide': '</area guide:972045824806760468>',
