@@ -537,6 +537,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
             f'{emojis.DETAIL} If a pet has the {emojis.SKILL_TRAVELER} time traveler skill, it must also be '
             f'{emojis.SKILL_EPIC} EPIC\n'
             f'{emojis.BP} No active pet adventures before the fight\n'
+            f'{emojis.BP} 3,000+ {emojis.STAT_COOLNESS} coolness\n'
             f'{emojis.BP} 1,000+ {emojis.LIFE_POTION} life potions'
         )
     if dungeon_no in (10, 12, 14, 15):

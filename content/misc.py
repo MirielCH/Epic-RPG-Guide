@@ -327,7 +327,8 @@ async def embed_coolness_guide() -> discord.Embed:
     """Coolness guide"""
     usage = (
         f'{emojis.BP} Unlocks cosmetic only profile badges (see {strings.SLASH_COMMANDS_GUIDE["badges"]})\n'
-        f'{emojis.BP} You need at least 2,000 coolness for dungeon 15-2'
+        f'{emojis.BP} At least 2,000 coolness are recommended for dungeon 15-2\n'
+        f'{emojis.BP} At least 3,000 coolness are recommended for the EPIC NPC fight\n'
     )
     req = f'{emojis.BP} Unlocks when you reach area 12 in {emojis.TIME_TRAVEL}TT 1'
     howtoget = (

@@ -39,6 +39,44 @@ def round_school(number: float) -> int:
     return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
 
 
+async def send_slash_migration_message(ctx: commands.Context, new_command: str) -> None:
+    """Sends a message telling the user to use slash."""
+    description = (
+        f'{emojis.BLANK} ➜ **{strings.SLASH_COMMANDS_GUIDE[new_command]}**\n'
+        f'{emojis.BLANK}'
+    )
+    explanation = (
+        f'On September 1, 2022, most verified Discord bots switched to slash commands.\n'
+        f'Press `/` to see a list of all available slash commands.\n'
+        f'To see a list of **my** slash commands, you can also use {strings.SLASH_COMMANDS_GUIDE["help"]}.\n'
+        f'{emojis.BLANK}'
+    )
+    help = (
+        f'If you can\'t see my slash commands, a server admin needs to enable them.\n'
+        f'If you _are_ the server admin: You can set slash permissions in "Server Settings > Integrations".\n'
+        f'Also see this [blog article]'
+        f'(https://discord.com/blog/slash-commands-permissions-discord-apps-bots).\n'
+        f'{emojis.BLANK}'
+    )
+    slash_mention = (
+        f'If this: >{strings.SLASH_COMMANDS_GUIDE["help"]}< shows nothing or some ID, your Discord app is outdated.\n'
+        f'Check your app or play store for an update.\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'THIS IS NOW A SLASH COMMAND',
+        description = description
+    )
+    embed.add_field(name='SAY WHAT NOW?', value=explanation, inline=False)
+    embed.add_field(name='WELP, I CAN\'T SEE SLASH COMMANDS', value=help, inline=False)
+    embed.add_field(name='SOMETHING IS WRONG IN THIS MESSAGE', value=slash_mention, inline=False)
+
+    view = views.ComplainView(ctx)
+    interaction_message = await ctx.send(embed=embed, view=view)
+    view.message = interaction_message
+    await view.wait()
+
+
 async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:
     """Returns the first result from several running asyncio tasks."""
     try:
