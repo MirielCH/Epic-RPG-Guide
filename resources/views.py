@@ -459,8 +459,7 @@ class ComplainView(discord.ui.View):
     async def button_complain(self, button: discord.ui.Button, interaction: discord.Interaction):
         """Complain button"""
         response = (
-            f'What the hell is this nonsense, where are my old commands??!!!??\n'
-            f'Seriously, I can\'t live without my old commands EVERYTHING IS NEW AND DIFFERENT AND OMG AAAHHHHHHHHHH\n\n'
+            f'What the hell is this nonsense, where are my old commands??!!!??\n\n'
             f'**THE DEV IS A BLOODY GOBSHITE!** {emojis.SAD_ANGRY}\n\n'
             f'**BRING ME THE MANAGER!** {emojis.PEPE_ANGRY_POLICE}\n\n'
             f'**I DEMAND MY MONEY BACK!** {emojis.PEPE_TABLESLAM}\n\n'

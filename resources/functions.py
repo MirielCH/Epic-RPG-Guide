@@ -46,21 +46,19 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
         f'{emojis.BLANK}'
     )
     explanation = (
-        f'On September 1, 2022, most verified Discord bots switched to slash commands.\n'
-        f'Press `/` to see a list of all available slash commands.\n'
-        f'To see a list of **my** slash commands, you can also use {strings.SLASH_COMMANDS_GUIDE["help"]}.\n'
+        f'{emojis.BP} As of September 1, 2022, this bot uses slash commands instead of a prefix.\n'
+        f'{emojis.BP} Press `/` or use {strings.SLASH_COMMANDS_GUIDE["help"]} to see a list of all slash commands.\n'
         f'{emojis.BLANK}'
     )
     help = (
-        f'If you can\'t see my slash commands, a server admin needs to enable them.\n'
-        f'If you _are_ the server admin: You can set slash permissions in "Server Settings > Integrations".\n'
-        f'Also see this [blog article]'
-        f'(https://discord.com/blog/slash-commands-permissions-discord-apps-bots).\n'
+        f'{emojis.BP} Ask your server admin to enable them.\n'
+        f'{emojis.BP} Slash permissions can be managed in "Server Settings > Integrations".\n'
         f'{emojis.BLANK}'
     )
     slash_mention = (
-        f'If this: >{strings.SLASH_COMMANDS_GUIDE["help"]}< shows nothing or some ID, your Discord app is outdated.\n'
-        f'Check your app or play store for an update.\n'
+        f'{emojis.BP} If the slash commands in this message don\'t show at all or look like this: '
+        f'`{strings.SLASH_COMMANDS_GUIDE[new_command]}`, your Discord app is outdated.\n'
+        f'{emojis.BP} Check your app store for an update.\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -68,13 +66,18 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
         description = description
     )
     embed.add_field(name='SAY WHAT NOW?', value=explanation, inline=False)
-    embed.add_field(name='WELP, I CAN\'T SEE SLASH COMMANDS', value=help, inline=False)
+    embed.add_field(name='I DON\'T HAVE SLASH COMMANDS IN MY CHANNEL', value=help, inline=False)
     embed.add_field(name='SOMETHING IS WRONG IN THIS MESSAGE', value=slash_mention, inline=False)
 
-    view = views.ComplainView(ctx)
-    interaction_message = await ctx.send(embed=embed, view=view)
-    view.message = interaction_message
-    await view.wait()
+    if ctx.guild is not None:
+        if ctx.guild.id in (812650049565753355, 730115558766411857, 774590797214515201, 713541415099170836):
+            # Charivari Headquarters, Secret Valley, RPG ARMY, Support Server
+            view = views.ComplainView(ctx)
+            interaction_message = await ctx.send(embed=embed, view=view)
+            view.message = interaction_message
+            await view.wait()
+        else:
+            await ctx.send(embed=embed)
 
 
 async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:
