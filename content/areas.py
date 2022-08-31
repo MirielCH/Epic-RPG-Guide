@@ -24,7 +24,10 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
     if user is None:
         user: database.User = await database.get_user(ctx.author.id)
     if full_guide is None:
-        full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
+        if length is None:
+            full_guide = True
+        else:
+            full_guide = True if length == strings.CHOICE_GUIDE_FULL else False
     if tt_no is not None: user.tt = tt_no
     if ascension is not None:
         user.ascended = True if ascension == strings.CHOICE_ASCENDED else False

@@ -487,3 +487,48 @@ class ComplainView(discord.ui.View):
         self.value = 'timeout'
         await self.message.edit(view=None)
         self.stop()
+
+
+class TimeJumpCalculationTypeView(discord.ui.View):
+    """View with button to toggle the time jump score calculator between trading materials to rubies or not.
+
+    Also needs the interaction of the response with the view, so do AbortView.message = await message.reply('foo').
+
+    Returns
+    -------
+    'calculate_rubies' if materials are traded to ruby
+    'calculate_asis' if materials are caluclated as is
+    None if nothing happened yet.
+    """
+    def __init__(self, ctx: Union[commands.Context, discord.ApplicationContext], area_no: int, inventory: str,
+                 trade_materials: bool, embed_function: callable, interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.ctx = ctx
+        self.user = ctx.author
+        self.interaction = interaction
+        self.area_no = area_no
+        self.inventory = inventory
+        self.trade_materials = trade_materials
+        self.embed_function = embed_function
+        if trade_materials:
+            custom_id = 'calculate_asis'
+            label = 'Calculate materials as is'
+        else:
+            custom_id = 'calculate_rubies'
+            label = 'Trade all materials to rubies'
+        self.add_item(components.TimeJumpCalculationTypeButton(custom_id=custom_id, label=label))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        if self.interaction is not None:
+            try:
+                await functions.edit_interaction(self.interaction, view=None)
+            except discord.errors.NotFound:
+                pass
+        self.stop()

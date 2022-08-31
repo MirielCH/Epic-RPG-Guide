@@ -6,7 +6,7 @@ from typing import Optional
 import discord
 
 from content import areas, dungeons
-from resources import strings, modals
+from resources import functions, strings, modals
 
 
 class AreaCheckSelect(discord.ui.Select):
@@ -407,3 +407,25 @@ class CustomButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         self.view.value = self.custom_id
         self.view.stop()
+
+
+class TimeJumpCalculationTypeButton(discord.ui.Button):
+    """Button to toggle the materials calculation type in the time jump score calculator"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled, row=1)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.custom_id == 'calculate_asis':
+            self.view.trade_materials = False
+        else:
+            self.view.trade_materials = True
+        self.view.value = self.custom_id
+        if self.view.trade_materials:
+            self.label = 'Calculate materials as is'
+            self.custom_id = 'calculate_asis'
+        else:
+            self.label = 'Trade all materials to rubies'
+            self.custom_id = 'calculate_rubies'
+        embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.trade_materials)
+        await interaction.response.edit_message(embed=embed, view=self.view)

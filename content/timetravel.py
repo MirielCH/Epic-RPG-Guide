@@ -22,6 +22,14 @@ TOPICS = [
     TOPIC_TJ_SCORE,
 ]
 
+MATERIALS_CURRENT = 'Calculate as is'
+MATERIALS_TRADE = 'Trade materials to rubies'
+
+MATERIALS_CALCULATION = [
+    MATERIALS_CURRENT,
+    MATERIALS_TRADE
+]
+
 # --- Commands ---
 async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Timetravel guide command"""
@@ -55,12 +63,13 @@ async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetrave
     await ctx.respond(embed=embed)
 
 
-async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int) -> None:
+async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
+                                      trade_materials: bool) -> None:
     """STT score calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
         content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
-                                                          command=strings.SLASH_COMMANDS_EPIC_RPG["inventory"])
+                                                        command=strings.SLASH_COMMANDS_EPIC_RPG["inventory"])
         bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
     except asyncio.TimeoutError:
         await ctx.respond(
@@ -72,8 +81,12 @@ async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.Application
     inventory = ''
     for field in bot_message.embeds[0].fields:
         inventory = f'{inventory}{field.value}\n'
-    embed = await embed_tj_score_calculator(area_no, inventory.lower())
-    await ctx.respond(embed=embed)
+
+    view = views.TimeJumpCalculationTypeView(ctx, area_no, inventory, trade_materials, embed_tj_score_calculator)
+    embed = await embed_tj_score_calculator(area_no, inventory.lower(), trade_materials)
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
 
 
 # --- Embeds ---
@@ -428,8 +441,9 @@ async def embed_time_jump_score() -> discord.Embed:
     return embed
 
 
-async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Embed:
+async def embed_tj_score_calculator(area_no: int, inventory: str, trade_materials: bool) -> discord.Embed:
     """STT score calculator embed"""
+    message_area = 'The TOP' if area_no == 21 else f'area {area_no}'
     inventory = inventory.lower()
     fish = await functions.inventory_get(inventory, 'normie fish')
     fishgolden = await functions.inventory_get(inventory, 'golden fish')
@@ -470,126 +484,6 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
     seed_potato = await functions.inventory_get(inventory, 'potato seed')
     lottery_ticket = await functions.inventory_get(inventory, 'lottery ticket')
 
-    areas = await database.get_all_areas()
-    all_areas = {}
-    for area in areas:
-        all_areas[area.area_no] = area
-    current_area = all_areas[area_no]
-
-    loghyper = loghyper + (logultra * 8)
-    logmega = logmega + (loghyper * 8)
-    logsuper = logsuper + (logmega * 8)
-    logepic = logepic + (logsuper * 8)
-    log = log + (logepic * 20)
-    fishgolden = fishgolden + (fishepic * 80)
-    fish = fish + (fishgolden * 12)
-    apple = apple + (banana * 12)
-
-    original_area = area_no
-    areas_best_changes = []
-
-    # Get the amount of logs for the current area
-    log = log + (fish * current_area.trade_fish_log)
-    if not current_area.trade_apple_log == 0:
-        log = log + (apple * current_area.trade_apple_log)
-        apple = 0
-    if not current_area.trade_ruby_log == 0:
-        log = log + (ruby * current_area.trade_ruby_log)
-        ruby = 0
-
-    # Calculate the best trade rate for all areas
-    for area in areas:
-        area_no_next = area.area_no + 1
-        if area_no_next != len(areas)+1:
-            area_next = all_areas[area_no_next]
-        else:
-            area_next = None
-        if area_next is not None:
-            fish_rate_next = area_next.trade_fish_log
-            apple_rate_next = area_next.trade_apple_log
-            ruby_rate_next = area_next.trade_ruby_log
-            if area.trade_fish_log != 0:
-                fish_rate_change = fish_rate_next / area.trade_fish_log
-            else:
-                fish_rate_change = 0
-            if area.trade_apple_log != 0:
-                apple_rate_change = apple_rate_next / area.trade_apple_log
-            else:
-                apple_rate_change = 0
-            if area.trade_ruby_log != 0:
-                ruby_rate_change = ruby_rate_next / area.trade_ruby_log
-            else:
-                ruby_rate_change = 0
-        else:
-            fish_rate_change = 1
-            apple_rate_change = 1
-            ruby_rate_change = 1
-        if (fish_rate_change <= 1) and (apple_rate_change <= 1) and (ruby_rate_change <= 1):
-            best_change_index = 3
-        else:
-            all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
-            best_change = max(all_changes)
-            best_change_index = all_changes.index(best_change)
-        areas_best_changes.append(
-            [area.area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log]
-        )
-        if area_next is None: break
-
-    # Get the amount of logs in each area
-    areas_log_amounts = []
-    trade_fish_rate_next = None
-    trade_apple_rate_next = None
-    trade_ruby_rate_next = None
-    for best_change in areas_best_changes[original_area-1:]:
-        trade_area = best_change[0]
-        trade_best_change = best_change[1]
-        trade_fish_rate = best_change[2]
-        trade_apple_rate = best_change[3]
-        trade_ruby_rate = best_change[4]
-        if not trade_area == len(areas_best_changes):
-            next_area = areas_best_changes[trade_area]
-            trade_fish_rate_next = next_area[2]
-            trade_apple_rate_next = next_area[3]
-            trade_ruby_rate_next = next_area[4]
-
-        if not (trade_apple_rate_next == 0) and not (apple == 0):
-            log = log + (apple * trade_apple_rate_next)
-            apple = 0
-        if not (trade_ruby_rate_next == 0) and not (ruby == 0):
-            log = log + (ruby * trade_ruby_rate_next)
-            ruby = 0
-
-        if trade_area == original_area:
-            areas_log_amounts.append([trade_area, log, trade_ruby_rate])
-
-        if trade_best_change == 0:
-            log = log / trade_fish_rate
-            log = log * trade_fish_rate_next
-        elif trade_best_change == 1:
-            log = log / trade_apple_rate
-            log = log * trade_apple_rate_next
-        elif trade_best_change == 2:
-            log = log / trade_ruby_rate
-            log = log * trade_ruby_rate_next
-
-        if not trade_area == len(areas_best_changes):
-            areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
-
-    a15 = a16 = (0,0,0)
-    for log_amount in areas_log_amounts:
-        if log_amount[0] == 15:
-            a15 = log_amount
-        elif log_amount[0] == 21:
-            a16 = log_amount
-    log_a15 = a15[1]
-    ruby_rate_a15 = a15[2]
-    try:
-        ruby_a15 = floor(log_a15 / ruby_rate_a15)
-    except ZeroDivisionError:
-        ruby_a15 = 0
-    log_a16 = a16[1]
-    ruby_rate_a16 = a16[2]
-    ruby_a16 = floor(log_a16 / ruby_rate_a16)
     score_lbcommon = lbcommon * 0.05
     score_lbuncommon = lbuncommon * 0.1
     score_lbrare = lbrare * 0.15
@@ -621,18 +515,12 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
         score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
         + score_darkenergy
     )
-    score_ruby_a15 = ruby_a15 / 25
-    score_ruby_a16 = ruby_a16 / 25
     score_logultimate = logultimate * 40
     score_fishsuper = fishsuper * 8
     score_watermelon = watermelon / 12
     score_lifepotion = lifepotion / 500_000 + 1 if lifepotion > 0 else 0
     score_lottery = lottery_ticket / 2
-    score_a15 = score_ruby_a15 + score_lifepotion + score_lottery + score_logultimate + score_fishsuper + score_watermelon
-    score_a16 = score_ruby_a16 + score_lifepotion + score_lottery + score_logultimate + score_fishsuper + score_watermelon
-    score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_a15
-    score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_a16
-    message_area = 'The TOP' if original_area == 21 else original_area
+
     field_lootboxes = (
         f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
         f'{emojis.BP} {lbuncommon:,} {emojis.LB_UNCOMMON} = {score_lbuncommon:,.2f}\n'
@@ -663,40 +551,238 @@ async def embed_tj_score_calculator(area_no: int, inventory: str) -> discord.Emb
         f'{emojis.BP} {seed_potato:,} {emojis.SEED_POTATO} = {score_seed_potato:,.2f}\n'
         f'{emojis.BP} Total: **{score_farm_items:,.2f}**\n'
     )
-    ruby_a15_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
-    field_materials = (
-        f'{emojis.BP} {ruby_a15_str} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
-        f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in the TOP = {score_ruby_a16:,.2f}\n'
-        f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
-        f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
-        f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
-        f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
-        f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
-        f'{emojis.BP} Total in A15: **{score_a15:,.2f}**\n'
-        f'{emojis.BP} Total in A16-A20 and the TOP: **{score_a16:,.2f}**\n'
-    )
-    score_total_a15_str = f'{score_total_a15:,.2f}' if ruby_a15 != 0 else 'N/A'
-    field_totals = (
-        f'{emojis.BP} Total in A15: **{score_total_a15_str}**\n'
-        f'{emojis.BP} Total in A16-A20 and the TOP: **{score_total_a16:,.2f}**\n'
-    )
-    notes = (
-        f'{emojis.BP} This calculation assumes that you trade **all** of your materials to rubies\n'
-        f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
-        f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
-    )
     embed = discord.Embed(
-        title = 'TIME JUMP SCORE CALCULATOR',
-        description = (
-            f'Your current area: **{message_area}**\n'
-            f'Total score in A15: **{score_total_a15_str}**\n'
-            f'Total score in A16-A20 and the TOP: **{score_total_a16:,.2f}**'
-        )
+        color=settings.EMBED_COLOR,
+        title='TIME JUMP SCORE CALCULATOR',
+        description = f'Your current area: **{message_area.capitalize()}**\n'
     )
     embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)
     embed.add_field(name='FARM ITEMS', value=field_farming, inline=True)
     embed.add_field(name='MOB DROPS', value=field_mobdrops, inline=True)
-    embed.add_field(name='MATERIALS', value=field_materials, inline=True)
-    embed.add_field(name='TOTAL SCORE', value=field_totals, inline=True)
-    embed.add_field(name='NOTES', value=notes, inline=False)
+
+    if trade_materials:
+        areas = await database.get_all_areas()
+        all_areas = {}
+        for area in areas:
+            all_areas[area.area_no] = area
+        current_area = all_areas[area_no]
+
+        loghyper = loghyper + (logultra * 8)
+        logmega = logmega + (loghyper * 8)
+        logsuper = logsuper + (logmega * 8)
+        logepic = logepic + (logsuper * 8)
+        log = log + (logepic * 20)
+        fishgolden = fishgolden + (fishepic * 80)
+        fish = fish + (fishgolden * 12)
+        apple = apple + (banana * 12)
+
+        original_area = area_no
+        areas_best_changes = []
+
+        # Get the amount of logs for the current area
+        log = log + (fish * current_area.trade_fish_log)
+        if not current_area.trade_apple_log == 0:
+            log = log + (apple * current_area.trade_apple_log)
+            apple = 0
+        if not current_area.trade_ruby_log == 0:
+            log = log + (ruby * current_area.trade_ruby_log)
+            ruby = 0
+
+        # Calculate the best trade rate for all areas
+        for area in areas:
+            area_no_next = area.area_no + 1
+            if area_no_next != len(areas)+1:
+                area_next = all_areas[area_no_next]
+            else:
+                area_next = None
+            if area_next is not None:
+                fish_rate_next = area_next.trade_fish_log
+                apple_rate_next = area_next.trade_apple_log
+                ruby_rate_next = area_next.trade_ruby_log
+                if area.trade_fish_log != 0:
+                    fish_rate_change = fish_rate_next / area.trade_fish_log
+                else:
+                    fish_rate_change = 0
+                if area.trade_apple_log != 0:
+                    apple_rate_change = apple_rate_next / area.trade_apple_log
+                else:
+                    apple_rate_change = 0
+                if area.trade_ruby_log != 0:
+                    ruby_rate_change = ruby_rate_next / area.trade_ruby_log
+                else:
+                    ruby_rate_change = 0
+            else:
+                fish_rate_change = 1
+                apple_rate_change = 1
+                ruby_rate_change = 1
+            if (fish_rate_change <= 1) and (apple_rate_change <= 1) and (ruby_rate_change <= 1):
+                best_change_index = 3
+            else:
+                all_changes = [fish_rate_change, apple_rate_change, ruby_rate_change]
+                best_change = max(all_changes)
+                best_change_index = all_changes.index(best_change)
+            areas_best_changes.append(
+                [area.area_no, best_change_index, area.trade_fish_log, area.trade_apple_log, area.trade_ruby_log]
+            )
+            if area_next is None: break
+
+        # Get the amount of logs in each area
+        areas_log_amounts = []
+        trade_fish_rate_next = None
+        trade_apple_rate_next = None
+        trade_ruby_rate_next = None
+        for best_change in areas_best_changes[original_area-1:]:
+            trade_area = best_change[0]
+            trade_best_change = best_change[1]
+            trade_fish_rate = best_change[2]
+            trade_apple_rate = best_change[3]
+            trade_ruby_rate = best_change[4]
+            if not trade_area == len(areas_best_changes):
+                next_area = areas_best_changes[trade_area]
+                trade_fish_rate_next = next_area[2]
+                trade_apple_rate_next = next_area[3]
+                trade_ruby_rate_next = next_area[4]
+
+            if not (trade_apple_rate_next == 0) and not (apple == 0):
+                log = log + (apple * trade_apple_rate_next)
+                apple = 0
+            if not (trade_ruby_rate_next == 0) and not (ruby == 0):
+                log = log + (ruby * trade_ruby_rate_next)
+                ruby = 0
+
+            if trade_area == original_area:
+                areas_log_amounts.append([trade_area, log, trade_ruby_rate])
+
+            if trade_best_change == 0:
+                log = log / trade_fish_rate
+                log = log * trade_fish_rate_next
+            elif trade_best_change == 1:
+                log = log / trade_apple_rate
+                log = log * trade_apple_rate_next
+            elif trade_best_change == 2:
+                log = log / trade_ruby_rate
+                log = log * trade_ruby_rate_next
+
+            if not trade_area == len(areas_best_changes):
+                areas_log_amounts.append([trade_area+1, log, trade_ruby_rate_next])
+
+        a15 = a16 = (0,0,0)
+        for log_amount in areas_log_amounts:
+            if log_amount[0] == 15:
+                a15 = log_amount
+            elif log_amount[0] == 21:
+                a16 = log_amount
+        log_a15 = a15[1]
+        ruby_rate_a15 = a15[2]
+        try:
+            ruby_a15 = floor(log_a15 / ruby_rate_a15)
+        except ZeroDivisionError:
+            ruby_a15 = 0
+        log_a16 = a16[1]
+        ruby_rate_a16 = a16[2]
+        ruby_a16 = floor(log_a16 / ruby_rate_a16)
+
+        score_ruby_a15 = ruby_a15 / 25
+        score_ruby_a16 = ruby_a16 / 25
+        score_materials_a15 = score_ruby_a15 + score_logultimate + score_fishsuper + score_watermelon
+        score_materials_a16 = score_ruby_a16 + score_logultimate + score_fishsuper + score_watermelon
+        score_total_other = score_lifepotion + score_lottery
+        score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_total_other + score_materials_a15
+        score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_total_other + score_materials_a16
+        ruby_a15_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
+        field_materials = (
+            f'{emojis.BP} {ruby_a15_str} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
+            f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in A16+ = {score_ruby_a16:,.2f}\n'
+            f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
+            f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
+            f'{emojis.BP} Total in A15: **{score_materials_a15:,.2f}**\n'
+            f'{emojis.BP} Total in A16+: **{score_materials_a16:,.2f}**\n'
+        )
+        field_other = (
+            f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
+            f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
+        )
+        score_total_a15_str = f'{score_total_a15:,.2f}' if ruby_a15 != 0 else 'N/A'
+        field_totals = (
+            f'{emojis.BP} Area 15: **{score_total_a15_str}**\n'
+            f'{emojis.BP} Areas 16-20 / TOP: **{score_total_a16:,.2f}**\n'
+        )
+        notes = (
+            f'{emojis.BP} This calculation assumes that you trade **all** of your materials to rubies\n'
+            f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
+            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
+        )
+        embed.add_field(name='MATERIALS', value=field_materials, inline=True)
+        embed.add_field(name='OTHER', value=field_other, inline=True)
+        embed.add_field(name='TOTAL SCORE', value=field_totals, inline=False)
+        embed.add_field(name='NOTES', value=notes, inline=False)
+
+
+    if not trade_materials:
+        score_log = log / 25_000
+        score_logepic = logepic / 2_500
+        score_logsuper = logsuper / 250
+        score_logmega = logmega / 25
+        score_loghyper = loghyper / 2.5
+        score_logultra = logultra * 4
+        score_ruby = ruby / 25
+        score_total_materials_1 = (
+            score_log + score_logepic + score_logsuper + score_logmega + score_loghyper + score_logultra
+            + score_logultimate + score_ruby
+        )
+        score_fish = fish / 25_000
+        score_fishgolden = fishgolden / 1_250
+        score_fishepic = fishepic / 12.5
+        score_apple = apple / 5_000
+        score_banana = apple / 250
+        score_total_materials_2 = (
+            score_fish + score_fishgolden + score_fishepic + score_fishsuper + score_apple + score_banana
+            + score_watermelon
+        )
+        score_total_other = score_lifepotion + score_lottery
+        score_total = (
+            score_lootboxes + score_mobdrops + score_farm_items + score_total_materials_1 + score_total_materials_2
+            + score_total_other
+        )
+
+        field_materials_1 = (
+            f'{emojis.BP} {log:,} {emojis.LOG} = {score_log:,.2f}\n'
+            f'{emojis.BP} {logepic:,} {emojis.LOG_EPIC} = {score_logepic:,.2f}\n'
+            f'{emojis.BP} {logsuper:,} {emojis.LOG_SUPER} = {score_logsuper:,.2f}\n'
+            f'{emojis.BP} {logmega:,} {emojis.LOG_MEGA} = {score_logmega:,.2f}\n'
+            f'{emojis.BP} {loghyper:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_materials_1:,.2f}**\n'
+        )
+        field_materials_2 = (
+            f'{emojis.BP} {fish:,} {emojis.FISH} = {score_fish:,.2f}\n'
+            f'{emojis.BP} {fishgolden:,} {emojis.FISH_GOLDEN} = {score_fishgolden:,.2f}\n'
+            f'{emojis.BP} {fishepic:,} {emojis.FISH_EPIC} = {score_fishepic:,.2f}\n'
+            f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
+            f'{emojis.BP} {apple:,} {emojis.APPLE} = {score_apple:,.2f}\n'
+            f'{emojis.BP} {banana:,} {emojis.BANANA} = {score_banana:,.2f}\n'
+            f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_materials_2:,.2f}**\n'
+        )
+        field_other = (
+            f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
+            f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
+        )
+        field_totals = (
+            f'{emojis.BP} {message_area.capitalize()}: **{score_total:,.2f}**\n'
+        )
+        notes = (
+            f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
+            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
+        )
+        embed.add_field(name='MATERIALS (I)', value=field_materials_1, inline=True)
+        embed.add_field(name='MATERIALS (II)', value=field_materials_2, inline=True)
+        embed.add_field(name='OTHER', value=field_other, inline=True)
+        embed.add_field(name='TOTAL SCORE', value=field_totals, inline=False)
+        embed.add_field(name='NOTES', value=notes, inline=False)
+
     return embed

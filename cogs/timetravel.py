@@ -44,8 +44,12 @@ class TimeTravelCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         area_no: Option(int, 'Your current area', min_value=1, max_value=21, choices=strings.CHOICES_AREA),
+        materials: Option(str, 'If materials should be traded to rubies or not',
+                          choices=timetravel_content.MATERIALS_CALCULATION,
+                          default=timetravel_content.MATERIALS_TRADE),
     ) -> None:
-        await timetravel_content.command_tj_score_calculator(self.bot, ctx, area_no)
+        trade_materials = True if materials == timetravel_content.MATERIALS_TRADE else False
+        await timetravel_content.command_tj_score_calculator(self.bot, ctx, area_no, trade_materials)
 
 
 # Initialization
