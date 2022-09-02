@@ -755,6 +755,7 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             f'{emojis.BP} {loghyper:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {ruby:,} {emojis.RUBY} = {score_ruby:,.2f}\n'
             f'{emojis.BP} Total: **{score_total_materials_1:,.2f}**\n'
         )
         field_materials_2 = (

@@ -69,15 +69,10 @@ async def send_slash_migration_message(ctx: commands.Context, new_command: str) 
     embed.add_field(name='I DON\'T HAVE SLASH COMMANDS IN MY CHANNEL', value=help, inline=False)
     embed.add_field(name='SOMETHING IS WRONG IN THIS MESSAGE', value=slash_mention, inline=False)
 
-    if ctx.guild is not None:
-        if ctx.guild.id in (812650049565753355, 730115558766411857, 774590797214515201, 713541415099170836):
-            # Charivari Headquarters, Secret Valley, RPG ARMY, Support Server
-            view = views.ComplainView(ctx)
-            interaction_message = await ctx.send(embed=embed, view=view)
-            view.message = interaction_message
-            await view.wait()
-        else:
-            await ctx.send(embed=embed)
+    view = views.ComplainView(ctx)
+    interaction_message = await ctx.send(embed=embed, view=view)
+    view.message = interaction_message
+    await view.wait()
 
 
 async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:
