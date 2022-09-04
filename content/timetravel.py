@@ -2,7 +2,7 @@
 
 import asyncio
 from decimal import Decimal, ROUND_HALF_UP
-from math import floor
+from math import floor, ceil
 from typing import Optional
 
 import discord
@@ -406,12 +406,18 @@ async def embed_time_jump_score() -> discord.Embed:
     )
     mobdrops = (
         f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins = 1 score\n'
-        f'{emojis.BP} 10 {emojis.ZOMBIE_EYE} zombie eyes = 1 score\n'
-        f'{emojis.BP} 7 {emojis.UNICORN_HORN} unicorn horns = 1 score\n'
-        f'{emojis.BP} 5 {emojis.MERMAID_HAIR} mermaid hairs = 1 score\n'
-        f'{emojis.BP} 4 {emojis.CHIP} chips = 1 score\n'
+        f'{emojis.BP} 20 {emojis.ZOMBIE_EYE} zombie eyes = 2 score\n'
+        f'{emojis.BP} 20 {emojis.UNICORN_HORN} unicorn horns = 3 score\n'
+        f'{emojis.BP} 20 {emojis.MERMAID_HAIR} mermaid hairs = 4 score\n'
+        f'{emojis.BP} 20 {emojis.CHIP} chips = 5 score\n'
         f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
         f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
+    )
+    enchants = (
+        f'{emojis.BP} OMEGA = 1 score\n'
+        f'{emojis.BP} ULTRA-OMEGA = 2 score\n'
+        f'{emojis.BP} GODLY = 4 score\n'
+        f'{emojis.BP} VOID = ? score\n'
     )
     misc = (
         f'{emojis.BP} Having at least 1 {emojis.LIFE_POTION} life potion = 1 score\n'
@@ -430,6 +436,7 @@ async def embed_time_jump_score() -> discord.Embed:
     embed.add_field(name='BASE SCORE', value=base, inline=False)
     embed.add_field(name='LEVEL & STATS', value=level, inline=False)
     embed.add_field(name='GEAR', value=gear, inline=False)
+    embed.add_field(name='ENCHANTS', value=enchants, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
     embed.add_field(name='RUBIES', value=rubies, inline=False)
     embed.add_field(name='LOGS', value=logs, inline=False)
@@ -504,22 +511,24 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
     score_farm_items = (
         score_bread + score_carrot + score_potato + score_seed + score_seed_bread + score_seed_potato + score_seed_carrot
     )
+    score_total_lootboxes_farm_items = floor(score_lootboxes + score_farm_items)
     score_wolfskin = wolfskin / 20
     score_zombieeye = zombieeye / 10
-    score_unicornhorn = unicornhorn / 7
+    score_unicornhorn = unicornhorn / (20 / 3)
     score_mermaidhair = mermaidhair / 5
     score_chip = chip / 4
     score_dragonscale = dragonscale / 2
     score_darkenergy = darkenergy
-    score_mobdrops = (
+    score_total_mobdrops = floor(
         score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
         + score_darkenergy
     )
     score_logultimate = logultimate * 40
     score_fishsuper = fishsuper * 8
     score_watermelon = watermelon / 12
-    score_lifepotion = lifepotion / 500_000 + 1 if lifepotion > 0 else 0
-    score_lottery = lottery_ticket / 2
+    score_lifepotion = ceil(lifepotion / 500_000)
+    score_lottery = ceil(lottery_ticket / 2)
+    score_total_other = score_lottery + score_lifepotion
 
     field_lootboxes = (
         f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
@@ -529,7 +538,6 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
         f'{emojis.BP} {lbedgy:,} {emojis.LB_EDGY} = {score_lbedgy:,.2f}\n'
         f'{emojis.BP} {lbomega:,} {emojis.LB_OMEGA} = {score_lbomega:,.2f}\n'
         f'{emojis.BP} {lbgodly:,} {emojis.LB_GODLY} = {score_lbgodly:,.2f}\n'
-        f'{emojis.BP} Total: **{score_lootboxes:,.2f}**\n'
     )
     field_mobdrops = (
         f'{emojis.BP} {wolfskin:,} {emojis.WOLF_SKIN} = {score_wolfskin:,.2f}\n'
@@ -539,7 +547,6 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
         f'{emojis.BP} {chip:,} {emojis.CHIP} = {score_chip:,.2f}\n'
         f'{emojis.BP} {dragonscale:,} {emojis.DRAGON_SCALE} = {score_dragonscale:,.2f}\n'
         f'{emojis.BP} {darkenergy:,} {emojis.DARK_ENERGY} = {score_darkenergy:,.2f}\n'
-        f'{emojis.BP} Total: **{score_mobdrops:,.2f}**\n'
     )
     field_farming = (
         f'{emojis.BP} {bread:,} {emojis.BREAD} = {score_bread:,.2f}\n'
@@ -549,12 +556,10 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
         f'{emojis.BP} {seed_bread:,} {emojis.SEED_BREAD} = {score_seed_bread:,.2f}\n'
         f'{emojis.BP} {seed_carrot:,} {emojis.SEED_CARROT} = {score_seed_carrot:,.2f}\n'
         f'{emojis.BP} {seed_potato:,} {emojis.SEED_POTATO} = {score_seed_potato:,.2f}\n'
-        f'{emojis.BP} Total: **{score_farm_items:,.2f}**\n'
     )
     embed = discord.Embed(
         color=settings.EMBED_COLOR,
         title='TIME JUMP SCORE CALCULATOR',
-        description = f'Your current area: **{message_area.capitalize()}**\n'
     )
     embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)
     embed.add_field(name='FARM ITEMS', value=field_farming, inline=True)
@@ -684,11 +689,10 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
 
         score_ruby_a15 = ruby_a15 / 25
         score_ruby_a16 = ruby_a16 / 25
-        score_materials_a15 = score_ruby_a15 + score_logultimate + score_fishsuper + score_watermelon
-        score_materials_a16 = score_ruby_a16 + score_logultimate + score_fishsuper + score_watermelon
-        score_total_other = score_lifepotion + score_lottery
-        score_total_a15 = score_lootboxes + score_mobdrops + score_farm_items + score_total_other + score_materials_a15
-        score_total_a16 = score_lootboxes + score_mobdrops + score_farm_items + score_total_other + score_materials_a16
+        score_total_materials_a15 = floor(score_ruby_a15 + score_logultimate + score_fishsuper + score_watermelon)
+        score_total_materials_a16 = floor(score_ruby_a16 + score_logultimate + score_fishsuper + score_watermelon)
+        score_total_a15 = score_total_lootboxes_farm_items + score_total_mobdrops + score_total_other + score_total_materials_a15
+        score_total_a16 = score_total_lootboxes_farm_items + score_total_mobdrops + score_total_other + score_total_materials_a16
         ruby_a15_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
         field_materials = (
             f'{emojis.BP} {ruby_a15_str} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
@@ -696,27 +700,35 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
             f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
-            f'{emojis.BP} Total in A15: **{score_materials_a15:,.2f}**\n'
-            f'{emojis.BP} Total in A16+: **{score_materials_a16:,.2f}**\n'
         )
         field_other = (
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
-            f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
         )
-        score_total_a15_str = f'{score_total_a15:,.2f}' if ruby_a15 != 0 else 'N/A'
+        score_total_a15_str = score_total_a15 if ruby_a15 != 0 else 'N/A'
         field_totals = (
-            f'{emojis.BP} Area 15: **{score_total_a15_str}**\n'
-            f'{emojis.BP} Areas 16-20 / TOP: **{score_total_a16:,.2f}**\n'
+            f'{emojis.BP} Lootboxes & farm items: **{score_total_lootboxes_farm_items}**\n'
+            f'{emojis.BP} Mob drops: **{score_total_mobdrops}**\n'
+            f'{emojis.BP} Other: **{score_total_other}**\n'
+            f'{emojis.BP} Materials area 15: **{score_total_materials_a15}**\n'
+            f'{emojis.BP} Materials areas 16+: **{score_total_materials_a16}**\n'
+            f'{emojis.BP} Overall area 15: **{score_total_a15_str}**\n'
+            f'{emojis.BP} Overall areas 16+: **{score_total_a16}**\n'
         )
         notes = (
             f'{emojis.BP} This calculation assumes that you trade **all** of your materials to rubies\n'
+            f'{emojis.BP} This calculation calculates from your current area up to areas 15+\n'
             f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
             f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
         )
+        embed.description = (
+            f'Your current area: **{message_area.capitalize()}**\n'
+            f'Total score area 15: **{score_total_a15_str}**\n'
+            f'Total score areas 16+: **{score_total_a16}**\n'
+        )
         embed.add_field(name='MATERIALS', value=field_materials, inline=True)
         embed.add_field(name='OTHER', value=field_other, inline=True)
-        embed.add_field(name='TOTAL SCORE', value=field_totals, inline=False)
+        embed.add_field(name='TOTALS', value=field_totals, inline=False)
         embed.add_field(name='NOTES', value=notes, inline=False)
 
 
@@ -736,15 +748,15 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
         score_fishgolden = fishgolden / 1_250
         score_fishepic = fishepic / 12.5
         score_apple = apple / 5_000
-        score_banana = apple / 250
+        score_banana = banana / 250
         score_total_materials_2 = (
             score_fish + score_fishgolden + score_fishepic + score_fishsuper + score_apple + score_banana
             + score_watermelon
         )
+        score_total_materials = floor(score_total_materials_1 + score_total_materials_2)
         score_total_other = score_lifepotion + score_lottery
         score_total = (
-            score_lootboxes + score_mobdrops + score_farm_items + score_total_materials_1 + score_total_materials_2
-            + score_total_other
+            score_total_lootboxes_farm_items + score_total_mobdrops + score_total_materials + score_total_other
         )
 
         field_materials_1 = (
@@ -756,7 +768,6 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {ruby:,} {emojis.RUBY} = {score_ruby:,.2f}\n'
-            f'{emojis.BP} Total: **{score_total_materials_1:,.2f}**\n'
         )
         field_materials_2 = (
             f'{emojis.BP} {fish:,} {emojis.FISH} = {score_fish:,.2f}\n'
@@ -766,24 +777,31 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             f'{emojis.BP} {apple:,} {emojis.APPLE} = {score_apple:,.2f}\n'
             f'{emojis.BP} {banana:,} {emojis.BANANA} = {score_banana:,.2f}\n'
             f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
-            f'{emojis.BP} Total: **{score_total_materials_2:,.2f}**\n'
         )
         field_other = (
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
-            f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
         )
         field_totals = (
-            f'{emojis.BP} {message_area.capitalize()}: **{score_total:,.2f}**\n'
+            f'{emojis.BP} Lootboxes & farm items: **{score_total_lootboxes_farm_items}**\n'
+            f'{emojis.BP} Mob drops: **{score_total_mobdrops}**\n'
+            f'{emojis.BP} Other: **{score_total_other}**\n'
+            f'{emojis.BP} Materials: **{score_total_materials}**\n'
+            f'{emojis.BP} Overall: **{score_total}**\n'
         )
         notes = (
+            f'{emojis.BP} This calculation shows your inventory value for your current area\n'
             f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
             f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
+        )
+        embed.description = (
+            f'Your current area: **{message_area.capitalize()}**\n'
+            f'Total score: **{score_total}**\n'
         )
         embed.add_field(name='MATERIALS (I)', value=field_materials_1, inline=True)
         embed.add_field(name='MATERIALS (II)', value=field_materials_2, inline=True)
         embed.add_field(name='OTHER', value=field_other, inline=True)
-        embed.add_field(name='TOTAL SCORE', value=field_totals, inline=False)
+        embed.add_field(name='TOTALS', value=field_totals, inline=False)
         embed.add_field(name='NOTES', value=notes, inline=False)
 
     return embed
