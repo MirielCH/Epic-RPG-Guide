@@ -42,7 +42,7 @@ class timetravelCog(commands.Cog):
     @commands.command(aliases=('sttscore','superttscore','stts',))
     @commands.bot_has_permissions(external_emojis=True, send_messages=True, embed_links=True)
     async def supertimetravelscore(self, ctx, *args):
-        await functions.send_slash_migration_message(ctx, 'time travel guide')
+        await functions.send_slash_migration_message(ctx, 'time jump score')
 
     # Command "sttcalc" - Calculates STT score based in inventory and area
     @commands.command(aliases=('scorecalc','sttscorecalc','sttc','scalc','sc','superttcalc',))

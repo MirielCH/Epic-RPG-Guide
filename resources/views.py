@@ -1,7 +1,7 @@
 # views.py
 """Contains global interaction views"""
 
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Tuple, Union
 
 import discord
 from discord.ext import commands
@@ -489,19 +489,18 @@ class ComplainView(discord.ui.View):
         self.stop()
 
 
-class TimeJumpCalculationTypeView(discord.ui.View):
-    """View with button to toggle the time jump score calculator between trading materials to rubies or not.
+class TimeJumpCalculatorView(discord.ui.View):
+    """View with interactions to manually set stats, gear and enchants in the time jump score calculator.
 
-    Also needs the interaction of the response with the view, so do AbortView.message = await message.reply('foo').
+    Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
 
     Returns
     -------
-    'calculate_rubies' if materials are traded to ruby
-    'calculate_asis' if materials are caluclated as is
-    None if nothing happened yet.
+    None
     """
     def __init__(self, ctx: Union[commands.Context, discord.ApplicationContext], area_no: int, inventory: str,
-                 trade_materials: bool, embed_function: callable, interaction: Optional[discord.Interaction] = None):
+                 profile_data: dict, option_inventory: str, option_stats: str, all_items: dict,
+                 embed_function: callable, interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
         self.ctx = ctx
@@ -509,15 +508,18 @@ class TimeJumpCalculationTypeView(discord.ui.View):
         self.interaction = interaction
         self.area_no = area_no
         self.inventory = inventory
-        self.trade_materials = trade_materials
+        self.profile_data = profile_data
+        self.option_inventory = option_inventory
+        self.option_stats = option_stats
+        self.all_items = all_items
         self.embed_function = embed_function
-        if trade_materials:
-            custom_id = 'calculate_asis'
-            label = 'Calculate materials as is'
-        else:
-            custom_id = 'calculate_rubies'
-            label = 'Trade all materials to rubies'
-        self.add_item(components.TimeJumpCalculationTypeButton(custom_id=custom_id, label=label))
+        self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='sword', all_items=all_items,
+                                                              placeholder='Change sword'))
+        self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='armor', all_items=all_items,
+                                                              placeholder='Change armor'))
+        self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='sword', placeholder='Change sword enchant'))
+        self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='armor', placeholder='Change armor enchant'))
+        self.add_item(components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats'))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:
@@ -531,4 +533,47 @@ class TimeJumpCalculationTypeView(discord.ui.View):
                 await functions.edit_interaction(self.interaction, view=None)
             except discord.errors.NotFound:
                 pass
+        self.stop()
+
+
+class DropChanceCalculatorView(discord.ui.View):
+    """View with a drop type select.
+    Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    drop_types: Drop types to select from - list[str]
+    embed_function: function that returns the embed. Needs the arguments active_drop_type, timetravel, horse_tier.
+    active_drop_type: Currently chosen drop type
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, embed_function: Callable, drop_types: List[str],
+                 active_drop_type: str, timetravel: int, horse_data: dict,
+                 placeholder: Optional[str] = 'Choose drop type ...',
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.embed_function = embed_function
+        self.drop_types = drop_types
+        self.active_drop_type = active_drop_type
+        self.timetravel = timetravel
+        self.horse_data = horse_data
+        self.placeholder = placeholder
+        self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user != self.user:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
         self.stop()

@@ -139,63 +139,74 @@ async def embed_monster_drops() -> discord.Embed:
     """Monster drops"""
     wolfskin = (
         f'{emojis.BP} Areas: 1~2\n'
-        f'{emojis.BP} Source: {emojis.MOB_WOLF}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monster: {emojis.MOB_WOLF}\n'
         f'{emojis.BP} Value: 500\n'
         f'{emojis.BLANK}'
     )
     zombieeye = (
         f'{emojis.BP} Areas: 3~4\n'
-        f'{emojis.BP} Source: {emojis.MOB_ZOMBIE}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monster: {emojis.MOB_ZOMBIE}\n'
         f'{emojis.BP} Value: 2,000\n'
         f'{emojis.BLANK}'
     )
     unicornhorn = (
         f'{emojis.BP} Areas: 5~6\n'
-        f'{emojis.BP} Source: {emojis.MOB_UNICORN}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monster: {emojis.MOB_UNICORN}\n'
         f'{emojis.BP} Value: 7,500\n'
         f'{emojis.BLANK}'
     )
     mermaidhair = (
         f'{emojis.BP} Areas: 7~8\n'
-        f'{emojis.BP} Source: {emojis.MOB_MERMAID}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monster: {emojis.MOB_MERMAID}\n'
         f'{emojis.BP} Value: 30,000\n'
         f'{emojis.BLANK}'
     )
     chip = (
         f'{emojis.BP} Areas: 9~10\n'
-        f'{emojis.BP} Source: {emojis.MOB_KILLER_ROBOT}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monster: {emojis.MOB_KILLER_ROBOT}\n'
         f'{emojis.BP} Value: 100,000\n'
         f'{emojis.BLANK}'
     )
     dragonscale = (
         f'{emojis.BP} Areas: 11~15\n'
-        f'{emojis.BP} Source: {emojis.MOB_BABY_DRAGON}{emojis.MOB_TEEN_DRAGON}{emojis.MOB_ADULT_DRAGON}{emojis.MOB_OLD_DRAGON}\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monsters: {emojis.MOB_BABY_DRAGON}{emojis.MOB_TEEN_DRAGON}{emojis.MOB_ADULT_DRAGON}{emojis.MOB_OLD_DRAGON}\n'
         f'{emojis.BP} Value: 250,000\n'
         f'{emojis.BLANK}'
     )
     dark_energy = (
         f'{emojis.BP} Areas: 16~20\n'
-        f'{emojis.BP} Source: All monsters\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.BP} Monsters: All monsters\n'
         f'{emojis.BP} Value: 5,000,000\n'
         f'{emojis.BLANK}'
     )
+    epic_berry = (
+        f'{emojis.BP} Areas: All areas\n'
+        f'{emojis.BP} Source: {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.BP} Monsters: All monsters\n'
+        f'{emojis.BP} Value: Can\'t be sold\n'
+        f'{emojis.BLANK}'
+    )
     chance = (
-        f'{emojis.BP} The chance to encounter a mob that drops items is 50 %\n'
-        f'{emojis.BP} These mobs have a base chance of 4 % to drop an item\n'
-        f'{emojis.BP} Thus you have a total base drop chance of 2 % when hunting\n'
-        f'{emojis.BP} Every {emojis.TIME_TRAVEL} time travel increases the drop chance by ~25%\n'
-        f'{emojis.BP} A {emojis.HORSE_T7} T7 horse increases the drop chance by 20%\n'
-        f'{emojis.BP} A {emojis.HORSE_T8} T8 horse increases the drop chance by 50%\n'
-        f'{emojis.BP} A {emojis.HORSE_T9} T9 horse increases the drop chance by 100%\n'
-        f'{emojis.BP} A {emojis.HORSE_T10} T10 horse increases the drop chance by 200%\n'
-        f'{emojis.BP} To see your drop chance, use {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]}\n'
+        f'{emojis.BP} The drop chance depends on the following:\n'
+        f'{emojis.DETAIL} Your horse tier\n'
+        f'{emojis.DETAIL} Your time travel count\n'
+        f'{emojis.DETAIL} The command mode (`hardmode` increases drop chance)\n'
+        f'{emojis.DETAIL} World buffs in {strings.SLASH_COMMANDS_EPIC_RPG["world"]}\n'
+        f'{emojis.BP} To see the your drop chance, use {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]}\n'
         f'{emojis.BLANK}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MONSTER DROPS',
         description = (
-            f'These items drop when using {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} or when opening lootboxes.\n'
+            f'These items can drop when using certain commands.\n'
             f'You can move to other areas with {strings.SLASH_COMMANDS_EPIC_RPG["area"]}.\n'
             f'{emojis.BLANK}'
         )
@@ -208,5 +219,6 @@ async def embed_monster_drops() -> discord.Embed:
     embed.add_field(name=f'CHIP {emojis.CHIP}', value=chip, inline=True)
     embed.add_field(name=f'DRAGON SCALE {emojis.DRAGON_SCALE}', value=dragonscale, inline=True)
     embed.add_field(name=f'DARK ENERGY {emojis.DARK_ENERGY}', value=dark_energy, inline=True)
+    embed.add_field(name=f'EPIC BERRY {emojis.EPIC_BERRY}', value=epic_berry, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
     return embed

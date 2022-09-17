@@ -6,11 +6,15 @@ import re
 from typing import Any, List, Optional, Union, Tuple
 
 import discord
+from discord.embeds import EmptyEmbed
 from discord.utils import MISSING
 from discord.ext import commands
 
 import database
 from resources import emojis, settings, strings, views
+
+
+USER_ID_FROM_ICON_URL = re.compile(r"avatars\/(.+?)\/")
 
 
 def await_coroutine(coro):
@@ -380,23 +384,38 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            field2 = message.embeds[0].fields[1]
-            search_strings_author = [
-                f'{ctx_author} u2014 professions', #All languages
-            ]
-            search_strings_field = [
-                'about this profession', #English
-                'acerca de esta profesión', #Spanish
-                'sobre esta profissão', #Portuguese
-            ]
-            if (any(search_string in embed_author for search_string in search_strings_author)
-                and any(search_string in field2.name.lower() for search_string in search_strings_field)):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if len(embed.fields) > 1 and embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                field2 = embed.fields[1].name
+                try:
+                    search_strings_field = [
+                        'about this profession', #English
+                        'acerca de esta profesión', #Spanish
+                        'sobre esta profissão', #Portuguese
+                    ]
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings_author = [
+                            f'u2014 professions', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings_author)
+                            and any(search_string in field2.lower() for search_string in search_strings_field)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings_author = [
+                            f'{ctx_author} u2014 professions', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings_author)
+                            and any(search_string in field2.lower() for search_string in search_strings_field)):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -430,23 +449,38 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            description = message.embeds[0].description
-            search_strings_author = [
-                f'{ctx_author} u2014 professions', #All languages
-            ]
-            search_strings_description = [
-                'more information about a profession', #English
-                'más información acerca de una profesión', #Spanish
-                'mais informações sobre uma profissão', #Portuguese
-            ]
-            if (any(search_string in embed_author for search_string in search_strings_author)
-                and any(search_string in description.lower() for search_string in search_strings_description)):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                description = embed.description
+                try:
+                    search_strings_description = [
+                        'more information about a profession', #English
+                        'más información acerca de una profesión', #Spanish
+                        'mais informações sobre uma profissão', #Portuguese
+                    ]
+                    ctx_author = format_string(ctx.author.name)
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings_author = [
+                            f'u2014 professions', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings_author)
+                            and any(search_string in description.lower() for search_string in search_strings_description)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        search_strings_author = [
+                            f'{ctx_author} u2014 professions', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings_author)
+                            and any(search_string in description.lower() for search_string in search_strings_description)):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -463,17 +497,19 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            field2 = message.embeds[0].fields[1]
-            search_strings = [
-                'daily monster', #English
-                'monstruo diario', #Spanish
-                'monstro diário', #Portuguese
-            ]
-            if any(search_string in field2.name.lower() for search_string in search_strings):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if len(embed.fields) > 1:
+                try:
+                    search_strings = [
+                        'daily monster', #English
+                        'monstruo diario', #Spanish
+                        'monstro diário', #Portuguese
+                    ]
+                    if any(search_string in embed.fields[1].name.lower() for search_string in search_strings):
+                        correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -490,16 +526,70 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            search_strings = [
-                f'{ctx_author} u2014 horse', ##All languages
-            ]
-            if any(search_string in embed_author for search_string in search_strings):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 horse', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 horse', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
+
+        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
+
+
+async def wait_for_profile_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the profile embed from EPIC RPG"""
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
+        correct_message = False
+        message = message_after if message_after is not None else message_before
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 profile', ##All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 profile', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -516,17 +606,32 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            search_strings = [
-                f'{ctx_author} u2014 profile', ##All languages
-                f'{ctx_author} u2014 progress', ##All languages
-            ]
-            if any(search_string in embed_author for search_string in search_strings):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 profile', ##All languages
+                            f'u2014 progress', ##All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 profile', ##All languages
+                            f'{ctx_author} u2014 progress', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -543,17 +648,32 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            search_strings = [
-                f'{ctx_author} u2014 profile', ##All languages
-                f'{ctx_author} u2014 stats', ##All languages
-            ]
-            if any(search_string in embed_author for search_string in search_strings):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 profile', ##All languages
+                            f'u2014 stats', ##All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 profile', ##All languages
+                            f'{ctx_author} u2014 stats', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -570,16 +690,30 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
         correct_message = False
         message = message_after if message_after is not None else message_before
-        try:
-            ctx_author = format_string(str(ctx.author.name))
-            embed_author = format_string(str(message.embeds[0].author))
-            search_strings = [
-                f'{ctx_author} u2014 inventory', ##All languages
-            ]
-            if any(search_string in embed_author for search_string in search_strings):
-                correct_message = True
-        except:
-            pass
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 inventory', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 inventory', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
 
         return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
 
@@ -751,7 +885,7 @@ async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
 
 
 async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
-                                              bot_message: discord.Message) -> Tuple[int, int]:
+                                              bot_message: discord.Message) -> dict:
     """Extracts horse tier and level from a horse embed.
 
     Arguments
@@ -761,9 +895,11 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
 
     Returns
     -------
-    Tuple[
-        horse tier: int,
-        horse level: int
+    Dict[
+        'tier': int,
+        'level': int,
+        'boost': float,
+        'drop_chance': float,
     ]
 
     Raises
@@ -774,28 +910,167 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
     data_field = bot_message.embeds[0].fields[0]
     search_patterns_tier = [
         'tier\*\* - (.+?) <', #English
-        'tier de caballo\*\* - (.+?) <', #Spanish
-        'tier do cavalo\*\* - (.+?) <', #Portuguese
+        'tier del? caballo\*\* - (.+?) <', #Spanish
+        'tier d[eo] cavalo\*\* - (.+?) <', #Portuguese
     ]
     search_patterns_level = [
         'level\*\* - (.+?) \(', #English 1
         'level\*\* - (.+?)\\n', #English 2
-        'nivel de caballo\*\* - (.+?) \(', #Spanish 1
-        'nivel de caballo\*\* - (.+?)\\n', #Spanish 2
-        'nível do cavalo\*\* - (.+?) \(', #Portuguese 1
-        'nível do cavalo\*\* - (.+?)\\n', #Portuguese 2
+        'nivel del? caballo\*\* - (.+?) \(', #Spanish 1
+        'nivel del? caballo\*\* - (.+?)\\n', #Spanish 2
+        'nível d[eo] cavalo\*\* - (.+?) ?\(', #Portuguese 1
+        'nível d[eo] cavalo\*\* - (.+?)\\n', #Portuguese 2
+    ]
+    search_patterns_boost = [
+        'boost\*\* - (.+?)%', #English
+        'boost del? caballo\*\* - (.+?)%', #Spanish
+        'boost d[eo] cavalo\*\* - (.+?)%', #Portuguese
+    ]
+    search_patterns_epicness = [
+        'epicness\*\* - (.+?)\n', #English
+        'epicidad del? caballo\*\* - (.+?)\n', #Spanish
+        'epicidade d[eo] cavalo\*\* - (.+?)\n', #Portuguese
+    ]
+    search_patterns_drop_chance = [
+        'x(.+?) chance to drop a monster item', #English
+        'x(.+?) de droppear items', #Spanish
+        'x(.+?) de dropar itens', #Portuguese
     ]
     tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
     level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
+    boost_match = await get_match_from_patterns(search_patterns_boost, data_field.value.lower())
+    epicness_match = await get_match_from_patterns(search_patterns_epicness, data_field.value.lower())
+    drop_chance_match = await get_match_from_patterns(search_patterns_drop_chance, data_field.value.lower())
+    horse_data = {}
     try:
         tier = tier_match.group(1)
-        tier = int(strings.NUMBERS_ROMAN_INTEGER[tier])
-        level = int(level_match.group(1))
+        horse_data['tier'] = int(strings.NUMBERS_ROMAN_INTEGER[tier])
+        horse_data['level'] = int(level_match.group(1))
+        horse_data['boost'] = float(boost_match.group(1))
+        horse_data['epicness'] = int(epicness_match.group(1)) if epicness_match else 0
+        horse_data['drop_chance'] = float(drop_chance_match.group(1)) if drop_chance_match else 1
     except Exception as error:
         await database.log_error(f'Error extracting horse data in horse message: {data_field}', ctx)
         raise ValueError(error)
 
-    return (tier, level)
+    return horse_data
+
+
+async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
+                                                   bot_message: discord.Message) -> Tuple[int, int]:
+    """Extracts the following data from a profile embed:
+    - level
+    - max area
+    - time travel
+    - at
+    - def
+    - life
+    - sword
+    - sword enchant
+    - armor
+    - armor enchant
+    - horse type (english)
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    Dict[
+        area_max: int (21 for top),
+        armor: Item,
+        at: int,
+        def: int,
+        enchant_armor: str ('' if no enchant),
+        enchant_sword: str ('' if no enchant),
+        horse_type: str,
+        level: int,
+        life: int,
+        sword: Item,
+        time_travel: int,
+    ]
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    field_progress = bot_message.embeds[0].fields[0]
+    field_stats = bot_message.embeds[0].fields[1]
+    field_equipment = bot_message.embeds[0].fields[2]
+    sword, armor, horse_type = field_equipment.value.split('\n')
+    search_patterns_tt = [
+        'time travels\*\*: (.+?)$', #English
+        'viajes en el tiempo\*\*: (.+?)$', #Spanish
+        'viagens no tempo\*\*: (.+?)$', #Portuguese
+    ]
+    search_patterns_area = [
+        'max: (.+?)\)', #All languages
+    ]
+    search_patterns_level = [
+        'level\*\*: (.+?)\(', #English & Spanish
+        'n[ií]vel\*\*: (.+?)\(', #Spanish & Portuguese
+    ]
+    area_match = await get_match_from_patterns(search_patterns_area, field_progress.value.lower())
+    at_match = re.search(r'at\*\*: (.+?)\n', field_stats.value.lower())
+    def_match = re.search(r'def\*\*: (.+?)\n', field_stats.value.lower())
+    armor_match = re.search(r'<:(.+?):', armor.lower())
+    enchant_armor_match = re.search(r'\[(.+?)]', armor)
+    sword_match = re.search(r'<:(.+?):', sword.lower())
+    enchant_sword_match = re.search(r'\[(.+?)]', sword)
+    horse_type_match = re.search(r'\[(.+?)]', horse_type.lower())
+    level_match = await get_match_from_patterns(search_patterns_level, field_progress.value.lower())
+    life_match = re.search(r'life\*\*: (.+?)\/(.+?)$', field_stats.value.lower())
+    tt_match = await get_match_from_patterns(search_patterns_tt, field_progress.value.lower())
+    profile_data = {}
+    try:
+        area_max = area_match.group(1)
+        profile_data['area_max'] = 21 if area_max.lower() == 'top' else int(area_max)
+        if armor_match:
+            armor_name = strings.ITEM_ALIASES.get(armor_match.group(1), None)
+            if armor_name is not None:
+                armor_item = await database.get_item(armor_name)
+            else:
+                armor_item = None
+        else:
+            armor_item = None
+        if sword_match:
+            sword_name = strings.ITEM_ALIASES.get(sword_match.group(1), None)
+            if sword_name is not None:
+                sword_item = await database.get_item(sword_name)
+            else:
+                sword_item = None
+        else:
+            sword_item = None
+        profile_data['armor'] = armor_item
+        profile_data['sword'] = sword_item
+        profile_data['at'] = int(at_match.group(1))
+        profile_data['def'] = int(def_match.group(1))
+        profile_data['level'] = int(level_match.group(1))
+        profile_data['life'] = int(life_match.group(2))
+        if enchant_armor_match:
+            profile_data['enchant_armor'] = enchant_armor_match.group(1)
+        else:
+            profile_data['enchant_armor'] = 'No'
+        if enchant_sword_match:
+            profile_data['enchant_sword'] = enchant_sword_match.group(1)
+        else:
+            profile_data['enchant_sword'] = 'No'
+        horse_type = horse_type_match.group(1)
+        if horse_type in strings.HORSE_TYPES_ENGLISH: horse_type = strings.HORSE_TYPES_ENGLISH[horse_type]
+        profile_data['horse_type'] = horse_type
+        profile_data['time_travel'] = int(tt_match.group(1)) if tt_match is not None else 0
+    except Exception as error:
+        await database.log_error(
+            f'Error extracting data in profile message: {error}\n'
+            f'{field_progress}, {field_stats}, {field_equipment}',
+            ctx
+        )
+        raise ValueError(error)
+
+    return profile_data
 
 
 async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.ApplicationContext,

@@ -13,21 +13,43 @@ from resources import emojis, functions, settings, strings, views
 
 # --- Topics ---
 TOPIC_TT = 'Time travel (TT)'
-TOPIC_TJ = 'Time jump'
-TOPIC_TJ_SCORE = 'Time jump score'
+TOPIC_TJ = 'Time jump / Super time travel (STT)'
 
 TOPICS = [
     TOPIC_TT,
     TOPIC_TJ,
-    TOPIC_TJ_SCORE,
 ]
 
-MATERIALS_CURRENT = 'Calculate as is'
-MATERIALS_TRADE = 'Trade materials to rubies'
+TOPIC_SCORE_GEAR = 'Gear'
+TOPIC_SCORE_MATERIALS = 'Materials'
+TOPIC_SCORE_STATS = 'Stats & enchants'
 
-MATERIALS_CALCULATION = [
-    MATERIALS_CURRENT,
-    MATERIALS_TRADE
+TOPICS_SCORE = [
+    TOPIC_SCORE_GEAR,
+    TOPIC_SCORE_MATERIALS,
+    TOPIC_SCORE_STATS,
+]
+
+
+# --- Calculator options ---
+INVENTORY_CURRENT = 'Calculate as is'
+INVENTORY_TRADE_A15 = 'Trade to A15 rubies'
+INVENTORY_TRADE_A16 = 'Trade to A16+ rubies'
+
+TJ_CALCULATOR_INVENTORY = [
+    INVENTORY_CURRENT,
+    INVENTORY_TRADE_A15,
+    INVENTORY_TRADE_A16,
+]
+
+STATS_NONE = 'No stats'
+STATS_CURRENT = 'Current stats'
+STATS_MANUAL = 'Manual input'
+
+TJ_CALCULATOR_STATS = [
+    STATS_NONE,
+    STATS_CURRENT,
+    STATS_MANUAL,
 ]
 
 # --- Commands ---
@@ -36,7 +58,6 @@ async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str)
     topics_functions = {
         TOPIC_TT: embed_time_travel,
         TOPIC_TJ: embed_time_jump,
-        TOPIC_TJ_SCORE: embed_time_jump_score,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -63,13 +84,31 @@ async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetrave
     await ctx.respond(embed=embed)
 
 
-async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
-                                      trade_materials: bool) -> None:
+async def command_time_jump_score(ctx: discord.ApplicationContext, topic: str) -> None:
+    """Time jump score command"""
+    topics_functions = {
+        TOPIC_SCORE_GEAR: embed_time_jump_score_gear,
+        TOPIC_SCORE_MATERIALS: embed_time_jump_score_materials,
+        TOPIC_SCORE_STATS: embed_time_jump_score_stats,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
+
+
+async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
+                                      option_inventory: str, option_stats: str) -> None:
     """STT score calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
         content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
-                                                        command=strings.SLASH_COMMANDS_EPIC_RPG["inventory"])
+                                                          command=strings.SLASH_COMMANDS_EPIC_RPG["inventory"])
         bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
     except asyncio.TimeoutError:
         await ctx.respond(
@@ -82,11 +121,66 @@ async def command_tj_score_calculator(bot: discord.Bot, ctx: discord.Application
     for field in bot_message.embeds[0].fields:
         inventory = f'{inventory}{field.value}\n'
 
-    view = views.TimeJumpCalculationTypeView(ctx, area_no, inventory, trade_materials, embed_tj_score_calculator)
-    embed = await embed_tj_score_calculator(area_no, inventory.lower(), trade_materials)
-    interaction = await ctx.respond(embed=embed, view=view)
-    view.interaction = interaction
-    await view.wait()
+    profile_data = {}
+    if option_stats == STATS_CURRENT:
+        bot_message_task = asyncio.ensure_future(functions.wait_for_profile_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                            command=strings.SLASH_COMMANDS_EPIC_RPG["profile"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profile'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        profile_data = await functions.extract_data_from_profile_embed(ctx, bot_message)
+        profile_data['horse_boost'] = 0
+        if profile_data['horse_type'] in ('magic', 'defender', 'strong', 'tank'):
+            bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
+            try:
+                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                                command=strings.SLASH_COMMANDS_EPIC_RPG["horse stats"])
+                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+            except asyncio.TimeoutError:
+                await ctx.respond(
+                    strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='horse stats'),
+                    ephemeral=True
+                )
+                return
+            if bot_message is None: return
+            horse_data = await functions.extract_horse_data_from_horse_embed(ctx, bot_message)
+            profile_data['horse_boost'] = horse_data['boost']
+
+    if option_stats == STATS_MANUAL:
+        all_items_list = list(await database.get_all_items())
+        all_items_list.sort(key=lambda item: item.score)
+        profile_data['sword'] = None
+        profile_data['armor'] = None
+        all_items = {}
+        for item in all_items_list:
+            if item.name.lower() == 'ultra-omega sword':
+                profile_data['sword'] = item
+            if item.name.lower() == 'ultra-omega armor':
+                profile_data['armor'] = item
+            all_items[item.name] = item
+        profile_data['level'] = 200
+        profile_data['extra_at'] = 0
+        profile_data['extra_def'] = 0
+        profile_data['extra_life'] = 0
+        profile_data['enchant_sword'] = 'OMEGA'
+        profile_data['enchant_armor'] = 'OMEGA'
+
+    embed = await embed_time_jump_calculator(area_no, inventory.lower(), profile_data, option_inventory, option_stats)
+    if option_stats == STATS_MANUAL:
+        view = views.TimeJumpCalculatorView(ctx, area_no, inventory.lower(), profile_data, option_inventory,
+                                                 option_stats, all_items, embed_time_jump_calculator)
+        interaction = await ctx.respond(embed=embed, view=view)
+        view.interaction = interaction
+        await view.wait()
+    else:
+        await ctx.respond(embed=embed)
 
 
 # --- Embeds ---
@@ -196,7 +290,9 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     if tt.tt > 1:
         unlocks = (
             f'{unlocks.strip()}\n'
-            f'{emojis.BP} **{tt.tt + 5}** pet slots'
+            f'{emojis.BP} **{tt.tt + 5}** base pet slots\n'
+            f'{emojis.DETAIL} Your total pet slots depend on the coolness pet slot multiplier\n'
+            f'{emojis.DETAIL} See {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your multiplier\n'
         )
     if tt.tt > 0:
         unlocks = (
@@ -334,14 +430,13 @@ async def embed_time_jump() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'TIME JUMP',
+        title = 'TIME JUMP / SUPER TIME TRAVEL (STT)',
         description = (
             f'Time jumping is unlocked once you reach {emojis.TIME_TRAVEL} TT 25. From this point onward you have '
             f'to use {strings.SLASH_COMMANDS_EPIC_RPG["time jump"]} to reach the next TT.\n'
             f'Time jump lets you choose a starter bonus. You can (and have to) choose **1** bonus.\n'
             f'These bonuses cost score points which are calculated based on your inventory and your gear '
-            f'(see topic `Time jump score`).\n'
-            f'Note: Time jump used to be called and is also known as **super time travel**.\n'
+            f'(see {strings.SLASH_COMMANDS_GUIDE["time jump score"]}).\n'
         )
 
     )
@@ -350,27 +445,73 @@ async def embed_time_jump() -> discord.Embed:
     return embed
 
 
-async def embed_time_jump_score() -> discord.Embed:
-    """STT score embed"""
+async def embed_time_jump_score_stats() -> discord.Embed:
+    """STT score stats & enchants embed"""
     base = (
-        f'{emojis.BP} If you are level 200, have the ULTRA-OMEGA set and your inventory is empty, you have 355.5 score'
-    )
-    gear = (
-        f'{emojis.BP} {emojis.SWORD_ULTRAOMEGA} ULTRA-OMEGA sword = ~74 score\n'
-        f'{emojis.BP} {emojis.ARMOR_ULTRAOMEGA} ULTRA-OMEGA armor = ~87 score'
+        f'{emojis.BP} You have a base score of 8, regardless of anything else'
     )
     level = (
-        f'{emojis.BP} 1 level = 0.5 score\n'
-        f'{emojis.BP} 1 {emojis.STAT_DEF} DEF + 1 {emojis.STAT_AT} AT + 5 {emojis.STAT_LIFE} HP = 0.4 score'
+        f'{emojis.BP} 1 level without stats = 0.5 score\n'
+        f'{emojis.BP} 1 level including its stats = 0.9 score\n'
     )
+    stats = (
+        f'{emojis.BP} 1 {emojis.STAT_AT} AT = 0.125 score\n'
+        f'{emojis.BP} 1 {emojis.STAT_DEF} DEF = 0.15 score\n'
+        f'{emojis.BP} 1 {emojis.STAT_LIFE} HP = 0.025 score\n'
+        f'{emojis.DETAIL} Only **base** stats (level & gear) give score!\n'
+    )
+    enchants = (
+        f'{emojis.BP} Enchants have a score that is 4x their bonus / 100\n'
+        f'{emojis.DETAIL} Example: OMEGA enchant is `125 * 4 / 100` = 5 score\n'
+    )
+    calculation = (
+        f'{emojis.BP} Add stats and level scores and ceil\n'
+        f'{emojis.BP} Add both enchant scores and ceil\n'
+    )
+    calculator = (
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["time jump calculator"]} to calculate your score'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'TIME JUMP SCORE • STATS & ENCHANTS',
+    )
+    embed.add_field(name='BASE SCORE', value=base, inline=False)
+    embed.add_field(name='LEVEL', value=level, inline=False)
+    embed.add_field(name='STATS', value=stats, inline=False)
+    embed.add_field(name='ENCHANTS', value=enchants, inline=False)
+    embed.add_field(name='HOW TO CALCULATE', value=calculation, inline=False)
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
+    return embed
+
+
+async def embed_time_jump_score_materials() -> discord.Embed:
+    """STT score materials embed"""
     lootboxes = (
         f'{emojis.BP} 1 {emojis.LB_COMMON} common lootbox = 0.05 score\n'
         f'{emojis.BP} 1 {emojis.LB_UNCOMMON} uncommon lootbox = 0.1 score\n'
-        f'{emojis.BP} 1 {emojis.LB_RARE} rare lootbox = 0.15 score\n'
+        f'{emojis.BP} 1 {emojis.LB_RARE} rare lootbox = 0.133... score\n'
         f'{emojis.BP} 1 {emojis.LB_EPIC} EPIC lootbox = 0.2 score\n'
         f'{emojis.BP} 1 {emojis.LB_EDGY} EDGY lootbox = 0.25 score\n'
         f'{emojis.BP} 1 {emojis.LB_OMEGA} OMEGA lootbox = 5 score\n'
-        f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 25 (?) score'
+        f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 50 score'
+    )
+    farm_items = (
+        f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
+        f'{emojis.BP} 30 {emojis.CARROT} carrots = 1 score\n'
+        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score (best value)\n'
+        f'{emojis.BP} 1 {emojis.SEED_POTATO} potato seed = 1 score\n'
+        f'{emojis.BP} 1 {emojis.SEED_CARROT} carrot seed = 1 score\n'
+        f'{emojis.BP} 1 {emojis.SEED_BREAD} bread seed = 1 score\n'
+        f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score (10k seeds max)\n'
+    )
+    mob_drops = (
+        f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins = 1 score\n'
+        f'{emojis.BP} 20 {emojis.ZOMBIE_EYE} zombie eyes = 2 score\n'
+        f'{emojis.BP} 20 {emojis.UNICORN_HORN} unicorn horns = 3 score\n'
+        f'{emojis.BP} 20 {emojis.MERMAID_HAIR} mermaid hairs = 4 score\n'
+        f'{emojis.BP} 20 {emojis.CHIP} chips = 5 score\n'
+        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
+        f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
     )
     rubies = (
         f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
@@ -395,62 +536,122 @@ async def embed_time_jump_score() -> discord.Embed:
         f'{emojis.BP} 250 {emojis.BANANA} bananas = 1 score\n'
         f'{emojis.BP} 12 {emojis.WATERMELON} watermelons = 1 score\n'
     )
-    farming = (
-        f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
-        f'{emojis.BP} 30 {emojis.CARROT} carrots = 1 score\n'
-        f'{emojis.BP} 25 {emojis.BREAD} bread = 1 score (best value)\n'
-        f'{emojis.BP} 1 {emojis.SEED_POTATO} potato seed = 1 score\n'
-        f'{emojis.BP} 1 {emojis.SEED_CARROT} carrot seed = 1 score\n'
-        f'{emojis.BP} 1 {emojis.SEED_BREAD} bread seed = 1 score\n'
-        f'{emojis.BP} 2,500 {emojis.SEED} seed = 1 score (10k seeds max)\n'
-    )
-    mobdrops = (
-        f'{emojis.BP} 20 {emojis.WOLF_SKIN} wolf skins = 1 score\n'
-        f'{emojis.BP} 20 {emojis.ZOMBIE_EYE} zombie eyes = 2 score\n'
-        f'{emojis.BP} 20 {emojis.UNICORN_HORN} unicorn horns = 3 score\n'
-        f'{emojis.BP} 20 {emojis.MERMAID_HAIR} mermaid hairs = 4 score\n'
-        f'{emojis.BP} 20 {emojis.CHIP} chips = 5 score\n'
-        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
-        f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
-    )
-    enchants = (
-        f'{emojis.BP} OMEGA = 1 score\n'
-        f'{emojis.BP} ULTRA-OMEGA = 2 score\n'
-        f'{emojis.BP} GODLY = 4 score\n'
-        f'{emojis.BP} VOID = ? score\n'
-    )
-    misc = (
-        f'{emojis.BP} Having at least 1 {emojis.LIFE_POTION} life potion = 1 score\n'
+    other = (
         f'{emojis.BP} 500,000 {emojis.LIFE_POTION} life potions = 1 score (1m potions max)\n'
         f'{emojis.BP} 2 {emojis.LOTTERY_TICKET} lottery tickets = 1 score (10 tickets max)\n'
     )
+    calculation = (
+        f'{emojis.BP} Add lootbox and farm item scores and floor\n'
+        f'{emojis.BP} Add mob drop scores and floor\n'
+        f'{emojis.BP} Ceil life potion score\n'
+        f'{emojis.BP} Ceil lottery ticket score\n'
+        f'{emojis.BP} Add all other material scores and floor\n'
+    )
+    calculator = (
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["time jump calculator"]} to calculate your score'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'TIME JUMP SCORE',
-        description = (
-            f'The score points for the starter bonuses of time jump are calculated based on your level, '
-            f'inventory and your gear.\n'
-            f'You can calculate the score of your inventory with {strings.SLASH_COMMANDS_GUIDE["time jump calculator"]}.'
-        )
+        title = 'TIME JUMP SCORE • MATERIALS',
     )
-    embed.add_field(name='BASE SCORE', value=base, inline=False)
-    embed.add_field(name='LEVEL & STATS', value=level, inline=False)
-    embed.add_field(name='GEAR', value=gear, inline=False)
-    embed.add_field(name='ENCHANTS', value=enchants, inline=False)
     embed.add_field(name='LOOTBOXES', value=lootboxes, inline=False)
+    embed.add_field(name='FARM ITEMS', value=farm_items, inline=False)
+    embed.add_field(name='MOB DROPS', value=mob_drops, inline=False)
     embed.add_field(name='RUBIES', value=rubies, inline=False)
     embed.add_field(name='LOGS', value=logs, inline=False)
     embed.add_field(name='FISH', value=fish, inline=False)
     embed.add_field(name='FRUIT', value=fruit, inline=False)
-    embed.add_field(name='FARM ITEMS', value=farming, inline=False)
-    embed.add_field(name='MOB DROPS', value=mobdrops, inline=False)
-    embed.add_field(name='OTHER ITEMS', value=misc, inline=False)
+    embed.add_field(name='OTHER MATERIALS', value=other, inline=False)
+    embed.add_field(name='HOW TO CALCULATE', value=calculation, inline=False)
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
 
-async def embed_tj_score_calculator(area_no: int, inventory: str, trade_materials: bool) -> discord.Embed:
+async def embed_time_jump_score_gear() -> discord.Embed:
+    """STT score gear embed"""
+    gear_basic = (
+        f'{emojis.BP} {emojis.SWORD_BASIC} Basic Sword = 0.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_BASIC} Basic Armor = 0.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_WOODEN} Wooden Sword = 1 score\n'
+        f'{emojis.BP} {emojis.ARMOR_FISH} Fish Armor = 1 score\n'
+        f'{emojis.BP} {emojis.SWORD_FISH} Fish Sword = 1.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_WOLF} Wolf Armor = 1.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_APPLE} Apple Sword = 2 score\n'
+        f'{emojis.BP} {emojis.ARMOR_EYE} Eye Armor = 2 score\n'
+        f'{emojis.BP} {emojis.SWORD_ZOMBIE} Zombie Sword = 2.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_BANANA} Banana Armor = 2.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_RUBY} Ruby Sword = 3 score\n'
+        f'{emojis.BP} {emojis.ARMOR_EPIC} Epic Armor = 3 score\n'
+    )
+    gear_advanced = (
+        f'{emojis.BP} {emojis.SWORD_UNICORN} Unicorn Sword = 3.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_RUBY} Ruby Armor = 3.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_HAIR} Hair Sword = 4 score\n'
+        f'{emojis.BP} {emojis.ARMOR_COIN} Coin Armor = 4 score\n'
+        f'{emojis.BP} {emojis.SWORD_COIN} Coin Sword = 4.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_MERMAID} Mermaid Armor = 4.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_ELECTRONICAL} Electronical Sword = 5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_ELECTRONICAL} Electronical Armor = 5 score\n'
+        f'{emojis.BP} {emojis.SWORD_EDGY} EDGY Sword = 5.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_EDGY} EDGY Armor = 5.5 score\n'
+    )
+    gear_forged = (
+        f'{emojis.BP} {emojis.SWORD_ULTRAEDGY} ULTRA-EDGY Sword = 6 score\n'
+        f'{emojis.BP} {emojis.ARMOR_ULTRAEDGY} ULTRA-EDGY Armor = 6 score\n'
+        f'{emojis.BP} {emojis.SWORD_OMEGA} OMEGA Sword = 6.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_OMEGA} OMEGA Armor = 6.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_ULTRAOMEGA} ULTRA-OMEGA Sword = 7 score\n'
+        f'{emojis.BP} {emojis.ARMOR_ULTRAOMEGA} ULTRA-OMEGA Armor = 7 score\n'
+        f'{emojis.BP} {emojis.SWORD_GODLY} GODLY Sword = 7.5 score\n'
+    )
+    gear_tryhard = (
+        f'{emojis.BP} {emojis.SWORD_BANANA} Banana Sword = 8 score\n'
+        f'{emojis.BP} {emojis.ARMOR_SCALED} Scaled Armor = 8 score\n'
+        f'{emojis.BP} {emojis.SWORD_SCALED} Scaled Sword = 8.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_WATERMELON} Watermelon Armor = 8.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_WATERMELON} Watermelon Sword = 9 score\n'
+        f'{emojis.BP} {emojis.ARMOR_SUPER} Super Armor = 9 score\n'
+        f'{emojis.BP} {emojis.SWORD_EPIC} Epic Sword = 9.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_LOOTBOX} Lootbox Armor = 9.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_LOTTERY} Lottery Sword = 10 score\n'
+        f'{emojis.BP} {emojis.ARMOR_WOODEN} Wooden Armor = 10 score\n'
+    )
+    calculation = (
+        f'{emojis.BP} Both scores are added and **not** rounded\n'
+    )
+    note = (
+        f'{emojis.BP} These scores do **not** include AT and DEF of the gear!\n'
+        f'{emojis.DETAIL} Stats are calculated seperately by the game\n'
+        f'{emojis.DETAIL} See topic `Stats & enchants` for details\n'
+        f'{emojis.BP} Gear not listed here doesn\'t have a known value yet\n'
+    )
+    calculator = (
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["time jump calculator"]} to calculate your score'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'TIME JUMP SCORE • GEAR',
+    )
+    embed.add_field(name='BASIC GEAR', value=gear_basic, inline=False)
+    embed.add_field(name='ADVANCED GEAR', value=gear_advanced, inline=False)
+    embed.add_field(name='FORGED GEAR', value=gear_forged, inline=False)
+    embed.add_field(name='TRYHARD GEAR', value=gear_tryhard, inline=False)
+    embed.add_field(name='HOW TO CALCULATE', value=calculation, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    embed.add_field(name='CALCULATOR', value=calculator, inline=False)
+    return embed
+
+
+async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data: dict,
+                                    option_inventory: str, option_stats: str) -> discord.Embed:
     """STT score calculator embed"""
     message_area = 'The TOP' if area_no == 21 else f'area {area_no}'
+    if option_inventory == INVENTORY_CURRENT:
+        calculated_area = message_area
+    elif option_inventory == INVENTORY_TRADE_A15:
+        calculated_area = 'area 15'
+    else:
+        calculated_area = 'areas 16+'
     inventory = inventory.lower()
     fish = await functions.inventory_get(inventory, 'normie fish')
     fishgolden = await functions.inventory_get(inventory, 'golden fish')
@@ -493,11 +694,11 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
 
     score_lbcommon = lbcommon * 0.05
     score_lbuncommon = lbuncommon * 0.1
-    score_lbrare = lbrare * 0.15
+    score_lbrare = lbrare * (0.4 / 3)
     score_lbepic = lbepic * 0.2
     score_lbedgy = lbedgy * 0.25
     score_lbomega = lbomega * 5
-    score_lbgodly = lbgodly * 25
+    score_lbgodly = lbgodly * 50
     score_lootboxes = (
         score_lbcommon + score_lbuncommon + score_lbrare + score_lbepic + score_lbedgy + score_lbomega + score_lbgodly
     )
@@ -511,7 +712,7 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
     score_farm_items = (
         score_bread + score_carrot + score_potato + score_seed + score_seed_bread + score_seed_potato + score_seed_carrot
     )
-    score_total_lootboxes_farm_items = floor(score_lootboxes + score_farm_items)
+    score_total_lootboxes_farm_items = score_lootboxes + score_farm_items
     score_wolfskin = wolfskin / 20
     score_zombieeye = zombieeye / 10
     score_unicornhorn = unicornhorn / (20 / 3)
@@ -526,9 +727,10 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
     score_logultimate = logultimate * 40
     score_fishsuper = fishsuper * 8
     score_watermelon = watermelon / 12
-    score_lifepotion = ceil(lifepotion / 500_000)
-    score_lottery = ceil(lottery_ticket / 2)
+    score_lifepotion = lifepotion / 500_000
+    score_lottery = lottery_ticket / 2
     score_total_other = score_lottery + score_lifepotion
+    score_total = floor(score_total_lootboxes_farm_items) + floor(score_total_mobdrops) + ceil(score_lottery) + ceil(score_lifepotion)
 
     field_lootboxes = (
         f'{emojis.BP} {lbcommon:,} {emojis.LB_COMMON} = {score_lbcommon:,.2f}\n'
@@ -563,12 +765,17 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
     embed = discord.Embed(
         color=settings.EMBED_COLOR,
         title='TIME JUMP SCORE CALCULATOR',
+        description = (
+            f'{emojis.BP} Your current area: **{message_area.capitalize()}**\n'
+            f'{emojis.BP} Inventory mode: **{option_inventory}**\n'
+            f'{emojis.BP} Stats mode: **{option_stats}**'
+        ),
     )
     embed.add_field(name='LOOTBOXES', value=field_lootboxes, inline=True)
     embed.add_field(name='FARM ITEMS', value=field_farming, inline=True)
     embed.add_field(name='MOB DROPS', value=field_mobdrops, inline=True)
 
-    if trade_materials:
+    if option_inventory in (INVENTORY_TRADE_A15, INVENTORY_TRADE_A16):
         areas = await database.get_all_areas()
         all_areas = {}
         for area in areas:
@@ -690,50 +897,36 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
         ruby_rate_a16 = a16[2]
         ruby_a16 = floor(log_a16 / ruby_rate_a16)
 
-        score_ruby_a15 = ruby_a15 / 25
-        score_ruby_a16 = ruby_a16 / 25
-        score_total_materials_a15 = score_ruby_a15 + score_logultimate + score_fishsuper + score_watermelon
-        score_total_materials_a16 = score_ruby_a16 + score_logultimate + score_fishsuper + score_watermelon
-        score_total_a15 = score_total_lootboxes_farm_items + floor(score_total_mobdrops) + score_total_other + floor(score_total_materials_a15)
-        score_total_a16 = score_total_lootboxes_farm_items + floor(score_total_mobdrops) + score_total_other + floor(score_total_materials_a16)
-        score_total_a15_str = f'{score_total_a15:,}' if ruby_a15 != 0 else 'N/A'
-        ruby_a15_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
+        if option_inventory == INVENTORY_TRADE_A15:
+            ruby_str = f'{ruby_a15:,}' if ruby_a15 != 0 else 'N/A'
+            score_ruby = ruby_a15 / 25
+        else:
+            ruby_str = f'{ruby_a16:,}'
+            score_ruby = ruby_a16 / 25
+        score_total_materials = score_ruby + score_logultimate + score_fishsuper + score_watermelon
+        score_total += floor(score_total_materials)
+
         field_materials = (
-            f'{emojis.BP} {ruby_a15_str} {emojis.RUBY} in A15 = {score_ruby_a15:,.2f}\n'
-            f'{emojis.BP} {ruby_a16:,} {emojis.RUBY} in A16+ = {score_ruby_a16:,.2f}\n'
+            f'{emojis.BP} {ruby_str} {emojis.RUBY} = {score_ruby:,.2f}\n'
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {fishsuper:,} {emojis.FISH_SUPER} = {score_fishsuper:,.2f}\n'
             f'{emojis.BP} {watermelon:,} {emojis.WATERMELON} = {score_watermelon:,.2f}\n'
-            f'{emojis.BP} Total A15: **{score_total_materials_a15:,.2f}**\n'
-            f'{emojis.BP} Total A16+: **{score_total_materials_a16:,.2f}**\n'
+            f'{emojis.BP} Total: **{score_total_materials:,.2f}**\n'
         )
         field_other = (
             f'{emojis.BP} {lifepotion:,} {emojis.LIFE_POTION} = {score_lifepotion:,.2f}\n'
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
             f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
         )
-        field_totals = (
-            f'{emojis.BP} Area 15: **{score_total_a15_str}**\n'
-            f'{emojis.BP} Areas 16+: **{score_total_a16:,}**\n'
-        )
         notes = (
             f'{emojis.BP} This calculation assumes that you trade **all** of your materials to rubies\n'
-            f'{emojis.BP} This calculation calculates from your current area up to areas 15+\n'
-            f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
-            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
-        )
-        embed.description = (
-            f'Your current area: **{message_area.capitalize()}**\n'
-            f'Total score area 15: **{score_total_a15_str}**\n'
-            f'Total score areas 16+: **{score_total_a16:,}**\n'
+            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted'
         )
         embed.add_field(name='MATERIALS', value=field_materials, inline=True)
         embed.add_field(name='OTHER', value=field_other, inline=True)
-        embed.add_field(name='TOTALS', value=field_totals, inline=False)
-        embed.add_field(name='NOTES', value=notes, inline=False)
 
 
-    if not trade_materials:
+    if option_inventory == INVENTORY_CURRENT:
         score_log = log / 25_000
         score_logepic = logepic / 2_500
         score_logsuper = logsuper / 250
@@ -754,19 +947,17 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             score_fish + score_fishgolden + score_fishepic + score_fishsuper + score_apple + score_banana
             + score_watermelon
         )
-        score_total_materials = floor(score_total_materials_1 + score_total_materials_2)
+        score_total_materials = score_total_materials_1 + score_total_materials_2
         score_total_other = score_lifepotion + score_lottery
-        score_total = (
-            score_total_lootboxes_farm_items + floor(score_total_mobdrops) + score_total_materials + score_total_other
-        )
+        score_total += floor(score_total_materials)
 
         field_materials_1 = (
             f'{emojis.BP} {log:,} {emojis.LOG} = {score_log:,.2f}\n'
             f'{emojis.BP} {logepic:,} {emojis.LOG_EPIC} = {score_logepic:,.2f}\n'
             f'{emojis.BP} {logsuper:,} {emojis.LOG_SUPER} = {score_logsuper:,.2f}\n'
             f'{emojis.BP} {logmega:,} {emojis.LOG_MEGA} = {score_logmega:,.2f}\n'
-            f'{emojis.BP} {loghyper:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
-            f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
+            f'{emojis.BP} {loghyper:,} {emojis.LOG_HYPER} = {score_loghyper:,.2f}\n'
+            f'{emojis.BP} {logultra:,} {emojis.LOG_ULTRA} = {score_logultra:,.2f}\n'
             f'{emojis.BP} {logultimate:,} {emojis.LOG_ULTIMATE} = {score_logultimate:,.2f}\n'
             f'{emojis.BP} {ruby:,} {emojis.RUBY} = {score_ruby:,.2f}\n'
             f'{emojis.BP} Total: **{score_total_materials_1:,.2f}**\n'
@@ -786,22 +977,129 @@ async def embed_tj_score_calculator(area_no: int, inventory: str, trade_material
             f'{emojis.BP} {lottery_ticket} {emojis.LOTTERY_TICKET} = {score_lottery:,.2f}\n'
             f'{emojis.BP} Total: **{score_total_other:,.2f}**\n'
         )
-        field_totals = (
-            f'{emojis.BP} {message_area.capitalize()}: **{score_total:,}**\n'
-        )
         notes = (
-            f'{emojis.BP} This calculation shows your inventory value for your current area\n'
-            f'{emojis.BP} Gear, levels and stats are not included, this is only your inventory\n'
-            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted\n'
-        )
-        embed.description = (
-            f'Your current area: **{message_area.capitalize()}**\n'
-            f'Total score: **{score_total:,}**\n'
+            f'{emojis.BP} This calculation shows your inventory as is\n'
+            f'{emojis.BP} Materials you may still need for crafting gear are not subtracted'
         )
         embed.add_field(name='MATERIALS (I)', value=field_materials_1, inline=True)
         embed.add_field(name='MATERIALS (II)', value=field_materials_2, inline=True)
         embed.add_field(name='OTHER', value=field_other, inline=True)
-        embed.add_field(name='TOTAL', value=field_totals, inline=False)
-        embed.add_field(name='NOTES', value=notes, inline=False)
+
+    if option_stats in (STATS_CURRENT, STATS_MANUAL):
+        enchant_multipliers = {
+            'normie': 0.05,
+            'good': 0.15,
+            'great': 0.25,
+            'mega': 0.4,
+            'epic': 0.6,
+            'hyper': 0.7,
+            'ultimate': 0.8,
+            'perfect': 0.9,
+            'edgy': 0.95,
+            'ultra-edgy': 1,
+            'omega': 1.25,
+            'ultra-omega': 1.5,
+            'godly': 2,
+            'void': 3,
+        }
+        armor_enchant_multiplier = enchant_multipliers.get(profile_data['enchant_armor'].lower(), 0)
+        sword_enchant_multiplier = enchant_multipliers.get(profile_data['enchant_sword'].lower(), 0)
+        score_sword_enchant = sword_enchant_multiplier * 4
+        score_armor_enchant = armor_enchant_multiplier * 4
+        score_enchants = score_armor_enchant + score_sword_enchant
+
+        if option_stats == STATS_CURRENT:
+            at_multiplier = def_multiplier = life_multiplier = 1
+            if profile_data['horse_type'] == 'magic':
+                armor_enchant_multiplier *= 1 + profile_data['horse_boost'] / 100
+                sword_enchant_multiplier *= 1 + profile_data['horse_boost'] / 100
+            if profile_data['horse_type'] == 'strong':
+                at_multiplier += profile_data['horse_boost'] / 100
+            if profile_data['horse_type'] == 'defender':
+                def_multiplier += profile_data['horse_boost'] / 100
+            if profile_data['horse_type'] == 'tank':
+                life_multiplier += profile_data['horse_boost'] / 100
+            base_at = functions.round_school(profile_data['at'] / (1 + sword_enchant_multiplier) / at_multiplier)
+            base_def = functions.round_school(profile_data['def'] / (1 + armor_enchant_multiplier) / def_multiplier)
+            base_life = functions.round_school(profile_data['life'] / life_multiplier)
+        else:
+            sword_at = profile_data['sword'].stat_at if profile_data['sword'] is not None else 0
+            armor_def = profile_data['armor'].stat_def if profile_data['armor'] is not None else 0
+            base_at = profile_data['level'] + sword_at + profile_data['extra_at']
+            base_def = profile_data['level'] + armor_def + + profile_data['extra_def']
+            base_life = 95 + (5 * profile_data['level']) + profile_data['extra_life']
+        score_level = profile_data['level'] * 0.5
+        score_at = base_at * 0.125
+        score_def = base_def * 0.15
+        score_life = base_life * (1 / 40)
+        score_total_stats = score_at + score_def + score_life + score_level
+        score_total += ceil(score_total_stats)
+        field_stats = (
+            f'{emojis.BP} {profile_data["level"]:,} {emojis.STAT_LEVEL} = {score_level:,.2f}\n'
+            f'{emojis.BP} {base_at:,} {emojis.STAT_AT} = {score_at:,.2f}\n'
+            f'{emojis.BP} {base_def:,} {emojis.STAT_DEF} = {score_def:,.2f}\n'
+            f'{emojis.BP} {base_life:,} {emojis.STAT_LIFE} = {score_life:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_stats:,.2f}**\n'
+        )
+        if profile_data['sword'] is not None:
+            sword_item = profile_data['sword']
+            sword = f'{sword_item.emoji} {sword_item.name} = {sword_item.score:,.2f}'
+            score_sword = sword_item.score
+        else:
+            sword = 'No or unknown sword = 0.00'
+            score_sword = 0
+        if profile_data['armor'] is not None:
+            armor_item = profile_data['armor']
+            armor = f'{armor_item.emoji} {armor_item.name} = {armor_item.score:,.2f}'
+            score_armor = armor_item.score
+        else:
+            armor = 'No or unknown armor = 0.00'
+            score_armor = 0
+        score_total_gear = score_enchants + score_armor + score_sword
+        score_total += ceil(score_enchants) + score_armor + score_sword
+        field_gear = (
+            f'{emojis.BP} {sword}\n'
+            f'{emojis.DETAIL} {emojis.PR_ENCHANTER} {profile_data["enchant_sword"]} enchant = '
+            f'{score_sword_enchant:,.2f}\n'
+            f'{emojis.BP} {armor}\n'
+            f'{emojis.DETAIL} {emojis.PR_ENCHANTER} {profile_data["enchant_armor"]} enchant = '
+            f'{score_armor_enchant:,.2f}\n'
+            f'{emojis.BP} Total: **{score_total_gear:,.2f}**\n'
+        )
+        score_total += 8 # Unknown base score coming from wherever
+        notes = (
+            f'{notes}\n'
+            f'{emojis.BP} This calculation shows an approximation of your full score\n'
+            f'{emojis.DETAIL} This might not always be 100% accurate!\n'
+            f'{emojis.DETAIL} An active quest adds 1 score which is not listed here'
+        )
+        embed.add_field(name='BASE STATS', value=field_stats, inline=True)
+        embed.add_field(name='GEAR & ENCHANTS', value=field_gear, inline=True)
+
+    field_totals = (
+        f'{emojis.BP} Lootboxes & farm items: {score_total_lootboxes_farm_items:,.2f} ➜ {floor(score_total_lootboxes_farm_items)}\n'
+        f'{emojis.BP} Mob drops: {score_total_mobdrops:,.2f} ➜ {floor(score_total_mobdrops)}\n'
+        f'{emojis.BP} Materials: {score_total_materials:,.2f} ➜ {floor(score_total_materials)}\n'
+        f'{emojis.BP} Life potions: {score_lifepotion:,.2f} ➜ {ceil(score_lifepotion)}\n'
+        f'{emojis.BP} Lottery tickets: {score_lottery:,.2f} ➜ {ceil(score_lottery)}'
+    )
+    if option_stats in (STATS_CURRENT, STATS_MANUAL):
+        field_totals = (
+            f'{emojis.BP} Base score: 8\n'
+            f'{field_totals}\n'
+            f'{emojis.BP} Stats: {score_total_stats:,.2f} ➜ {ceil(score_total_stats)}\n'
+            f'{emojis.BP} Gear: {score_armor + score_sword:,.2f} ➜ {score_armor + score_sword:g}\n'
+            f'{emojis.BP} Enchants: {score_enchants:,.2f} ➜ {ceil(score_enchants)}'
+        )
+    field_totals = (
+        f'{field_totals}\n'
+        f'{emojis.BP} Total score {calculated_area}: **{score_total:,g}**\n'
+    )
+    embed.description = (
+        f'{embed.description}\n'
+        f'{emojis.BP} Total score: **{score_total:,g}**\n'
+    )
+    embed.add_field(name='TOTALS', value=field_totals, inline=False)
+    embed.add_field(name='NOTE', value=notes, inline=False)
 
     return embed

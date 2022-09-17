@@ -121,6 +121,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["horse guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["pets guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["professions guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time jump score"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade guide"]}\n'
@@ -249,6 +250,7 @@ async def embed_about(
     creator = f'{emojis.BP} Miriel#0001'
     thanks = (
         f'{emojis.BP} FlyingPanda#0328\n'
+        f'{emojis.BP} Hakiobo#6097\n'
         f'{emojis.BP} r5#2253\n'
         f'{emojis.BP} All the math geniuses in the support server'
     )

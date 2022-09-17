@@ -291,7 +291,7 @@ async def embed_tasks() -> discord.Embed:
         f'{emojis.BP} Obtain `20/50/100` special seeds\n'
         f'{emojis.BP} Open `72/180/360` lootboxes\n'
         f'{emojis.BP} Pick up `48/120/240` bananas\n'
-        f'{emojis.BP} Raid `2/5/10` times for the guild\n'
+        f'{emojis.BP} Raid `4/10/20` other guilds\n'
         f'{emojis.BP} Trigger or start `12/30/60` random events\n'
         f'{emojis.BP} Vote for the bot `10/25/50` times\n'
         f'{emojis.BP} Win `20/50/100` duels\n'

@@ -37,19 +37,28 @@ class TimeTravelCog(commands.Cog):
         """Time travel details"""
         await timetravel_content.command_time_travel_bonuses(ctx, timetravel=timetravel)
 
+    @cmd_jump.command(name='score', description='Score values of stats, items and everything else')
+    async def time_jump_score(
+        self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                           choices=timetravel_content.TOPICS_SCORE, default=timetravel_content.TOPIC_SCORE_STATS),
+    ) -> None:
+        """Time jump score"""
+        await timetravel_content.command_time_jump_score(ctx, topic)
+
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
     @cmd_jump.command(name='calculator', description='Calculates the theoretical time jump score of your inventory')
-    async def tj_score_calculator(
+    async def time_jump_calculator(
         self,
         ctx: discord.ApplicationContext,
         area_no: Option(int, 'Your current area', min_value=1, max_value=21, choices=strings.CHOICES_AREA),
-        materials: Option(str, 'If materials should be traded to rubies or not',
-                          choices=timetravel_content.MATERIALS_CALCULATION,
-                          default=timetravel_content.MATERIALS_TRADE),
+        inventory: Option(str, 'Inventory calculation mode', choices=timetravel_content.TJ_CALCULATOR_INVENTORY),
+        stats: Option(str, 'Stats calculation mode', choices=timetravel_content.TJ_CALCULATOR_STATS),
     ) -> None:
-        trade_materials = True if materials == timetravel_content.MATERIALS_TRADE else False
-        await timetravel_content.command_tj_score_calculator(self.bot, ctx, area_no, trade_materials)
+        """Time jump calculator"""
+        await timetravel_content.command_time_jump_calculator(self.bot, ctx, area_no, inventory, stats)
 
 
 # Initialization

@@ -29,27 +29,53 @@ ITEM_ALIASES = {
     'edgy sw': 'edgy sword',
     'omega sw': 'omega sword',
     'o sw': 'omega sword',
+    'omegasword': 'omega sword',
+    'omegaarmor': 'omega armor',
     'ed sword': 'edgy sword',
+    'edgysword': 'edgy sword',
     'ed armor': 'edgy armor',
+    'edgyarmor': 'edgy armor',
     'ue sw': 'ultra-edgy sword',
     'ultra-edgy sw': 'ultra-edgy sword',
     'ultraedgy sw': 'ultra-edgy sword',
+    'ultraedgysword': 'ultra-edgy sword',
     'ue sword': 'ultra-edgy sword',
     'ultra-omega sw': 'ultra-omega sword',
     'ultraomega sw': 'ultra-omega sword',
+    'ultraomegasword': 'ultra-omega sword',
+    'ultraomegaarmor': 'ultra-omega armor',
     'ue armor': 'ultra-edgy armor',
+    'ultraedgyarmor': 'ultra-edgy armor',
     'godly sw': 'godly sword',
+    'godlysword': 'godly sword',
     'g sword': 'godly sword',
     'g sw': 'godly sword',
     'unicorn sw': 'unicorn sword',
+    'unicornsword': 'unicorn sword',
     'ruby sw': 'ruby sword',
+    'rubyarmor': 'ruby armor',
+    'rubysword': 'ruby sword',
     'fish sw': 'fish sword',
+    'fishsword': 'fish sword',
     'apple sw': 'apple sword',
+    'applesword': 'apple sword',
     'zombie sw': 'zombie sword',
+    'zombiesword': 'zombie sword',
     'wooden sw': 'wooden sword',
+    'woodensword': 'wooden sword',
+    'fisharmor': 'fish armor',
+    'wolfarmor': 'wolf armor',
+    'eyearmor': 'eye armor',
+    'bananaarmor': 'banana armor',
     'hair sw': 'hair sword',
+    'hairsword': 'hair sword',
     'coin sw': 'coin sword',
+    'coinsword': 'coin sword',
+    'coinarmor': 'coin armor',
+    'mermaidarmor': 'mermaid armor',
     'electronical sw': 'electronical sword',
+    'electronicalsword': 'electronical sword',
+    'electronicalarmor': 'electronical armor',
     'f': 'normie fish',
     'fishes': 'normie fish',
     'fish': 'normie fish',
@@ -205,6 +231,7 @@ ITEM_ALIASES = {
     'banana sw': 'banana sword',
     'bananasw': 'banana sword',
     'bananasword': 'banana sword',
+    'epicarmor': 'epic armor',
     'epic sw': 'epic sword',
     'epicsw': 'epic sword',
     'epicsword': 'epic sword',
@@ -243,6 +270,7 @@ ITEM_ALIASES = {
     'basic sw': 'basic sword',
     'basicarmor': 'basic armor',
     'cookie sword': 'godly cookie',
+    'godlycookie': 'godly cookie',
     'cookie sw': 'godly cookie',
     'cookiesw': 'godly cookie',
     'cookiesword': 'godly cookie',
@@ -335,6 +363,21 @@ PROFESSIONS_EN = {
     'lootboxer': 'lootboxer',
     'merchant': 'merchant',
     'worker': 'worker',
+}
+
+
+HORSE_TYPES_ENGLISH = {
+    'mágico': 'magic',
+    'defensor': 'defender',
+    'fuerte': 'strong',
+    'forte': 'strong',
+    'tanque': 'tank',
+    'dorado': 'golden',
+    'dourado': 'golden',
+    'festivo': 'festive',
+    'especial': 'special',
+    'súper especial': 'super special',
+    'super especial': 'super special',
 }
 
 
@@ -657,7 +700,9 @@ SLASH_COMMANDS_EPIC_RPG = {
     'transcend': '</transcend:959164906098286643>',
     'transmute': '</transmute:959164905381056513>',
     'ultraining': '</ultraining start:959942194649772112>',
+    'ultraining buy': '</ultraining buy:959942194649772112>',
     'ultraining progress': '</ultraining progress:959942194649772112>',
+    'ultraining shop': '</ultraining shop:959942194649772112>',
     'void areas': '</void areas:959942192623931442>',
     'void info': '</void info:959942192623931442>',
     'vote': '</vote:964351963720478760>',
@@ -665,6 +710,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'wheel': '</wheel:959916179525341194>',
     'withdraw': '</withdraw:958554805020794880>',
     'world': '</world status:953370104236761108>',
+    'world info': '</world info:953370104236761108>',
 }
 
 SLASH_COMMANDS_GUIDE_OLD = {
@@ -750,6 +796,7 @@ SLASH_COMMANDS_GUIDE = {
     'set progress': '</set progress:972045824940965905>',
     'settings': '</settings:972045824940965904>',
     'time jump calculator': '</time jump calculator:972045824940965906>',
+    'time jump score': '</time jump score:972045824940965906>',
     'time travel guide': '</time travel guide:972045824940965906>',
     'time travel bonuses': '</time travel bonuses:972045824940965906>',
     'tip': '</tip:972045824940965898>',
@@ -759,4 +806,60 @@ SLASH_COMMANDS_GUIDE = {
     'trade guide': '</trade guide:972045824999690301>',
     'ultraining guide': '</ultraining guide:972045824999690302>',
     'ultraining stats calculator': '</ultraining stats calculator:972045824999690302>',
+}
+
+# Tier: Coin increase multiplier
+HORSE_MULTIPLIER_COIN = {
+    1: 1,
+    2: 1.05,
+    3: 1.1,
+    4: 1.2,
+    5: 1.3,
+    6: 1.45,
+    7: 1.6,
+    8: 1.8,
+    9: 2,
+    10: 3,
+}
+
+# Tier: Lootbox chance multiplier
+HORSE_MULTIPLIER_LOOTBOX = {
+    1: 1,
+    2: 1,
+    3: 1,
+    4: 1,
+    5: 1.2,
+    6: 1.5,
+    7: 2,
+    8: 3,
+    9: 5,
+    10: 7.5,
+}
+
+# Tier: Drop chance multiplier
+HORSE_MULTIPLIER_DROPS = {
+    1: 1,
+    2: 1,
+    3: 1,
+    4: 1,
+    5: 1,
+    6: 1,
+    7: 1.2,
+    8: 1.5,
+    9: 2,
+    10: 3,
+}
+
+# Tier: Pet chance multiplier
+HORSE_MULTIPLIER_PETS = {
+    1: 1,
+    2: 1,
+    3: 1,
+    4: 1,
+    5: 1,
+    6: 1,
+    7: 1,
+    8: 1,
+    9: 2.5,
+    10: 5,
 }

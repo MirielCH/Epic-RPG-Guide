@@ -56,6 +56,9 @@ async def embed_ultraining_guide():
     calculators = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ultraining stats calculator"]}: Calculate EPIC NPC damage in ultraining\n'
     )
+    coolrency_shop = (
+        f'{emojis.BP} Looking for the coolrency shop? Check out {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ULTRAINING',
@@ -70,4 +73,5 @@ async def embed_ultraining_guide():
     embed.add_field(name='PREPARING FOR ULTRAINING', value=preparation, inline=False)
     embed.add_field(name='REWARDS', value=rewards, inline=False)
     embed.add_field(name='CALCULATOR', value=calculators, inline=False)
+    embed.add_field(name='COOLRENCY SHOP', value=coolrency_shop, inline=False)
     return embed

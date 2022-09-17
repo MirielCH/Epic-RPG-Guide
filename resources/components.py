@@ -1,12 +1,12 @@
 # components.py
 """Contains global interaction components"""
 
-from typing import Optional
+from typing import List, Literal, Optional, Tuple
 
 import discord
 
 from content import areas, dungeons
-from resources import functions, strings, modals
+from resources import emojis, strings, modals
 
 
 class AreaCheckSelect(discord.ui.Select):
@@ -409,23 +409,117 @@ class CustomButton(discord.ui.Button):
         self.view.stop()
 
 
-class TimeJumpCalculationTypeButton(discord.ui.Button):
-    """Button to toggle the materials calculation type in the time jump score calculator"""
+class DropTypeSelect(discord.ui.Select):
+    """Drop type select"""
+    def __init__(self, drop_types: List[str], active_drop_type: str, placeholder: str, row: Optional[int] = None):
+        self.drop_types = drop_types
+        options = []
+        for drop_type in drop_types:
+            label = drop_type
+            emoji = '🔹' if drop_type == active_drop_type else None
+            options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id='select_type')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_drop_type = select_value
+        for child in self.view.children:
+            if child.custom_id == 'select_type':
+                options = []
+                for drop_type in self.drop_types:
+                    label = drop_type
+                    emoji = '🔹' if drop_type == self.view.active_drop_type else None
+                    options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
+    """Enchant select"""
+    def __init__(self, enchant_type: Literal['armor', 'sword'], placeholder: str, row: Optional[int] = None):
+        enchants = [
+            'OMEGA',
+            'ULTRA-OMEGA',
+            'GODLY',
+            'VOID'
+        ]
+        options = []
+        options.append(discord.SelectOption(label='None', value='None', emoji=None))
+        for enchant in enchants:
+            options.append(discord.SelectOption(label=enchant, value=enchant, emoji=emojis.PR_ENCHANTER))
+        self.enchants = enchants
+        self.enchant_type = enchant_type
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id=f'select_enchant_{enchant_type}')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        if select_value == 'None': select_value = 'No'
+        self.view.profile_data[f'enchant_{self.enchant_type}'] = select_value
+        for child in self.view.children:
+            if child.custom_id == self.custom_id:
+                options = []
+                options.append(discord.SelectOption(label='None', value='None', emoji=None))
+                for enchant in self.enchants:
+                    options.append(discord.SelectOption(label=enchant, value=enchant, emoji=emojis.PR_ENCHANTER))
+                child.options = options
+                break
+        embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
+                                               self.view.option_inventory, self.view.option_stats)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class TimeJumpCalculatorGearSelect(discord.ui.Select):
+    """Gear select"""
+    def __init__(self, gear_type: Literal['armor', 'sword'], all_items: dict, placeholder: str,
+                 row: Optional[int] = None):
+        options = []
+        options.append(discord.SelectOption(label='None', value='None', emoji=None))
+        item_counter = 1
+        for item in all_items.values():
+            if item.score == 0: continue
+            if item.item_type == gear_type:
+                options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
+                item_counter += 1
+                if item_counter == 24: break
+        self.gear_type = gear_type
+        self.all_items = all_items
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id=f'select_gear_{gear_type}')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        if select_value == 'None':
+            self.view.profile_data[self.gear_type] = None
+        else:
+            self.view.profile_data[self.gear_type] = self.all_items[select_value]
+        for child in self.view.children:
+            if child.custom_id == self.custom_id:
+                options = []
+                options.append(discord.SelectOption(label='None', value='None', emoji=None))
+                item_counter = 1
+                for item in self.all_items.values():
+                    if item.score == 0: continue
+                    if item.item_type == self.gear_type:
+                        options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
+                        item_counter += 1
+                        if item_counter == 24: break
+                child.options = options
+                break
+        embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
+                                               self.view.option_inventory, self.view.option_stats)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class TimeJumpCalculatorChangeStatsButton(discord.ui.Button):
+    """Button to open a modal to input stats"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled, row=None)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        if self.custom_id == 'calculate_asis':
-            self.view.trade_materials = False
-        else:
-            self.view.trade_materials = True
-        self.view.value = self.custom_id
-        if self.view.trade_materials:
-            self.label = 'Calculate materials as is'
-            self.custom_id = 'calculate_asis'
-        else:
-            self.label = 'Trade all materials to rubies'
-            self.custom_id = 'calculate_rubies'
-        embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.trade_materials)
-        await interaction.response.edit_message(embed=embed, view=self.view)
+        modal = modals.TimeJumpCalculatorStatsModal(self.view)
+        await interaction.response.send_modal(modal)

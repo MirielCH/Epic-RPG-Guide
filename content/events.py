@@ -694,7 +694,6 @@ async def embed_event_pettournament() -> discord.Embed:
         f'{emojis.DETAIL} Entering a pet will replace an already entered pet.\n'
         f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
         f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see {strings.SLASH_COMMANDS_GUIDE["pets guide"]})\n'
-        f'{emojis.BP} The tournament will not happen if there are less than 50 pets'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

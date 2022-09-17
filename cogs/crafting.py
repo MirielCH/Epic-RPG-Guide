@@ -54,13 +54,18 @@ class CraftingCog(commands.Cog):
     async def dropchance_calculator(
         self,
         ctx: discord.ApplicationContext,
+        drop_type: Option(str, 'The drop type you want to check the chance of',
+                           choices=crafting.DROP_TYPES, default=crafting.DROP_BASIC),
         timetravel: Option(int, 'The TT you want to calculate for. Uses your progress setting if empty.',
                            min_value = 0, max_value = 999, default=None),
         horse_tier: Option(int, 'The horse tier you want to calculate for. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 10, default=None),
+        horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',
+                               min_value = 0, max_value = 500, default=None),
     ) -> None:
         """Dropchance calculator"""
-        await crafting.command_dropchance_calculator(self.bot, ctx, timetravel=timetravel, horse_tier=horse_tier)
+        await crafting.command_dropchance_calculator(self.bot, ctx, drop_type, timetravel=timetravel,
+                                                     horse_tier=horse_tier, horse_epicness=horse_epicness)
 
     @cmd_crafting.command(name='calculator', description='Shows the materials you need to craft an item')
     async def crafting_calculator(
@@ -73,7 +78,7 @@ class CraftingCog(commands.Cog):
         """Calculates mats you need when crafting items"""
         await crafting.command_crafting_calculator(ctx, item_name, amount)
 
-    @cmd_dismantling.command(name='calculator', description='Shows the materials you get when dismantling an item')
+    @cmd_dismantling.command(name='cyalculator', description='Shows the materials you get when dismantling an item')
     async def dismantling_calculator(
         self,
         ctx: discord.ApplicationContext,

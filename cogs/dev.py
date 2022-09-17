@@ -90,6 +90,13 @@ class DevCog(commands.Cog):
             await self.bot.sync_commands(force=True)
         await ctx.respond('Done')
 
+    @dev.command(name='test')
+    @commands.is_owner()
+    async def test_command(self, ctx: discord.ApplicationContext) -> None:
+        """Manually sync commands"""
+        test = functions.format_string(None)
+        pass
+
 
 # Initialization
 def setup(bot):

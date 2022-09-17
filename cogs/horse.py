@@ -39,9 +39,12 @@ class HorseCog(commands.Cog):
                            min_value=1, max_value=10, default=None),
         horse_level: Option(int, 'The horse level you want to calculate for. Reads from EPIC RPG if empty.',
                             min_value=1, max_value=140, default=None),
+        horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',
+                            min_value=0, max_value=500, default=None),
     ) -> None:
         """Horse boost calculator"""
-        await horse.command_boost_calculator(self.bot, ctx, horse_tier=horse_tier, horse_level=horse_level)
+        await horse.command_boost_calculator(self.bot, ctx, horse_tier=horse_tier, horse_level=horse_level,
+                                             horse_epicness=horse_epicness)
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()

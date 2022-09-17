@@ -26,9 +26,14 @@ class MiscCog(commands.Cog):
 
     cmd_coolness = SlashCommandGroup("coolness", "Coolness commands")
     @cmd_coolness.command(name='guide', description='How to get coolness')
-    async def coolness_guide(self, ctx: discord.ApplicationContext) -> None:
+    async def coolness_guide(
+        self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                      choices=misc.TOPICS_COOLNESS, default=misc.TOPIC_OVERVIEW)
+    ) -> None:
         """Coolness guide"""
-        await misc.command_coolness_guide(ctx)
+        await misc.command_coolness_guide(ctx, topic)
 
     cmd_farming = SlashCommandGroup("farming", "Farming commands")
     @cmd_farming.command(name='guide', description='How farming works and what do with crops')

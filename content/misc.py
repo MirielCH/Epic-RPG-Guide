@@ -15,6 +15,7 @@ from resources import emojis, functions, settings, strings, views
 TOPIC_OVERVIEW = 'Overview'
 TOPIC_BEGINNER_FIRST_RUN = 'Your first run'
 TOPIC_FARMING_USAGE = 'Crops usage and value'
+TOPIC_COOLRENCY = 'Coolrency'
 
 TOPICS_BEGINNER = [
     TOPIC_OVERVIEW,
@@ -24,6 +25,11 @@ TOPICS_BEGINNER = [
 TOPICS_FARMING = [
     TOPIC_OVERVIEW,
     TOPIC_FARMING_USAGE,
+]
+
+TOPICS_COOLNESS = [
+    TOPIC_OVERVIEW,
+    TOPIC_COOLRENCY,
 ]
 
 
@@ -40,10 +46,21 @@ async def command_badges(ctx: discord.ApplicationContext) -> None:
     await ctx.respond(embed=embed)
 
 
-async def command_coolness_guide(ctx: discord.ApplicationContext) -> None:
+async def command_coolness_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Coolness command"""
-    embed = await embed_coolness_guide()
-    await ctx.respond(embed=embed)
+    topics_functions = {
+        TOPIC_OVERVIEW: embed_coolness_overview,
+        TOPIC_COOLRENCY: embed_coolrency,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 async def command_farming_guide(ctx: discord.ApplicationContext, topic: str) -> None:
@@ -323,10 +340,14 @@ async def embed_badges() -> discord.Embed:
     return embed
 
 
-async def embed_coolness_guide() -> discord.Embed:
-    """Coolness guide"""
+async def embed_coolness_overview() -> discord.Embed:
+    """Coolness guide overview"""
     usage = (
         f'{emojis.BP} Unlocks cosmetic only profile badges (see {strings.SLASH_COMMANDS_GUIDE["badges"]})\n'
+        f'{emojis.BP} Generates monthly {emojis.COOLRENCY} coolrency (see topic `Coolrency`)\n'
+        f'{emojis.BP} Multiplies the amount of your base pet slots (see below)\n'
+        f'{emojis.DETAIL} Your base pet slots depend on your current TT '
+        f'(see {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]})\n'
         f'{emojis.BP} At least 2,000 coolness are recommended for dungeon 15-2\n'
         f'{emojis.BP} At least 3,000 coolness are recommended for the EPIC NPC fight\n'
     )
@@ -341,11 +362,25 @@ async def embed_coolness_guide() -> discord.Embed:
         f'{emojis.BP} Ascend a pet\n'
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
     )
+    pet_slots = (
+        f'{emojis.BP} `x1.0` at 0~99 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.1` at 100~999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.2` at 1,000~1,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.3` at 2,000~3,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.4` at 4,000~6,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.5` at 7,000~11,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.6` at 12,000~19,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.7` at 20,000~32,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.8` at 33,000~57,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.9` at 58,000~79,999 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x2.0` at 80,000+ {emojis.STAT_COOLNESS}\n'
+    )
     note = (
-        f'{emojis.BP} You don\'t lose coolness when you time travel\n'
+        f'{emojis.BP} You can not lose coolness in any way\n'
         f'{emojis.BP} You can get coolness in every area once it\'s unlocked\n'
         f'{emojis.BP} If you have 100+, you get less (except from {strings.SLASH_COMMANDS_EPIC_RPG["ultraining"]})\n'
-        f'{emojis.BP} You can check your coolness by using {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]}\n'
+        f'{emojis.BP} You can check your coolness and pet slot multiplier by using '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -355,6 +390,33 @@ async def embed_coolness_guide() -> discord.Embed:
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='REQUIREMENTS', value=req, inline=False)
     embed.add_field(name='HOW TO GET COOLNESS', value=howtoget, inline=False)
+    embed.add_field(name='PET SLOTS MULTIPLIER', value=pet_slots, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_coolrency() -> discord.Embed:
+    """Coolrency"""
+    how_to_get = (
+        f'{emojis.BP} You get coolrency at the start of every month\n'
+        f'{emojis.DETAIL} The amount you get is identical to your coolness\n'
+        f'{emojis.BP} Leftover coolrency does **not** transfer over!\n'
+    )
+    commands = (
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]} to see the shop\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining buy"]} to buy items\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your coolrency\n'
+    )
+    note = (
+        f'{emojis.BP} You don\'t lose coolness when spending coolrency\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'COOLRENCY {emojis.COOLRENCY}',
+        description = 'Coolrency is generated from your coolness and can be used to buy items in the coolrency shop.'
+    )
+    embed.add_field(name='HOW TO GET COOLRENCY', value=how_to_get, inline=False)
+    embed.add_field(name='HOW TO USE COOLRENCY', value=commands, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

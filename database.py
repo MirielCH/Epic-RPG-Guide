@@ -78,6 +78,7 @@ class Item(NamedTuple):
     requirements: str
     ingredients: Tuple[Ingredient]
     name: str
+    score: float
     stat_at: int
     stat_def: int
 
@@ -451,6 +452,8 @@ async def _dict_to_item(record: dict) -> Item:
         record.pop('def')
         item_dismantleable = bool(record['dismantleable'])
         record.pop('dismantleable')
+        item_score = record['score']
+        record.pop('score')
         for name, amount in record.copy().items():
             if amount == 0: record.pop(name)
         ingredients = []
@@ -468,6 +471,7 @@ async def _dict_to_item(record: dict) -> Item:
             requirements = requirements,
             ingredients = ingredients,
             name = item_name,
+            score=item_score,
             stat_at = item_at,
             stat_def = item_def
         )
@@ -864,6 +868,8 @@ async def get_item(name: str) -> Item:
     record.pop('def')
     item_dismantleable = bool(record['dismantleable'])
     record.pop('dismantleable')
+    item_score = record['score']
+    record.pop('score')
     for name, amount in record.copy().items():
         if amount == 0: record.pop(name)
     ingredients = []
@@ -881,6 +887,7 @@ async def get_item(name: str) -> Item:
         requirements = requirements,
         ingredients = ingredients,
         name = item_name,
+        score = item_score,
         stat_at = item_at,
         stat_def = item_def
     )
@@ -1772,7 +1779,7 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
     try:
         module = error.__class__.__module__
         if module is None or module == str.__class__.__module__:
-            error_message = error.__class__.__name__
+            error_message = f'{error.__class__.__name__}\n{error_message}'
         if hasattr(error, '__traceback__'):
             traceback_str = "".join(traceback.format_tb(error.__traceback__))
         else:
