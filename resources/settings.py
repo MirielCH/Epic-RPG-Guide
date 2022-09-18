@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DBL_TOKEN = os.getenv('DBL_TOKEN')
+if DBL_TOKEN == 'none': DBL_TOKEN = None
 DEBUG_MODE = True if os.getenv('DEBUG_MODE') == 'ON' else False
 
 # Get bot directory

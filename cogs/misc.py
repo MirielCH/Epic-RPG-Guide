@@ -5,7 +5,18 @@ from discord.commands import slash_command, SlashCommandGroup, Option
 from discord.ext import commands
 
 from content import misc
-from resources import strings
+import database
+from resources import functions, strings
+
+
+ALL_ITEMS = functions.await_coroutine(database.get_all_items())
+
+
+# --- Autocomplete functions ---
+async def sellable_item_searcher(ctx: discord.AutocompleteContext):
+    """Returns a list of matching craftable items from SELLABLE_ITEMS"""
+    return [item.name for item in ALL_ITEMS if ctx.value.lower() in item.name.lower() and item.selling_price > 0]
+
 
 
 class MiscCog(commands.Cog):
@@ -90,6 +101,22 @@ class MiscCog(commands.Cog):
                         min_value=1, max_value=20, choices=strings.CHOICES_AREA_NO_TOP, default=None),
     ) -> None:
         await misc.command_coincap_calculator(self.bot, ctx, timetravel=timetravel, area_no=area_no)
+
+    cmd_selling = SlashCommandGroup("selling", "Selling commands")
+    cmd_price = cmd_selling.create_subgroup("price", "Price subcommands")
+    @commands.bot_has_permissions(view_channel=True)
+    @commands.guild_only()
+    @cmd_price.command(name='calculator', description='Calculate the selling price of an item')
+    async def coincap_calculator(
+        self,
+        ctx: discord.ApplicationContext,
+        item_name: Option(str, 'The item you want to sell', name='item', max_length=100,
+                          autocomplete=sellable_item_searcher),
+        amount: Option(str, 'The amount of items you want to sell'),
+        merchant_level: Option(int, 'The merchant level. Reads from EPIC RPG if empty.', min_value=1, max_value=150,
+                               default=None),
+    ) -> None:
+        await misc.command_selling_price_calculator(self.bot, ctx, item_name, amount, merchant_level)
 
 
 # Initialization

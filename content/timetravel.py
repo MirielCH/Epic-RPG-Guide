@@ -458,7 +458,8 @@ async def embed_time_jump_score_stats() -> discord.Embed:
         f'{emojis.BP} 1 {emojis.STAT_AT} AT = 0.125 score\n'
         f'{emojis.BP} 1 {emojis.STAT_DEF} DEF = 0.15 score\n'
         f'{emojis.BP} 1 {emojis.STAT_LIFE} HP = 0.025 score\n'
-        f'{emojis.DETAIL} Only **base** stats (level & gear) give score!\n'
+        f'{emojis.DETAIL} Only **base** stats give score!\n'
+        f'{emojis.DETAIL} This includes stats from level, food, boosts and gear\n'
     )
     enchants = (
         f'{emojis.BP} Enchants have a score that is 4x their bonus / 100\n'

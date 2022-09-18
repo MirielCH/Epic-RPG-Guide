@@ -79,6 +79,7 @@ class Item(NamedTuple):
     ingredients: Tuple[Ingredient]
     name: str
     score: float
+    selling_price: int
     stat_at: int
     stat_def: int
 
@@ -454,6 +455,8 @@ async def _dict_to_item(record: dict) -> Item:
         record.pop('dismantleable')
         item_score = record['score']
         record.pop('score')
+        item_selling_price = record['selling_price']
+        record.pop('selling_price')
         for name, amount in record.copy().items():
             if amount == 0: record.pop(name)
         ingredients = []
@@ -471,7 +474,8 @@ async def _dict_to_item(record: dict) -> Item:
             requirements = requirements,
             ingredients = ingredients,
             name = item_name,
-            score=item_score,
+            score = item_score,
+            selling_price = item_selling_price,
             stat_at = item_at,
             stat_def = item_def
         )
@@ -870,6 +874,8 @@ async def get_item(name: str) -> Item:
     record.pop('dismantleable')
     item_score = record['score']
     record.pop('score')
+    item_selling_price = record['selling_price']
+    record.pop('selling_price')
     for name, amount in record.copy().items():
         if amount == 0: record.pop(name)
     ingredients = []
@@ -888,6 +894,7 @@ async def get_item(name: str) -> Item:
         ingredients = ingredients,
         name = item_name,
         score = item_score,
+        selling_price = item_selling_price,
         stat_at = item_at,
         stat_def = item_def
     )

@@ -10,6 +10,7 @@ from resources import functions, strings
 
 
 ALL_ITEMS = functions.await_coroutine(database.get_all_items())
+
 INVCALC_ITEMS = [
     'apple',
     'banana',
@@ -71,14 +72,14 @@ class CraftingCog(commands.Cog):
     async def crafting_calculator(
         self,
         ctx: discord.ApplicationContext,
-        item_name: Option(str, 'The item you want to craft', name='item',
+        item_name: Option(str, 'The item you want to craft', name='item', max_length=100,
                           autocomplete=craft_item_searcher),
         amount: Option(str, 'The amount of items you want to see the materials for'),
     ) -> None:
         """Calculates mats you need when crafting items"""
         await crafting.command_crafting_calculator(ctx, item_name, amount)
 
-    @cmd_dismantling.command(name='cyalculator', description='Shows the materials you get when dismantling an item')
+    @cmd_dismantling.command(name='calculator', description='Shows the materials you get when dismantling an item')
     async def dismantling_calculator(
         self,
         ctx: discord.ApplicationContext,

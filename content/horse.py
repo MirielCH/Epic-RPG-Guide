@@ -117,8 +117,8 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
             f'{emojis.BP} Epicness: **{horse_epicness}**\n'
         )
     )
-    embed.add_field(name='TYPE BONUSES', value=bonuses_type, inline=False)
-    embed.add_field(name='TIER BONUSES', value=bonuses_tier, inline=False)
+    embed.add_field(name='TYPE BOOST', value=bonuses_type, inline=False)
+    embed.add_field(name='TIER BOOSTS', value=bonuses_tier, inline=False)
     await ctx.respond(embed=embed)
 
 

@@ -6,7 +6,6 @@ import re
 from typing import Any, List, Optional, Union, Tuple
 
 import discord
-from discord.embeds import EmptyEmbed
 from discord.utils import MISSING
 from discord.ext import commands
 

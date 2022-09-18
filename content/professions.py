@@ -275,7 +275,7 @@ async def embed_professions_crafter() -> discord.Embed:
     )
     level_101 =(
         f'{emojis.BP} Increases the percentage of items returned\n'
-        f'{emojis.BP} The percentage increases logarithmically'
+        f'{emojis.BP} The percentage increase is `10 + 2 * (level - 100) ^ 0.5`%'
     )
     how_to_get_xp = (
         f'{emojis.BP} Craft and dismantle\n'
@@ -404,7 +404,7 @@ async def embed_professions_merchant() -> discord.Embed:
     """Merchant guide"""
     base_bonus = (
         f'{emojis.BP} Increases the amount of coins you get when selling items\n'
-        f'{emojis.BP} You get 4.929395x more coins at level 100'
+        f'{emojis.BP} The multiplier is `1 + 0.01 * level ^ 1.3`'
     )
     level_101 =(
         f'{emojis.BP} You get {emojis.DRAGON_SCALE} dragon scales when selling mob drops\n'

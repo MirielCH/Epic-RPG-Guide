@@ -2,7 +2,7 @@
 
 import asyncio
 from decimal import Decimal, ROUND_HALF_UP
-from pyexpat.errors import messages
+from math import floor
 from typing import Optional
 
 import discord
@@ -110,6 +110,52 @@ async def command_tip(ctx: discord.ApplicationContext, tip_id: Optional[int] = N
         description = tip.tip
     )
     await ctx.respond(embed=embed)
+
+
+async def command_selling_price_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, item_name: str,
+                                           amount: str, merchant_level: Optional[int] = None) -> None:
+    """Selling price calculator command"""
+    if isinstance(amount, str):
+        amount = await functions.calculate_amount(amount)
+        if amount is None:
+            await ctx.respond(strings.MSG_INVALID_AMOUNT, ephemeral=True)
+            return
+        if amount < 1:
+            await ctx.respond(strings.MSG_AMOUNT_TOO_LOW, ephemeral=True)
+            return
+        if amount > 999_000_000_000_000:
+            await ctx.respond(strings.MSG_AMOUNT_TOO_HIGH, ephemeral=True)
+            return
+    if item_name in strings.ITEM_ALIASES: item_name = strings.ITEM_ALIASES[item_name]
+    try:
+        item: database.Item = await database.get_item(item_name)
+    except database.NoDataFound:
+        await ctx.respond(f'I don\'t know a selling price for `{item_name}`, sorry.')
+        return
+    if item.selling_price == 0:
+        await ctx.respond(f'I don\'t know a selling price for `{item_name}`, sorry.')
+        return
+    if merchant_level is None:
+        bot_message_task = asyncio.ensure_future(functions.wait_for_profession_overview_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                              command=strings.SLASH_COMMANDS_EPIC_RPG["professions stats"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profession'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        _, merchant_level = (
+            await functions.extract_data_from_profession_overview_embed(ctx, bot_message, 'merchant')
+        )
+    selling_price = floor(item.selling_price * amount * (1 + 0.01 * (merchant_level ** 1.3)))
+    await ctx.respond(
+        f'{amount:,} {item.emoji} `{item.name}` are worth **{selling_price:,}** {emojis.COIN} coins '
+        f'at merchant level {merchant_level}.'
+    )
 
 
 async def command_calculator(ctx: discord.ApplicationContext, calculation: str) -> None:
@@ -405,7 +451,8 @@ async def embed_coolrency() -> discord.Embed:
     commands = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]} to see the shop\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining buy"]} to buy items\n'
-        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your coolrency\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} or '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]} to see your coolrency\n'
     )
     note = (
         f'{emojis.BP} You don\'t lose coolness when spending coolrency\n'
