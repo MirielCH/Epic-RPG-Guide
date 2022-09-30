@@ -685,6 +685,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'profile': '</profile:958554803422781460>',
     'progress': '</progress:958558817921159251>',
     'quest': '</quest start:960740627790848041>',
+    'recipes': '</recipes:960362920242446367>',
     'refine': '</refine:959164904609316904>',
     'returning quest': '</returning quest:961046239510691860>',
     'returning shop': '</returning shop:961046239510691860>',

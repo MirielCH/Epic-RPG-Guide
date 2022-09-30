@@ -930,16 +930,10 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         'epicidad del? caballo\*\* - (.+?)\n', #Spanish
         'epicidade d[eo] cavalo\*\* - (.+?)\n', #Portuguese
     ]
-    search_patterns_drop_chance = [
-        'x(.+?) chance to drop a monster item', #English
-        'x(.+?) de droppear items', #Spanish
-        'x(.+?) de dropar itens', #Portuguese
-    ]
     tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
     level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
     boost_match = await get_match_from_patterns(search_patterns_boost, data_field.value.lower())
     epicness_match = await get_match_from_patterns(search_patterns_epicness, data_field.value.lower())
-    drop_chance_match = await get_match_from_patterns(search_patterns_drop_chance, data_field.value.lower())
     horse_data = {}
     try:
         tier = tier_match.group(1)
@@ -947,7 +941,6 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         horse_data['level'] = int(level_match.group(1))
         horse_data['boost'] = float(boost_match.group(1))
         horse_data['epicness'] = int(epicness_match.group(1)) if epicness_match else 0
-        horse_data['drop_chance'] = float(drop_chance_match.group(1)) if drop_chance_match else 1
     except Exception as error:
         await database.log_error(f'Error extracting horse data in horse message: {data_field}', ctx)
         raise ValueError(error)

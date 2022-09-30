@@ -56,7 +56,7 @@ class HelpView(discord.ui.View):
         self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=strings.LINK_SUPPORT, row=1))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True

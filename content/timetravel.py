@@ -511,8 +511,8 @@ async def embed_time_jump_score_materials() -> discord.Embed:
         f'{emojis.BP} 20 {emojis.UNICORN_HORN} unicorn horns = 3 score\n'
         f'{emojis.BP} 20 {emojis.MERMAID_HAIR} mermaid hairs = 4 score\n'
         f'{emojis.BP} 20 {emojis.CHIP} chips = 5 score\n'
-        f'{emojis.BP} 2 {emojis.DRAGON_SCALE} dragon scales = 1 score\n'
-        f'{emojis.BP} 1 {emojis.DARK_ENERGY} dark energy = 1 score\n'
+        f'{emojis.BP} 20 {emojis.DRAGON_SCALE} dragon scales = 10 score\n'
+        f'{emojis.BP} 20 {emojis.DARK_ENERGY} dark energy = 15 score\n'
     )
     rubies = (
         f'{emojis.BP} 25 {emojis.RUBY} rubies = 1 score\n'
@@ -617,6 +617,18 @@ async def embed_time_jump_score_gear() -> discord.Embed:
         f'{emojis.BP} {emojis.SWORD_LOTTERY} Lottery Sword = 10 score\n'
         f'{emojis.BP} {emojis.ARMOR_WOODEN} Wooden Armor = 10 score\n'
     )
+    gear_void = (
+        f'{emojis.BP} {emojis.SWORD_VOID} VOID Sword = 10.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_VOID} VOID Armor = 10.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_ABYSS} ABYSS Sword = 11 score\n'
+        f'{emojis.BP} {emojis.ARMOR_ABYSS} ABYSS Armor = 11 score\n'
+        f'{emojis.BP} {emojis.SWORD_CORRUPTED} CORRUPTED Sword = 11.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_CORRUPTED} CORRUPTED Armor = 11.5 score\n'
+        f'{emojis.BP} {emojis.SWORD_SPACE} SPACE Sword = 12 score\n'
+        f'{emojis.BP} {emojis.ARMOR_SPACE} SPACE Armor = 12 score\n'
+        f'{emojis.BP} {emojis.SWORD_TIME} TIME Sword = 12.5 score\n'
+        f'{emojis.BP} {emojis.ARMOR_TIME} TIME Armor = 12.5 score\n'
+    )
     calculation = (
         f'{emojis.BP} Both scores are added and **not** rounded\n'
     )
@@ -637,6 +649,7 @@ async def embed_time_jump_score_gear() -> discord.Embed:
     embed.add_field(name='ADVANCED GEAR', value=gear_advanced, inline=False)
     embed.add_field(name='FORGED GEAR', value=gear_forged, inline=False)
     embed.add_field(name='TRYHARD GEAR', value=gear_tryhard, inline=False)
+    embed.add_field(name='VOID GEAR', value=gear_void, inline=False)
     embed.add_field(name='HOW TO CALCULATE', value=calculation, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
@@ -720,7 +733,7 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
     score_mermaidhair = mermaidhair / 5
     score_chip = chip / 4
     score_dragonscale = dragonscale / 2
-    score_darkenergy = darkenergy
+    score_darkenergy = darkenergy * 0.75
     score_total_mobdrops = (
         score_wolfskin + score_zombieeye + score_unicornhorn + score_mermaidhair + score_chip + score_dragonscale
         + score_darkenergy

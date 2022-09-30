@@ -480,11 +480,11 @@ class TimeJumpCalculatorGearSelect(discord.ui.Select):
         options.append(discord.SelectOption(label='None', value='None', emoji=None))
         item_counter = 1
         for item in all_items.values():
-            if item.score == 0: continue
+            if item.score < 1: continue
             if item.item_type == gear_type:
                 options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
                 item_counter += 1
-                if item_counter == 24: break
+                if item_counter == 25: break
         self.gear_type = gear_type
         self.all_items = all_items
         super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,

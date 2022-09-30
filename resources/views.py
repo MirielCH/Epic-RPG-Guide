@@ -34,7 +34,7 @@ class AbortView(discord.ui.View):
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -89,7 +89,7 @@ class AreaCheckView(discord.ui.View):
 
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -137,7 +137,7 @@ class AreaGuideView(discord.ui.View):
                                                               emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -191,7 +191,7 @@ class DungeonCheckView(discord.ui.View):
                                                               emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -240,7 +240,7 @@ class DungeonGuideView(discord.ui.View):
                                                               emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -279,7 +279,7 @@ class TopicView(discord.ui.View):
         self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -313,7 +313,7 @@ class PaginatorView(discord.ui.View):
         self.add_item(components.PaginatorButton(custom_id='next', label='▶', emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -349,7 +349,7 @@ class ConfirmCancelView(discord.ui.View):
                                               label=self.label_cancel))
 
     async def interaction_check(self, interaction: discord.Interaction):
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             return False
         return True
 
@@ -386,7 +386,7 @@ class FollowupCommandView(discord.ui.View):
                                               style=discord.ButtonStyle.grey))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -424,7 +424,7 @@ class FollowupCraftingCalculatorView(discord.ui.View):
         self.add_item(components.CraftingRecalculateButton(custom_id='craft', label=label))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -478,7 +478,7 @@ class ComplainView(discord.ui.View):
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.ctx.author:
+        if interaction.user.id != self.ctx.author.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -522,7 +522,7 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.add_item(components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats'))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
@@ -569,7 +569,7 @@ class DropChanceCalculatorView(discord.ui.View):
         self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.user:
+        if interaction.user.id != self.user.id:
             await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True

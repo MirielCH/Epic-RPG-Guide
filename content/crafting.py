@@ -586,14 +586,14 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) ->
 
     # Calculations
     drop_chance = base_chance * (1 + tt_chance) * horse_chance
-    drop_chance_worldbuff = round(drop_chance * 1.2, 2)
-    drop_chance_daily = round(drop_chance * 1.1, 2)
-    drop_chance_worldbuff_daily = round(drop_chance * 1.3, 2)
-    drop_chance_hm = round(drop_chance * 1.7, 2)
-    drop_chance_worldbuff_hm = round(drop_chance * 1.2 * 1.7, 2)
-    drop_chance_daily_hm = round(drop_chance * 1.1 * 1.7, 2)
-    drop_chance_worldbuff_daily_hm = round(drop_chance * 1.3 * 1.7, 2)
-    drop_chance = round(drop_chance, 2)
+    drop_chance_worldbuff = round(drop_chance * 1.2, 3)
+    drop_chance_daily = round(drop_chance * 1.1, 3)
+    drop_chance_worldbuff_daily = round(drop_chance * 1.3, 3)
+    drop_chance_hm = round(drop_chance * 1.7, 3)
+    drop_chance_worldbuff_hm = round(drop_chance * 1.2 * 1.7, 3)
+    drop_chance_daily_hm = round(drop_chance * 1.1 * 1.7, 3)
+    drop_chance_worldbuff_daily_hm = round(drop_chance * 1.3 * 1.7, 3)
+    drop_chance = round(drop_chance, 3)
     if drop_chance >= 100: drop_chance = 100
     if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
     if drop_chance_daily >= 100: drop_chance_daily = 100
@@ -602,7 +602,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) ->
     if drop_chance_worldbuff_hm >= 100: drop_chance_worldbuff_hm = 100
     if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
     if drop_chance_worldbuff_daily_hm >= 100: drop_chance_worldbuff_daily_hm = 100
-
+    f"{drop_chance:.3f}".rstrip('0').rstrip('.')
     field_drop_chance = (
         f'{emojis.BP} Base chance: `{drop_chance:g}`%\n'
         f'{emojis.BP} With active world buff: `{drop_chance_worldbuff:g}`%\n'

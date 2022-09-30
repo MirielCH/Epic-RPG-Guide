@@ -72,7 +72,7 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
         if horse_tier is None: horse_tier = horse_data_found['tier']
         if horse_level is None: horse_level = horse_data_found['level']
         if horse_epicness is None: horse_epicness = horse_data_found['epicness']
-    horse_epicness_type_factor = 1 + horse_epicness * 0.00194 # This is not 100% accurate, but it's the closest I got so far
+    horse_epicness_type_factor = 1 + horse_epicness * 0.005
     horse_emoji = getattr(emojis, f'HORSE_T{horse_tier}')
     try:
         horse_data: database.Horse = await database.get_horse(horse_tier)
@@ -466,7 +466,7 @@ async def embed_breeding() -> discord.Embed:
 async def embed_epicness() -> discord.Embed:
     """Horse epicness embed"""
     effects = (
-        f'{emojis.BP} Every epicness increases the horse type bonus by `0.2`%\n'
+        f'{emojis.BP} Every epicness increases the horse type bonus by `0.5`%\n'
         f'{emojis.BP} Every `5` epicness increase the horse tier bonuses by `4`%\n'
         f'{emojis.BP} You can see your exact bonuses with {strings.SLASH_COMMANDS_EPIC_RPG["horse stats"]}\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["horse boost calculator"]} to calculate for other types or tiers'
@@ -480,11 +480,15 @@ async def embed_epicness() -> discord.Embed:
     epic_berry = (
         f'{emojis.BP} Berries increase the chance to increase epicness when breeding\n'
         f'{emojis.BP} If you get an epicness, you will lose half of your berries\n'
-        f'{emojis.BP} If the breeding fails, you will get some berries instead\n'
-        f'{emojis.BP} Can drop in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
+    )
+    how_to_get_berries = (
+        f'{emojis.BP} From horse breedings when not getting an epicness\n'
+        f'{emojis.BP} Drop in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} (see {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]})\n'
-        f'{emojis.BP} Can be randomly won in horse races\n'
-        f'{emojis.BP} Can be bought in the coolrency shop (see {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]})\n'
+        f'{emojis.BP} Random reward for winning horse races\n'
+        f'{emojis.BP} Can be bought in the {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]}\n'
+        f'{emojis.BP} Using a {emojis.GODLY_HORSE_TOKEN} GODLY horse token nets `50` berries if your horse is '
+        f'{emojis.HORSE_T10} T10\n'
     )
     note = (
         f'{emojis.BP} Epicness is independent of horse tier and thus not reset on tier up\n'
@@ -497,6 +501,7 @@ async def embed_epicness() -> discord.Embed:
     embed.add_field(name='EFFECTS', value=effects, inline=False)
     embed.add_field(name='HOW TO INCREASE', value=increase, inline=False)
     embed.add_field(name=f'EPIC BERRIES {emojis.EPIC_BERRY}', value=epic_berry, inline=False)
+    embed.add_field(name='HOW TO GET EPIC BERRIES', value=how_to_get_berries, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

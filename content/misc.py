@@ -450,6 +450,7 @@ async def embed_coolrency() -> discord.Embed:
     )
     commands = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]} to see the shop\n'
+        f'{emojis.DETAIL} Everything in the shop gives an amount of **1** (yes, coolness too)\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining buy"]} to buy items\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} or '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]} to see your coolrency\n'
@@ -460,7 +461,7 @@ async def embed_coolrency() -> discord.Embed:
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = f'COOLRENCY {emojis.COOLRENCY}',
-        description = 'Coolrency is generated from your coolness and can be used to buy items in the coolrency shop.'
+        description = 'Coolrency is generated from your coolness and can be used to buy items in the ultraining shop.'
     )
     embed.add_field(name='HOW TO GET COOLRENCY', value=how_to_get, inline=False)
     embed.add_field(name='HOW TO USE COOLRENCY', value=commands, inline=False)
