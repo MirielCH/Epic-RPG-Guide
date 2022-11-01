@@ -15,7 +15,7 @@ class TitlesCog(commands.Cog):
 
     cmd_title = SlashCommandGroup(
         "title",
-        "Title search commands",
+        "Title search",
     )
 
     @cmd_title.command(name='search', description='Look up titles / achievements')

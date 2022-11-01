@@ -12,7 +12,7 @@ class EasterCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_easter = SlashCommandGroup("easter", "Easter commands")
+    cmd_easter = SlashCommandGroup("easter", "Easter event guide")
 
     @cmd_easter.command(name='guide', description='Eggs! Eggs everywhere!')
     async def easter_guide(

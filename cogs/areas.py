@@ -13,7 +13,7 @@ class AreasCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_area = SlashCommandGroup("area", "Area commands")
+    cmd_area = SlashCommandGroup("area", "Area guides and damage check")
 
     @cmd_area.command(name='guide', description='What to do and what you need in all areas')
     async def area_guide(

@@ -43,11 +43,11 @@ class CraftingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_drop = SlashCommandGroup("drop", "Drop commands")
-    cmd_chance = cmd_drop.create_subgroup("chance", "Drop chance subcommands")
-    cmd_inventory = SlashCommandGroup("inventory", "Inventory commands")
-    cmd_crafting = SlashCommandGroup("crafting", "Crafting commands")
-    cmd_dismantling = SlashCommandGroup("dismantling", "Dismantling commands")
+    cmd_drop = SlashCommandGroup("drop", "Drop chance calculator")
+    cmd_chance = cmd_drop.create_subgroup("chance", "Drop chance calculator")
+    cmd_inventory = SlashCommandGroup("inventory", "Inventory calculator")
+    cmd_crafting = SlashCommandGroup("crafting", "Crafting calculator")
+    cmd_dismantling = SlashCommandGroup("dismantling", "Dismantling calculator")
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()

@@ -13,7 +13,7 @@ class ProfessionsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_professions = SlashCommandGroup("professions", "Profession commands")
+    cmd_professions = SlashCommandGroup("professions", "Profession guides and calculators")
 
     @cmd_professions.command(name='guide', description='All you need to know about professions')
     async def professions_guide(

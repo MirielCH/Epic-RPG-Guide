@@ -107,7 +107,7 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 # --- Embeds ---
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
-    seasonal_event = f'{emojis.BP} {emojis.LOGO}`/hf guide` : Horse festival guide\n'
+    seasonal_event = f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["halloween guide"]}\n'
     guides = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
@@ -139,6 +139,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ask the oracle"]} : A very useful command\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["badges"]} : All badges and how to get them\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["codes"]} : All current redeemable codes\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["complain"]} : Sometimes you just gotta vent\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["duel weapons"]} : What every weapon does in duels\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["tip"]} : A handy dandy random tip\n'
     )
@@ -151,7 +152,7 @@ async def embed_help_guides() -> discord.Embed:
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    #embed.add_field(name=f'HORSE FESTIVAL 2022 {emojis.HORSE_T10}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'HALLOWEEN GUIDE 2022 {emojis.HAL_PUMPKIN}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)

@@ -93,8 +93,8 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
         f'{emojis.BP} MAGIC: `{calculate_type_bonus(horse_data.magic_level_bonus):,g}`% increased enchantment efficiency\n'
         f'{emojis.BP} SPECIAL: `{calculate_type_bonus(horse_data.special_level_bonus):,g}`% extra coins and XP from '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["epic quest"]}\n'
-        #f'{emojis.BP} {emojis.HAL_PUMPKIN} **SPOOKY**: {strong_bonus * horse_level * 1.25:,g}% extra chance to find pumpkins and 5% extra '
-        #f'chance to find bat slimes\n'
+        f'{emojis.BP} {emojis.HAL_PUMPKIN} **SPOOKY**: `{calculate_type_bonus(horse_data.def_level_bonus) * 1.25:,g}`% '
+        f'extra chance to find pumpkins and 5% extra chance to find bat slimes\n'
         f'{emojis.BP} STRONG: `{calculate_type_bonus(horse_data.strong_level_bonus):,g}`% extra AT\n'
         f'{emojis.BP} SUPER SPECIAL: `{calculate_type_bonus(horse_data.super_special_level_bonus):,g}`% extra coins and '
         f'XP from {strings.SLASH_COMMANDS_EPIC_RPG["epic quest"]}\n'
@@ -439,7 +439,8 @@ async def embed_breeding() -> discord.Embed:
         f'{emojis.BP} Note: Each breeding consumes `1` {emojis.HORSE_TOKEN} horse token'
     )
     horse_epicness = (
-        f'{emojis.BP} If you have a {emojis.HORSE_T10} T10 horse, breeding can increase its epicness\n'
+        f'{emojis.BP} You have a chance to get `1` epicness\n'
+        f'{emojis.BP} The chance gets lower the higher your epicness is\n'
         f'{emojis.BP} For more details see topic `Epicness`\n'
     )
     calculators = (
@@ -456,7 +457,7 @@ async def embed_breeding() -> discord.Embed:
     embed.add_field(name='IMPACT ON TIER', value=horse_tier, inline=False)
     embed.add_field(name='IMPACT ON LEVEL', value=horse_level, inline=False)
     embed.add_field(name='IMPACT ON TYPE', value=horse_type, inline=False)
-    embed.add_field(name='IMPACT ON EPICNESS', value=horse_type, inline=False)
+    embed.add_field(name='IMPACT ON EPICNESS', value=horse_epicness, inline=False)
     embed.add_field(name='TIER UP FAIL COUNT', value=fail_count, inline=False)
     embed.add_field(name='CHANCE TO TIER UP', value=chances, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)

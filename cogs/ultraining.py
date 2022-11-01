@@ -13,8 +13,8 @@ class UltrainingCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    cmd_ultraining = SlashCommandGroup("ultraining", "Ultraining commands")
-    cmd_stats = cmd_ultraining.create_subgroup("stats", "Stats subcommand of the ultraining command")
+    cmd_ultraining = SlashCommandGroup("ultraining", "Ultraining guide and calculator")
+    cmd_stats = cmd_ultraining.create_subgroup("stats", "Ultraining guide and calculator")
 
     # Commands
     @cmd_ultraining.command(name='guide', description='All about ultraining')

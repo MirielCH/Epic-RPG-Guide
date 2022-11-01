@@ -13,9 +13,9 @@ class TimeTravelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_time = SlashCommandGroup("time", "Time travel commands")
-    cmd_travel = cmd_time.create_subgroup("travel", "Time travel sub commands")
-    cmd_jump = cmd_time.create_subgroup("jump", "Time jump sub commands")
+    cmd_time = SlashCommandGroup("time", "Time travel guides and calculators")
+    cmd_travel = cmd_time.create_subgroup("travel", "Time travel guides")
+    cmd_jump = cmd_time.create_subgroup("jump", "Time jump guide and calculator")
 
     @cmd_travel.command(name='guide', description='All you need to know about time travels and super time travels')
     async def timetravel_guide(

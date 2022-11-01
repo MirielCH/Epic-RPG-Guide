@@ -204,13 +204,13 @@ async def embed_event_farm() -> discord.Embed:
     """Farm (failed planting) event"""
     trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} (chance unknown)'
     answers = (
-        f'{emojis.BP} `cry`: You get 1 crop and your seed back.\n'
+        f'{emojis.BP} `cry`: You get `1` crop and your seed back.\n'
         f'{emojis.BP} `plant another`: You get your seed back.\n'
-        f'{emojis.BP} `fight`: Small chance to get 20 levels and your seed back, high chance to only get your seed back.'
+        f'{emojis.BP} `fight`: Small chance to get `20` levels and your seed back, high chance to only get your seed back.'
     )
     rec_answer = f'{emojis.BP} `fight`'
     note = (
-        f'{emojis.BP} This event is only available in {emojis.TIME_TRAVEL}TT 2+\n'
+        f'{emojis.BP} This event is only available in {emojis.TIME_TRAVEL}TT `2`+\n'
         f'{emojis.BP} {events_personal}'
     )
     embed = discord.Embed(
@@ -227,7 +227,7 @@ async def embed_event_farm() -> discord.Embed:
 
 async def embed_event_heal() -> discord.Embed:
     """Heal event (mysterious man)"""
-    trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]} (0.75 % chance)'
+    trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]} (`0.75`% chance)'
     answers = (
         f'{emojis.BP} `cry`: The event ends, nothing happens\n'
         f'{emojis.BP} `search`: Leads to the option to `fight` the thief. If you do this, you will either '
@@ -256,12 +256,12 @@ async def embed_event_lootbox() -> discord.Embed:
     answers = (
         f'{emojis.BP} `cry`: You get a {emojis.LB_EPIC} EPIC, {emojis.LB_RARE} rare or '
         f'{emojis.LB_UNCOMMON} uncommon lootbox\n'
-        f'{emojis.BP} `fight`: You destroy the lootbox and get 400 lootboxer XP\n'
+        f'{emojis.BP} `fight`: You destroy the lootbox and get `400` lootboxer XP\n'
         f'{emojis.BP} `magic spell`: Low chance to get an {emojis.LB_OMEGA} OMEGA lootbox, high chance to get nothing'
     )
     rec_answer = (
-        f'{emojis.BP} `fight` if lootboxer < 100\n'
-        f'{emojis.BP} `magic spell` if lootboxer 100+'
+        f'{emojis.BP} `fight` if lootboxer < `100`\n'
+        f'{emojis.BP} `magic spell` if lootboxer `100`+'
     )
     note = f'{emojis.BP} {events_personal}'
     embed = discord.Embed(
@@ -280,14 +280,14 @@ async def embed_event_rubydragon() -> discord.Embed:
     """Work event (ruby dragon)"""
     trigger = f'{emojis.BP} Work commands (chance unknown)'
     answers = (
-        f'{emojis.BP} `cry`: You get 1 {emojis.ARENA_COOKIE} arena cookie\n'
+        f'{emojis.BP} `cry`: You get `1` {emojis.ARENA_COOKIE} arena cookie\n'
         f'{emojis.BP} `move`: You move to another area and spawn the ruby dragon (see below)\n'
         f'{emojis.BP} `sleep`: The event ends, you get nothing'
     )
     answers_ruby = (
         f'{emojis.BP} `run`: The event ends, you get nothing\n'
-        f'{emojis.BP} `fight`: You fight the dragon and get 10 {emojis.RUBY} rubies\n'
-        f'{emojis.BP} `sleep`: The dragon leaves and you get 2 {emojis.RUBY} rubies'
+        f'{emojis.BP} `fight`: You fight the dragon and get `10` {emojis.RUBY} rubies\n'
+        f'{emojis.BP} `sleep`: The dragon leaves and you get `2` {emojis.RUBY} rubies'
     )
     best_answer = (
         f'{emojis.BP} First `move`, then `fight`\n'
@@ -328,9 +328,9 @@ async def embed_event_arena() -> discord.Embed:
         f'{emojis.BP} Click ⚔️ if you are a participant'
     )
     rewards = (
-        f'{emojis.BP} 1 {emojis.ARENA_COOKIE} cookie per kill per initiator\n'
-        f'{emojis.BP} Example: You get 3 {emojis.ARENA_COOKIE} cookies per kill if you mention 2 players\n'
-        f'{emojis.BP} 3 {emojis.ARENA_COOKIE} cookies extra for the initiator(s) of the arena'
+        f'{emojis.BP} `1` {emojis.ARENA_COOKIE} cookie per kill per initiator\n'
+        f'{emojis.BP} Example: You get `3` {emojis.ARENA_COOKIE} cookies per kill if you mention 2 players\n'
+        f'{emojis.BP} `3` {emojis.ARENA_COOKIE} cookies extra for the initiator(s) of the arena'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -427,7 +427,7 @@ async def embed_event_coin_drop() -> discord.Embed:
     )
     rewards = (
         f'{emojis.BP} {emojis.COIN} Coins (amount depends on your level)\n'
-        f'{emojis.BP} 1 {emojis.EPIC_COIN} EPIC coin'
+        f'{emojis.BP} `1` {emojis.EPIC_COIN} EPIC coin'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -453,7 +453,10 @@ async def embed_event_legendary() -> discord.Embed:
         f'and work commands (chance unknown)'
     )
     answers = f'{emojis.BP} `time to fight`'
-    rewards = f'{emojis.BP} + 1 level for every participant if successful'
+    rewards = (
+        f'{emojis.BP} `+1` level for every participant if successful\n'
+        f'{emojis.BP} `10`% chance to get {emojis.TIME_COOKIE} TIME cookies\n'
+    )
     note = (
         f'{emojis.BP} {events_rare}\n'
         f'{emojis.BP} {events_multiplayer}\n'
@@ -552,11 +555,11 @@ async def embed_event_miniboss() -> discord.Embed:
     )
     rewards = (
         f'{emojis.BP} {emojis.COIN} Coins\n'
-        f'{emojis.BP} 2.5% chance for the initiator(s) to get + 1 level\n'
+        f'{emojis.BP} `2.5`% chance for the initiator(s) to get `+1` level\n'
         f'{emojis.BP} The initiator reward depends on the level of the initiator and the users mentioned. '
         f'It depends most on the original initiator however, thus the player with the highest level should '
         f'start the event.\n'
-        f'{emojis.BP} Participants get 5% of the iniators\' reward, up to 5,000 coins if there is only one initiator. '
+        f'{emojis.BP} Participants get `5`% of the iniators\' reward, up to `5,000` coins if there is only one initiator. '
         f'This maximum amount increases with more initiators.'
     )
     note = (
@@ -564,7 +567,7 @@ async def embed_event_miniboss() -> discord.Embed:
         f'{emojis.BP} {events_player_no.format(no=10)}\n'
         f'{emojis.BP} This event shares its cooldown with {strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
         f'{emojis.BP} This event shares its cooldown with {strings.SLASH_COMMANDS_EPIC_RPG["minintboss"]}\n'
-        f'{emojis.BP} The chance increases by 5% for every participant'
+        f'{emojis.BP} The chance increases by `5`% for every participant'
     )
     whichone = (
         f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
@@ -594,13 +597,13 @@ async def embed_event_specialtrade() -> discord.Embed:
         f'{emojis.BP} Note: You need the items for the trade in your inventory'
     )
     rewards = (
-        f'{emojis.BP} 1 {emojis.WOLF_SKIN} wolf skin (for 15 {emojis.LOG} wooden logs)\n'
-        f'{emojis.BP} 3 {emojis.EPIC_COIN} EPIC coins (for 3 {emojis.COIN} coins)\n'
-        f'{emojis.BP} 3 {emojis.LB_EPIC} EPIC lootboxes (for 5 {emojis.LIFE_POTION} life potions)\n'
-        f'{emojis.BP} 40 {emojis.FISH_GOLDEN} golden fish (for 15 {emojis.LIFE_POTION} life potions)\n'
-        f'{emojis.BP} 80 {emojis.LOG_EPIC} EPIC logs (for 40 {emojis.LOG} wooden logs)\n'
-        f'{emojis.BP} 80 {emojis.FISH} normie fish (for 2 {emojis.ARENA_COOKIE} cookies)\n'
-        f'{emojis.BP} 125 {emojis.ARENA_COOKIE} cookies (for 5 {emojis.FISH} normie fish)\n'
+        f'{emojis.BP} `1` {emojis.WOLF_SKIN} wolf skin (for `15` {emojis.LOG} wooden logs)\n'
+        f'{emojis.BP} `3` {emojis.EPIC_COIN} EPIC coins (for `3` {emojis.COIN} coins)\n'
+        f'{emojis.BP} `3` {emojis.LB_EPIC} EPIC lootboxes (for `5` {emojis.LIFE_POTION} life potions)\n'
+        f'{emojis.BP} `40` {emojis.FISH_GOLDEN} golden fish (for `15` {emojis.LIFE_POTION} life potions)\n'
+        f'{emojis.BP} `80` {emojis.LOG_EPIC} EPIC logs (for `40` {emojis.LOG} wooden logs)\n'
+        f'{emojis.BP} `80` {emojis.FISH} normie fish (for `2` {emojis.ARENA_COOKIE} cookies)\n'
+        f'{emojis.BP} `125` {emojis.ARENA_COOKIE} cookies (for `5` {emojis.FISH} normie fish)\n'
     )
     note = (
         f'{emojis.BP} You have time to trade to the required material while the event is active\n'
@@ -626,9 +629,9 @@ async def embed_event_bigarena() -> discord.Embed:
     schedule = f'{emojis.BP} Monday, Wednesday, Friday at 18:00 UTC'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["big arena"]} (unlocked in area 7)'
     rewards = (
-        f'{emojis.BP} ~1000+ {emojis.ARENA_COOKIE} arena cookies for the winner\n'
-        f'{emojis.BP} ~200+ {emojis.ARENA_COOKIE} arena cookies for second and third place\n'
-        f'{emojis.BP} ~30+ {emojis.ARENA_COOKIE} arena cookies for everyone else'
+        f'{emojis.BP} ~`1000`+ {emojis.ARENA_COOKIE} arena cookies for the winner\n'
+        f'{emojis.BP} ~`200`+ {emojis.ARENA_COOKIE} arena cookies for second and third place\n'
+        f'{emojis.BP} ~`30`+ {emojis.ARENA_COOKIE} arena cookies for everyone else'
     )
     note = (
         f'{emojis.BP} {events_official_server}\n'
@@ -654,8 +657,8 @@ async def embed_event_horserace() -> discord.Embed:
     schedule = f'{emojis.BP} Every even hour (= every 2 hours)'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["horse race"]} (unlocked with a {emojis.HORSE_T5} T5+ horse)'
     rewards = (
-        f'{emojis.BP} T5 - T8: A random lootbox, +1 horse level or +1 horse tier\n'
-        f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +1 horse level or +1 horse tier\n'
+        f'{emojis.BP} T5 - T8: A random lootbox, `+1` horse level or `+1` horse tier\n'
+        f'{emojis.BP} T9: A random lootbox, a pet (up to T3), `+1` horse level or `+1` horse tier\n'
         f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T5)\n'
         f'{emojis.BP} You **only** get rewards if you place third or higher'
     )
@@ -684,13 +687,13 @@ async def embed_event_pettournament() -> discord.Embed:
     schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["pets tournament"]}'
     rewards = (
-        f'{emojis.BP} + 1 pet tier\n'
+        f'{emojis.BP} `+1` pet tier\n'
         f'{emojis.BP} You only get the reward if you **win** the tournament'
     )
     note = (
         f'{emojis.BP} {events_official_server}\n'
         f'{emojis.BP} {events_once_cycle}\n'
-        f'{emojis.BP} You can only enter **1** pet per cycle.\n'
+        f'{emojis.BP} You can only enter `1` pet per cycle.\n'
         f'{emojis.DETAIL} Entering a pet will replace an already entered pet.\n'
         f'{emojis.BP} You can apply with any pet, even pets on adventures\n'
         f'{emojis.BP} Your chance to win is influenced by your pet\'s score (see {strings.SLASH_COMMANDS_GUIDE["pets guide"]})\n'
@@ -743,7 +746,7 @@ async def embed_event_minintboss() -> discord.Embed:
         f'{emojis.BP} {events_once_cycle}\n'
         f'{emojis.BP} This event shares its cooldown with {strings.SLASH_COMMANDS_EPIC_RPG["miniboss"]} and '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
-        f'{emojis.BP} This event has a 20% chance to fail'
+        f'{emojis.BP} This event has a `20`% chance to fail'
     )
     whichone = (
         f'{emojis.BP} Only do this event if you don\'t need to do a dungeon\n'
@@ -767,8 +770,8 @@ async def embed_event_hunt() -> discord.Embed:
     trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} in areas 3+ (chance unknown)'
     answers = (
         f'{emojis.BP} `cry`: The zombie horde walks away, you get nothing\n'
-        f'{emojis.BP} `fight`: Small chance to get 1 coin and _almost_ one level, high chance to get nothing\n'
-        f'{emojis.BP} `join`: You move to area 2 with the horde and get 5-7 {emojis.ZOMBIE_EYE} zombie eyes'
+        f'{emojis.BP} `fight`: Small chance to get `1` coin and _almost_ `1` level, high chance to get nothing\n'
+        f'{emojis.BP} `join`: You move to area `2` with the horde and get `5`-`7` {emojis.ZOMBIE_EYE} zombie eyes'
     )
     rec_answer = (
         f'{emojis.BP} `join` if you need the zombie eyes\n'
@@ -856,8 +859,8 @@ async def embed_event_slime() -> discord.Embed:
         f'{emojis.BP} By crafting a {emojis.HAL_CANDY_BAIT} candy bait'
     )
     answers = (
-        f'{emojis.BP} `fight`: Get 3-6 {emojis.HAL_SPOOKY_ORB} spooky orbs\n'
-        f'{emojis.BP} `boo`: Get 2-8 {emojis.HAL_SPOOKY_ORB} spooky orbs'
+        f'{emojis.BP} `fight`: Get `3`-`6` {emojis.HAL_SPOOKY_ORB} spooky orbs\n'
+        f'{emojis.BP} `boo`: Get `2`-`8` {emojis.HAL_SPOOKY_ORB} spooky orbs'
     )
     best_answer = (
         f'{emojis.BP} If you don\'t feel like gambling, `fight` is the safer answer\n'
@@ -892,14 +895,14 @@ async def embed_event_scroll_boss() -> discord.Embed:
         f'{emojis.BP} Attack from **behind**: `dodge`\n'
     )
     rewards_win = (
-        f'{emojis.BP} 200 {emojis.HAL_PUMPKIN} pumpkins\n'
-        f'{emojis.BP} 100 {emojis.ARENA_COOKIE} arena cookies\n'
-        f'{emojis.BP} 2 {emojis.LB_EDGY} EDGY lootboxes\n'
+        f'{emojis.BP} `200` {emojis.HAL_PUMPKIN} pumpkins\n'
+        f'{emojis.BP} `100` {emojis.ARENA_COOKIE} arena cookies\n'
+        f'{emojis.BP} `2` {emojis.LB_EDGY} EDGY lootboxes\n'
     )
     rewards_lose = (
-        f'{emojis.BP} 150 {emojis.HAL_PUMPKIN} pumpkins\n'
-        f'{emojis.BP} 80 {emojis.ARENA_COOKIE} arena cookies\n'
-        f'{emojis.BP} 1 {emojis.LB_EDGY} EDGY lootboxes\n'
+        f'{emojis.BP} `150` {emojis.HAL_PUMPKIN} pumpkins\n'
+        f'{emojis.BP} `80` {emojis.ARENA_COOKIE} arena cookies\n'
+        f'{emojis.BP} `1` {emojis.LB_EDGY} EDGY lootboxes\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -930,7 +933,7 @@ async def embed_event_returning() -> discord.Embed:
     bonuses = (
         f'{emojis.BP} All command cooldowns except {strings.SLASH_COMMANDS_EPIC_RPG["vote"]}, '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["guild raid"]} and {strings.SLASH_COMMANDS_EPIC_RPG["guild upgrade"]} '
-        f'are reduced by 33%\n'
+        f'are reduced by `33`%\n'
         f'{emojis.BP} You can enter all dungeons without buying a dungeon key\n'
         f'{emojis.BP} The drop chance of mob drops is doubled (see {strings.SLASH_COMMANDS_GUIDE["monster drops"]})\n'
     )

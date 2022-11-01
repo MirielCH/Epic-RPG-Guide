@@ -29,7 +29,7 @@ class EventsCog(commands.Cog):
 
     cmd_event = SlashCommandGroup(
         "event",
-        "Event guide commands",
+        "Event guides",
     )
 
     @cmd_event.command(name='guide', description='Guide for all personal, multiplayer and global events')

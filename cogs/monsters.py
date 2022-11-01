@@ -20,7 +20,7 @@ class MonstersCog(commands.Cog):
 
     cmd_monster = SlashCommandGroup(
         "monster",
-        "Monster search commands",
+        "Monster drops and search",
     )
 
     @cmd_monster.command(name='drops', description='Monster drops and where to find them')

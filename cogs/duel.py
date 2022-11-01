@@ -13,7 +13,7 @@ class DuelCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    cmd_duel = SlashCommandGroup("duel", "Duel commands")
+    cmd_duel = SlashCommandGroup("duel", "Duel weapons guide")
 
     # Commands
     @cmd_duel.command(name='weapons', description='What every weapon does in duels')

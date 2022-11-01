@@ -13,7 +13,7 @@ class DungeonsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_dungeon = SlashCommandGroup("dungeon", "Dungeon commands")
+    cmd_dungeon = SlashCommandGroup("dungeon", "Dungeon guides and ready check")
 
     @cmd_dungeon.command(name='guide', description='How to prepare for and beat the dungeons')
     async def dungeon_guide(

@@ -16,9 +16,9 @@ class HorseCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    cmd_horse = SlashCommandGroup("horse", "Horse commands")
-    cmd_boost = cmd_horse.create_subgroup("boost", "Boost subcommand of the horse command")
-    cmd_training = cmd_horse.create_subgroup("training", "Training subcommand of the horse command")
+    cmd_horse = SlashCommandGroup("horse", "Horse guides and calculators")
+    cmd_boost = cmd_horse.create_subgroup("boost", "Horse boost calculator")
+    cmd_training = cmd_horse.create_subgroup("training", "Horse training calculator")
 
     @cmd_horse.command(name='guide', description='All you need to know about horses')
     async def horse_guide(

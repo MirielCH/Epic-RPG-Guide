@@ -62,7 +62,7 @@ async def embed_overview() -> discord.Embed:
     whattodo = (
         #f'{emojis.BP} Play in the minirace every day\n'
         f'{emojis.BP} Do megarace whenever a stage is available\n'
-        f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.COWBOY_ARMOR}{emojis.COWBOY_SWORD} cowboy gear.\n'
+        f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.ARMOR_COWBOY}{emojis.SWORD_COWBOY} cowboy gear.\n'
         f'{emojis.DETAIL} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
         f'{emojis.DETAIL} Materials required: 25 {emojis.HORSESHOE}\n'
         f'{emojis.BP} Melt 21 {emojis.STEEL} and 4 {emojis.GOLD} and craft the {emojis.HORSE_ARMOR} horse armor.\n'

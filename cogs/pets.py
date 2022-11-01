@@ -13,7 +13,7 @@ class PetsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_pets = SlashCommandGroup("pets", "Pet commands")
+    cmd_pets = SlashCommandGroup("pets", "Pet guides")
 
     @cmd_pets.command(name='guide', description='All about pets')
     async def pets_guide(

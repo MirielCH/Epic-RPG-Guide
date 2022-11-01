@@ -2,7 +2,7 @@
 """Contains some silly and useless fun commands"""
 
 import discord
-from discord.commands import SlashCommandGroup
+from discord.commands import slash_command, Option, SlashCommandGroup
 from discord.ext import commands
 
 from content import fun
@@ -22,6 +22,15 @@ class FunCog(commands.Cog):
     async def oracle(self, ctx: discord.ApplicationContext, question: str) -> None:
         """Ask the oracle (and get nonsense in return)"""
         await fun.command_oracle(self.bot, ctx, question)
+
+    @slash_command(description='Complain about something because yes')
+    async def complain(
+        self,
+        ctx: discord.ApplicationContext,
+        complaint: Option(str, 'Your complaint', max_length=1000),
+    ) -> None:
+        """Complain"""
+        await fun.command_complain(ctx, complaint)
 
 
 # Initialization

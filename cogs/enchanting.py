@@ -14,7 +14,7 @@ class EnchantingCog(commands.Cog):
 
     cmd_enchanting = SlashCommandGroup(
         "enchanting",
-        "Enchanting commands",
+        "Enchanting guide",
     )
 
     @cmd_enchanting.command(name='guide', description='All enchants & how enchanting works')

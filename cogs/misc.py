@@ -35,7 +35,7 @@ class MiscCog(commands.Cog):
         """Badges"""
         await misc.command_badges(ctx)
 
-    cmd_coolness = SlashCommandGroup("coolness", "Coolness commands")
+    cmd_coolness = SlashCommandGroup("coolness", "Coolness guide")
     @cmd_coolness.command(name='guide', description='How to get coolness')
     async def coolness_guide(
         self,
@@ -46,7 +46,7 @@ class MiscCog(commands.Cog):
         """Coolness guide"""
         await misc.command_coolness_guide(ctx, topic)
 
-    cmd_farming = SlashCommandGroup("farming", "Farming commands")
+    cmd_farming = SlashCommandGroup("farming", "Farming guide")
     @cmd_farming.command(name='guide', description='How farming works and what do with crops')
     async def farming_guide(
         self,
@@ -57,7 +57,7 @@ class MiscCog(commands.Cog):
         """Farming guide"""
         await misc.command_farming_guide(ctx, topic)
 
-    cmd_beginner = SlashCommandGroup("beginner", "Beginner commands")
+    cmd_beginner = SlashCommandGroup("beginner", "Beginner guide")
     @cmd_beginner.command(name='guide', description='How to start in the game')
     async def beginner_guide(
         self,
@@ -87,8 +87,8 @@ class MiscCog(commands.Cog):
         """Basic calculator"""
         await misc.command_calculator(ctx, calculation)
 
-    cmd_coin = SlashCommandGroup("coin", "Coincap commands")
-    cmd_cap = cmd_coin.create_subgroup("cap", "Coincap subcommands")
+    cmd_coin = SlashCommandGroup("coin", "Coin cap calculator")
+    cmd_cap = cmd_coin.create_subgroup("cap", "Coin cap calculator")
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
     @cmd_cap.command(name='calculator', description='Calculate the coin cap for a TT/area')
@@ -102,8 +102,8 @@ class MiscCog(commands.Cog):
     ) -> None:
         await misc.command_coincap_calculator(self.bot, ctx, timetravel=timetravel, area_no=area_no)
 
-    cmd_selling = SlashCommandGroup("selling", "Selling commands")
-    cmd_price = cmd_selling.create_subgroup("price", "Price subcommands")
+    cmd_selling = SlashCommandGroup("selling", "Selling price calculator")
+    cmd_price = cmd_selling.create_subgroup("price", "Selling price calculator")
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
     @cmd_price.command(name='calculator', description='Calculate the selling price of an item')

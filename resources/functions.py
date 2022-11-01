@@ -44,38 +44,10 @@ def round_school(number: float) -> int:
 
 async def send_slash_migration_message(ctx: commands.Context, new_command: str) -> None:
     """Sends a message telling the user to use slash."""
-    description = (
-        f'{emojis.BLANK} ➜ **{strings.SLASH_COMMANDS_GUIDE[new_command]}**\n'
-        f'{emojis.BLANK}'
+    await ctx.send(
+        f'This is now a slash command:\n'
+        f'➜ **{strings.SLASH_COMMANDS_GUIDE[new_command]}**\n'
     )
-    explanation = (
-        f'{emojis.BP} As of September 1, 2022, this bot uses slash commands instead of a prefix.\n'
-        f'{emojis.BP} Press `/` or use {strings.SLASH_COMMANDS_GUIDE["help"]} to see a list of all slash commands.\n'
-        f'{emojis.BLANK}'
-    )
-    help = (
-        f'{emojis.BP} Ask your server admin to enable them.\n'
-        f'{emojis.BP} Slash permissions can be managed in "Server Settings > Integrations".\n'
-        f'{emojis.BLANK}'
-    )
-    slash_mention = (
-        f'{emojis.BP} If the slash commands in this message don\'t show at all or look like this: '
-        f'`{strings.SLASH_COMMANDS_GUIDE[new_command]}`, your Discord app is outdated.\n'
-        f'{emojis.BP} Check your app store for an update.\n'
-    )
-    embed = discord.Embed(
-        color = settings.EMBED_COLOR,
-        title = 'THIS IS NOW A SLASH COMMAND',
-        description = description
-    )
-    embed.add_field(name='SAY WHAT NOW?', value=explanation, inline=False)
-    embed.add_field(name='I DON\'T HAVE SLASH COMMANDS IN MY CHANNEL', value=help, inline=False)
-    embed.add_field(name='SOMETHING IS WRONG IN THIS MESSAGE', value=slash_mention, inline=False)
-
-    view = views.ComplainView(ctx)
-    interaction_message = await ctx.send(embed=embed, view=view)
-    view.message = interaction_message
-    await view.wait()
 
 
 async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asyncio.Task]) -> Any:

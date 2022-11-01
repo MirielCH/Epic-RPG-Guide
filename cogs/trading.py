@@ -20,7 +20,7 @@ class TradingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_trade = SlashCommandGroup("trade", "Trade commands")
+    cmd_trade = SlashCommandGroup("trade", "Trade guides and calculator")
 
     @cmd_trade.command(name='guide', description='Recommended trades before leaving areas.')
     async def trade_guide(

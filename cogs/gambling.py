@@ -13,7 +13,7 @@ class GamblingCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cmd_gambling = SlashCommandGroup("gambling", "Gambling commands")
+    cmd_gambling = SlashCommandGroup("gambling", "Gambling guides")
 
     @cmd_gambling.command(name='guide', description='Gambling guide')
     async def gambling_guide(

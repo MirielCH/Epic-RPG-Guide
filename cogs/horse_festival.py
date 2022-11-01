@@ -14,7 +14,7 @@ class HorseFestivalCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    cmd_horse_festival = SlashCommandGroup("hf", "Horse festival commands")
+    cmd_horse_festival = SlashCommandGroup("hf", "Horse festival event guide")
 
     @cmd_horse_festival.command(name='guide', description='Horse festival guide. Neigh!')
     async def horse_guide(

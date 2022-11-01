@@ -7,7 +7,7 @@ import discord
 from discord.embeds import EmptyEmbed
 
 import database
-from resources import functions
+from resources import emojis, functions, settings
 
 
 # --- Commands ---
@@ -37,3 +37,29 @@ async def command_oracle(bot: discord.Bot, ctx: discord.ApplicationContext, ques
                 return
             if bot_message is None: return
             await ctx.respond('Did you... seriously just try this :eyes:')
+
+
+async def command_complain(ctx: discord.ApplicationContext, complaint: str) -> None:
+    """Complain"""
+    image, embed = await embed_complain(ctx, complaint)
+    await ctx.respond(embed=embed, file=image)
+
+
+# --- Embeds ---
+async def embed_complain(ctx: discord.ApplicationContext, complaint: str) -> discord.Embed:
+    """Complaint embed"""
+    complaint = (
+        f'{complaint}\n\n'
+        f'**THIS IS UNACCEPTABLE!** {emojis.SAD_ANGRY}\n\n'
+        f'**BRING ME THE MANAGER!** {emojis.PEPE_ANGRY_POLICE}\n\n'
+        f'**I DEMAND MY MONEY BACK!** {emojis.PEPE_TABLESLAM}\n\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'{ctx.author.name} IS COMPLAINING'.upper(),
+        description = complaint
+    )
+    image = discord.File(settings.IMG_CRANKY, filename='cranky.png')
+    image_url = 'attachment://cranky.png'
+    embed.set_thumbnail(url=image_url)
+    return (image, embed)

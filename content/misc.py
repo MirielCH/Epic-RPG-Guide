@@ -308,7 +308,7 @@ async def embed_codes():
     field_no = 1
     temp_codes = {field_no: ''}
     codes = await database.get_all_codes()
-    for code in codes:
+    for code in sorted(codes):
         code_value = f'{emojis.BP} `{code.code}`{emojis.BLANK}{code.contents}'
         if code.temporary:
             if len(temp_codes[field_no]) + len(code_value) > 1020:
@@ -409,17 +409,26 @@ async def embed_coolness_overview() -> discord.Embed:
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
     )
     pet_slots = (
-        f'{emojis.BP} `x1.0` at 0~99 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.1` at 100~999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.2` at 1,000~1,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.3` at 2,000~3,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.4` at 4,000~6,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.5` at 7,000~11,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.6` at 12,000~19,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.7` at 20,000~32,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.8` at 33,000~57,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.9` at 58,000~79,999 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x2.0` at 80,000+ {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.05` at 10 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.1` at 100 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.15` at 350 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.2` at 1,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.25` at 1,400 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.3` at 2,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.35` at 2,800 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.4` at 4,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.45` at 5,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.5` at 7,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.55` at 9,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.6` at 11,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.65` at 13,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.7` at 16,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.75` at 19,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.8` at 22,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.85` at 27,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.9` at 32,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x1.95` at 40,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} `x2.0` at 50,000 {emojis.STAT_COOLNESS}\n'
     )
     note = (
         f'{emojis.BP} You can not lose coolness in any way\n'

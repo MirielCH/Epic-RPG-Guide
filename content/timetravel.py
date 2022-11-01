@@ -236,15 +236,25 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
     bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
+    crops_normal_min =  dynamite_rubies * 2
+    crops_normal_max =  dynamite_rubies * 3
+    crops_special_min = dynamite_rubies * 5
+    crops_special_med = dynamite_rubies * 6
+    crops_special_max = dynamite_rubies * 7
     greenhouse_watermelon_min = dynamite_rubies * 2
     greenhouse_watermelon_max = dynamite_rubies * 3
     bigboat_superfish = dynamite_rubies / 1.15
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
-    greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
-    greenhouse_watermelon_max = Decimal(greenhouse_watermelon_max).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    #greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+    #greenhouse_watermelon_max = Decimal(greenhouse_watermelon_max).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     chainsaw_ultimate = Decimal(chainsaw_ultimate).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     rubies = int(dynamite_rubies)
+    crops_normal_min = int(crops_normal_min)
+    crops_normal_max = int(crops_normal_max)
+    crops_special_min = int(crops_special_min)
+    crops_special_med = int(crops_special_med)
+    crops_special_max = int(crops_special_max)
     watermelon_min = int(greenhouse_watermelon_min)
     watermelon_max = int(greenhouse_watermelon_max)
     super_fish = int(bigboat_superfish)
@@ -306,6 +316,10 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["coin cap calculator"]} to see your exact cap\n'
     )
     work_multiplier = (
+        f'{emojis.BP} **{crops_special_min:,}**, **{crops_special_med:,}** or **{crops_special_max:,}** {emojis.BREAD}'
+        f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from special seeds\n'
+        f'{emojis.BP} **{crops_normal_min:,}** or **{crops_normal_max:,}** {emojis.BREAD}'
+        f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from normal seeds\n'
         f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]}\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}\n'
@@ -390,7 +404,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         description = embed_description
     )
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
-    embed.add_field(name='WORK COMMAND YIELD', value=work_multiplier, inline=False)
+    embed.add_field(name='COMMAND YIELD', value=work_multiplier, inline=False)
     embed.add_field(name='COIN CAP', value=field_coin_cap, inline=False)
     if not mytt and tt.tt != 0:
         if 1 <= tt.tt <= 3:
