@@ -53,15 +53,13 @@ class DirectMessageError(Exception):
 class PetFusion(NamedTuple):
     """Container for pet fusion data"""
     tier: int
-    fusion: str
-
-
-class PetTier(NamedTuple):
-    """Container for pet tier data"""
-    tier: int
-    tt_no: int
-    fusion_to_get_tier: PetFusion
-    fusions_including_tier: Tuple[PetFusion]
+    tt_0_9: str
+    tt_10_24: str
+    tt_25_40: str
+    tt_41_60: str
+    tt_61_90: str
+    tt_91_120: str
+    tt_121_plus: str
 
 
 class Ingredient(NamedTuple):
@@ -1110,67 +1108,46 @@ async def get_horse_data(ctx: commands.Context, tier: int) -> dict:
     return horse_data
 
 
-async def get_pet_tier(tier: int, tt_no: int) -> PetTier:
-    """Returns a pet tier.
+async def get_pet_fusions(tt_no: int) -> Tuple[PetFusion]:
+    """Returns all pet fusions from the table pets.
 
     Returns:
-       PetTier object.
+       Tuple with PetFusion objects.
 
     Raises:
         sqlite3.Error if something goes wrong.
         NoDataFound if no data was found. This also logs an error.
     """
-    if 0 <= tt_no <= 9:
-        column = 'tt_0_9'
-    elif 10 <= tt_no <= 24:
-        column = 'tt_10_24'
-    elif 25 <= tt_no <= 40:
-        column = 'tt_25_40'
-    elif 41 <= tt_no <= 60:
-        column = 'tt_41_60'
-    elif 61 <= tt_no <= 90:
-        column = 'tt_61_90'
-    elif 91 <= tt_no <= 120:
-        column = 'tt_91_120'
-    else:
-        column = 'tt_121_plus'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM pets WHERE pet_tier=?',(tier,))
-        record_pet_tier = cur.fetchone()
-        cur.execute(f"SELECT * FROM pets WHERE {column} LIKE 'T{tier} %' OR {column} LIKE '%T{tier}'")
-        records_fusions = cur.fetchall()
+        cur.execute('SELECT * FROM pets')
+        records = cur.fetchall()
     except sqlite3.Error:
         raise
-    if not record_pet_tier:
+    if not records:
         await log_error(
             INTERNAL_ERROR_NO_DATA_FOUND.format(table='pets',
-                                                function='get_pet_tier',
-                                                select=f'Pet tier {tier}')
+                                                function='get_pet_fusions',
+                                                select=f'Time travel {tt_no}')
         )
         raise NoDataFound
-    record_pet_tier = dict(record_pet_tier)
-    fusion_to_get_tier = PetFusion(
-        tier = tier,
-        fusion = record_pet_tier[column] if record_pet_tier[column] is not None else 'None'
-    )
-    fusions_including_tier = []
-    for record in records_fusions:
+    pet_fusions = []
+    for record in records:
         record = dict(record)
         fusion = PetFusion(
             tier = record['pet_tier'],
-            fusion = record[column]
+            tt_0_9 = record['tt_0_9'],
+            tt_10_24 = record['tt_10_24'],
+            tt_25_40 = record['tt_25_40'],
+            tt_41_60 = record['tt_41_60'],
+            tt_61_90 = record['tt_61_90'],
+            tt_91_120 = record['tt_91_120'],
+            tt_121_plus = record['tt_121_plus'],
         )
-        fusions_including_tier.append(fusion)
-    pet_tier = PetTier(
-        tier = tier,
-        tt_no = tt_no,
-        fusion_to_get_tier = fusion_to_get_tier,
-        fusions_including_tier = tuple(fusions_including_tier)
-    )
+        pet_fusions.append(fusion)
 
-    return pet_tier
+    return tuple(pet_fusions)
 
 
 async def get_all_codes() -> Tuple[Code]:

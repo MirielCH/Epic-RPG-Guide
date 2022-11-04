@@ -577,3 +577,39 @@ class DropChanceCalculatorView(discord.ui.View):
     async def on_timeout(self) -> None:
         self.value = 'timeout'
         self.stop()
+
+
+class PetTierView(discord.ui.View):
+    """View with a pet tier select.
+    Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    pet_tier: Currently chosen pet tier
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, embed_function: callable, tt_no: int, pet_tier: int,
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.embed_function = embed_function
+        self.tt_no = tt_no
+        self.pet_tier = pet_tier
+        self.add_item(components.PetTierSelect(self.pet_tier, 'Choose pet tier ...'))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user.id:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()

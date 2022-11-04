@@ -1,6 +1,7 @@
 # pets.py
 # Contains the content for pet commands
 
+import re
 from typing import Optional
 
 import discord
@@ -52,13 +53,22 @@ async def command_pets_guide(ctx: discord.ApplicationContext, topic: str) -> Non
         pass
 
 
-async def command_pets_fuse(ctx: discord.ApplicationContext, pet_tier: int, timetravel: Optional[int] = None) -> None:
+async def command_pets_fuse(ctx: discord.ApplicationContext, pet_tier: int,
+                            tt_no: Optional[int] = None) -> None:
     """Pet fuse command"""
-    if timetravel is None:
+    if tt_no is None:
         user: database.User = await database.get_user(ctx.author.id)
-        timetravel = user.tt
-    embed = await embed_fuse(pet_tier, timetravel)
-    await ctx.respond(embed=embed)
+        tt_no = user.tt
+    if pet_tier is None: pet_tier = 0
+    view = views.PetTierView(ctx, embed_fuse, tt_no=tt_no, pet_tier=pet_tier)
+    embed = await embed_fuse(tt_no, pet_tier)
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 # --- Embeds ---
@@ -432,21 +442,55 @@ async def embed_pets_adventures() -> discord.Embed:
     return embed
 
 
-async def embed_fuse(pet_tier: int, timetravel: int) -> discord.Embed:
+async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
     """Pet fusion recommendations"""
-    pet_data: database.PetTier = await database.get_pet_tier(pet_tier, timetravel)
-    if pet_data.fusion_to_get_tier.fusion != 'None':
-        how_to_get_tier = f'{emojis.BP} {pet_data.fusion_to_get_tier.fusion}'
+    pet_fusions = await database.get_pet_fusions(tt_no)
+    if 0 <= tt_no <= 9:
+        column = 'tt_0_9'
+    elif 10 <= tt_no <= 24:
+        column = 'tt_10_24'
+    elif 25 <= tt_no <= 40:
+        column = 'tt_25_40'
+    elif 41 <= tt_no <= 60:
+        column = 'tt_41_60'
+    elif 61 <= tt_no <= 90:
+        column = 'tt_61_90'
+    elif 91 <= tt_no <= 120:
+        column = 'tt_91_120'
     else:
-        how_to_get_tier = f'{emojis.BP} Chance too low' if pet_tier > 1 else f'{emojis.BP} None'
-    what_to_fuse_with_tier = ''
-    for fusion in pet_data.fusions_including_tier:
-        what_to_fuse_with_tier = (
-            f'{what_to_fuse_with_tier}\n'
-            f'{emojis.BP} {fusion.fusion} ➜ T{fusion.tier}'
+        column = 'tt_121_plus'
+    what_to_fuse_with_tier = field_fusions = ''
+    title = f'RECOMMENDED PET FUSIONS • TT {tt_no}'
+    if pet_tier > 0:
+        title = f'{title} • TIER {pet_tier}'
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = title,
+        description = 'This guide lists the minimum recommended pet fusions for a decent tier up chance.'
+    )
+    for pet_fusion in pet_fusions:
+        fusion = getattr(pet_fusion, column)
+        if pet_tier > 0:
+            if fusion is not None:
+                pet_tier_match = re.search(rf'\bT{pet_tier}\b', fusion)
+                if pet_tier_match:
+                    what_to_fuse_with_tier = (
+                        f'{what_to_fuse_with_tier}\n'
+                        f'{emojis.BP} **T{pet_fusion.tier}**: {fusion}'
+                    )
+            if pet_fusion.tier != pet_tier: continue
+        if fusion is None:
+            fusion = f'Chance too low' if pet_fusion.tier > 1 else f'None'
+        field_fusions = (
+            f'{field_fusions}\n'
+            f'{emojis.BP} **T{pet_fusion.tier}**: {fusion}'
         )
-    if what_to_fuse_with_tier == '':
-        what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None'
+    embed.add_field(name='FUSIONS', value=field_fusions.strip(), inline=True)
+
+    if pet_tier > 0:
+        if what_to_fuse_with_tier == '':
+            what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None'
+        embed.add_field(name=f'FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     note = (
         f'{emojis.BP} Tier up is **not** guaranteed!\n'
         f'{emojis.BP} Lower fusions _might_ be possible but are rarely successful.\n'
@@ -454,12 +498,5 @@ async def embed_fuse(pet_tier: int, timetravel: int) -> discord.Embed:
         f'{emojis.BP} You can lose skills in fusions!\n'
         f'{emojis.BP} If you are unsure about fusions, see {strings.SLASH_COMMANDS_GUIDE["pets guide"]}'
     )
-    embed = discord.Embed(
-        color = settings.EMBED_COLOR,
-        title = f'TIER {pet_tier} PET FUSIONS • TT {timetravel}',
-        description = 'This guide lists the minimum recommended fusions for a decent tier up chance.'
-    )
-    embed.add_field(name=f'FUSION TO GET A T{pet_tier} PET', value=how_to_get_tier, inline=False)
-    embed.add_field(name=f'FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed

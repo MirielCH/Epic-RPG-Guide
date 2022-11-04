@@ -523,3 +523,35 @@ class TimeJumpCalculatorChangeStatsButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction) -> None:
         modal = modals.TimeJumpCalculatorStatsModal(self.view)
         await interaction.response.send_modal(modal)
+
+
+class PetTierSelect(discord.ui.Select):
+    """Pet tier Select"""
+    def __init__(self, pet_tier: int, placeholder: Optional[str] = 'Choose pet tier ...',
+                 row: Optional[int] = None):
+        pet_tiers = {0: 'All tiers'}
+        for tier in range(1,21):
+            pet_tiers[tier] = f'Tier {tier}'
+        options = []
+        for tier, label in pet_tiers.items():
+            label = label
+            emoji = '🔹' if tier == pet_tier else None
+            options.append(discord.SelectOption(label=label, value=str(tier), emoji=emoji))
+        self.pet_tiers = pet_tiers
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id='select_tier')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = int(self.values[0])
+        self.view.pet_tier = select_value
+        for child in self.view.children:
+            if child.custom_id == 'select_tier':
+                options = []
+                for tier, label in self.pet_tiers.items():
+                    label = label
+                    emoji = '🔹' if tier == self.view.pet_tier else None
+                    options.append(discord.SelectOption(label=label, value=str(tier), emoji=emoji))
+                child.options = options
+                break
+        embed = await self.view.embed_function(self.view.tt_no, self.view.pet_tier)
+        await interaction.response.edit_message(embed=embed, view=self.view)
