@@ -34,7 +34,7 @@ async def edit_interaction(interaction: Union[discord.Interaction, discord.Webho
     if isinstance(interaction, discord.WebhookMessage):
         await interaction.edit(content=content, embed=embed, view=view)
     else:
-        await interaction.edit_original_message(content=content, file=file, embed=embed, view=view)
+        await interaction.edit_original_response(content=content, file=file, embed=embed, view=view)
 
 
 def round_school(number: float) -> int:
