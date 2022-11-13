@@ -358,7 +358,8 @@ async def embed_pets_skills_unique() -> discord.Embed:
     )
     resetter = (
         f'{emojis.BP} If the pet also has the {emojis.SKILL_TRAVELER} time traveler skill and it triggers, '
-        f'it has a chance to reset **all** pets on an adventure\n'
+        f'it has a chance to reset **all** pets sent at the same time as this pet.\n'
+        f'{emojis.DETAIL} This does not affect pets sent on earlier adventures.\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_VOIDOG} VOIDog pet\n'
         f'{emojis.BP} This pet can drop in dungeons 16 to 20.\n'
         f'{emojis.DETAIL} The drop chance increases with higher dungeons.\n'

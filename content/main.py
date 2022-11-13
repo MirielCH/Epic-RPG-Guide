@@ -253,7 +253,7 @@ async def embed_about(
         f'{emojis.BP} FlyingPanda#0328\n'
         f'{emojis.BP} Hakiobo#6097\n'
         f'{emojis.BP} r5#2253\n'
-        f'{emojis.BP} All the math geniuses in the support server'
+        f'{emojis.BP} Everyone contributing one way or the other'
     )
     documents = (
         f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'

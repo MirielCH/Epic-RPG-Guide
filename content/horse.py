@@ -80,7 +80,7 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
         await ctx.respond(strings.MSG_ERROR, ephemeral=True)
         return
     horse_epicness_tier_factor = 1 + (horse_epicness // 5 * 0.04)
-    multiplier_coins = strings.HORSE_MULTIPLIER_COIN[horse_tier] * horse_epicness_tier_factor
+    multiplier_coins = (strings.HORSE_MULTIPLIER_COIN[horse_tier] - 1) * 100 * horse_epicness_tier_factor
     multiplier_lootbox = strings.HORSE_MULTIPLIER_LOOTBOX[horse_tier] * horse_epicness_tier_factor
     multiplier_drops = strings.HORSE_MULTIPLIER_DROPS[horse_tier] * horse_epicness_tier_factor
     multiplier_pets = strings.HORSE_MULTIPLIER_PETS[horse_tier] * horse_epicness_tier_factor
@@ -101,7 +101,7 @@ async def command_boost_calculator(bot: discord.Bot, ctx: discord.ApplicationCon
         f'{emojis.BP} TANK: `{calculate_type_bonus(horse_data.tank_level_bonus):,}`% extra LIFE\n'
     )
     bonuses_tier = (
-        f'{emojis.BP} `{(multiplier_coins - 1) * 100:g}`% more coins from {strings.SLASH_COMMANDS_EPIC_RPG["daily"]} and '
+        f'{emojis.BP} `{multiplier_coins:g}`% higher rewards from {strings.SLASH_COMMANDS_EPIC_RPG["daily"]} and '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["weekly"]}\n'
         f'{emojis.BP} `x{multiplier_lootbox:g}` chance to drop a lootbox\n'
         f'{emojis.BP} `x{multiplier_drops:g}` chance to drop a monster item\n'

@@ -207,6 +207,7 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Magic chairs\n'
         f'{emojis.BP} Profession levels\n'
         f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} TIME cookies\n'
         f'{emojis.BP} TIME dragon essences\n'
         f'{emojis.BP} Your guild\n'
         f'{emojis.BP} Your horse\n'
