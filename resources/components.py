@@ -474,14 +474,16 @@ class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
 
 class TimeJumpCalculatorGearSelect(discord.ui.Select):
     """Gear select"""
-    def __init__(self, gear_type: Literal['armor', 'sword'], all_items: dict, placeholder: str,
+    def __init__(self, gear_type: Literal['armor', 'sword'], all_items: dict, placeholder: str, profile_data: dict,
                  row: Optional[int] = None):
         options = []
-        options.append(discord.SelectOption(label='None', value='None', emoji=None))
+        if profile_data[gear_type] is not None:
+            options.append(discord.SelectOption(label='None', value='None', emoji=None))
         item_counter = 1
         for item in all_items.values():
-            if item.score < 1: continue
+            if item.score == 0: continue
             if item.item_type == gear_type:
+                if profile_data[gear_type].name == item.name: continue
                 options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
                 item_counter += 1
                 if item_counter == 25: break
@@ -499,14 +501,17 @@ class TimeJumpCalculatorGearSelect(discord.ui.Select):
         for child in self.view.children:
             if child.custom_id == self.custom_id:
                 options = []
-                options.append(discord.SelectOption(label='None', value='None', emoji=None))
+                if self.view.profile_data[self.gear_type] is not None:
+                    options.append(discord.SelectOption(label='None', value='None', emoji=None))
                 item_counter = 1
                 for item in self.all_items.values():
                     if item.score == 0: continue
+                    if self.view.profile_data[self.gear_type] is not None:
+                        if self.view.profile_data[self.gear_type].name == item.name: continue
                     if item.item_type == self.gear_type:
                         options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
                         item_counter += 1
-                        if item_counter == 24: break
+                        if item_counter == 25: break
                 child.options = options
                 break
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,

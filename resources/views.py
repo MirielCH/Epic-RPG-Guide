@@ -514,9 +514,9 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.all_items = all_items
         self.embed_function = embed_function
         self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='sword', all_items=all_items,
-                                                              placeholder='Change sword'))
+                                                              placeholder='Change sword', profile_data=profile_data))
         self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='armor', all_items=all_items,
-                                                              placeholder='Change armor'))
+                                                              placeholder='Change armor', profile_data=profile_data))
         self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='sword', placeholder='Change sword enchant'))
         self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='armor', placeholder='Change armor enchant'))
         self.add_item(components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats'))
