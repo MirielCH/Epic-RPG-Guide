@@ -22,12 +22,9 @@ intents.message_content = True   # for the calculators that read the game
 
 
 if settings.DEBUG_MODE:
-    bot = commands.AutoShardedBot(command_prefix=database.get_all_prefixes, help_command=None,
-                                  case_insensitive=True, intents=intents, owner_id=settings.OWNER_ID,
-                                  debug_guilds=settings.DEV_GUILDS)
+    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID, debug_guilds=settings.DEV_GUILDS)
 else:
-    bot = commands.AutoShardedBot(command_prefix=database.get_all_prefixes, help_command=None,
-                                  case_insensitive=True, intents=intents, owner_id=settings.OWNER_ID)
+    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID)
 
 
 @bot.event
@@ -75,45 +72,26 @@ async def on_error(event: str, *args, **kwargs) -> None:
 
 COG_EXTENSIONS = [
     'cogs.areas',
-    'cogs.areas_old',
     'cogs.crafting',
-    'cogs.crafting_old',
     'cogs.dev',
-    'cogs.dev_old',
     'cogs.duel',
     'cogs.dungeons',
-    'cogs.dungeons_old',
     'cogs.enchanting',
     'cogs.events',
-    'cogs.events_old',
     'cogs.fun',
-    'cogs.fun_old',
     'cogs.guild',
-    'cogs.guild_old',
     'cogs.gambling',
-    'cogs.gambling_old',
-    'cogs.halloween',
+    #'cogs.halloween',
     'cogs.horse',
-    'cogs.horse_old',
-    'cogs.links_old',
     'cogs.main',
-    'cogs.main_old',
     'cogs.misc',
-    'cogs.misc_old',
     'cogs.monsters',
-    'cogs.monsters_old',
     'cogs.pets',
-    'cogs.pets_old',
     'cogs.professions',
-    'cogs.professions_old',
     'cogs.settings',
-    'cogs.settings_old',
     'cogs.timetravel',
-    'cogs.timetravel_old',
     'cogs.titles',
-    'cogs.titles_old',
     'cogs.trading',
-    'cogs.trading_old',
     'cogs.ultraining',
 ]
 

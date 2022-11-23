@@ -487,45 +487,6 @@ async def _dict_to_item(record: dict) -> Item:
 
 
 # --- Get Data ---
-async def get_all_prefixes(bot: commands.Bot, ctx: commands.Context) -> tuple:
-    """Checks the database for a prefix. If no prefix is found, a record for the guild is created with the
-    default prefix.
-
-    Returns:
-        A tuple with the current server prefix and the pingable bot
-    """
-    if ctx.channel.type.name == 'private':
-        raise DirectMessageError("Commands not allowed in direct messages.")
-    try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (ctx.guild.id,))
-        record = cur.fetchone()
-        if record:
-            (prefix,) = record
-        else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, settings.DEFAULT_PREFIX,))
-            prefix = settings.DEFAULT_PREFIX
-    except sqlite3.Error as error:
-        await log_error(error, ctx)
-
-    return commands.when_mentioned_or(prefix)(bot, ctx)
-
-
-async def get_prefix(ctx_or_guild: Union[commands.Context, discord.Guild]) -> str:
-    """Check database for stored prefix. If no prefix is found, the default prefix is used"""
-    guild_id = ctx_or_guild.guild.id if isinstance(ctx_or_guild, commands.Context) else ctx_or_guild.id
-    try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT prefix FROM settings_guild where guild_id=?', (guild_id,))
-        record = cur.fetchone()
-        prefix = record[0] if record else settings.DEFAULT_PREFIX
-    except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(error, ctx_or_guild)
-
-    return prefix
-
-
 async def get_dungeon(dungeon_no: float) -> Dungeon:
     """Returns a dungeon from table "dungeons".
 
@@ -1559,23 +1520,6 @@ async def get_settings() -> dict:
 
 
 # --- Write Data ---
-# # Set new prefix
-async def set_prefix(ctx, new_prefix):
-
-    try:
-        cur=ERG_DB.cursor()
-        cur.execute('SELECT * FROM settings_guild where guild_id=?', (ctx.guild.id,))
-        record = cur.fetchone()
-
-        if record:
-            cur.execute('UPDATE settings_guild SET prefix = ? where guild_id = ?', (new_prefix, ctx.guild.id,))
-        else:
-            cur.execute('INSERT INTO settings_guild VALUES (?, ?)', (ctx.guild.id, new_prefix,))
-    except sqlite3.Error as error:
-        logs.logger.error(error)
-        await log_error(error, ctx)
-
-
 async def _update_user(user: User, **kwargs) -> None:
     """Updates user record. Use User.update() to trigger this function.
 
