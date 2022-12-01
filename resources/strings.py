@@ -719,6 +719,17 @@ SLASH_COMMANDS_EPIC_RPG = {
     'withdraw': '</withdraw:958554805020794880>',
     'world': '</world status:953370104236761108>',
     'world info': '</world info:953370104236761108>',
+    'xmas calendar': '</xmas calendar:953370104236761108>',
+    'xmas chimney': '</xmas chimney:953370104236761108>',
+    'xmas info': '</xmas info:953370104236761108>',
+    'xmas presents': '</xmas presents:953370104236761108>',
+    'xmas quests': '</xmas quests:953370104236761108>',
+    'xmas recipes': '</xmas recipes:953370104236761108>',
+    'xmas shop': '</xmas shop:953370104236761108>',
+    'xmas slots': '</xmas slots:953370104236761108>',
+    'xmas tasks': '</xmas tasks:953370104236761108>',
+    'xmas tree': '</xmas tree:953370104236761108>',
+    'xmas wb': '</xmas wb:953370104236761108>',
 }
 
 SLASH_COMMANDS_GUIDE_OLD = {
@@ -816,6 +827,8 @@ SLASH_COMMANDS_GUIDE = {
     'trade guide': '</trade guide:972045824999690301>',
     'ultraining guide': '</ultraining guide:972045824999690302>',
     'ultraining stats calculator': '</ultraining stats calculator:972045824999690302>',
+    'xmas guide': '</xmas guide:1047763243541745684>',
+    'xmas items': '</xmas items:1047763243541745684>',
 }
 
 # Tier: Coin increase multiplier

@@ -554,7 +554,7 @@ async def embed_time_jump_score_materials() -> discord.Embed:
     )
     other = (
         f'{emojis.BP} 500,000 {emojis.LIFE_POTION} life potions = 1 score (1m potions max)\n'
-        f'{emojis.BP} 2 {emojis.LOTTERY_TICKET} lottery tickets = 1 score (10 tickets max)\n'
+        f'{emojis.BP} 2 {emojis.LOTTERY_TICKET} lottery tickets = 1 score (200 tickets max)\n'
     )
     calculation = (
         f'{emojis.BP} Add lootbox and farm item scores and floor\n'

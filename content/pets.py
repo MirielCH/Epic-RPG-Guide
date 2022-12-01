@@ -319,42 +319,48 @@ async def embed_pets_skills_special() -> discord.Embed:
 
 async def embed_pets_skills_unique() -> discord.Embed:
     """Unique skills guide"""
+    antarctician = (
+        f'{emojis.BP} If the pet finds fish, they will always be {emojis.FISH_EPIC} EPIC fish\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_PENGUIN} penguin pet\n'
+        f'{emojis.DETAIL} This pet is a reward in the christmas event'
+    )
     competitive = (
         f'{emojis.BP} The pet has 1 more score point\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PANDA} epic panda pet\n'
-        f'{emojis.BP} This pet was given to the first player who reached {emojis.TIME_TRAVEL} TT 100'
+        f'{emojis.DETAIL} This pet was given to the first player who reached {emojis.TIME_TRAVEL} TT 100'
     )
     fisherfish = (
         f'{emojis.BP} If the pet finds fish, you get 3 times the amount\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PINK_FISH} pink fish pet\n'
-        f'{emojis.BP} This pet is a reward in the valentine event'
+        f'{emojis.DETAIL} This pet is a reward in the valentine event'
     )
     faster = (
         f'{emojis.BP} If the pet also has the {emojis.SKILL_FAST} fast skill, the time reduction is doubled\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_GOLDEN_BUNNY} golden bunny pet\n'
-        f'{emojis.BP} This pet is a reward in the easter event'
+        f'{emojis.DETAIL} This pet is a reward in the easter event'
     )
     monsterhunter = (
         f'{emojis.BP} Has a 35% chance to find 3-5 random mob drops in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PUMPKIN_BAT} pumpkin bat pet\n'
-        f'{emojis.BP} This pet is a reward in the halloween event'
+        f'{emojis.DETAIL} This pet is a reward in the halloween event'
     )
     gifter = (
         f'{emojis.BP} Has a 35% chance to find a random lootbox in a pet adventure\n'
-        f'{emojis.BP} This skill is unique to the {emojis.PET_SNOWBALL} snowball pet\n'
-        f'{emojis.BP} This pet is a reward in the christmas event'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_SNOWBALL} snowball and {emojis.PET_SNOWMAN} snowman pets\n'
+        f'{emojis.DETAIL} The {emojis.PET_SNOWMAN} has a higher chance of bringing better lootboxes\n'
+        f'{emojis.DETAIL} These pets are a reward in the christmas event\n'
     )
     booster = (
         f'{emojis.BP} **All** pets have a 75% chance of advancing skills twice in a pet adventure\n'
         f'{emojis.BP} This chance only applies if the pet decided to learn\n'
         f'{emojis.BP} The chance increases if you have multiple pets with this skill\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_HAMSTER} hamster pet\n'
-        f'{emojis.BP} This pet is a reward in the anniversary event\n'
+        f'{emojis.DETAIL} This pet is a reward in the anniversary event\n'
     )
     farmer = (
         f'{emojis.BP} Has a 40% chance to find normal or special seeds in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
-        f'{emojis.BP} This pet is a reward in the horse festival'
+        f'{emojis.DETAIL} This pet is a reward in the horse festival'
     )
     resetter = (
         f'{emojis.BP} If the pet also has the {emojis.SKILL_TRAVELER} time traveler skill and it triggers, '
@@ -373,6 +379,7 @@ async def embed_pets_skills_unique() -> discord.Embed:
             f'Overview of all **unique** pet skills. These skill are unique to certain pets and can **not** be lost.\n'
         )
     )
+    embed.add_field(name=f'ANTARCTICIAN {emojis.SKILL_ANTARCTICIAN}', value=antarctician, inline=False)
     embed.add_field(name=f'BOOSTER {emojis.SKILL_BOOSTER}', value=booster, inline=False)
     embed.add_field(name=f'COMPETITIVE {emojis.SKILL_COMPETITIVE}', value=competitive, inline=False)
     embed.add_field(name=f'FARMER {emojis.SKILL_FARMER}', value=farmer, inline=False)
@@ -421,7 +428,8 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} {emojis.SKILL_ASCENDED} **Ascended**: Has a chance to find a pet'
     )
     uniqueskillsimpact = (
-        f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: Increases the amount of fish you get by 300%\n'
+        f'{emojis.BP} {emojis.SKILL_ANTARCTICIAN} **Antarctician**: If it returns fish, they will be EPIC\n'
+        f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: If it returns fish, you get 3 times the amount\n'
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'

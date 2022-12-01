@@ -560,3 +560,22 @@ class PetTierSelect(discord.ui.Select):
                 break
         embed = await self.view.embed_function(self.view.tt_no, self.view.pet_tier)
         await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class ItemSelect(discord.ui.Select):
+    """Item Select"""
+    def __init__(self, items: dict, active_item: str, placeholder: str, row: Optional[int] = None):
+        self.items = items
+        options = []
+        for item, item_data in items.items():
+            label = item
+            emoji = item_data[0]
+            options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+                         custom_id='select_item')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        self.view.active_item = select_value
+        embed = await self.view.items[select_value][1]()
+        await interaction.response.edit_message(embed=embed, view=self.view)

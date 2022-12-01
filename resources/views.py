@@ -613,3 +613,42 @@ class PetTierView(discord.ui.View):
     async def on_timeout(self) -> None:
         self.value = 'timeout'
         self.stop()
+
+
+class ItemView(discord.ui.View):
+    """View with an item select.
+    Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
+
+    Arguments
+    ---------
+    ctx: Context.
+    items: Items to select from - dict (description: [emoji, function]). The functions need to return an embed and have no
+    arguments
+    active_item: Currently chosen item
+
+    Returns
+    -------
+    'timeout if timed out.
+    None otherwise.
+    """
+    def __init__(self, ctx: discord.ApplicationContext, items: dict, active_item: str,
+                 placeholder: Optional[str] = 'Choose item ...',
+                 interaction: Optional[discord.Interaction] = None):
+        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
+        self.value = None
+        self.interaction = interaction
+        self.user = ctx.author
+        self.items = items
+        self.active_item = active_item
+        self.placeholder = placeholder
+        self.add_item(components.ItemSelect(self.items, self.active_item, self.placeholder))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.user.id:
+            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        self.value = 'timeout'
+        self.stop()

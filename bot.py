@@ -93,6 +93,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
+    'cogs.xmas',
 ]
 
 if __name__ == '__main__':

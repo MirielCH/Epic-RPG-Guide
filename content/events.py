@@ -328,9 +328,15 @@ async def embed_event_arena() -> discord.Embed:
         f'{emojis.BP} Click ⚔️ if you are a participant'
     )
     rewards = (
-        f'{emojis.BP} `1` {emojis.ARENA_COOKIE} cookie per kill per initiator\n'
-        f'{emojis.BP} Example: You get `3` {emojis.ARENA_COOKIE} cookies per kill if you mention 2 players\n'
-        f'{emojis.BP} `3` {emojis.ARENA_COOKIE} cookies extra for the initiator(s) of the arena'
+        f'{emojis.BP} {emojis.ARENA_COOKIE} cookies if you kill <6 people\n'
+        f'{emojis.BP} {emojis.ARENA_COOKIE} cookies and {emojis.TIME_COOKIE} TIME cookies if you kill 6+ people\n'
+    )
+    # Calculation is a mess, unclear how lume calculates it, because this is clearly wrong if boosted
+    rewards_ = (
+        f'{emojis.BP} `3` {emojis.ARENA_COOKIE} per player mentioned\n'
+        f'{emojis.BP} +`1` {emojis.ARENA_COOKIE} per kill if you kill <6 people\n'
+        f'{emojis.BP} +`3` {emojis.ARENA_COOKIE} and +`1` {emojis.TIME_COOKIE} per kill if you kill 6+ people\n'
+        f'{emojis.BP} +`3` {emojis.ARENA_COOKIE} for the one who starts the arena\n'
     )
     note = (
         f'{emojis.BP} {events_multiplayer}\n'
@@ -713,14 +719,14 @@ async def embed_event_pettournament() -> discord.Embed:
 async def embed_event_lottery() -> discord.Embed:
     """Lottery event"""
     schedule = f'{emojis.BP} Every 12 hours at 00:00 / 12:00 UTC'
-    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["lottery"]} `amount: [1-10]`'
+    answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["lottery"]} `amount: [1-200]`'
     rewards = (
         f'{emojis.BP} A huge amount of {emojis.COIN} coins if you win\n'
         f'{emojis.BP} Absolutely nothing if you don\'t'
     )
     note =(
         f'{emojis.BP} {events_official_server}\n'
-        f'{emojis.BP} You can buy up to 10 lottery tickets for each draw\n'
+        f'{emojis.BP} You can buy up to 200 lottery tickets for each draw\n'
         f'{emojis.BP} The size of the pot depends on ticket prices and tickets sold\n'
         f'{emojis.BP} The ticket prices are different with every lottery'
     )
@@ -817,38 +823,6 @@ async def embed_event_training() -> discord.Embed:
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
     embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
     embed.add_field(name='RECOMMENDED ANSWER', value=rec_answer, inline=False)
-    embed.add_field(name='NOTE', value=note, inline=False)
-    return embed
-
-
-# --- Embeds: Seasonal events ---
-async def embed_event_snowball() -> discord.Embed:
-    """Christmas: Snowball fight event"""
-    trigger = (
-        f'{emojis.BP} Any command (chance unknown)\n'
-        f'{emojis.BP} By using a {emojis.XMAS_HAT} christmas hat'
-    )
-    answers = (
-        f'{emojis.BP} `fight`: Low chance to get more loot than `summon`, high chance to get less.\n'
-        f'{emojis.BP} `summon`: 50/50 chance to get more or less loot\n'
-        f'{emojis.BP} `sleep`: Very low chance to get more loot than `summon` and `fight`, very high chance to get less'
-    )
-    best_answer = (
-        f'{emojis.BP} If you don\'t feel like gambling, `summon` is the safest answer\n'
-        f'{emojis.BP} If you _do_ feel like gambling, `sleep` has the highest potential rewards'
-    )
-    note =(
-        f'{emojis.BP} This event gives much higher rewards if it\'s triggered with a {emojis.XMAS_HAT} christmas hat\n'
-        f'{emojis.BP} You always get some loot, even if you lose'
-    )
-    embed = discord.Embed(
-        color = settings.EMBED_COLOR,
-        title = 'CHRISTMAS: SNOWBALL FIGHT EVENT',
-        description = 'This is a random personal christmas event in which the EPIC NPC starts a snowball fight with you.'
-    )
-    embed.add_field(name='TRIGGER', value=trigger, inline=False)
-    embed.add_field(name='POSSIBLE ANSWERS & REWARDS', value=answers, inline=False)
-    embed.add_field(name='BEST ANSWER', value=best_answer, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

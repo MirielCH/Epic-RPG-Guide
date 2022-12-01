@@ -107,7 +107,10 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 # --- Embeds ---
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
-    seasonal_event = f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["halloween guide"]}\n'
+    seasonal_event = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["xmas guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["xmas items"]}\n'
+    )
     guides = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
@@ -152,7 +155,7 @@ async def embed_help_guides() -> discord.Embed:
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    #embed.add_field(name=f'HALLOWEEN GUIDE 2022 {emojis.HAL_PUMPKIN}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'CHRISTMAS GUIDE 2022 {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
