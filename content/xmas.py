@@ -502,6 +502,7 @@ async def embed_item_gingerbread() -> discord.Embed:
     """Item: Gingerbread"""
     source = (
         f'{emojis.BP} Mythic loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
+        f'{emojis.BP} Reward for completing weekly {strings.SLASH_COMMANDS_EPIC_RPG["xmas tasks"]}\n'
         f'{emojis.BP} You can get some in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]}\n'
     )
     usage = (
@@ -622,8 +623,8 @@ async def embed_item_present() -> discord.Embed:
         f'{emojis.BP} Open them\n'
     )
     usage_ultra = (
-        f'{emojis.BP} If you need mythic or pog items: Craft into {emojis.PRESENT_MEGA} OMEGA\n'
-        f'{emojis.BP} If you need a {emojis.CANDY_KEY} christmas key: Craft into {emojis.PRESENT_MEGA} OMEGA\n'
+        f'{emojis.BP} If you need mythic or pog items: Craft into {emojis.PRESENT_OMEGA} OMEGA\n'
+        f'{emojis.BP} If you need a {emojis.CANDY_KEY} christmas key: Craft into {emojis.PRESENT_OMEGA} OMEGA\n'
         f'{emojis.BP} Otherwise: Open them\n'
     )
     usage_omega = (
@@ -633,8 +634,7 @@ async def embed_item_present() -> discord.Embed:
     )
     usage_godly = (
         f'{emojis.BP} If you need a {emojis.CANDY_KEY} christmas key: Use for crafting\n'
-        f'{emojis.BP} If you need mythic items: Open them\n'
-        f'{emojis.BP} If you need pog items: Craft into {emojis.PRESENT_VOID} VOID\n'
+        f'{emojis.BP} Otherwise: Open them\n'
     )
     usage_void = (
         f'{emojis.BP} Open them\n'
@@ -744,6 +744,7 @@ async def embed_item_snowball() -> discord.Embed:
         f'{emojis.BP} Drops from various commands\n'
         f'{emojis.BP} Common loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
         f'{emojis.BP} Contained in {emojis.SNOW_BOX} snow boxes\n'
+        f'{emojis.BP} Random reward from {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
         f'{emojis.BP} You can get some in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]}\n'
         f'{emojis.BP} You get some when using a {emojis.CANDY_CANE} candy cane\n'
         f'{emojis.BP} Random reward from the snowball fight (see {strings.SLASH_COMMANDS_GUIDE["xmas guide"]} '
@@ -807,6 +808,7 @@ async def embed_item_time_cookie() -> discord.Embed:
     """Item: Time cookie"""
     source = (
         f'{emojis.BP} Rare loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]} (`30` max)\n'
+        f'{emojis.BP} Reward from the personal world boss event if you choose `throw`\n'
     )
     usage = (
         f'{emojis.BP} Reduces (almost) all cooldowns by 10-15 minutes\n'

@@ -207,6 +207,7 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Magic chairs\n'
         f'{emojis.BP} Profession levels\n'
         f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} TIME capsules\n'
         f'{emojis.BP} TIME cookies\n'
         f'{emojis.BP} TIME dragon essences\n'
         f'{emojis.BP} Your guild\n'
@@ -244,7 +245,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     crops_special_max = dynamite_rubies * 7
     greenhouse_watermelon_min = dynamite_rubies * 2
     greenhouse_watermelon_max = dynamite_rubies * 3
-    bigboat_superfish = dynamite_rubies / 1.15
+    bigboat_superfish = ceil(0.85 * dynamite_rubies)
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
     #greenhouse_watermelon_min = Decimal(greenhouse_watermelon_min).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
