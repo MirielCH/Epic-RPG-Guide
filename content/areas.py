@@ -205,10 +205,11 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} Every command drains 0.75% of your levels\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} has a high chance to give no items\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["craft"]}, {strings.SLASH_COMMANDS_EPIC_RPG["dismantle"]}, '
-            f'{strings.SLASH_COMMANDS_EPIC_RPG["forge"]}, {strings.SLASH_COMMANDS_EPIC_RPG["cook"]}, '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["cook"]} (stat recipes), '
             f'{strings.SLASH_COMMANDS_EPIC_RPG["eat"]}, {strings.SLASH_COMMANDS_EPIC_RPG["withdraw"]} '
             f'and {strings.SLASH_COMMANDS_EPIC_RPG["deposit"]} can fail\n'
-            f'{emojis.DETAIL }If this happens, you will lose the items from that command'
+            f'{emojis.DETAIL} If this happens, you will lose the items from that command\n'
+            f'{emojis.DETAIL} Cooking profession recipes is safe'
         )
     elif area.area_no == 18:
         debuffs = (

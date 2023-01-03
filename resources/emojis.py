@@ -228,6 +228,9 @@ MEGARACE_BOOST = '<:megaraceboost:1003531532851490857>'
 PET_PONY = '<:petpony:879246534183632927>'
 STEEL = '<:steel:879416298931617792>'
 
+# Event: New Year
+PARTY_POPPER = '<:partypopper:1059198184380973196>'
+
 # Event: Returning
 COIN_SMOL = '<:smolcoin:946313388164780043>'
 
