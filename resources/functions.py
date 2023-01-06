@@ -124,11 +124,12 @@ async def design_field_trades(area: database.Area, user: database.User) -> str:
         )
     elif area.area_no == 8:
         if user.ascended:
-            field_value = f'{emojis.BP} Dismantle {emojis.LOG_HYPER} HYPER logs and below'
+            field_value = f'{emojis.BP} Dismantle {emojis.LOG_ULTRA} ULTRA logs and below'
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_MEGA} MEGA logs and below\n'
-                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below'
+                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_HYPER} HYPER logs and below\n'
+                f'{emojis.BP} If crafter 100+: Dismantle {emojis.LOG_ULTRA} ULTRA logs and below'
             )
         field_value = (
             f'{field_value}\n'
@@ -139,11 +140,15 @@ async def design_field_trades(area: database.Area, user: database.User) -> str:
         )
     elif area.area_no == 9:
         if user.ascended:
-            field_value = f'{emojis.BP} Dismantle {emojis.LOG_SUPER} SUPER logs and below'
+            field_value = (
+                f'{emojis.BP} If crafter 100: Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
+                f'{emojis.BP} If crafter 101+: Dismantle {emojis.LOG_MEGA} MEGA logs and below'
+            )
         else:
             field_value = (
                 f'{emojis.BP} If crafter <90: Dismantle {emojis.LOG_EPIC} EPIC logs\n'
-                f'{emojis.BP} If crafter 90+: Dismantle {emojis.LOG_SUPER} SUPER logs and below'
+                f'{emojis.BP} If crafter 90-100: Dismantle {emojis.LOG_SUPER} SUPER logs and below\n'
+                f'{emojis.BP} If crafter 101+: Dismantle {emojis.LOG_MEGA} MEGA logs and below'
             )
         field_value = (
             f'{field_value}\n'
