@@ -485,8 +485,9 @@ async def embed_epicness() -> discord.Embed:
     )
     how_to_get_berries = (
         f'{emojis.BP} From horse breedings when not getting an epicness\n'
-        f'{emojis.BP} Drop in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
-        f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} (see {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]})\n'
+        f'{emojis.BP} Drop in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} and all pickup commands\n'
+        f'{emojis.DETAIL} See {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]}\n'
         f'{emojis.BP} Random reward for winning horse races\n'
         f'{emojis.BP} Can be bought in the {strings.SLASH_COMMANDS_EPIC_RPG["ultraining shop"]}\n'
         f'{emojis.BP} Using a {emojis.GODLY_HORSE_TOKEN} GODLY horse token nets `50` berries if your horse is '

@@ -32,6 +32,8 @@ async def embed_ultraining_guide():
         f'{emojis.BP} You win or lose depending on your stats vs the EPIC NPC\'s stats\n'
         f'{emojis.BP} If you win, the stage increases by +1 the next time\n'
         f'{emojis.BP} Stages never reset\n'
+        f'{emojis.BP} There is a small chance to get a "double" option\n'
+        f'{emojis.DETAIL} This gives the EPIC NPC higher stats, but will complete 2 stages if you win\n'
         f'{emojis.BP} You can use {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to check your progress\n'
     )
     which_command = (

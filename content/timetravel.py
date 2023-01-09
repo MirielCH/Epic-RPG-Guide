@@ -207,6 +207,7 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Magic chairs\n'
         f'{emojis.BP} Profession levels\n'
         f'{emojis.BP} OMEGA horse tokens\n'
+        f'{emojis.BP} Party poppers\n'
         f'{emojis.BP} TIME capsules\n'
         f'{emojis.BP} TIME cookies\n'
         f'{emojis.BP} TIME dragon essences\n'
@@ -245,6 +246,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     crops_special_max = dynamite_rubies * 7
     greenhouse_watermelon_min = dynamite_rubies * 2
     greenhouse_watermelon_max = dynamite_rubies * 3
+    chainsaw_mega = dynamite_rubies * 2
     bigboat_superfish = ceil(0.85 * dynamite_rubies)
     chainsaw_ultimate = dynamite_rubies / 3.5
     dynamite_rubies = Decimal(dynamite_rubies).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
@@ -260,6 +262,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     watermelon_min = int(greenhouse_watermelon_min)
     watermelon_max = int(greenhouse_watermelon_max)
     super_fish = int(bigboat_superfish)
+    mega_log = int(chainsaw_mega)
     ultimate_logs = int(chainsaw_ultimate)
     if ultimate_logs <= 0: ultimate_logs = 1
     if super_fish <= 0: super_fish = 1
@@ -324,6 +327,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from normal seeds\n'
         f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]}\n'
+        f'{emojis.BP} **{mega_log:,}** {emojis.LOG_MEGA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
         f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}\n'
         f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
         f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with {strings.SLASH_COMMANDS_EPIC_RPG["bigboat"]}\n'
