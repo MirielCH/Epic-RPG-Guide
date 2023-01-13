@@ -155,7 +155,7 @@ async def embed_help_guides() -> discord.Embed:
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    embed.add_field(name=f'CHRISTMAS GUIDE 2022 {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'CHRISTMAS GUIDE 2022 {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
