@@ -1,6 +1,6 @@
-# Epic-RPG-Guide
-Discord bot that provides guidance for EPIC RPG.
+# Epic RPG Guide
+Discord bot that provides unofficial guidance for EPIC RPG.
 
-# User settings (TT and ascension)
-• /settings : Shows the current settings
-• /set progress : Sets TT and ascension
+# User settings
+• /settings : Shows the current settings  
+• /set progress : Sets TT and ascension  
