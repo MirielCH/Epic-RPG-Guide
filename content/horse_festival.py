@@ -2,7 +2,6 @@
 """Contains all horse festival guides"""
 
 import discord
-from cogs.horse_festival_old import embed_megarace
 
 from resources import emojis, functions, settings, strings, views
 
@@ -201,7 +200,7 @@ async def embed_minirace() -> discord.Embed:
         f'{emojis.DETAIL} You can join a new minirace next day.\n'
     )
     race_win = (
-        f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.SLEEPY_POTION}.\n'
+        f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.POTION_SLEEPY}.\n'
         f'{emojis.DETAIL} Higher tiered tournaments play exactly the same.\n'
         f'{emojis.BP} If you manage to win a tier III tournament, you get an exclusive background\n'
     )

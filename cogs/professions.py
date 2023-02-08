@@ -38,10 +38,15 @@ class ProfessionsCog(commands.Cog):
                            min_value = 1, max_value = 200, default=None),
         to_level: Option(int, 'The profession level you want to calculate a total for.',
                          min_value = 2, max_value = 200, default=None),
+        weekly_profession: Option(str, 'Weekly profession',
+                                  choices=strings.PROFESSIONS_EN, default=None),
+        boost_percentage: Option(int, 'Total boost percentage from active potions',
+                                 min_value = 0, max_value = 85, default=None),
     ) -> None:
         """Profession calculator"""
         await professions.command_professions_calculator(self.bot, ctx, profession=profession, from_level=from_level,
-                                                        to_level=to_level)
+                                                         to_level=to_level, weekly_profession=weekly_profession,
+                                                         boost_percentage=boost_percentage)
 
 
 # Initialization

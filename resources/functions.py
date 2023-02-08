@@ -393,7 +393,8 @@ async def wait_for_profession_message(bot: commands.Bot, ctx: discord.Applicatio
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -458,7 +459,8 @@ async def wait_for_profession_overview_message(bot: commands.Bot, ctx: discord.A
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -487,7 +489,49 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
+
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
+
+
+async def wait_for_boosts_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the boosts list from EPIC RPG"""
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
+        correct_message = False
+        message = message_after if message_after is not None else message_before
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.author:
+                embed_author = format_string(str(embed.author.name))
+                icon_url = embed.author.icon_url
+                try:
+                    user_id_match = re.search(USER_ID_FROM_ICON_URL, icon_url)
+                    if user_id_match:
+                        user_id = int(user_id_match.group(1))
+                        search_strings = [
+                            f'u2014 boosts', #All languages
+                        ]
+                        if (any(search_string in embed_author for search_string in search_strings)
+                            and user_id == ctx.author.id):
+                            correct_message = True
+                    else:
+                        ctx_author = format_string(ctx.author.name)
+                        search_strings = [
+                            f'{ctx_author} u2014 boosts', ##All languages
+                        ]
+                        if any(search_string in embed_author for search_string in search_strings):
+                            correct_message = True
+                except:
+                    pass
+
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -527,7 +571,8 @@ async def wait_for_horse_message(bot: commands.Bot, ctx: discord.ApplicationCont
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -567,7 +612,8 @@ async def wait_for_profile_message(bot: commands.Bot, ctx: discord.ApplicationCo
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -609,7 +655,8 @@ async def wait_for_profile_or_progress_message(bot: commands.Bot, ctx: discord.A
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -651,7 +698,8 @@ async def wait_for_profile_or_stats_message(bot: commands.Bot, ctx: discord.Appl
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -691,7 +739,8 @@ async def wait_for_inventory_message(bot: commands.Bot, ctx: discord.Application
                 except:
                     pass
 
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -721,7 +770,8 @@ async def wait_for_guild_message(bot: commands.Bot, ctx: discord.ApplicationCont
                     correct_message = True
         except:
             pass
-        return (message.author.id == settings.EPIC_RPG_ID) and (message.channel == ctx.channel) and correct_message
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
 
     message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
                                                       timeout = settings.ABORT_TIMEOUT))
@@ -831,9 +881,9 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
     return (profession, level)
 
 
-async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
+async def extract_data_from_world_embed(ctx: discord.ApplicationContext,
                                                 bot_message: discord.Message) -> str:
-    """Extracts monster name from the world embed.
+    """Extracts data from the world embed.
 
     Arguments
     ---------
@@ -842,22 +892,100 @@ async def extract_monster_name_from_world_embed(ctx: discord.ApplicationContext,
 
     Returns
     -------
-    monster name: str
+    Dict{
+        'profession': str,
+        'monster': str,
+        'monster boost': bool,
+        'lootbox boost': bool,
+    }
 
     Raises
     ------
     ValueError if something goes wrong during extraction.
     Also logs the errors to the database.
     """
+    world_data = {}
+    profession_field = bot_message.embeds[0].fields[0]
     mob_field = bot_message.embeds[0].fields[1]
+    boosts_field = bot_message.embeds[0].fields[2]
+
+    profession_search = re.search(', \*\*(.+?)\*\* ', profession_field.value.lower())
+    try:
+        profession_name = profession_search.group(1)
+    except Exception as error:
+        await database.log_error(f'Weekly profession not found in world message: {profession_field}', ctx)
+        raise ValueError(error)
+    world_data['profession'] = profession_name
+
     name_search = re.search('> \*\*(.+?)\*\*', mob_field.value.lower())
     try:
         mob_name = name_search.group(1)
     except Exception as error:
         await database.log_error(f'Monster name not found in world message: {mob_field}', ctx)
         raise ValueError(error)
+    world_data['monster'] = mob_name
 
-    return mob_name
+    general_boosts = boosts_field.value.split('\n')
+    monster_boost = False
+    lootbox_boost = False
+    if '|' in general_boosts[0]: monster_boost = True
+    if '|' in general_boosts[1]: lootbox_boost = True
+    world_data['monster boost'] = monster_boost
+    world_data['lootbox boost'] = lootbox_boost
+
+    return world_data
+
+
+async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
+                                                bot_message: discord.Message) -> Tuple[str]:
+    """Extracts active items from the boosts embed.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    Dict = {
+        'active items': Tuple[str]
+        'monster drop chance': int
+        'profession xp': int
+        'selling price': int
+    }
+
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    boosts_data = {}
+    items_field = bot_message.embeds[0].fields[0]
+    boosts_field = bot_message.embeds[0].fields[1]
+    active_items = []
+    for line in items_field.value.lower().split('\n'):
+        item_name_search = re.search('> \*\*(.+?)\*\*:', line)
+        try:
+            item_name = item_name_search.group(1)
+            active_items.append(item_name)
+        except:
+            continue
+    boosts_data['active items'] = active_items
+
+    monster_drop_chance = profession_xp = selling_price = 0
+    for line in boosts_field.value.lower().split('\n'):
+        monster_drops_match = re.search('> monster drops\*\*: +(.+?)%$', line)
+        profession_xp_match = re.search(': profession xp\*\*: +(.+?)%$', line)
+        selling_price_match = re.search('> sell price\*\*: +(.+?)%$', line)
+        if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1))
+        if profession_xp_match: profession_xp += int(profession_xp_match.group(1))
+        if selling_price_match: selling_price += int(selling_price_match.group(1))
+    boosts_data['monster drop chance'] = monster_drop_chance
+    boosts_data['profession xp'] = profession_xp
+    boosts_data['selling price'] = selling_price
+
+    return boosts_data
 
 
 async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,

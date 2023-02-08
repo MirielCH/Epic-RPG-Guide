@@ -1,5 +1,5 @@
-# halloween.py
-"""Contains all halloween guides"""
+# xmas.py
+"""Contains all christmas guides"""
 
 import discord
 from discord.commands import SlashCommandGroup, Option
@@ -10,7 +10,7 @@ from resources import strings
 
 
 class ChristmasCog(commands.Cog):
-    """Cog with halloween commands"""
+    """Cog with christmas commands"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

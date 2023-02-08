@@ -59,7 +59,7 @@ async def embed_overview() -> discord.Embed:
         f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
         f'{emojis.BP} {emojis.HAL_EPIC_CANDY} EPIC candies and {emojis.TIME_COOKIE} TIME cookies from defeating '
         f'{emojis.HAL_JACK_O_LANTERN}{emojis.HAL_JACK_O_LANTIME} minibosses\n'
-        f'{emojis.BP} {emojis.HAL_PUMPKIN} pumpkins, {emojis.SLEEPY_POTION} sleepy potions and '
+        f'{emojis.BP} {emojis.HAL_PUMPKIN} pumpkins, {emojis.POTION_SLEEPY} sleepy potions and '
         f'{emojis.HAL_SUSPICIOUS_BROOM} suspicious brooms from {strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
         f'{emojis.DETAIL} This event command has a `2`h cooldown'
     )
@@ -106,8 +106,8 @@ async def embed_chances() -> discord.Embed:
     bat_slime = (
         f'{emojis.BP} Base spawn chance unknown\n'
         f'{emojis.BP} Inceases with {emojis.HAL_CANDY_BELL} candy bells (% unknown, `20` bells max)\n'
-        f'{emojis.BP} `+5`% if horse has SPOOKY type (use a {emojis.HAL_CANDY_FISH} candy fish to get this type)\n'
-        f'{emojis.BP} `x1.3` if world buff is active (use a {emojis.HAL_RED_SOUL} red soul to activate it)\n'
+        f'{emojis.BP} +`5`% if horse has SPOOKY type (use a {emojis.HAL_CANDY_FISH} candy fish to get this type)\n'
+        f'{emojis.BP} ×`1.3` if world buff is active (use a {emojis.HAL_RED_SOUL} red soul to activate it)\n'
     )
     monster_soul = (
         f'{emojis.BP} Base drop chance unknown\n'
@@ -128,7 +128,7 @@ async def embed_chances() -> discord.Embed:
     )
     boo = (
         f'{emojis.BP} `70`% success chance when using {strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
-        f'{emojis.BP} Drop chances to get {emojis.SLEEPY_POTION}{emojis.HAL_SUSPICIOUS_BROOM} rare items unknown\n'
+        f'{emojis.BP} Drop chances to get {emojis.POTION_SLEEPY}{emojis.HAL_SUSPICIOUS_BROOM} rare items unknown\n'
         f'{emojis.DETAIL} `x1.3` with {emojis.SWORD_SPOOKY} Spooky Sword\n'
         f'{emojis.DETAIL} `x1.3` with {emojis.ARMOR_SPOOKY} Spooky Armor\n'
     )

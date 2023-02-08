@@ -57,7 +57,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Craft a {emojis.EASTER_SPAWNER} boss spawner whenever you have a {emojis.EASTER_BUNNY} bunny '
         f'and enough eggs to buy the instant spawn to spawn the {emojis.EASTER_BUNNY_BOSS} bunny boss\n'
         f'{emojis.BP} Get at least 10 {emojis.EASTER_EGG_GOLDEN} golden eggs to complete the quest\n'
-        f'{emojis.BP} Craft {emojis.SLEEPY_POTION} sleepy potions with leftover {emojis.EASTER_EGG_GOLDEN} golden eggs\n'
+        f'{emojis.BP} Craft {emojis.POTION_SLEEPY} sleepy potions with leftover {emojis.EASTER_EGG_GOLDEN} golden eggs\n'
         f'{emojis.BP} Spend leftover {emojis.EASTER_EGG} easter eggs in the shop '
         f'({emojis.EPIC_RPG_LOGO_SMALL}`/easter shop`)'
     )

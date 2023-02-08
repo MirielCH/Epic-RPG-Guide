@@ -27,7 +27,9 @@ DROP_TYPES = [
 async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.ApplicationContext,
                                         drop_type: str, timetravel: Optional[int] = None,
                                         horse_tier: Optional[int] = None,
-                                        horse_epicness: Optional[int] = None) -> None:
+                                        horse_epicness: Optional[int] = None,
+                                        world_boost: Optional[bool] = None,
+                                        boost_percentage: Optional[int] = None) -> None:
     """Dropchance calculator command"""
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
@@ -49,8 +51,39 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
         horse_data = await functions.extract_horse_data_from_horse_embed(ctx, bot_message)
     if horse_tier is not None: horse_data['tier'] = horse_tier
     if horse_epicness is not None: horse_data['epicness'] = horse_epicness
+    if world_boost is None:
+        bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                            command=strings.SLASH_COMMANDS_EPIC_RPG["world"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='world'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        world_data = await functions.extract_data_from_world_embed(ctx, bot_message)
+        world_boost = world_data['monster boost']
+    if boost_percentage is None:
+        boost_percentage = 0
+        bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                              command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
+        boost_percentage = boosts_data['monster drop chance']
     view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data)
-    embed = await embed_dropchance(drop_type, timetravel, horse_data)
+    embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
@@ -565,7 +598,8 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
 
 
 # --- Embeds ---
-async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) -> discord.Embed:
+async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
+                           world_boost: bool, boost_percentage: int) -> discord.Embed:
     """Dropchance"""
     tt_chance = (49 + timetravel) * timetravel / 2 / 100
     horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
@@ -585,35 +619,24 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) ->
         )
 
     # Calculations
-    drop_chance = base_chance * (1 + tt_chance) * horse_chance
-    drop_chance_worldbuff = round(drop_chance * 1.2, 3)
+    multiplier = 1.2 if world_boost else 1
+    multiplier *= 1 + (boost_percentage / 100)
+    drop_chance = base_chance * (1 + tt_chance) * horse_chance * multiplier
     drop_chance_daily = round(drop_chance * 1.3, 3)
-    drop_chance_worldbuff_daily = round(drop_chance * 1.5, 3)
     drop_chance_hm = round(drop_chance * 1.7, 3)
-    drop_chance_worldbuff_hm = round(drop_chance * 1.2 * 1.7, 3)
     drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 3)
-    drop_chance_worldbuff_daily_hm = round(drop_chance * 1.5 * 1.7, 3)
     drop_chance = round(drop_chance, 3)
     if drop_chance >= 100: drop_chance = 100
-    if drop_chance_worldbuff >= 100: drop_chance_worldbuff = 100
     if drop_chance_daily >= 100: drop_chance_daily = 100
-    if drop_chance_worldbuff_daily >= 100: drop_chance_worldbuff_daily = 100
     if drop_chance_hm >= 100: drop_chance_hm = 100
-    if drop_chance_worldbuff_hm >= 100: drop_chance_worldbuff_hm = 100
     if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
-    if drop_chance_worldbuff_daily_hm >= 100: drop_chance_worldbuff_daily_hm = 100
-    f"{drop_chance:.3f}".rstrip('0').rstrip('.')
     field_drop_chance = (
         f'{emojis.BP} Base chance: `{drop_chance:g}`%\n'
-        f'{emojis.BP} With active world buff: `{drop_chance_worldbuff:g}`%\n'
         f'{emojis.BP} If mob is daily mob: `{drop_chance_daily:g}`%\n'
-        f'{emojis.BP} With active world buff _and_ mob as daily mob: `{drop_chance_worldbuff_daily:g}`%\n'
     )
     field_drop_chance_hardmode = (
         f'{emojis.BP} Base chance: `{drop_chance_hm:g}`%\n'
-        f'{emojis.BP} With active world buff: `{drop_chance_worldbuff_hm:g}`%\n'
         f'{emojis.BP} If mob is daily mob: `{drop_chance_daily_hm:g}`%\n'
-        f'{emojis.BP} With active world buff _and_ mob as daily mob: `{drop_chance_worldbuff_daily_hm:g}`%\n'
     )
     if drop_type == DROP_DARK_ENERGY:
         field_encounter_chance = (
@@ -630,6 +653,12 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) ->
             f'that can drop an item\n'
             f'{emojis.DETAIL} Thus, the chance to get an item while hunting is __half__ of the values above\n'
         )
+    field_boosts = (
+        f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
+        f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
+        f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+        f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
+    )
     embed = discord.Embed(
         title = 'DROP CHANCE CALCULATOR',
         color = settings.EMBED_COLOR,
@@ -638,9 +667,12 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict) ->
             f'{emojis.BP} Time travel: {emojis.TIME_TRAVEL} **{timetravel}**\n'
             f'{emojis.BP} Horse tier: {horse_emoji} **T{horse_data["tier"]}**\n'
             f'{emojis.BP} Horse epicness: **{horse_data["epicness"]}**\n'
+            f'{emojis.BP} World boost active: **{"Yes" if world_boost else "No"}**\n'
+            f'{emojis.BP} Boost percentage: **{boost_percentage}%**\n'
         )
     )
     embed.add_field(name='NORMAL', value=field_drop_chance, inline=False)
     embed.add_field(name='HARDMODE', value=field_drop_chance_hardmode, inline=False)
     embed.add_field(name='ENCOUNTER CHANCE', value=field_encounter_chance, inline=False)
+    embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
     return embed

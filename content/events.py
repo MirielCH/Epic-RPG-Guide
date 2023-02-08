@@ -460,7 +460,7 @@ async def embed_event_legendary() -> discord.Embed:
     )
     answers = f'{emojis.BP} `time to fight`'
     rewards = (
-        f'{emojis.BP} `+1` level for every participant if successful\n'
+        f'{emojis.BP} +`1` level for every participant if successful\n'
         f'{emojis.BP} `10`% chance to get {emojis.TIME_COOKIE} TIME cookies\n'
     )
     note = (
@@ -561,7 +561,7 @@ async def embed_event_miniboss() -> discord.Embed:
     )
     rewards = (
         f'{emojis.BP} {emojis.COIN} Coins\n'
-        f'{emojis.BP} `2.5`% chance for the initiator(s) to get `+1` level\n'
+        f'{emojis.BP} `2.5`% chance for the initiator(s) to get +`1` level\n'
         f'{emojis.BP} The initiator reward depends on the level of the initiator and the users mentioned. '
         f'It depends most on the original initiator however, thus the player with the highest level should '
         f'start the event.\n'
@@ -663,8 +663,8 @@ async def embed_event_horserace() -> discord.Embed:
     schedule = f'{emojis.BP} Every even hour (= every 2 hours)'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["horse race"]} (unlocked with a {emojis.HORSE_T5} T5+ horse)'
     rewards = (
-        f'{emojis.BP} T5 - T8: A random lootbox, `+1` horse level or `+1` horse tier\n'
-        f'{emojis.BP} T9: A random lootbox, a pet (up to T3), `+1` horse level or `+1` horse tier\n'
+        f'{emojis.BP} T5 - T8: A random lootbox, +`1` horse level or +`1` horse tier\n'
+        f'{emojis.BP} T9: A random lootbox, a pet (up to T3), +`1` horse level or +`1` horse tier\n'
         f'{emojis.BP} T10: Up to 3 lootboxes or a pet (up to T5)\n'
         f'{emojis.BP} You **only** get rewards if you place third or higher'
     )
@@ -693,7 +693,7 @@ async def embed_event_pettournament() -> discord.Embed:
     schedule = f'{emojis.BP} Every 12 hours at 08:00 / 20:00 UTC'
     answers = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["pets tournament"]}'
     rewards = (
-        f'{emojis.BP} `+1` pet tier\n'
+        f'{emojis.BP} +`1` pet tier\n'
         f'{emojis.BP} You only get the reward if you **win** the tournament'
     )
     note = (

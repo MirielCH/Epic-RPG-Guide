@@ -857,8 +857,10 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     if area.area_no in (7,8):
         note = (
             f'{note}\n'
-            f'{emojis.BP} **(*)** This armor is expensive. If you don\'t want to craft it, find a carry or '
-            f'cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice.'
+            f'{emojis.BP} **(*)** This armor is expensive. If you don\'t want to craft it, you can:\n'
+            f'{emojis.DETAIL} Find a carry\n'
+            f'{emojis.DETAIL} Cook {emojis.FOOD_ORANGE_JUICE} orange juice or {emojis.FOOD_APPLE_JUICE} apple juice\n'
+            f'{emojis.DETAIL} Brew a {emojis.POTION_JUICE} juice potion\n'
         )
     if 16 <= area.area_no <= 19:
         note = (

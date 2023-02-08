@@ -1,4 +1,4 @@
-# cmas.py
+# xmas.py
 """Contains all christmas guides"""
 
 import discord
@@ -117,7 +117,7 @@ async def command_xmas_items(ctx: discord.ApplicationContext, item: str) -> None
         ITEM_SANTA_ARMOR: (emojis.ARMOR_SANTA, embed_item_santa_gear),
         ITEM_SANTA_HAIR: (emojis.SANTA_HAIR, embed_item_santa_hair),
         ITEM_SANTA_SWORD: (emojis.SWORD_SANTA, embed_item_santa_gear),
-        ITEM_SLEEPY_POTION: (emojis.SLEEPY_POTION, embed_item_sleepy_potion),
+        ITEM_SLEEPY_POTION: (emojis.POTION_SLEEPY, embed_item_sleepy_potion),
         ITEM_SNOW_BOX: (emojis.SNOW_BOX, embed_item_snow_box),
         ITEM_SNOWBALL: (emojis.SNOWBALL, embed_item_snowball),
         ITEM_SNOWFLAKE: (emojis.SNOWFLAKE, embed_item_snowflake),
@@ -137,7 +137,7 @@ async def command_xmas_items(ctx: discord.ApplicationContext, item: str) -> None
 
 # --- Embeds ---
 async def embed_overview() -> discord.Embed:
-    """Halloween overview embed"""
+    """Christmas overview embed"""
     activities = (
         f'{emojis.BP} Get various {strings.SLASH_COMMANDS_GUIDE["xmas items"]}\n'
         f'{emojis.BP} Complete daily and weekly {strings.SLASH_COMMANDS_EPIC_RPG["xmas tasks"]}\n'
@@ -712,7 +712,7 @@ async def embed_item_sleepy_potion() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'SLEEPY POTION {emojis.SLEEPY_POTION}',
+        title = f'SLEEPY POTION {emojis.POTION_SLEEPY}',
     )
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='SOURCE', value=source, inline=False)

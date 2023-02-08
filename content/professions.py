@@ -74,7 +74,9 @@ async def command_professions_calculator(
     ctx: discord.ApplicationContext,
     profession: Optional[str] = None,
     from_level: Optional[int] = None,
-    to_level: Optional[int] = None
+    to_level: Optional[int] = None,
+    weekly_profession: Optional[str] = None,
+    boost_percentage: Optional[int] = None,
 ) -> None:
     """Profession calculator command"""
     current_xp = 0
@@ -127,9 +129,44 @@ async def command_professions_calculator(
     if profession_data.xp[from_level+1] is None and from_level_defined:
         await ctx.respond(f'No data found for {profession} level {from_level+1}, sorry.')
         return
+    if weekly_profession is None:
+        weekly_profession = await database.get_weekly_profession()
+        if weekly_profession is None:
+            bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
+            try:
+                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                                command=strings.SLASH_COMMANDS_EPIC_RPG["world"])
+                bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+            except asyncio.TimeoutError:
+                await ctx.respond(
+                    strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='world'),
+                    ephemeral=True
+                )
+                return
+            if bot_message is None: return
+            world_data = await functions.extract_data_from_world_embed(ctx, bot_message)
+            weekly_profession = world_data['profession']
+            await database.set_weekly_profession(weekly_profession)
+    if boost_percentage is None:
+        boost_percentage = 0
+        bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                              command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
+        boost_percentage = boosts_data['profession xp']
     try:
-        embed = await asyncio.wait_for(embed_professions_calculator(profession_data, to_level, current_xp,
-                                                                    from_level_defined, needed_xp, from_level),
+        embed = await asyncio.wait_for(embed_professions_calculator(ctx, profession_data, to_level, current_xp,
+                                                                    from_level_defined, weekly_profession,
+                                                                    boost_percentage, needed_xp, from_level),
                                         timeout=3.0)
     except asyncio.TimeoutError:
         await ctx.respond('Welp, something took too long here, calculation cancelled.', ephemeral=True)
@@ -243,6 +280,10 @@ async def embed_professions_leveling() -> discord.Embed:
     ascended = (
         f'{emojis.BP} Increase crafter and merchant to 101, then focus exclusively on worker\n'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -263,6 +304,7 @@ async def embed_professions_leveling() -> discord.Embed:
     embed.add_field(name=f'4. LOOTBOXER {emojis.PR_LOOTBOXER}', value=lootboxer, inline=False)
     embed.add_field(name=f'5. ENCHANTER {emojis.PR_ENCHANTER}', value=enchanter, inline=False)
     embed.add_field(name='AFTER ASCENSION', value=ascended, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -285,6 +327,10 @@ async def embed_professions_crafter() -> discord.Embed:
         f'{emojis.BP} A detailed list of all material and gear XP is available in the '
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Crafter)'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -296,6 +342,7 @@ async def embed_professions_crafter() -> discord.Embed:
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -342,6 +389,10 @@ async def embed_professions_enchanter() -> discord.Embed:
     tt_multiplier = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["time travel"]} to check your TT multiplier'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -355,6 +406,7 @@ async def embed_professions_enchanter() -> discord.Embed:
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
     embed.add_field(name='COMMAND MULTIPLIERS', value=command_multipliers, inline=False)
     embed.add_field(name='TT MULTIPLIER', value=tt_multiplier, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -385,6 +437,10 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15,000 XP\n'
         f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: -1000 XP\n'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -396,6 +452,7 @@ async def embed_professions_lootboxer() -> discord.Embed:
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -420,6 +477,10 @@ async def embed_professions_merchant() -> discord.Embed:
         f'{emojis.BP} A detailed list of XP per amount sold is available in the '
         f'[Wiki](https://epic-rpg.fandom.com/wiki/Professions#Merchant)'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -431,6 +492,7 @@ async def embed_professions_merchant() -> discord.Embed:
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -466,6 +528,10 @@ async def embed_professions_worker() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]}, {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}: 17 XP\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["bigboat"]}: 18 XP'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'
+        f'{emojis.BP} {emojis.POTION_WOOD} `Wood potion`: +`10`% profession XP\n'
+    )
     calculator = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} to calculate what you need to level up'
     )
@@ -477,6 +543,7 @@ async def embed_professions_worker() -> discord.Embed:
     embed.add_field(name='ADDITIONAL BONUS LEVEL 101+', value=level_101, inline=False)
     embed.add_field(name='HOW TO GET XP', value=how_to_get_xp, inline=False)
     embed.add_field(name='XP GAIN', value=xp_gain, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PROFESSION XP', value=boosts, inline=False)
     embed.add_field(name='CALCULATOR', value=calculator, inline=False)
     return embed
 
@@ -517,37 +584,36 @@ async def embed_ascension() -> discord.Embed:
     return embed
 
 
-async def embed_professions_calculator(profession_data: database.Profession, to_level: int, current_xp: int,
-                                       from_level_defined: bool, needed_xp: Optional[int] = None,
+async def embed_professions_calculator(ctx: discord.ApplicationContext,
+                                       profession_data: database.Profession, to_level: int, current_xp: int,
+                                       from_level_defined: bool, weekly_profession: str, boost_percentage: int,
+                                       needed_xp: Optional[int] = None,
                                        from_level: Optional[int] = None) -> discord.Embed:
     """Professions calculator embed"""
     output_total = None
     next_level = from_level + 1
     profession = profession_data.name
+    multiplier_weekly = 1.1 if profession == weekly_profession else 1
+    multiplier_boosts = 1 + boost_percentage / 100
     if profession_data.xp[next_level] is None and needed_xp is not None and not from_level_defined:
         await profession_data.update_level(next_level, needed_xp)
     if needed_xp is None: needed_xp = profession_data.xp[next_level]
 
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'PROFESSIONS CALCULATOR'
+        title = 'PROFESSIONS CALCULATOR',
     )
 
     if profession in ('enchanter', 'lootboxer', 'worker'):
         xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
-        item_total = item_amount = ceil(xp / 100)
+        item_xp = 100 * multiplier_weekly * multiplier_boosts
+        item_total = item_amount = ceil(xp / item_xp)
         xp_total = xp
-        item_total_wb = item_amount_wb = ceil(xp / 110)
-        xp_rest = 100 - (xp % 100)
-        xp_rest_wb = 110 - (xp % 110)
-        if xp_rest == 100:
-            xp_rest = 0
-        if xp_rest_wb == 110:
-            xp_rest_wb = 0
+        xp_rest = item_xp - (xp % item_xp)
+        if xp_rest == item_xp: xp_rest = 0
 
         output = (
-            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {FOOD_EMOJIS[profession]} '
-            f'(if world buff: **{item_amount_wb:,}**)'
+            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {FOOD_EMOJIS[profession]}'
         )
 
         current_level = next_level
@@ -561,18 +627,12 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 current_level -= 1
                 break
             actual_xp = level_xp - xp_rest
-            actual_xp_wb = level_xp - xp_rest_wb
-            item_amount = ceil(actual_xp / 100)
-            item_amount_wb = ceil(actual_xp_wb / 110)
-            xp_rest = 100 - (actual_xp % 100)
-            xp_rest_wb = 110 - (actual_xp_wb % 110)
-            if xp_rest == 100:
-                xp_rest = 0
-            if xp_rest_wb == 110:
-                xp_rest_wb = 0
+            item_amount = ceil(actual_xp / item_xp)
+            xp_rest = item_xp - (actual_xp % item_xp)
+            if xp_rest == item_xp: xp_rest = 0
             output = (
                 f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                f'**{item_amount:,}** {FOOD_EMOJIS[profession]} (if world buff: **{item_amount_wb:,}**)'
+                f'**{item_amount:,}** {FOOD_EMOJIS[profession]}'
             )
         if to_level is None: to_level = current_level
         if from_level < to_level:
@@ -586,22 +646,14 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                     break
                 xp_total += level_xp
                 actual_xp = level_xp - xp_rest
-                actual_xp_wb = level_xp - xp_rest_wb
-                item_amount = ceil(actual_xp / 100)
-                item_amount_wb = ceil(actual_xp_wb / 110)
+                item_amount = ceil(actual_xp / item_xp)
                 item_total = item_total + item_amount
-                item_total_wb = item_total_wb + item_amount_wb
-                xp_rest = 100 - (actual_xp % 100)
-                xp_rest_wb = 110 - (actual_xp_wb % 110)
-                if xp_rest == 100:
-                    xp_rest = 0
-                if xp_rest_wb == 110:
-                    xp_rest_wb = 0
+                xp_rest = item_xp - (actual_xp % item_xp)
+                if xp_rest == item_xp: xp_rest = 0
 
             if output_total is None:
                 output_total = (
-                    f'{emojis.BP} **{item_total:,}** {FOOD_EMOJIS[profession]} without world buff\n'
-                    f'{emojis.BP} **{item_total_wb:,}** {FOOD_EMOJIS[profession]} with world buff\n'
+                    f'{emojis.BP} **{item_total:,}** {FOOD_EMOJIS[profession]}\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
                 )
         if profession == 'enchanter':
@@ -613,9 +665,17 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
             )
         else:
             how_to_level = f'{emojis.BP} Cook {FOOD_EMOJIS[profession]} {FOOD_NAMES[profession]}'
-        description = f'**{profession.capitalize()}** level **{from_level}**'
+        description = (
+            f'Profession: **{profession.capitalize()}**\n'
+            f'Levels: **{from_level}**'
+        )
         if to_level > from_level:
             description = f'{description} to **{to_level}**'
+        description = (
+            f'{description}\n'
+            f'Weekly profession: **{weekly_profession.capitalize()}**\n'
+            f'Boost percentage: **{boost_percentage}%**\n'
+        )
         embed.description = description
         embed.add_field(name='HOW TO LEVEL', value=how_to_level)
         embed.add_field(name='NEXT LEVELS', value=output, inline=False)
@@ -627,13 +687,12 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
 
     if profession == 'merchant':
         xp = needed_xp - current_xp if not from_level_defined else profession_data.xp[next_level]
-        item_total = item_amount = xp * 5
+        multiplier = 1 * multiplier_weekly * multiplier_boosts
+        item_total = item_amount = 5 * ceil(((xp * 5) / multiplier) / 5)
         xp_total = xp
-        item_total_wb = item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
 
         output = (
-            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {emojis.LOG} '
-            f'(if world buff: **{item_amount_wb:,}**)'
+            f'{emojis.BP} Level {from_level} to {next_level}: **{item_amount:,}** {emojis.LOG}'
         )
 
         current_level = next_level
@@ -646,11 +705,10 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 )
                 current_level -= 1
                 break
-            item_amount = level_xp * 5
-            item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
+            item_amount = 5 * ceil((level_xp * 5 / multiplier) / 5)
             output = (
                 f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                f'**{item_amount:,}** {emojis.LOG} (if world buff: **{item_amount_wb:,}**)'
+                f'**{item_amount:,}** {emojis.LOG}'
             )
         if to_level is None: to_level = current_level
         if from_level < to_level:
@@ -663,21 +721,26 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                     )
                     break
                 xp_total += level_xp
-                item_amount = level_xp * 5
-                item_amount_wb = 5 * ceil((item_amount / 1.1) / 5)
+                item_amount = 5 * ceil((level_xp * 5 / multiplier) / 5)
                 item_total = item_total + item_amount
-                item_total_wb = item_total_wb + item_amount_wb
 
             if output_total is None:
                 output_total = (
-                    f'{emojis.BP} **{item_total:,}** {emojis.LOG} without world buff\n'
-                    f'{emojis.BP} **{item_total_wb:,}** {emojis.LOG} with world buff\n'
+                    f'{emojis.BP} **{item_total:,}** {emojis.LOG}\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
                 )
 
-        description = f'**{profession.capitalize()}** level **{from_level}**'
+        description = (
+            f'Profession: **{profession.capitalize()}**\n'
+            f'Levels: **{from_level}**'
+        )
         if to_level > from_level:
             description = f'{description} to **{to_level}**'
+        description = (
+            f'{description}\n'
+            f'Weekly profession: **{weekly_profession.capitalize()}**\n'
+            f'Boost percentage: **{boost_percentage}%**\n'
+        )
         embed.description = description
         embed.add_field(name='HOW TO LEVEL', value=f'{emojis.BP} Sell {emojis.LOG} wooden logs')
         embed.add_field(name='NEXT LEVELS', value=output, inline=False)
@@ -688,6 +751,7 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
         return embed
 
     if profession == 'crafter':
+        multiplier = 1 * multiplier_weekly * multiplier_boosts
         returned_percentages = {
             101: 0.12,
             102: 0.1283,
@@ -696,6 +760,13 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
             105: 0.1447,
             106: 0.149,
             107: 0.1529,
+            108: 0.1566,
+            109: 0.16,
+            110: 0.1632,
+            111: 0.1663,
+            112: 0.1693,
+            113: 0.1721,
+            114: 0.1748,
         }
         async def calculate_logs(item_amount: int, returned_percentage: float, level: int) -> int:
             """Calculates how many logs it needs for a certain amount of epic logs"""
@@ -730,15 +801,15 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
             f'{emojis.DETAIL} The smaller the batches, the lower the overall risk.'
         )
 
-        returned_percentage = returned_percentages[from_level] if from_level > 100 else 0.1
+        returned_percentage = returned_percentages.get(from_level, None) if from_level > 100 else 0.1
+        if returned_percentage is None:
+            return discord.Embed(description=f'No data found for {profession} level {from_level+1}, sorry.')
         log_amount = await calculate_logs(xp, returned_percentage, from_level)
-        log_amount_total = log_amount
+        log_amount_total = log_amount = ceil(log_amount / multiplier)
         xp_total = xp
-        log_amount_wb = ceil(log_amount / 1.1)
-        log_amount_total_wb = log_amount_wb
         output = (
             f'{emojis.BP} Level {from_level} to {next_level}: '
-            f'~**{log_amount:,}** {emojis.LOG} (if world buff: ~**{log_amount_wb:,}**)'
+            f'~**{log_amount:,}** {emojis.LOG}'
         )
         current_level = next_level
         for x in range(6):
@@ -752,10 +823,10 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 break
             returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
             log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
-            log_amount_wb = ceil(log_amount / 1.1)
+            log_amount = ceil(log_amount / multiplier)
             output = (
                 f'{output}\n{emojis.BP} Level {current_level-1} to {current_level}: '
-                f'~**{log_amount:,}** {emojis.LOG} (if world buff: ~**{log_amount_wb:,}**)'
+                f'~**{log_amount:,}** {emojis.LOG}'
             )
             item_amount = level_xp
         if to_level is None: to_level = current_level
@@ -771,14 +842,12 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
                 xp_total += level_xp
                 returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
                 log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
-                log_amount_wb = ceil(log_amount / 1.1)
+                log_amount = ceil(log_amount / multiplier)
                 log_amount_total += log_amount
-                log_amount_total_wb += log_amount_wb
 
             if output_total is None:
                 output_total = (
-                    f'{emojis.BP} ~**{log_amount_total:,}** {emojis.LOG} without world buff\n'
-                    f'{emojis.BP} ~**{log_amount_total_wb:,}** {emojis.LOG} with world buff\n'
+                    f'{emojis.BP} ~**{log_amount_total:,}** {emojis.LOG}\n'
                     f'{emojis.BP} XP required: **{xp_total:,}**\n'
 
                 )
@@ -786,9 +855,17 @@ async def embed_professions_calculator(profession_data: database.Profession, to_
             f'{emojis.BP} Levels 1-99 assume you get **no** logs back!\n'
             f'{emojis.BP} Levels 100+ include the crafter bonus\n'
         )
-        description = f'**{profession.capitalize()}** level **{from_level}**'
+        description = (
+            f'Profession: **{profession.capitalize()}**\n'
+            f'Levels: **{from_level}**'
+        )
         if to_level > from_level:
             description = f'{description} to **{to_level}**'
+        description = (
+            f'{description}\n'
+            f'Weekly profession: **{weekly_profession.capitalize()}**\n'
+            f'Boost percentage: **{boost_percentage}%**\n'
+        )
         embed.description = description
         embed.add_field(name='HOW TO LEVEL', value=how_to_level)
         embed.add_field(name='NEXT LEVELS', value=output, inline=False)

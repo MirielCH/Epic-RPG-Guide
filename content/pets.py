@@ -82,9 +82,9 @@ async def embed_pets_overview() -> discord.Embed:
     tier = (
         f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
-        f'{emojis.DETAIL} Tier I and higher has a chance of returning up to 1 ULTRA log\n'
-        f'{emojis.DETAIL} Tier X and higher has a chance of returning up to 2 ULTRA logs\n'
-        f'{emojis.DETAIL} Tier XX has a chance of returning up to 3 ULTRA logs\n'
+        f'{emojis.DETAIL} Tier I and higher has a chance of returning up to `1` ULTRA log\n'
+        f'{emojis.DETAIL} Tier X and higher has a chance of returning up to `2` ULTRA logs\n'
+        f'{emojis.DETAIL} Tier XX has a chance of returning up to `3` ULTRA logs\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see topic `Fusing pets`)'
@@ -97,7 +97,7 @@ async def embed_pets_overview() -> discord.Embed:
         f'{emojis.BP} See topic `Normal skills` for details\n'
     )
     specialskills = (
-        f'{emojis.BP} There are 3 special skills\n'
+        f'{emojis.BP} There are 4 special skills\n'
         f'{emojis.BP} Special skills rank from F to SS+\n'
         f'{emojis.BP} Special skills can **not** be lost\n'
         f'{emojis.BP} See topic `Special skills` for details\n'
@@ -125,7 +125,7 @@ async def embed_pets_overview() -> discord.Embed:
         title = 'PETS',
         description = (
             f'Pets have tiers, types and skills and can be sent on adventures to find stuff for you.\n'
-            f'You can have up to (5 + TT) pets (= 7 pets at {emojis.TIME_TRAVEL} TT 2).'
+            f'You can have up to (`5` + TT) pets (= `7` pets at {emojis.TIME_TRAVEL} TT 2).'
         )
     )
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
@@ -143,9 +143,9 @@ async def embed_pets_catch() -> discord.Embed:
     """Pet catching guide"""
     source = (
         f'{emojis.BP} After using {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
-        f'{emojis.DETAIL} 4% base encounter chance\n'
-        f'{emojis.DETAIL} 10% chance with {emojis.HORSE_T9} T9 horse\n'
-        f'{emojis.DETAIL} 20% chance with {emojis.HORSE_T10} T10 horse\n'
+        f'{emojis.DETAIL} `4`% base encounter chance\n'
+        f'{emojis.DETAIL} `10`% chance with {emojis.HORSE_T9} T9 horse\n'
+        f'{emojis.DETAIL} `20`% chance with {emojis.HORSE_T10} T10 horse\n'
         f'{emojis.BP} By ranking at least 3rd in {emojis.HORSE_T9} T9 or {emojis.HORSE_T10} T10 horse races\n'
         f'{emojis.BP} In some seasonal events (these are not TT locked)\n'
         f'{emojis.BP} In some dev giveaways (these are not TT locked)\n'
@@ -156,12 +156,16 @@ async def embed_pets_catch() -> discord.Embed:
     catch =  (
         f'{emojis.BP} Pets you encounter have a {emojis.PET_HAPPINESS} happiness and {emojis.PET_HUNGER} hunger stat\n'
         f'{emojis.BP} You can use actions to influence these stats\n'
-        f'{emojis.DETAIL} 1 `feed` decreases hunger by 18-22\n'
-        f'{emojis.DETAIL} 1 `pat` increases happiness by 8-12\n'
-        f'{emojis.BP} If happiness is 85+ higher than hunger, catch chance is 100%\n'
-        f'{emojis.BP} You can use up to 6 actions\n'
-        f'{emojis.BP} If you use less than 6 actions, you have a 25% chance at getting skills\n'
+        f'{emojis.DETAIL} `1` `feed` decreases hunger by `18`-`22`\n'
+        f'{emojis.DETAIL} `1` `pat` increases happiness by `8`-`12`\n'
+        f'{emojis.BP} If happiness is `85+` higher than hunger, catch chance is `100`%\n'
+        f'{emojis.BP} You can use up to `6` actions\n'
+        f'{emojis.BP} If you use less than `6` actions, you have a `25`% chance at getting skills\n'
         f'{emojis.BP} The less commands you use, the higher the chance to get rarer skills\n'
+    )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_COOKIE} `Cookie potion`: +`10`% pet encounter chance in '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["training"]}'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -173,6 +177,7 @@ async def embed_pets_catch() -> discord.Embed:
     )
     embed.add_field(name='HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name='HOW TO CATCH PETS', value=catch, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT PET SPAWNS', value=boosts, inline=False)
     return embed
 
 
@@ -180,16 +185,26 @@ async def embed_pets_fusion() -> discord.Embed:
     """Pet fusion guide"""
     general = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]}\n'
-        f'{emojis.BP} You can fuse more than 2 pets but you should only do that if you want to maximize the chance to '
+        f'{emojis.BP} You can fuse more than `2` pets but you should only do that if you want to maximize the chance to '
         f'keep certain skills or want to control the type you get\n'
         f'{emojis.BP} You can **not** lose tiers when fusing\n'
         f'{emojis.BP} You can **not** lose special skills when fusing\n'
         f'{emojis.BP} You **can** lose normal skills when fusing\n'
         f'{emojis.BP} Exception: You can not lose {emojis.SKILL_ASCENDED} ascended and {emojis.SKILL_FIGHTER} fighter'
     )
+    auto_fuse = (
+        f'{emojis.BP} You can auto fuse pets once you have at least one T15 pet\n'
+        f'{emojis.BP} To start an auto fusion, use {strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]} '
+        f'`ids: auto [chance] [tier]`\n'
+        f'{emojis.BP} Auto fuse processes all pets that fulfill the following criteria:\n'
+        f'{emojis.DETAIL} Pet type is not special.\n'
+        f'{emojis.DETAIL} Pet doesn\'t have a skill. If you get a skill in auto fuse, that pet will not be tiered up further.\n'
+        f'{emojis.DETAIL} Pet tier is equal or lower than the one you set in the command.\n'
+        f'{emojis.DETAIL} Tier up chance is equal or higher than the one you set in the command.\n'
+    )
     tiers = (
         f'{emojis.BP} Check {strings.SLASH_COMMANDS_GUIDE["pets fuse"]} on what to fuse to get a tier up\n'
-        f'{emojis.BP} For the highest chance of a tier up, fuse 2 pets of the **same** tier\n'
+        f'{emojis.BP} For the highest chance of a tier up, fuse `2` pets of the **same** tier\n'
         f'{emojis.BP} The chance to tier up gets lower the higher your tier is'
     )
     skills = (
@@ -223,6 +238,7 @@ async def embed_pets_fusion() -> discord.Embed:
         description = 'You can fuse pets to tier them up and/or find or transfer normal skills.'
     )
     embed.add_field(name='HOW TO FUSE', value=general, inline=False)
+    embed.add_field(name='AUTO FUSE', value=auto_fuse, inline=False)
     embed.add_field(name='TIERING UP', value=tiers, inline=False)
     embed.add_field(name='HOW TO GET (AND KEEP) SKILLS', value=skills, inline=False)
     embed.add_field(name='IMPACT ON TYPE', value=type, inline=False)
@@ -281,7 +297,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     """Special skills guide"""
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
-        f'{emojis.DETAIL} The chance is 11.11...% per rank (100% at SS+)\n'
+        f'{emojis.DETAIL} The chance is `11.11`...% per rank (`100`% at SS+)\n'
         f'{emojis.BP} This skill has to be unlocked with {strings.SLASH_COMMANDS_EPIC_RPG["pets ascend"]}\n'
         f'{emojis.BP} You can only ascend pets that have **all** other skills at SS+\n'
         f'{emojis.BP} Pets can only ascend in {emojis.TIME_TRAVEL} TT 26+\n'
@@ -289,12 +305,12 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} You can **not** rank up this skill with adventures\n'
         f'{emojis.BP} To rank up the skill, either ascend again or fuse with other ascended pets\n'
-        f'{emojis.BP} Fusing ascended pets combines the ascended skills into one (e.g. F+E=D)\n'
+        f'{emojis.DETAIL} Fusing ascended pets combines the ascended skills into one (e.g. F+E=D)\n'
     )
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
-        f'{emojis.BP} You have a 25% base chance to get an essence after the dungeon\n'
-        f'{emojis.DETAIL} This chance increases by 7.5% per rank\n'
+        f'{emojis.BP} You have a `25`% base chance to get an essence after the dungeon\n'
+        f'{emojis.DETAIL} This chance increases by `7.5`% per rank\n'
         f'{emojis.DETAIL} Multiple fighter pets do not stack\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
@@ -306,6 +322,22 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
         f'{emojis.BP} To rank up the skill, you have to tier up further (1 rank per tier)\n'
     )
+    perfect = (
+        f'{emojis.BP} Works like the {emojis.SKILL_ASCENDED} ascended skill but brings back more pets\n'
+        f'{emojis.DETAIL} Rank F: `2.1` pets per adventure\n'
+        f'{emojis.DETAIL} Rank E: `4.4` pets per adventure\n'
+        f'{emojis.DETAIL} Rank D: `9.1` pets per adventure\n'
+        f'{emojis.DETAIL} Rank C: `18.6` pets per adventure\n'
+        f'{emojis.DETAIL} Rank B: `37.7` pets per adventure\n'
+        f'{emojis.DETAIL} Rank A: `76` pets per adventure\n'
+        f'{emojis.DETAIL} Rank S: `152.7` pets per adventure\n'
+        f'{emojis.DETAIL} Rank SS: `306.2` pets per adventure\n'
+        f'{emojis.DETAIL} Rank SS+: `613.3` pets per adventure\n'
+        f'{emojis.BP} To get perfect rank F fuse two ascended SS+ pets\n'
+        f'{emojis.BP} To rank up the skill, fuse two perfect pets with the **SAME**(!!) rank\n'
+        f'{emojis.DETAIL} Example: Perfect F + Perfect F = Perfect E\n'
+        f'{emojis.BP} Perfect pets get more pets on average than the ascended pets required\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'SPECIAL PET SKILLS',
@@ -314,6 +346,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     embed.add_field(name=f'ASCENDED {emojis.SKILL_ASCENDED}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.SKILL_FIGHTER}', value=fighter, inline=False)
     embed.add_field(name=f'MASTER {emojis.SKILL_MASTER}', value=master, inline=False)
+    embed.add_field(name=f'PERFECT {emojis.SKILL_PERFECT}', value=perfect, inline=False)
     return embed
 
 
@@ -330,7 +363,7 @@ async def embed_pets_skills_unique() -> discord.Embed:
         f'{emojis.DETAIL} This pet was given to the first player who reached {emojis.TIME_TRAVEL} TT 100'
     )
     fisherfish = (
-        f'{emojis.BP} If the pet finds fish, you get 3 times the amount\n'
+        f'{emojis.BP} If the pet finds fish, you get `3` times the amount\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PINK_FISH} pink fish pet\n'
         f'{emojis.DETAIL} This pet is a reward in the valentine event'
     )
@@ -340,25 +373,25 @@ async def embed_pets_skills_unique() -> discord.Embed:
         f'{emojis.DETAIL} This pet is a reward in the easter event'
     )
     monsterhunter = (
-        f'{emojis.BP} Has a 35% chance to find 3-5 random mob drops in pet adventures\n'
+        f'{emojis.BP} Has a `35`% chance to find `3`-`5` random mob drops in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PUMPKIN_BAT} pumpkin bat pet\n'
         f'{emojis.DETAIL} This pet is a reward in the halloween event'
     )
     gifter = (
-        f'{emojis.BP} Has a 35% chance to find a random lootbox in a pet adventure\n'
+        f'{emojis.BP} Has a `35`% chance to find a random lootbox in a pet adventure\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_SNOWBALL} snowball and {emojis.PET_SNOWMAN} snowman pets\n'
         f'{emojis.DETAIL} The {emojis.PET_SNOWMAN} has a higher chance of bringing better lootboxes\n'
         f'{emojis.DETAIL} These pets are a reward in the christmas event\n'
     )
     booster = (
-        f'{emojis.BP} **All** pets have a 75% chance of advancing skills twice in a pet adventure\n'
+        f'{emojis.BP} **All** pets have a `75`% chance of advancing skills twice in a pet adventure\n'
         f'{emojis.BP} This chance only applies if the pet decided to learn\n'
         f'{emojis.BP} The chance increases if you have multiple pets with this skill\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_HAMSTER} hamster pet\n'
         f'{emojis.DETAIL} This pet is a reward in the anniversary event\n'
     )
     farmer = (
-        f'{emojis.BP} Has a 40% chance to find normal or special seeds in pet adventures\n'
+        f'{emojis.BP} Has a `40`% chance to find normal or special seeds in pet adventures\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
         f'{emojis.DETAIL} This pet is a reward in the horse festival'
     )
@@ -413,8 +446,8 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} **Items**: {emojis.LOG}{emojis.LOG_EPIC}{emojis.LOG_SUPER}{emojis.LOG_MEGA}{emojis.LOG_HYPER}'
         f'{emojis.LOG_ULTRA} {emojis.FISH}{emojis.FISH_GOLDEN}{emojis.FISH_EPIC}{emojis.LIFE_POTION}\n'
         f'{emojis.BP} **Coins**: ~ 700k+\n'
-        f'{emojis.BP} **Skill rank**: +1 rank of 1 skill the pet has\n'
-        f'{emojis.BP} **Pet**: Random T1-3 pet (only if pet has {emojis.SKILL_ASCENDED} ascended skill)\n'
+        f'{emojis.BP} **Skill rank**: +`1` rank of 1 skill the pet has\n'
+        f'{emojis.BP} **Pet**: Random T1-T3 pet (only if pet has {emojis.SKILL_ASCENDED} ascended skill)\n'
         f'{emojis.DETAIL} You get a pet **in addition** to the other reward'
     )
     normalskillsimpact = (
@@ -429,13 +462,18 @@ async def embed_pets_adventures() -> discord.Embed:
     )
     uniqueskillsimpact = (
         f'{emojis.BP} {emojis.SKILL_ANTARCTICIAN} **Antarctician**: If it returns fish, they will be EPIC\n'
-        f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: If it returns fish, you get 3 times the amount\n'
+        f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: If it returns fish, you get `3` times the amount\n'
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
         f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
         f'{emojis.BP} {emojis.SKILL_BOOSTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill '
         f'to reset all pets\n'
+    )
+    boostsimpact = (
+        f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: -`30`% pet adventure time\n'
+        f'{emojis.BP} {emojis.PARTY_POPPER} `Party popper`: -`20`% pet adventure time\n'
+        f'{emojis.BP} {emojis.POTION_LIQUID_HAIR} `Liquid hair potion`: -`10`% pet adventure time\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -448,6 +486,7 @@ async def embed_pets_adventures() -> discord.Embed:
     embed.add_field(name='NORMAL SKILLS THAT AFFECT ADVENTURES', value=normalskillsimpact, inline=False)
     embed.add_field(name='SPECIAL SKILLS THAT AFFECT ADVENTURES', value=specialskillsimpact, inline=False)
     embed.add_field(name='UNIQUE SKILLS THAT AFFECT ADVENTURES', value=uniqueskillsimpact, inline=False)
+    embed.add_field(name='BOOST ITEMS THAT AFFECT ADVENTURES', value=boostsimpact, inline=False)
     return embed
 
 

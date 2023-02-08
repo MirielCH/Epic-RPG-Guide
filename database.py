@@ -1590,6 +1590,7 @@ async def _update_profession_level(profession: Profession, level: int, xp: int) 
     try:
         cur = ERG_DB.cursor()
         xp_columns = {
+            'crafter': 'crafter_xp',
             'enchanter': 'enchanter_xp',
             'lootboxer': 'lootboxer_xp',
             'merchant': 'merchant_xp',
@@ -1728,5 +1729,55 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         logs.logger.error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql),
             ctx
+        )
+        raise
+
+
+async def get_weekly_profession() -> str:
+    """Returns the weekly profession from table "professions_weekly". Returns None if not set yet for this week.
+
+    Returns:
+        Name of profession or None
+
+    Raises:
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'professions_weekly'
+    function_name = 'get_weekly_profession'
+    sql = f"SELECT * FROM {table} WHERE DATE(date) > DATE('now', 'weekday 0', '-7 days', 'start of day') ORDER BY date DESC"
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql)
+        record = cur.fetchone()
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+    if not record: return None
+    return record['profession']
+
+
+async def set_weekly_profession(profession: str) -> None:
+    """Sets today's date to a profession.
+
+    Raises
+    ------
+    sqlite3.Error if something happened within the database.
+    NoArgumentsError if no kwargs are passed (need to pass at least one)
+    Also logs all errors to the database.
+    """
+    table = 'professions_weekly'
+    function_name = 'set_weekly_profession'
+    try:
+        today = datetime.utcnow().date()
+        today_str = today.isoformat()
+        cur = ERG_DB.cursor()
+        sql = f'UPDATE {table} SET date = ? WHERE profession = ?'
+        cur.execute(sql, (today_str, profession.lower()))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
         )
         raise

@@ -70,9 +70,9 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
                 )
                 return
             if bot_message is None: return
-            name = await functions.extract_monster_name_from_world_embed(ctx, bot_message)
+            world_data = await functions.extract_data_from_world_embed(ctx, bot_message)
             try:
-                monster = await database.get_monster_by_name(name)
+                monster = await database.get_monster_by_name(world_data['monster'])
             except database.NoDataFound:
                 await ctx.respond(
                     f'I didn\'t find a monster with that name, sorry. This ain\'t intended, so please report this to the '

@@ -33,6 +33,7 @@ IMG_RASPI = os.path.join(BOT_DIR, 'images/raspi.png')
 IMG_CRANKY = os.path.join(BOT_DIR, 'images/cranky.png')
 
 EPIC_RPG_ID = 555955826880413696
+TESTY_ID = 1050765002950332456 # Miriel's test bot to test triggers
 
 EMBED_COLOR = 0x8914FF
 

@@ -113,7 +113,8 @@ async def command_tip(ctx: discord.ApplicationContext, tip_id: Optional[int] = N
 
 
 async def command_selling_price_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, item_name: str,
-                                           amount: str, merchant_level: Optional[int] = None) -> None:
+                                           amount: str, merchant_level: Optional[int] = None,
+                                           boost_percentage: Optional[int] = None) -> None:
     """Selling price calculator command"""
     if isinstance(amount, str):
         amount = await functions.calculate_amount(amount)
@@ -151,11 +152,34 @@ async def command_selling_price_calculator(bot: discord.Bot, ctx: discord.Applic
         _, merchant_level = (
             await functions.extract_data_from_profession_overview_embed(ctx, bot_message, 'merchant')
         )
-    selling_price = floor(item.selling_price * amount * (1 + 0.01 * (merchant_level ** 1.3)))
-    await ctx.respond(
-        f'{amount:,} {item.emoji} `{item.name}` are worth **{selling_price:,}** {emojis.COIN} coins '
-        f'at merchant level {merchant_level}.'
+    if boost_percentage is None:
+        boost_percentage = 0
+        bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                              command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
+        boost_percentage = boosts_data['selling price']
+    selling_price = (
+        floor(item.selling_price * amount * (1 + 0.01 * (merchant_level ** 1.3)) * (1 + (boost_percentage / 100)))
     )
+    answer = (
+        f'{amount:,} {item.emoji} `{item.name}` are worth **{selling_price:,}** {emojis.COIN} coins '
+        f'at merchant level {merchant_level}'
+    )
+    if boost_percentage > 0:
+        answer = f'{answer} with an active {emojis.POTION_KING} king potion.'
+    else:
+        answer = f'{answer}.'
+    await ctx.respond(answer)
 
 
 async def command_calculator(ctx: discord.ApplicationContext, calculation: str) -> None:
@@ -337,23 +361,24 @@ async def embed_codes():
 async def embed_badges() -> discord.Embed:
     """Badges"""
     badges_coolness = (
-        f'{emojis.BP} {emojis.BADGE_C1} : Unlocked with 1 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C100} : Unlocked with 100 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C200} : Unlocked with 200 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C500} : Unlocked with 500 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C1000} : Unlocked with 1,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C2000} : Unlocked with 2,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C5000} : Unlocked with 5,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C10000} : Unlocked with 10,000 {emojis.STAT_COOLNESS} coolness\n'
-        f'{emojis.BP} {emojis.BADGE_C20000} : Unlocked with 20,000 {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C1} : Unlocked with `1` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C100} : Unlocked with `100` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C200} : Unlocked with `200` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C500} : Unlocked with `500` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C1000} : Unlocked with `1,000` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C2000} : Unlocked with `2,000` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C5000} : Unlocked with `5,000` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C10000} : Unlocked with `10,000` {emojis.STAT_COOLNESS} coolness\n'
+        f'{emojis.BP} {emojis.BADGE_C20000} : Unlocked with `20,000` {emojis.STAT_COOLNESS} coolness\n'
     )
     badges_achievements = (
-        f'{emojis.BP} {emojis.BADGE_A10} : Unlocked with 10 achievements\n'
-        f'{emojis.BP} {emojis.BADGE_A25} : Unlocked with 25 achievements\n'
-        f'{emojis.BP} {emojis.BADGE_A75} : Unlocked with 75 achievements\n'
-        f'{emojis.BP} {emojis.BADGE_A125} : Unlocked with 125 achievements\n'
-        f'{emojis.BP} {emojis.BADGE_A175} : Unlocked with 175 achievements\n'
-        f'{emojis.BP} {emojis.BADGE_A225} : Unlocked with 225 achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A10} : Unlocked with `10` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A25} : Unlocked with `25` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A75} : Unlocked with `75` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A125} : Unlocked with `125` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A175} : Unlocked with `175` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A225} : Unlocked with `225` achievements\n'
+        f'{emojis.BP} {emojis.BADGE_A275} : Unlocked with `275` achievements\n'
     )
     badges_other = (
         f'{emojis.BP} {emojis.BADGE_AREA15} : Unlocked by reaching area 15 ({emojis.TIME_TRAVEL} TT 10)\n'
@@ -369,7 +394,7 @@ async def embed_badges() -> discord.Embed:
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge select"]} to activate or deactivate a badge'
     )
     note = (
-        f'{emojis.BP} You can have 3 badges active (5 with a {emojis.HORSE_T10} T10 horse)\n'
+        f'{emojis.BP} You can have `3` badges active (`5` with a {emojis.HORSE_T10} T10 horse)\n'
         f'{emojis.BP} You can only claim badges you have unlocked\n'
         f'{emojis.BP} If you don\'t know how to get coolness, see {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}'
     )
@@ -409,26 +434,26 @@ async def embed_coolness_overview() -> discord.Embed:
         f'{emojis.BP} Do other \'cool\' actions that are currently unknown'
     )
     pet_slots = (
-        f'{emojis.BP} `x1.05` at 10 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.1` at 100 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.15` at 350 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.2` at 1,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.25` at 1,400 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.3` at 2,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.35` at 2,800 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.4` at 4,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.45` at 5,500 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.5` at 7,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.55` at 9,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.6` at 11,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.65` at 13,500 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.7` at 16,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.75` at 19,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.8` at 22,500 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.85` at 27,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.9` at 32,500 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x1.95` at 40,000 {emojis.STAT_COOLNESS}\n'
-        f'{emojis.BP} `x2.0` at 50,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.05` at 10 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.1` at 100 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.15` at 350 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.2` at 1,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.25` at 1,400 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.3` at 2,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.35` at 2,800 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.4` at 4,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.45` at 5,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.5` at 7,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.55` at 9,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.6` at 11,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.65` at 13,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.7` at 16,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.75` at 19,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.8` at 22,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.85` at 27,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.9` at 32,500 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`1.95` at 40,000 {emojis.STAT_COOLNESS}\n'
+        f'{emojis.BP} x`2.0` at 50,000 {emojis.STAT_COOLNESS}\n'
     )
     note = (
         f'{emojis.BP} You can not lose coolness in any way\n'
@@ -502,6 +527,9 @@ async def embed_farming_overview() -> discord.Embed:
         f'{emojis.BP} If you want to get more coins or a higher STT score: {emojis.BREAD} bread\n'
         f'{emojis.BP} If you want to flex potatoes for some reason: {emojis.POTATO} potatoes'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_TRIPLE} `Triple Potion`: +`30`% special seed drop chance, +`20`% farm items\n'
+    )
     note = (
         f'{emojis.BP} Farming is unlocked in area 4\n'
         f'{emojis.BP} The amount of items you gain increases with your TT\n'
@@ -514,6 +542,7 @@ async def embed_farming_overview() -> discord.Embed:
     embed.add_field(name='PLANTING NORMAL SEEDS', value=planting_normal, inline=False)
     embed.add_field(name='PLANTING SPECIAL SEEDS', value=planting_special, inline=False)
     embed.add_field(name='WHAT TO FARM?', value=what_to_plant, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT FARMING', value=boosts, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

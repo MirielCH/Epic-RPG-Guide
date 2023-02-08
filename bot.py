@@ -5,7 +5,6 @@ import sys
 import traceback
 
 import discord
-from discord.ext import commands
 
 import database
 from resources import functions, settings, logs
@@ -71,6 +70,7 @@ async def on_error(event: str, *args, **kwargs) -> None:
 
 
 COG_EXTENSIONS = [
+    'cogs.alchemy',
     'cogs.areas',
     'cogs.crafting',
     'cogs.dev',
@@ -93,6 +93,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
+    'cogs.valentine',
     #'cogs.xmas',
 ]
 

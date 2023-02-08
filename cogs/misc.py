@@ -57,6 +57,7 @@ class MiscCog(commands.Cog):
         """Farming guide"""
         await misc.command_farming_guide(ctx, topic)
 
+
     cmd_beginner = SlashCommandGroup("beginner", "Beginner guide")
     @cmd_beginner.command(name='guide', description='How to start in the game')
     async def beginner_guide(
@@ -115,8 +116,10 @@ class MiscCog(commands.Cog):
         amount: Option(str, 'The amount of items you want to sell'),
         merchant_level: Option(int, 'The merchant level. Reads from EPIC RPG if empty.', min_value=1, max_value=150,
                                default=None),
+        boost_percentage: Option(int, 'Total boost percentage from active potions',
+                                 min_value = 0, max_value = 35, default=None),
     ) -> None:
-        await misc.command_selling_price_calculator(self.bot, ctx, item_name, amount, merchant_level)
+        await misc.command_selling_price_calculator(self.bot, ctx, item_name, amount, merchant_level, boost_percentage)
 
 
 # Initialization

@@ -596,6 +596,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'achievements progress': '</achievements progress:959915736892076042>',
     'achievements working': '</achievements working:959915736892076042>',
     'adventure': '</adventure:961046240420855808>',
+    'alchemy': '</alchemy:0>',
     'area': '</area:956658464879427604>',
     'arena': '</arena:960740633302138920>',
     'axe': '</axe:959162695909781504>',
@@ -608,6 +609,7 @@ SLASH_COMMANDS_EPIC_RPG = {
     'bigboat': '</bigboat:959163596754010162>',
     'blackjack': '</blackjack:959916178149605437>',
     'boat': '</boat:959163596087111780>',
+    'boosts': '</boosts:0>',
     'bowsaw': '</bowsaw:959162696371146883>',
     'buy': '</buy:964351964651601961>',
     'chainsaw': '</chainsaw:959162697398763590>',
@@ -781,6 +783,7 @@ SLASH_COMMANDS_GUIDE_OLD = {
 
 SLASH_COMMANDS_GUIDE = {
     'about': '</about:972045824869679138>',
+    'alchemy guide': '</alchemy guide:0>',
     'area check': '</area check:972045824806760468>',
     'area guide': '</area guide:972045824806760468>',
     'ask the oracle': '</ask the oracle:972045824806760477>',
@@ -827,6 +830,7 @@ SLASH_COMMANDS_GUIDE = {
     'trade guide': '</trade guide:972045824999690301>',
     'ultraining guide': '</ultraining guide:972045824999690302>',
     'ultraining stats calculator': '</ultraining stats calculator:972045824999690302>',
+    'valentine guide': '</valentine guide:0>',
     'xmas guide': '</xmas guide:1047763243541745684>',
     'xmas items': '</xmas items:1047763243541745684>',
 }

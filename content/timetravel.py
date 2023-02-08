@@ -195,7 +195,8 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} {emojis.TIME_TRAVEL} TT 25+: Beat dungeon 15-1\n'
     )
     keptitems = (
-        f'{emojis.BP} Arena cookies \n'
+        f'{emojis.BP} Active boosts\n'
+        f'{emojis.BP} Arena cookies\n'
         f'{emojis.BP} Coins (this includes your bank account)\n'
         f'{emojis.BP} Dragon essences\n'
         f'{emojis.BP} Epic coins\n'
@@ -216,6 +217,9 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Your marriage partner\n'
         f'{emojis.BP} Your pets\n'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_TIME} TIME potion: Keep `7.5`% of the items in your inventory\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'TIME TRAVEL (TT)',
@@ -230,6 +234,7 @@ async def embed_time_travel() -> discord.Embed:
     )
     embed.add_field(name='REQUIREMENTS FOR TIME TRAVEL', value=where, inline=False)
     embed.add_field(name='WHAT YOU KEEP', value=keptitems, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT TIME TRAVEL', value=boosts, inline=False)
     return embed
 
 
@@ -338,7 +343,8 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} If your horse is <T6: Get 50m coins\n'
         f'{emojis.BP} If you need money: Do boosted minibosses, use {strings.SLASH_COMMANDS_EPIC_RPG["drill"]} and '
         f'sell mob drops\n'
-        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} If you need money and are impatient: sell apples\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} Sell everything else **except** the items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
@@ -348,10 +354,11 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} If your horse is <T6: Get 150m coins\n'
         f'{emojis.BP} If you need money: Do boosted minibosses, use {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} and '
         f'sell mob drops\n'
-        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} If you need money and are impatient: sell apples\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions if not done (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} If you have materials left: Trade to apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
@@ -360,10 +367,11 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} If your horse is <T6: Get 350m coins\n'
         f'{emojis.BP} If you need money: Do boosted minibosses, use {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} and '
         f'sell mob drops\n'
-        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} If you need money and are impatient: sell apples\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions if not done (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} If you have materials left: Trade to apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!'
     )
@@ -372,10 +380,11 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} If your horse is <T6: Get 850m coins\n'
         f'{emojis.BP} If you need money: Do boosted minibosses, use {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} and '
         f'sell mob drops\n'
-        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} If you need money and are impatient: sell apples\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions if not done (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} If you have materials left: Trade to apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
         f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet '
@@ -387,10 +396,11 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} Note: You **need** a T6+ horse to do Dungeon 15\n'
         f'{emojis.BP} If you need money: Do boosted minibosses, use {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]} and '
         f'sell mob drops\n'
-        f'{emojis.BP} If you need money and are impatient: sell {emojis.APPLE} apples\n'
+        f'{emojis.BP} If you need money and are impatient: sell apples\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions if not done (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} Note: If you want to level enchanter, you need 2-3 billion coins\n'
-        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} If you have materials left: Trade to apples and sell\n'
         f'{emojis.BP} Sell everything else **except** the items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}\n'
         f'{emojis.BP} Don\'t forget to sell your armor and sword!\n'
         f'{emojis.BP} Tip: Claim the {emojis.BADGE_AREA15} area 15 badge if you haven\'t yet '
@@ -398,9 +408,10 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     )
     prep_stt = (
         f'{emojis.BP} Get 850m coins\n'
+        f'{emojis.BP} If you have leftover flasks: Brew potions that are useful in low areas\n'
         f'{emojis.BP} Level up professions if not done (see {strings.SLASH_COMMANDS_GUIDE["professions guide"]})\n'
         f'{emojis.BP} If you need a higher score: Trade to {emojis.RUBY} rubies\n'
-        f'{emojis.BP} If you have materials left: Trade to {emojis.APPLE} apples and sell\n'
+        f'{emojis.BP} If you have materials left: Trade to apples and sell\n'
         f'{emojis.BP} Sell everything you don\'t need for your desired score\n'
         f'{emojis.BP} Do not sell items listed in {strings.SLASH_COMMANDS_GUIDE["time travel guide"]}'
     )

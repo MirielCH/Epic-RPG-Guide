@@ -51,6 +51,11 @@ async def embed_enchanting() -> discord.Embed:
         f'{emojis.BP} More rolls also means higher cost!\n'
         f'{emojis.BP} You can check your current multiplier with {strings.SLASH_COMMANDS_EPIC_RPG["time travel"]}\n'
     )
+    boosts = (
+        f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`300`% enchanting luck\n'
+        f'{emojis.BP} {emojis.POTION_INVERTED} `Inverted potion`: +`15`% enchanting luck\n'
+        f'{emojis.BP} {emojis.POTION_LIQUID_HAIR} `Liquid Hair potion`: +`5`% enchanting luck\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ENCHANTING GUIDE',
@@ -65,5 +70,6 @@ async def embed_enchanting() -> discord.Embed:
     embed.add_field(name='COMMAND TIERS', value=commands_tiers, inline=False)
     embed.add_field(name='ENCHANT COST', value=enchant_cost, inline=False)
     embed.add_field(name='TT MULTIPLIER', value=multiplier, inline=False)
+    embed.add_field(name='POTIONS THAT AFFECT ENCHANTING', value=boosts, inline=False)
     return embed
 
