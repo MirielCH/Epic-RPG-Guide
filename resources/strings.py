@@ -783,6 +783,7 @@ SLASH_COMMANDS_GUIDE_OLD = {
 
 SLASH_COMMANDS_GUIDE = {
     'about': '</about:972045824869679138>',
+    'achievement search': '</achievement search:0>',
     'alchemy guide': '</alchemy guide:0>',
     'area check': '</area check:972045824806760468>',
     'area guide': '</area guide:972045824806760468>',

@@ -137,7 +137,10 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["monster drops"]} : Monster drops and where to find them\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["monster search"]} : Look up monsters or the daily monster\n'
     )
-    achievements = f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["title search"]} : Look up titles / achievements\n'
+    achievements = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["achievement search"]} : Look up titles / achievements\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["title search"]} : Look up titles / achievements\n'
+    )
     misc = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["ask the oracle"]} : A very useful command\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["badges"]} : All badges and how to get them\n'

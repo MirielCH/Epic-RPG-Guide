@@ -59,7 +59,7 @@ async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> disc
     description = f'Your search returned **{amount_found}** results.'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'TITLE SEARCH',
+        title = 'TITLE / ACHIEVEMENT SEARCH',
         description = description
     )
     title = type(database.Title)
