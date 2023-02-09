@@ -196,7 +196,9 @@ async def embed_help_calculators() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]} : Calculate your monster drop chance\n'
     )
     trading = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade calculator"]} : Calculate materials after trading'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["trade calculator"]} : Calculate materials after trading\n'
+        f'{emojis.BP} `rpg i <area>` : Quickly calculate trades for your current inventory\n'
+        f'{emojis.DETAIL} _This calculator can be toggled in {strings.SLASH_COMMANDS_GUIDE["settings"]}_'
     )
     professions = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["professions calculator"]} : Calculate what you need to level professions'

@@ -72,6 +72,7 @@ async def on_error(event: str, *args, **kwargs) -> None:
 COG_EXTENSIONS = [
     'cogs.alchemy',
     'cogs.areas',
+    'cogs.cache',
     'cogs.crafting',
     'cogs.dev',
     'cogs.duel',

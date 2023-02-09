@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import emojis, settings
+from resources import emojis, settings, views
 
 
 # --- Choices ---
@@ -21,8 +21,12 @@ CHOICES_ASCENSION = [
 # --- Commands ---
 async def command_settings(ctx: discord.ApplicationContext) -> None:
     """Settings command"""
-    embed = await embed_user_settings(ctx)
-    await ctx.respond(embed=embed)
+    user_settings = await database.get_user(ctx.author.id)
+    view = views.SettingsUserView(ctx,user_settings, embed_user_settings)
+    embed = await embed_user_settings(ctx, user_settings)
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
 
 
 async def command_set_progress(ctx: discord.ApplicationContext, timetravel: int, ascension: str) -> None:
@@ -52,30 +56,32 @@ async def command_set_progress(ctx: discord.ApplicationContext, timetravel: int,
 
 
 # --- Embeds ---
-async def embed_user_settings(ctx: commands.Context) -> discord.Embed:
+async def embed_user_settings(ctx: commands.Context, user_settings: database.User) -> discord.Embed:
     """User settings embed
 
     Raises
     ------
     sqlite3.Error if something happened during the query.
     """
-    try:
-        user = await database.get_user(ctx.author.id)
-    except:
-        raise
+    ascended = 'Ascended' if user_settings.ascended else 'Not ascended'
+    quick_trade = f'{emojis.ENABLED}`Enabled`' if user_settings.quick_trade_enabled else f'{emojis.DISABLED}`Disabled`'
     settings_field = (
-        f'{emojis.BP} Current run: **TT {user.tt}**\n'
-        f'{emojis.BP} Ascension: **{"Ascended" if user.ascended else "Not ascended"}**'
+        f'{emojis.BP} **Current TT**: `{user_settings.tt}`\n'
+        f'{emojis.BP} **Ascension**: `{ascended}`\n'
+    )
+    settings_calculators = (
+        f'{emojis.BP} **Quick trade calculator**: {quick_trade}\n'
+        f'{emojis.DETAIL} _Can be used with `rpg i <area>`_\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'USER SETTINGS',
         description = (
             f'Hey there, **{ctx.author.name}**.\n'
-            f'These settings are used by some guides to tailor the information to your '
-            f'current progress.'
+            f'Use the menu below to change your settings!'
         )
     )
-    embed.set_footer(text=f'Tip: Use "/set progress" to change your settings.')
-    embed.add_field(name='YOUR CURRENT SETTINGS', value=settings_field, inline=False)
+    embed.set_footer(text='Tip: You can also use "/set progress" to change progress settings.')
+    embed.add_field(name='PROGRESS', value=settings_field, inline=False)
+    embed.add_field(name='CALCULATORS', value=settings_calculators, inline=False)
     return embed

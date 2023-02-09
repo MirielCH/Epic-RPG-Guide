@@ -251,12 +251,14 @@ class Tip(NamedTuple):
 class User():
     """Container for user data"""
     ascended: bool
+    quick_trade_enabled: bool
     tt: int
     user_id: int
 
     async def refresh(self) -> None:
         """Refreshes user data from the database."""
         new_settings: User = await get_user(self.user_id)
+        self.quick_trade_enabled = new_settings.quick_trade_enabled
         self.tt = new_settings.tt
         self.ascended = new_settings.ascended
 
@@ -1238,11 +1240,12 @@ async def get_user(user_id: int) -> User:
         )
         raise
     if not record:
-        cur.execute(f'INSERT INTO {table} VALUES (?, ?, ?)', (user_id, 0, False))
+        cur.execute(f'INSERT INTO {table} VALUES (?, ?, ?, ?)', (user_id, 0, False, True))
         raise FirstTimeUser
     record = dict(record)
     user = User(
         ascended = bool(record['ascended']),
+        quick_trade_enabled = bool(record['quick_trade_enabled']),
         tt = record['tt'],
         user_id = record['user_id'],
     )
@@ -1279,6 +1282,7 @@ async def get_all_users() -> Tuple[User]:
         if record['ascended'] not in ('ascended', 'not ascended'): raise BaseException('Already migrated.')
         user = User(
             ascended = True if record['ascended'] == 'ascended' else False,
+            quick_trade_enabled = bool(record['quick_trade_enabled']),
             tt = record['tt'],
             user_id = record['user_id'],
         )
@@ -1528,6 +1532,7 @@ async def _update_user(user: User, **kwargs) -> None:
     user_id: int
     kwargs (column=value):
         ascended: bool
+        quick_trade_enabled: bool
         tt: int
 
     Raises

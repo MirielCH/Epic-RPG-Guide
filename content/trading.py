@@ -7,10 +7,43 @@ from operator import itemgetter
 import discord
 
 import database
-from resources import emojis, functions, settings, strings
+from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
+async def command_quick_trade_calculator(message: discord.Message, area_no: int, user: discord.User) -> None:
+    """Quick trade calculator command"""
+    inventory = ''
+    for field in message.embeds[0].fields:
+        inventory = f'{inventory}{field.value}\n'
+    if 1 <= area_no <= 3:
+        material = 'normie fish'
+    elif 4 <= area_no <= 5:
+        material = 'apple'
+    elif 6 <= area_no <= 7:
+        material = 'wooden log'
+    elif area_no == 8:
+        material = 'apple'
+    elif area_no == 9:
+        material = 'normie fish'
+    else:
+        material = 'wooden log'
+    item: database.Item = await database.get_item(material)
+    area: database.Area = await database.get_area(area_no)
+    inventory_amount = await functions.get_inventory_value(area, item, inventory)
+    embed = await embed_quick_trade_calculator(area, inventory_amount)
+    view = views.FollowupCommandView(user, 'Calculate all trades')
+    interaction = await message.channel.send(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    if view.value == 'followup':
+        areas = await database.get_all_areas()
+        embed = await embed_trade_calculator(areas, area_no, material, inventory_amount)
+        await interaction.edit(embed=embed, view=None)
+    else:
+        await interaction.edit(view=None)
+
+
 async def command_trade_guide(ctx: discord.ApplicationContext, area_no: Optional[int] = None) -> None:
     """Trade guide command"""
     user = await database.get_user(ctx.author.id)
@@ -38,19 +71,71 @@ async def command_trade_calculator(ctx: discord.ApplicationContext, area_no: int
         await ctx.respond(strings.MSG_AMOUNT_TOO_HIGH, ephemeral=True)
         return
 
-    materials_emojis = {
-        'apple': emojis.APPLE,
-        'normie fish': emojis.FISH,
-        'ruby': emojis.RUBY,
-        'wooden log': emojis.LOG
-    }
-
     areas = await database.get_all_areas()
     embed = await embed_trade_calculator(areas, area_no, material, amount)
-    await ctx.respond(embed=embed)
+    embed.set_footer(text='Tip: You can use "rpg i <area>" to calculate the most important areas quickly.')
+    if isinstance(ctx, discord.ApplicationContext):
+        await ctx.respond(embed=embed)
+    else:
+        await ctx.channel.send(embed=embed)
 
 
 # --- Embeds ---
+async def embed_quick_trade_calculator(area: database.Area, inventory_amount: int) -> discord.Embed:
+    """Embed with quick trade calculator results"""
+    results = {
+        3: 0,
+        5: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+    }
+    if area.area_no <= 3:
+        results[3] = inventory_amount
+    elif 4 <= area.area_no <= 5:
+        results[5] = inventory_amount
+    elif 6 <= area.area_no <= 7:
+        results[7] = inventory_amount
+    elif area.area_no == 8:
+        results[8] = inventory_amount
+    elif area.area_no == 9:
+        results[9] = inventory_amount
+    else:
+        results[10] = inventory_amount
+    answer = ''
+    if results[3] > 0:
+        results[5] = floor(results[3] / 2)
+        answer = f'{emojis.BP} **Area 3**: {results[3]:,} {emojis.FISH} (includes {emojis.RUBY})'
+    if results[5] > 0:
+        results[7] = results[5] * 15
+        answer = (
+            f'{answer}\n'
+            f'{emojis.BP} **Area 5**: {results[5]:,} {emojis.APPLE}'
+        )
+    if results[7] > 0:
+        results[8] = floor(results[7] / 8)
+    if results[8] > 0:
+        results[9] = floor(results[8] * 12 / 2)
+    if results[9] > 0:
+        results[10] = results[9] * 3
+    results[11] = floor(results[10] / 8)
+    results[12] = floor(results[10] / 350)
+    results[16] = floor(results[10] / 250)
+
+    answer = (
+        f'{answer}\n'
+        f'{emojis.BP} **Area 10+**: {results[10]:,} {emojis.LOG}'
+    )
+
+    embed = discord.Embed(
+        title = 'QUICK TRADE CALCULATOR',
+        description = answer.strip()
+    )
+    embed.set_footer(text='Use "/settings" to disable this.')
+    return embed
+
+
 async def embed_trades_area_specific(area: database.Area, user: database.User) -> discord.Embed:
     """Embed with trades before leaving area X"""
     if (area.area_no == 11 and user.tt == 0) or (area.area_no == 15 and user.tt < 25):

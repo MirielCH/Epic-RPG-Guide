@@ -75,6 +75,19 @@ async def get_result_from_tasks(ctx: discord.ApplicationContext, tasks: List[asy
     return result
 
 
+async def get_guild_member_by_name(guild: discord.Guild, user_name: str) -> List[discord.Member]:
+    """Returns all guild members found by the given name"""
+    members = []
+    for member in guild.members:
+        if await format_string(member.name) == await format_string(user_name) and not member.bot:
+            try:
+                await database.get_user(member.id)
+            except database.FirstTimeUser:
+                continue
+            members.append(member)
+    return members
+
+
 # --- Regex ---
 async def get_match_from_patterns(patterns: List[str], string: str) -> re.Match:
     """Searches a string for a regex patterns out of a list of patterns and returns the first match.
@@ -226,13 +239,6 @@ async def design_field_rec_stats(dungeon: database.Dungeon, short_version: bool 
         )
 
     return field_value
-
-
-async def inventory_get(inventory: str, material: str) -> int:
-    """Extracts the amount of a material from an inventory"""
-    material_match = re.search(fr'\*\*{material}\*\*: (.+?)\n', inventory)
-    return int(material_match.group(1).replace(',','')) if material_match else 0
-
 
 
 def round_school(number: float) -> int:
@@ -1297,3 +1303,287 @@ async def extract_duel_bonus_from_guild_embed(ctx: discord.ApplicationContext,
         raise ValueError(error)
 
     return duel_bonus
+
+
+# Calculation
+async def inventory_get(inventory: str, material: str) -> int:
+    """Extracts the amount of a material from an inventory"""
+    material_match = re.search(fr'\*\*{material}\*\*: (.+?)\n', inventory)
+    return int(material_match.group(1).replace(',','')) if material_match else 0
+
+
+async def get_inventory_value(area: database.Area, item: database.Item, inventory: str) -> int:
+    """Calculate item amount from an inventory"""
+    inventory = inventory.lower()
+    fish = await inventory_get(inventory, 'normie fish')
+    fishgolden = await inventory_get(inventory, 'golden fish')
+    fishepic = await inventory_get(inventory, 'epic fish')
+    log = await inventory_get(inventory, 'wooden log')
+    logepic = await inventory_get(inventory, 'epic log')
+    logsuper = await inventory_get(inventory, 'super log')
+    logmega = await inventory_get(inventory, 'mega log')
+    loghyper = await inventory_get(inventory, 'hyper log')
+    logultra = await inventory_get(inventory, 'ultra log')
+    apple = await inventory_get(inventory, 'apple')
+    banana = await inventory_get(inventory, 'banana')
+    ruby = await inventory_get(inventory, 'ruby')
+
+    # Calculate logs
+    if item.name.lower() == 'wooden log':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log_calc + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        result_value = log_calc
+
+    # Calculate epic logs
+    if item.name.lower() == 'epic log':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        logepic_calc = logepic + (logsuper_calc * 8) + log_calc // 25
+        result_value = logepic_calc
+
+    # Calculate super logs
+    if item.name.lower() == 'super log':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        logepic_calc = logepic + log_calc // 25
+        logsuper_calc = logsuper + (logmega_calc * 8) + (logepic_calc // 10)
+        result_value = logsuper_calc
+
+    # Calculate mega logs
+    if item.name.lower() == 'mega log':
+        loghyper_calc = loghyper + (logultra * 8)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        logepic_calc = logepic + log_calc // 25
+        logsuper_calc = logsuper + (logepic_calc // 10)
+        logmega_calc = logmega + (loghyper_calc * 8) + (logsuper_calc // 10)
+        result_value = logmega_calc
+
+    # Calculate hyper logs
+    if item.name.lower() == 'hyper log':
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        logepic_calc = logepic + log_calc // 25
+        logsuper_calc = logsuper + (logepic_calc // 10)
+        logmega_calc = logmega + (logsuper_calc // 10)
+        loghyper_calc = loghyper + (logultra * 8) + (logmega_calc // 10)
+        result_value = loghyper_calc
+
+    # Calculate ultra logs
+    if item.name.lower() == 'ultra log':
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        apple_calc = apple + (banana * 12)
+        log_calc = log + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            log_calc = log_calc + (ruby * 450)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 450)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        logepic_calc = logepic + log_calc // 25
+        logsuper_calc = logsuper + (logepic_calc // 10)
+        logmega_calc = logmega + (logsuper_calc // 10)
+        loghyper_calc = loghyper + (logmega_calc // 10)
+        logultra_calc = logultra + (loghyper_calc // 10)
+        result_value = logultra_calc
+
+    # Calculate normie fish
+    if item.name.lower() == 'normie fish':
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        apple_calc = apple + (banana * 12)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            fish_calc = fish_calc + (ruby * 225)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            fish_calc = fish_calc + (ruby * 225)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        fish_calc = fish_calc + (log_calc // area.trade_fish_log)
+        result_value = fish_calc
+
+    # Calculate golden fish
+    if item.name.lower() == 'golden fish':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        apple_calc = apple + (banana * 12)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            fish_calc = fish + (ruby * 225)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            fish_calc = fish + (ruby * 225)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+            fish_calc = fish
+        fish_calc = fish_calc + (log_calc // area.trade_fish_log)
+        fishgolden_calc = fishgolden + (fishepic * 80) + (fish_calc // 15)
+        result_value = fishgolden_calc
+
+    # Calculate epic fish
+    if item.name.lower() == 'epic fish':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        apple_calc = apple + (banana * 12)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+            fish_calc = fish + (ruby * 225)
+        elif area.area_no in (3,4):
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            fish_calc = fish + (ruby * 225)
+        else:
+            fish_calc = fish
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        fish_calc = fish_calc + (log_calc // area.trade_fish_log)
+        fishgolden_calc = fishgolden + (fish_calc // 15)
+        fishepic_calc = fishepic + (fishgolden_calc // 100)
+        result_value = fishepic_calc
+
+    # Calculate apples
+    if item.name.lower() == 'apple':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        apple_calc = apple + (banana * 12)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        log_calc = log_calc + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2,3,4):
+            log_calc = log_calc + (ruby * 225)
+        else:
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        if area.area_no in (1,2):
+            apple_calc = apple_calc + (log_calc // 3)
+        else:
+            apple_calc = apple_calc + (log_calc // area.trade_apple_log)
+        result_value = apple_calc
+
+    # Calculate bananas
+    if item.name.lower() == 'banana':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        log_calc = log_calc + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2,3,4):
+            log_calc = log_calc + (ruby * 225)
+        else:
+            log_calc = log_calc + (ruby * area.trade_ruby_log)
+        if area.area_no in (1,2):
+            apple_calc = apple + (log_calc // 3)
+        else:
+            apple_calc = apple + (log_calc // area.trade_apple_log)
+        banana_calc = banana + (apple_calc // 15)
+        result_value = banana_calc
+
+    # Calculate rubies
+    if item.name.lower() == 'ruby':
+        loghyper_calc = loghyper + (logultra * 8)
+        logmega_calc = logmega + (loghyper_calc * 8)
+        logsuper_calc = logsuper + (logmega_calc * 8)
+        logepic_calc = logepic + (logsuper_calc * 8)
+        log_calc = log + (logepic_calc * 20)
+        apple_calc = apple + (banana * 12)
+        fishgolden_calc = fishgolden + (fishepic * 80)
+        fish_calc = fish + (fishgolden_calc * 12)
+        log_calc = log_calc + (fish_calc * area.trade_fish_log)
+        if area.area_no in (1,2):
+            log_calc = log_calc + (apple_calc * 3)
+        else:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+        if area.area_no in (1,2,3,4):
+            ruby_calc = ruby + (log_calc // 450)
+        else:
+            ruby_calc = ruby + (log_calc // area.trade_ruby_log)
+        result_value = ruby_calc
+
+    return result_value

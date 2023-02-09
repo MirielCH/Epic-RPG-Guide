@@ -2,11 +2,13 @@
 """Contains the main events, error handling and the help and about commands"""
 
 import aiohttp
+from datetime import timedelta
 
 import discord
 from discord.commands import slash_command, Option
 from discord.ext import commands, tasks
 
+from cache import messages
 from content import main
 import database
 from resources import logs, settings, strings
@@ -34,6 +36,13 @@ class MainCog(commands.Cog):
                     )
         except Exception as error:
             logs.logger.error(f'Failed to post server count: {error}')
+
+    @tasks.loop(minutes=1)
+    async def delete_old_messages_from_cache(self) -> None:
+        """Task that deletes messages from the message cache that are older than 1 minute"""
+        deleted_messages_count = await messages.delete_old_messages(timedelta(minutes=1))
+        if settings.DEBUG_MODE:
+            logs.logger.debug(f'Deleted {deleted_messages_count} messages from message cache.')
 
     # Events
     @commands.Cog.listener()

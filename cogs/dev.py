@@ -26,6 +26,25 @@ class DevCog(commands.Cog):
     # Commands
     @dev.command()
     @commands.is_owner()
+    async def cache(self, ctx: discord.ApplicationContext):
+        """Shows cache size"""
+        from cache import messages
+        cache_size = sys.getsizeof(messages._MESSAGE_CACHE)
+        channel_count = len(messages._MESSAGE_CACHE)
+        message_count = 0
+        for channel_messages in messages._MESSAGE_CACHE.values():
+            message_count += len(channel_messages)
+            cache_size += sys.getsizeof(channel_messages)
+            for message in channel_messages:
+                cache_size += sys.getsizeof(message)
+        await ctx.respond(
+            f'Cache size: {cache_size / 1024:,.2f} KB\n'
+            f'Channel count: {channel_count:,}\n'
+            f'Message count: {message_count:,}\n'
+        )
+
+    @dev.command()
+    @commands.is_owner()
     async def reload(
         self,
         ctx: discord.ApplicationContext,

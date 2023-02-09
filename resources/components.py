@@ -579,3 +579,40 @@ class ItemSelect(discord.ui.Select):
         self.view.active_item = select_value
         embed = await self.view.items[select_value][1]()
         await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class ManageUserSettingsSelect(discord.ui.Select):
+    """Select to change user settings"""
+    def __init__(self, view: discord.ui.View, row: Optional[int] = None):
+        options = []
+        label_ascended = 'Set as not ascended' if view.user_settings.ascended else 'Set as ascended'
+        quick_trade_emoji = emojis.ENABLED if view.user_settings.quick_trade_enabled else emojis.DISABLED
+        options.append(discord.SelectOption(label='Set current TT', emoji=None,
+                                            value='set_tt'))
+        options.append(discord.SelectOption(label=label_ascended, emoji=None,
+                                            value='toggle_ascension'))
+        options.append(discord.SelectOption(label='Quick trade calculator', emoji=quick_trade_emoji,
+                                            value='toggle_quick_trade'))
+        super().__init__(placeholder='Change settings', min_values=1, max_values=1, options=options, row=row,
+                         custom_id='manage_user_settings')
+
+    async def callback(self, interaction: discord.Interaction):
+        select_value = self.values[0]
+        if select_value == 'toggle_ascension':
+            await self.view.user_settings.update(ascended=not self.view.user_settings.ascended)
+        elif select_value == 'toggle_quick_trade':
+            await self.view.user_settings.update(quick_trade_enabled=not self.view.user_settings.quick_trade_enabled)
+        elif select_value == 'set_tt':
+            modal = modals.SetCurrentTTModal(self.view)
+            await interaction.response.send_modal(modal)
+            return
+        for child in self.view.children.copy():
+            if isinstance(child, ManageUserSettingsSelect):
+                self.view.remove_item(child)
+                self.view.add_item(ManageUserSettingsSelect(self.view))
+                break
+        embed = await self.view.embed_function(self.view.ctx, self.view.user_settings)
+        if interaction.response.is_done():
+            await interaction.message.edit(embed=embed, view=self.view)
+        else:
+            await interaction.response.edit_message(embed=embed, view=self.view)

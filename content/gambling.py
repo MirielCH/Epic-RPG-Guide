@@ -337,7 +337,8 @@ async def embed_wheel() -> discord.Embed:
     note = (
         f'{emojis.BP} This command is unlocked in area 8\n'
         f'{emojis.BP} You need to bet at least 25,000 coins\n'
-        f'{emojis.BP} If the wheel lands on {emojis.WHEEL_YELLOW}, you only get a {emojis.LOTTERY_TICKET} lottery ticket if you have less than 10'
+        f'{emojis.BP} If the wheel lands on {emojis.WHEEL_YELLOW}, you only get a {emojis.LOTTERY_TICKET} '
+        f'lottery ticket if you have less than 200'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

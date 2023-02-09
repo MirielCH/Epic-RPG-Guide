@@ -108,3 +108,32 @@ class TimeJumpCalculatorStatsModal(Modal):
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
                                                self.view.option_inventory, self.view.option_stats)
         await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class SetCurrentTTModal(Modal):
+    def __init__(self, view: discord.ui.View) -> None:
+        super().__init__(title='Change current TT')
+        self.view = view
+        self.add_item(
+            InputText(
+                label='Your current TT [0-999]',
+                placeholder="Enter TT number ..."
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        tt_no = self.children[0].value.lower()
+        msg_error = 'Invalid TT number. Please enter a number between 0 and 999.'
+        try:
+            tt_no = int(tt_no)
+        except:
+            await interaction.response.edit_message(view=self.view)
+            await interaction.followup.send(msg_error, ephemeral=True)
+            return
+        if not 0 <= tt_no <= 999:
+            await interaction.response.edit_message(view=self.view)
+            await interaction.followup.send(msg_error, ephemeral=True)
+            return
+        await self.view.user_settings.update(tt=tt_no)
+        embed = await self.view.embed_function(self.view.ctx, self.view.user_settings)
+        await interaction.response.edit_message(embed=embed, view=self.view)

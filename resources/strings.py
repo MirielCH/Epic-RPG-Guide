@@ -1,5 +1,7 @@
 # strings.py
 
+import re
+
 from discord.commands import OptionChoice
 
 from resources import emojis
@@ -891,3 +893,7 @@ HORSE_MULTIPLIER_PETS = {
     9: 2.5,
     10: 5,
 }
+
+
+# Regex
+REGEX_COMMAND_QUICK_TRADE = re.compile(r"(?:\bi\b|\binv\b|\binventory\b)\s+\b\d\d?\b")
