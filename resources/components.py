@@ -433,7 +433,8 @@ class DropTypeSelect(discord.ui.Select):
                     options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
                 child.options = options
                 break
-        embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data)
+        embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data,
+                                               self.view.world_boost, self.view.boost_percentage)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 

@@ -14,13 +14,22 @@ class ValentineCog(commands.Cog):
         self.bot = bot
 
     cmd_valentine = SlashCommandGroup("valentine", "Valentine event guide")
+    cmd_love = SlashCommandGroup("love", "Valentine event guide")
 
-    @cmd_valentine.command(name='guide', description='Love is in the aaaaaaiiiiirr')
-    async def xmas_guide(
+    @cmd_love.command(name='guide', description='Love is in the aaaaaaiiiiirr')
+    async def love_guide(
         self,
         ctx: discord.ApplicationContext,
     ) -> None:
-        """Christmas guide"""
+        """Valentine guide"""
+        await valentine.command_valentine_guide(ctx)
+
+    @cmd_valentine.command(name='guide', description='Love is in the aaaaaaiiiiirr')
+    async def valentine_guide(
+        self,
+        ctx: discord.ApplicationContext,
+    ) -> None:
+        """Valentine guide"""
         await valentine.command_valentine_guide(ctx)
 
 

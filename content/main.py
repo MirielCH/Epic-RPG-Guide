@@ -108,11 +108,11 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["valentine guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["valentine guide"]} / {strings.SLASH_COMMANDS_GUIDE["love guide"]}\n'
     )
     guides = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["alchemy guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]}\n'

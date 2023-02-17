@@ -122,17 +122,22 @@ async def embed_quick_trade_calculator(area: database.Area, inventory_amount: in
     results[11] = floor(results[10] / 8)
     results[12] = floor(results[10] / 350)
     results[16] = floor(results[10] / 250)
-
+    if 1 <= area.area_no <= 10:
+        upper_area = '10+'
+    elif 11 <= area.area_no <= 19:
+        upper_area = f'{area.area_no}+'
+    else:
+        upper_area = area.area_no
     answer = (
         f'{answer}\n'
-        f'{emojis.BP} **Area 10+**: {results[10]:,} {emojis.LOG}'
+        f'{emojis.BP} **Area {upper_area}**: {results[10]:,} {emojis.LOG}'
     )
 
     embed = discord.Embed(
         title = 'QUICK TRADE CALCULATOR',
-        description = answer.strip()
+        description = answer.strip(),
     )
-    embed.set_footer(text='Use "/settings" to disable this.')
+    embed.set_footer(text=f'Current area: {area.area_no}\nUse "/settings" to disable this.')
     return embed
 
 

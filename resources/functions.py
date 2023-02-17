@@ -967,10 +967,19 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
     Also logs the errors to the database.
     """
     boosts_data = {}
-    items_field = bot_message.embeds[0].fields[0]
-    boosts_field = bot_message.embeds[0].fields[1]
+    potion_fields = boost_fields = ''
+    for field in bot_message.embeds[0].fields:
+        if potion_fields == '':
+            potion_fields = field.value
+        elif field.name == '':
+            if boost_fields == '':
+                potion_fields = f'{potion_fields}\n{field.value}'
+            else:
+                boost_fields = f'{boost_fields}\n{field.value}'
+        else:
+            boost_fields = field.value
     active_items = []
-    for line in items_field.value.lower().split('\n'):
+    for line in potion_fields.lower().split('\n'):
         item_name_search = re.search('> \*\*(.+?)\*\*:', line)
         try:
             item_name = item_name_search.group(1)
@@ -980,13 +989,13 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
     boosts_data['active items'] = active_items
 
     monster_drop_chance = profession_xp = selling_price = 0
-    for line in boosts_field.value.lower().split('\n'):
-        monster_drops_match = re.search('> monster drops\*\*: +(.+?)%$', line)
-        profession_xp_match = re.search(': profession xp\*\*: +(.+?)%$', line)
-        selling_price_match = re.search('> sell price\*\*: +(.+?)%$', line)
-        if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1))
-        if profession_xp_match: profession_xp += int(profession_xp_match.group(1))
-        if selling_price_match: selling_price += int(selling_price_match.group(1))
+    for line in boost_fields.lower().split('\n'):
+        monster_drops_match = re.search(' monster drops\*\*: \+(.+?)%', line)
+        profession_xp_match = re.search(' profession xp\*\*: \+(.+?)%', line)
+        selling_price_match = re.search(' sell price\*\*: \+(.+?)%', line)
+        if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1).replace('.00',''))
+        if profession_xp_match: profession_xp += int(profession_xp_match.group(1).replace('.00',''))
+        if selling_price_match: selling_price += int(selling_price_match.group(1).replace('.00',''))
     boosts_data['monster drop chance'] = monster_drop_chance
     boosts_data['profession xp'] = profession_xp
     boosts_data['selling price'] = selling_price
@@ -1535,7 +1544,7 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
         if area.area_no in (1,2,3,4):
-            log_calc = log_calc + (ruby * 225)
+            log_calc = log_calc + (ruby * 450)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
         if area.area_no in (1,2):
@@ -1555,7 +1564,7 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
         if area.area_no in (1,2,3,4):
-            log_calc = log_calc + (ruby * 225)
+            log_calc = log_calc + (ruby * 450)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
         if area.area_no in (1,2):

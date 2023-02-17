@@ -82,7 +82,8 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
         if bot_message is None: return
         boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
         boost_percentage = boosts_data['monster drop chance']
-    view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data)
+    view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data,
+                                          world_boost, boost_percentage)
     embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
