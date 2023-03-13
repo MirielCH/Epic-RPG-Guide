@@ -988,14 +988,23 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
             continue
     boosts_data['active items'] = active_items
 
-    monster_drop_chance = profession_xp = selling_price = 0
+    monster_drop_chance = profession_xp = selling_price = stat_at = stat_def = stat_life = 0
     for line in boost_fields.lower().split('\n'):
+        at_match = re.search(' at\*\*: \+(.+?)$', line)
+        def_match = re.search(' def\*\*: \+(.+?)$', line)
+        life_match = re.search(' life\*\*: \+(.+?)$', line)
         monster_drops_match = re.search(' monster drops\*\*: \+(.+?)%', line)
         profession_xp_match = re.search(' profession xp\*\*: \+(.+?)%', line)
         selling_price_match = re.search(' sell price\*\*: \+(.+?)%', line)
+        if at_match: stat_at += int(at_match.group(1).replace('.00',''))
+        if def_match: stat_def += int(def_match.group(1).replace('.00',''))
+        if life_match: stat_life += int(life_match.group(1).replace('.00',''))
         if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1).replace('.00',''))
         if profession_xp_match: profession_xp += int(profession_xp_match.group(1).replace('.00',''))
         if selling_price_match: selling_price += int(selling_price_match.group(1).replace('.00',''))
+    boosts_data['at'] = stat_at
+    boosts_data['def'] = stat_def
+    boosts_data['life'] = stat_life
     boosts_data['monster drop chance'] = monster_drop_chance
     boosts_data['profession xp'] = profession_xp
     boosts_data['selling price'] = selling_price
@@ -1351,7 +1360,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1371,7 +1383,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1391,7 +1406,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1411,7 +1429,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1431,7 +1452,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1452,7 +1476,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         if area.area_no in (1,2):
             log_calc = log_calc + (apple_calc * 3)
             log_calc = log_calc + (ruby * 450)
-        elif area.area_no in (3,4):
+        elif area.area_no == 3:
+            log_calc = log_calc + (apple_calc * area.trade_apple_log)
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
             log_calc = log_calc + (ruby * 450)
         else:
@@ -1543,7 +1570,9 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fishgolden_calc = fishgolden + (fishepic * 80)
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area.area_no in (1,2,3,4):
+        if area.area_no in (1,2,3):
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (ruby * 450)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
@@ -1563,7 +1592,9 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
         fishgolden_calc = fishgolden + (fishepic * 80)
         fish_calc = fish + (fishgolden_calc * 12)
         log_calc = log_calc + (fish_calc * area.trade_fish_log)
-        if area.area_no in (1,2,3,4):
+        if area.area_no in (1,2,3):
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
             log_calc = log_calc + (ruby * 450)
         else:
             log_calc = log_calc + (ruby * area.trade_ruby_log)
@@ -1589,8 +1620,10 @@ async def get_inventory_value(area: database.Area, item: database.Item, inventor
             log_calc = log_calc + (apple_calc * 3)
         else:
             log_calc = log_calc + (apple_calc * area.trade_apple_log)
-        if area.area_no in (1,2,3,4):
-            ruby_calc = ruby + (log_calc // 450)
+        if area.area_no in (1,2,3):
+            log_calc = log_calc + (ruby * 225)
+        elif area.area_no == 4:
+            log_calc = log_calc + (ruby * 450)
         else:
             ruby_calc = ruby + (log_calc // area.trade_ruby_log)
         result_value = ruby_calc

@@ -106,6 +106,7 @@ class TimeJumpCalculatorStatsModal(Modal):
         self.view.profile_data['extra_def'] = extra_def
         self.view.profile_data['extra_life'] = extra_life
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
+                                               self.view.boosts_data,
                                                self.view.option_inventory, self.view.option_stats)
         await interaction.response.edit_message(embed=embed, view=self.view)
 

@@ -493,7 +493,7 @@ class TimeJumpCalculatorView(discord.ui.View):
     None
     """
     def __init__(self, ctx: Union[commands.Context, discord.ApplicationContext], area_no: int, inventory: str,
-                 profile_data: dict, option_inventory: str, option_stats: str, all_items: dict,
+                 profile_data: dict, boosts_data: dict, option_inventory: str, option_stats: str, all_items: dict,
                  embed_function: callable, interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
@@ -503,6 +503,7 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.area_no = area_no
         self.inventory = inventory
         self.profile_data = profile_data
+        self.boosts_data = boosts_data
         self.option_inventory = option_inventory
         self.option_stats = option_stats
         self.all_items = all_items

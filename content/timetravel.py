@@ -122,12 +122,17 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
         inventory = f'{inventory}{field.value}\n'
 
     profile_data = {}
+    boosts_data = {
+        'at': 0,
+        'def': 0,
+        'life': 0,
+    }
     if option_stats == STATS_CURRENT:
         bot_message_task = asyncio.ensure_future(functions.wait_for_profile_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
                                                             command=strings.SLASH_COMMANDS_EPIC_RPG["profile"])
-            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+            bot_message_profile = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
         except asyncio.TimeoutError:
             await ctx.respond(
                 strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='profile'),
@@ -135,7 +140,20 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
             )
             return
         if bot_message is None: return
-        profile_data = await functions.extract_data_from_profile_embed(ctx, bot_message)
+        bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                            command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
+            bot_message_boosts = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        profile_data = await functions.extract_data_from_profile_embed(ctx, bot_message_profile)
+        boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message_boosts)
         profile_data['horse_boost'] = 0
         if profile_data['horse_type'] in ('magic', 'defender', 'strong', 'tank'):
             bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
@@ -172,10 +190,11 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
         profile_data['enchant_sword'] = 'OMEGA'
         profile_data['enchant_armor'] = 'OMEGA'
 
-    embed = await embed_time_jump_calculator(area_no, inventory.lower(), profile_data, option_inventory, option_stats)
+    embed = await embed_time_jump_calculator(area_no, inventory.lower(), profile_data, boosts_data, option_inventory,
+                                             option_stats)
     if option_stats == STATS_MANUAL:
-        view = views.TimeJumpCalculatorView(ctx, area_no, inventory.lower(), profile_data, option_inventory,
-                                                 option_stats, all_items, embed_time_jump_calculator)
+        view = views.TimeJumpCalculatorView(ctx, area_no, inventory.lower(), profile_data, boosts_data, option_inventory,
+                                            option_stats, all_items, embed_time_jump_calculator)
         interaction = await ctx.respond(embed=embed, view=view)
         view.interaction = interaction
         await view.wait()
@@ -525,7 +544,8 @@ async def embed_time_jump_score_materials() -> discord.Embed:
         f'{emojis.BP} 1 {emojis.LB_EPIC} EPIC lootbox = 0.2 score\n'
         f'{emojis.BP} 1 {emojis.LB_EDGY} EDGY lootbox = 0.25 score\n'
         f'{emojis.BP} 1 {emojis.LB_OMEGA} OMEGA lootbox = 5 score\n'
-        f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 50 score'
+        f'{emojis.BP} 1 {emojis.LB_GODLY} GODLY lootbox = 50 score\n'
+        f'{emojis.BP} 1 {emojis.LB_VOID} VOID lootbox = 200 score\n'
     )
     farm_items = (
         f'{emojis.BP} 35 {emojis.POTATO} potatoes = 1 score\n'
@@ -687,7 +707,7 @@ async def embed_time_jump_score_gear() -> discord.Embed:
     return embed
 
 
-async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data: dict,
+async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data: dict, boosts_data: dict,
                                     option_inventory: str, option_stats: str) -> discord.Embed:
     """STT score calculator embed"""
     message_area = 'The TOP' if area_no == 21 else f'area {area_no}'
@@ -727,6 +747,7 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
     lbedgy = await functions.inventory_get(inventory, 'edgy lootbox')
     lbomega = await functions.inventory_get(inventory, 'omega lootbox')
     lbgodly = await functions.inventory_get(inventory, 'godly lootbox')
+    lbvoid = await functions.inventory_get(inventory, 'void lootbox')
     lifepotion = await functions.inventory_get(inventory, 'life potion')
     potato = await functions.inventory_get(inventory, 'potato')
     carrot = await functions.inventory_get(inventory, 'carrot')
@@ -744,8 +765,10 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
     score_lbedgy = lbedgy * 0.25
     score_lbomega = lbomega * 5
     score_lbgodly = lbgodly * 50
+    score_lbvoid = lbvoid * 50
     score_lootboxes = (
         score_lbcommon + score_lbuncommon + score_lbrare + score_lbepic + score_lbedgy + score_lbomega + score_lbgodly
+        + score_lbvoid
     )
     score_bread = bread / 25
     score_carrot = carrot / 30
@@ -785,6 +808,7 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
         f'{emojis.BP} {lbedgy:,} {emojis.LB_EDGY} = {score_lbedgy:,.2f}\n'
         f'{emojis.BP} {lbomega:,} {emojis.LB_OMEGA} = {score_lbomega:,.2f}\n'
         f'{emojis.BP} {lbgodly:,} {emojis.LB_GODLY} = {score_lbgodly:,.2f}\n'
+        f'{emojis.BP} {lbvoid:,} {emojis.LB_VOID} = {score_lbvoid:,.2f}\n'
         f'{emojis.BP} Total: **{score_lootboxes:,.2f}**\n'
     )
     field_mobdrops = (
@@ -1064,14 +1088,14 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
                 def_multiplier += profile_data['horse_boost'] / 100
             if profile_data['horse_type'] == 'tank':
                 life_multiplier += profile_data['horse_boost'] / 100
-            base_at = functions.round_school(profile_data['at'] / (1 + sword_enchant_multiplier) / at_multiplier)
-            base_def = functions.round_school(profile_data['def'] / (1 + armor_enchant_multiplier) / def_multiplier)
-            base_life = functions.round_school(profile_data['life'] / life_multiplier)
+            base_at = functions.round_school(profile_data['at'] / (1 + sword_enchant_multiplier) / at_multiplier) - boosts_data['at']
+            base_def = functions.round_school(profile_data['def'] / (1 + armor_enchant_multiplier) / def_multiplier) - boosts_data['def']
+            base_life = functions.round_school(profile_data['life'] / life_multiplier) - boosts_data['life']
         else:
             sword_at = profile_data['sword'].stat_at if profile_data['sword'] is not None else 0
             armor_def = profile_data['armor'].stat_def if profile_data['armor'] is not None else 0
             base_at = profile_data['level'] + sword_at + profile_data['extra_at']
-            base_def = profile_data['level'] + armor_def + + profile_data['extra_def']
+            base_def = profile_data['level'] + armor_def + profile_data['extra_def']
             base_life = 95 + (5 * profile_data['level']) + profile_data['extra_life']
         score_level = profile_data['level'] * 0.5
         score_at = base_at * 0.125

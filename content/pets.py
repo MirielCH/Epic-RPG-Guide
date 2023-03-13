@@ -467,7 +467,7 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
         f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
-        f'{emojis.BP} {emojis.SKILL_BOOSTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill '
+        f'{emojis.BP} {emojis.SKILL_RESETTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill '
         f'to reset all pets\n'
     )
     boostsimpact = (

@@ -338,7 +338,7 @@ async def embed_alchemy_endgame() -> discord.Embed:
         f'{emojis.BP} **Duration**: `8`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1t` {emojis.COIN} + `100k` {emojis.RUBY}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Make more money with apples **if** you can make a profit after brewing this\n'
+        f'{emojis.DETAIL} Make more money with **if** you can make a profit after brewing this\n'
     )
     potion_time = (
         f'{emojis.BP} **Boosts**\n'

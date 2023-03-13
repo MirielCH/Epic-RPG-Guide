@@ -469,7 +469,7 @@ class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
                 child.options = options
                 break
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
-                                               self.view.option_inventory, self.view.option_stats)
+                                               self.view.boosts_data, self.view.option_inventory, self.view.option_stats)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -516,6 +516,7 @@ class TimeJumpCalculatorGearSelect(discord.ui.Select):
                 child.options = options
                 break
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
+                                               self.view.boosts_data,
                                                self.view.option_inventory, self.view.option_stats)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
