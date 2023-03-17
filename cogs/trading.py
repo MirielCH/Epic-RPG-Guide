@@ -105,9 +105,10 @@ class TradingCog(commands.Cog):
             interaction_user = user_command_message.author
             if embed_user is not None:
                 if interaction_user != embed_user: return
-            area_match = re.search(r'(?:\bi\b|\binv\b|\binventory\b)\s+\b(\d\d?)\b', user_command_message.content.lower())
-            area_no = int(area_match.group(1))
-            if not 1 <= area_no <= 20: return
+            area_match = re.search(r'(?:\bi\b|\binv\b|\binventory\b)\s+\b(?:(\d\d?|top))\b',
+                                   user_command_message.content.lower())
+            area_no = int(area_match.group(1).replace('top','21'))
+            if not 1 <= area_no <= 21: return
             try:
                 user_settings: database.User = await database.get_user(interaction_user.id)
             except database.FirstTimeUser:

@@ -901,4 +901,4 @@ HORSE_MULTIPLIER_PETS = {
 
 
 # Regex
-REGEX_COMMAND_QUICK_TRADE = re.compile(r"(?:\bi\b|\binv\b|\binventory\b)\s+\b\d\d?\b")
+REGEX_COMMAND_QUICK_TRADE = re.compile(r"(?:\bi\b|\binv\b|\binventory\b)\s+\b(?:\d\d?|top)\b")

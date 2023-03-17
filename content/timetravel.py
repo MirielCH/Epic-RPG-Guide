@@ -765,7 +765,7 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
     score_lbedgy = lbedgy * 0.25
     score_lbomega = lbomega * 5
     score_lbgodly = lbgodly * 50
-    score_lbvoid = lbvoid * 50
+    score_lbvoid = lbvoid * 200
     score_lootboxes = (
         score_lbcommon + score_lbuncommon + score_lbrare + score_lbepic + score_lbedgy + score_lbomega + score_lbgodly
         + score_lbvoid
