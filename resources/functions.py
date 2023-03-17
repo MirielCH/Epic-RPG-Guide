@@ -3,7 +3,7 @@
 from argparse import ArgumentError
 import asyncio
 import re
-from typing import Any, List, Optional, Union, Tuple
+from typing import Any, Coroutine, List, Optional, Union, Tuple
 
 import discord
 from discord.utils import MISSING
@@ -301,7 +301,7 @@ async def default_footer(prefix):
 
 
 # Wait for input
-async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_task: asyncio.coroutine,
+async def wait_for_bot_or_abort(ctx: discord.ApplicationContext, bot_message_task: Coroutine,
                                 content: str) -> Union[discord.Message, None]:
     """Sends a message with an abort button that tells the user to input a command.
     This function then waits for both view input and bot_message_task.
