@@ -56,9 +56,10 @@ class TimeTravelCog(commands.Cog):
         area_no: Option(int, 'Your current area', min_value=1, max_value=21, choices=strings.CHOICES_AREA),
         inventory: Option(str, 'Inventory calculation mode', choices=timetravel_content.TJ_CALCULATOR_INVENTORY),
         stats: Option(str, 'Stats calculation mode', choices=timetravel_content.TJ_CALCULATOR_STATS),
+        boosts: Option(str, 'Boosts calculation mode', choices=timetravel_content.TJ_CALCULATOR_BOOSTS),
     ) -> None:
         """Time jump calculator"""
-        await timetravel_content.command_time_jump_calculator(self.bot, ctx, area_no, inventory, stats)
+        await timetravel_content.command_time_jump_calculator(self.bot, ctx, area_no, inventory, stats, boosts)
 
 
 # Initialization

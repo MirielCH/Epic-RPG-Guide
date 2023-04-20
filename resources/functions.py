@@ -828,7 +828,7 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
         current_xp = int(xp_match.group(1).replace(',',''))
         needed_xp = int(xp_match.group(2).replace(',',''))
     except Exception as error:
-        await database.log_error(f'{profession_found.capitalize} data not found in profession message: {pr_field}', ctx)
+        await database.log_error(f'{profession_found.capitalize} data not found in profession message: {str(pr_field)}', ctx)
         raise ValueError(error)
 
     return (profession_found, level, current_xp, needed_xp)
@@ -878,7 +878,7 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
                     level = int(level)
                 except Exception as error:
                     await database.log_error(
-                        f'{profession.capitalize} data not found in profession overview message field: {field}',
+                        f'{profession.capitalize} data not found in profession overview message field: {str(field)}',
                         ctx
                     )
                     await database.log_error(error, ctx)
@@ -927,7 +927,7 @@ async def extract_data_from_world_embed(ctx: discord.ApplicationContext,
     try:
         mob_name = name_search.group(1)
     except Exception as error:
-        await database.log_error(f'Monster name not found in world message: {mob_field}', ctx)
+        await database.log_error(f'Monster name not found in world message: {str(mob_field)}', ctx)
         raise ValueError(error)
     world_data['monster'] = mob_name
 
@@ -1071,7 +1071,7 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         horse_data['boost'] = float(boost_match.group(1))
         horse_data['epicness'] = int(epicness_match.group(1)) if epicness_match else 0
     except Exception as error:
-        await database.log_error(f'Error extracting horse data in horse message: {data_field}', ctx)
+        await database.log_error(f'Error extracting horse data in horse message: {str(data_field)}', ctx)
         raise ValueError(error)
 
     return horse_data
@@ -1179,14 +1179,17 @@ async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
             profile_data['enchant_sword'] = enchant_sword_match.group(1)
         else:
             profile_data['enchant_sword'] = 'No'
-        horse_type = horse_type_match.group(1)
+        if horse_type_match:
+            horse_type = horse_type_match.group(1)
+        else:
+            horse_type = 'None'
         if horse_type in strings.HORSE_TYPES_ENGLISH: horse_type = strings.HORSE_TYPES_ENGLISH[horse_type]
         profile_data['horse_type'] = horse_type
         profile_data['time_travel'] = int(tt_match.group(1)) if tt_match is not None else 0
     except Exception as error:
         await database.log_error(
             f'Error extracting data in profile message: {error}\n'
-            f'{field_progress}, {field_stats}, {field_equipment}',
+            f'{str(field_progress)}, {str(field_stats)}, {str(field_equipment)}',
             ctx
         )
         raise ValueError(error)
@@ -1233,7 +1236,7 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
         area = int(area)
     except Exception as error:
         await database.log_error(
-            f'Error extracting progress data in profile or progress message: {progress_field}',
+            f'Error extracting progress data in profile or progress message: {str(progress_field)}',
             ctx
         )
         raise ValueError(error)
@@ -1277,7 +1280,7 @@ async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationCont
         user_life = int(life_search.group(2))
     except Exception as error:
         await database.log_error(
-            f'Error extracting stats in profile or stats message: {stats_field}',
+            f'Error extracting stats in profile or stats message: {str(stats_field)}',
             ctx
         )
         raise ValueError(error)
@@ -1315,7 +1318,7 @@ async def extract_duel_bonus_from_guild_embed(ctx: discord.ApplicationContext,
     else:
         error = f'Error extracting duel bonus in guild stats message: {progress_field}'
         await database.log_error(
-            f'Error extracting duel bonus in guild stats message: {progress_field}',
+            f'Error extracting duel bonus in guild stats message: {str(progress_field)}',
             ctx
         )
         raise ValueError(error)

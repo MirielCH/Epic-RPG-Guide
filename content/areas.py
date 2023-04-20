@@ -225,9 +225,10 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} Items have a chance to randomly vanish from inventory\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dice"]} and {strings.SLASH_COMMANDS_EPIC_RPG["coinflip"]} '
             f'do not work properly\n'
-            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}, {strings.SLASH_COMMANDS_EPIC_RPG["cook"]}, '
-            f'{strings.SLASH_COMMANDS_EPIC_RPG["farm"]} and all work commands do not work at all\n'
-            f'{emojis.BP} Your horse buff is not available\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["cook"]} has a chance to only yield half of the amount\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}, {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} '
+            f'and all work commands do not work at all\n'
+            f'{emojis.BP} Your horse is taking a break, disabling all of its boosts\n'
         )
     elif area.area_no == 20:
         debuffs = (

@@ -13,9 +13,20 @@ class EasterCog(commands.Cog):
         self.bot = bot
 
     cmd_easter = SlashCommandGroup("easter", "Easter event guide")
+    cmd_egg = SlashCommandGroup("egg", "Easter event guide")
 
     @cmd_easter.command(name='guide', description='Eggs! Eggs everywhere!')
     async def easter_guide(
+        self,
+        ctx: discord.ApplicationContext,
+        topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,
+                      choices=easter.TOPICS, default=easter.TOPIC_OVERVIEW),
+    ) -> None:
+        """Easter guide"""
+        await easter.command_easter_guide(ctx, topic)
+        
+    @cmd_egg.command(name='guide', description='Eggs! Eggs everywhere!')
+    async def egg_guide(
         self,
         ctx: discord.ApplicationContext,
         topic: Option(str, strings.ARGUMENT_TOPIC_DESCRIPTION,

@@ -752,22 +752,6 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
 
     if profession == 'crafter':
         multiplier = 1 * multiplier_weekly * multiplier_boosts
-        returned_percentages = {
-            101: 0.12,
-            102: 0.1283,
-            103: 0.1346,
-            104: 0.14,
-            105: 0.1447,
-            106: 0.149,
-            107: 0.1529,
-            108: 0.1566,
-            109: 0.16,
-            110: 0.1632,
-            111: 0.1663,
-            112: 0.1693,
-            113: 0.1721,
-            114: 0.1748,
-        }
         async def calculate_logs(item_amount: int, returned_percentage: float, level: int) -> int:
             """Calculates how many logs it needs for a certain amount of epic logs"""
             base_log_amount_upper = 100_000_000_000
@@ -801,7 +785,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
             f'{emojis.DETAIL} The smaller the batches, the lower the overall risk.'
         )
 
-        returned_percentage = returned_percentages.get(from_level, None) if from_level > 100 else 0.1
+        returned_percentage = strings.CRAFTER_RETURNED_PERCENTAGES.get(from_level, None) if from_level > 100 else 0.1
         if returned_percentage is None:
             return discord.Embed(description=f'No data found for {profession} level {from_level+1}, sorry.')
         log_amount = await calculate_logs(xp, returned_percentage, from_level)
@@ -821,7 +805,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
                 )
                 current_level -= 1
                 break
-            returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
+            returned_percentage = strings.CRAFTER_RETURNED_PERCENTAGES[current_level-1] if current_level-1 > 100 else 0.1
             log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
             log_amount = ceil(log_amount / multiplier)
             output = (
@@ -840,7 +824,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
                     )
                     break
                 xp_total += level_xp
-                returned_percentage = returned_percentages[current_level-1] if current_level-1 > 100 else 0.1
+                returned_percentage = strings.CRAFTER_RETURNED_PERCENTAGES[current_level-1] if current_level-1 > 100 else 0.1
                 log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
                 log_amount = ceil(log_amount / multiplier)
                 log_amount_total += log_amount

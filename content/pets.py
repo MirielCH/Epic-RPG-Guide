@@ -15,9 +15,9 @@ TOPIC_ADVENTURES = 'Pet adventures'
 TOPIC_CATCH = 'Catching pets'
 TOPIC_FUSION = 'Fusing pets'
 TOPIC_OVERVIEW = 'Overview'
-TOPIC_SKILLS = 'Skills: Normal skills'
+TOPIC_SKILLS = 'Skills: Basic skills'
+TOPIC_SKILLS_ADVANCED = 'Skills: Advanced skills'
 TOPIC_SKILLS_SPECIAL = 'Skills: Special skills'
-TOPIC_SKILLS_UNIQUE = 'Skills: Unique skills'
 
 TOPICS = [
     TOPIC_OVERVIEW,
@@ -25,8 +25,8 @@ TOPICS = [
     TOPIC_FUSION,
     TOPIC_ADVENTURES,
     TOPIC_SKILLS,
+    TOPIC_SKILLS_ADVANCED,
     TOPIC_SKILLS_SPECIAL,
-    TOPIC_SKILLS_UNIQUE,
 ]
 
 
@@ -38,9 +38,9 @@ async def command_pets_guide(ctx: discord.ApplicationContext, topic: str) -> Non
         TOPIC_CATCH: embed_pets_catch,
         TOPIC_FUSION: embed_pets_fusion,
         TOPIC_ADVENTURES: embed_pets_adventures,
-        TOPIC_SKILLS: embed_pets_skills_normal,
+        TOPIC_SKILLS: embed_pets_skills_basic,
+        TOPIC_SKILLS_ADVANCED: embed_pets_skills_advanced,
         TOPIC_SKILLS_SPECIAL: embed_pets_skills_special,
-        TOPIC_SKILLS_UNIQUE: embed_pets_skills_unique,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -89,24 +89,24 @@ async def embed_pets_overview() -> discord.Embed:
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see topic `Fusing pets`)'
     )
-    normalskills = (
-        f'{emojis.BP} There are 7 normal skills\n'
-        f'{emojis.BP} Normal skills rank from F to SS+\n'
+    basicskills = (
+        f'{emojis.BP} There are 7 basic skills\n'
+        f'{emojis.BP} Basic skills rank from F to SS+\n'
         f'{emojis.BP} Mainly found by fusing pets (see topic `Fusing pets`)\n'
         f'{emojis.BP} Small chance of getting a skill when catching pets\n'
-        f'{emojis.BP} See topic `Normal skills` for details\n'
+        f'{emojis.BP} See topic `Basic skills` for details\n'
+    )
+    advancedskills = (
+        f'{emojis.BP} There are 4 advanced skills\n'
+        f'{emojis.BP} Advanced skills rank from F to SS+\n'
+        f'{emojis.BP} Advanced skills can **not** be lost\n'
+        f'{emojis.BP} See topic `Advanced skills` for details\n'
     )
     specialskills = (
-        f'{emojis.BP} There are 4 special skills\n'
-        f'{emojis.BP} Special skills rank from F to SS+\n'
-        f'{emojis.BP} Special skills can **not** be lost\n'
-        f'{emojis.BP} See topic `Special skills` for details\n'
-    )
-    uniqueskills = (
-        f'{emojis.BP} There are 8 unique skills\n'
+        f'{emojis.BP} There are 8 special skills\n'
         f'{emojis.BP} Special skills don\'t have a rank and can **not** be lost\n'
-        f'{emojis.BP} Each unique skill is tied to a certain pet\n'
-        f'{emojis.BP} See topic `Unique skills` for details\n'
+        f'{emojis.BP} Each special skill is tied to a certain pet\n'
+        f'{emojis.BP} See topic `Special skills` for details\n'
     )
     type = (
         f'{emojis.BP} The basic types are {emojis.PET_CAT} cat, {emojis.PET_DOG} dog and {emojis.PET_DRAGON} dragon\n'
@@ -131,9 +131,9 @@ async def embed_pets_overview() -> discord.Embed:
     embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
     embed.add_field(name='WHAT TO DO WITH PETS', value=whattodo, inline=False)
     embed.add_field(name='TIER', value=tier, inline=False)
-    embed.add_field(name='NORMAL SKILLS', value=normalskills, inline=False)
+    embed.add_field(name='BASIC SKILLS', value=basicskills, inline=False)
+    embed.add_field(name='ADVANCED SKILLS', value=advancedskills, inline=False)
     embed.add_field(name='SPECIAL SKILLS', value=specialskills, inline=False)
-    embed.add_field(name='UNIQUE SKILLS', value=uniqueskills, inline=False)
     embed.add_field(name='TYPE', value=type, inline=False)
     embed.add_field(name='SCORE', value=score, inline=False)
     return embed
@@ -247,8 +247,8 @@ async def embed_pets_fusion() -> discord.Embed:
     return embed
 
 
-async def embed_pets_skills_normal() -> discord.Embed:
-    """Normal skills guide"""
+async def embed_pets_skills_basic() -> discord.Embed:
+    """Basic skills guide"""
     normie = f'{emojis.BP} This is not a skill, it simply means the pet has no skills'
     fast = (
         f'{emojis.BP} Reduces the time to do adventures\n'
@@ -275,9 +275,9 @@ async def embed_pets_skills_normal() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'NORMAL PET SKILLS',
+        title = 'BASIC PET SKILLS',
         description = (
-            f'Overview of all **normal** pet skills. See topic `Overview` on how to get these skills.\n'
+            f'Overview of all **basic** pet skills. See topic `Overview` on how to get these skills.\n'
             f'Purple and yellow skills are rarer than blue ones.'
         )
     )
@@ -293,8 +293,8 @@ async def embed_pets_skills_normal() -> discord.Embed:
     return embed
 
 
-async def embed_pets_skills_special() -> discord.Embed:
-    """Special skills guide"""
+async def embed_pets_skills_advanced() -> discord.Embed:
+    """Advanced skills guide"""
     ascended = (
         f'{emojis.BP} Has a chance to find another pet in adventures\n'
         f'{emojis.DETAIL} The chance is `11.11`...% per rank (`100`% at SS+)\n'
@@ -309,8 +309,9 @@ async def embed_pets_skills_special() -> discord.Embed:
     )
     fighter = (
         f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
-        f'{emojis.BP} You have a `25`% base chance to get an essence after the dungeon\n'
-        f'{emojis.DETAIL} This chance increases by `7.5`% per rank\n'
+        f'{emojis.BP} You have a `25`% base chance to get at least `1` essence after the dungeon\n'
+        f'{emojis.DETAIL2} This chance increases by `7.5`% per rank\n'
+        f'{emojis.DETAIL2} You have a small chance to get up to `3` essences\n'
         f'{emojis.DETAIL} Multiple fighter pets do not stack\n'
         f'{emojis.BP} You can **not** find this skill, it is unlocked once a pet reaches Tier X\n'
         f'{emojis.BP} You can **not** lose this skill when fusing\n'
@@ -324,14 +325,14 @@ async def embed_pets_skills_special() -> discord.Embed:
     )
     perfect = (
         f'{emojis.BP} Works like the {emojis.SKILL_ASCENDED} ascended skill but brings back more pets\n'
-        f'{emojis.DETAIL} Rank F: `2.1` pets per adventure\n'
-        f'{emojis.DETAIL} Rank E: `4.4` pets per adventure\n'
-        f'{emojis.DETAIL} Rank D: `9.1` pets per adventure\n'
-        f'{emojis.DETAIL} Rank C: `18.6` pets per adventure\n'
-        f'{emojis.DETAIL} Rank B: `37.7` pets per adventure\n'
-        f'{emojis.DETAIL} Rank A: `76` pets per adventure\n'
-        f'{emojis.DETAIL} Rank S: `152.7` pets per adventure\n'
-        f'{emojis.DETAIL} Rank SS: `306.2` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank F: `2.1` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank E: `4.4` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank D: `9.1` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank C: `18.6` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank B: `37.7` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank A: `76` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank S: `152.7` pets per adventure\n'
+        f'{emojis.DETAIL2} Rank SS: `306.2` pets per adventure\n'
         f'{emojis.DETAIL} Rank SS+: `613.3` pets per adventure\n'
         f'{emojis.BP} To get perfect rank F fuse two ascended SS+ pets\n'
         f'{emojis.BP} To rank up the skill, fuse two perfect pets with the **SAME**(!!) rank\n'
@@ -340,8 +341,8 @@ async def embed_pets_skills_special() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'SPECIAL PET SKILLS',
-        description = 'Overview of all **special** pet skills.'
+        title = 'ADVANCED PET SKILLS',
+        description = 'Overview of all **advanced** pet skills.'
     )
     embed.add_field(name=f'ASCENDED {emojis.SKILL_ASCENDED}', value=ascended, inline=False)
     embed.add_field(name=f'FIGHTER {emojis.SKILL_FIGHTER}', value=fighter, inline=False)
@@ -350,8 +351,8 @@ async def embed_pets_skills_special() -> discord.Embed:
     return embed
 
 
-async def embed_pets_skills_unique() -> discord.Embed:
-    """Unique skills guide"""
+async def embed_pets_skills_special() -> discord.Embed:
+    """Special skills guide"""
     antarctician = (
         f'{emojis.BP} If the pet finds fish, they will always be {emojis.FISH_EPIC} EPIC fish\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_PENGUIN} penguin pet\n'
@@ -404,12 +405,12 @@ async def embed_pets_skills_unique() -> discord.Embed:
         f'{emojis.DETAIL} The drop chance increases with higher dungeons.\n'
         f'{emojis.DETAIL} You can get multiple, but each time you get one, the drop chance lowers.\n'
     )
-    skillranks = f'{emojis.BP} Unique skills can not be ranked up'
+    skillranks = f'{emojis.BP} Special skills can not be ranked up'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = 'UNIQUE PET SKILLS',
+        title = 'SPECIAL PET SKILLS',
         description = (
-            f'Overview of all **unique** pet skills. These skill are unique to certain pets and can **not** be lost.\n'
+            f'Overview of all **special** pet skills. These skill are unique to certain pets and can **not** be lost.\n'
         )
     )
     embed.add_field(name=f'ANTARCTICIAN {emojis.SKILL_ANTARCTICIAN}', value=antarctician, inline=False)
@@ -450,17 +451,17 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} **Pet**: Random T1-T3 pet (only if pet has {emojis.SKILL_ASCENDED} ascended skill)\n'
         f'{emojis.DETAIL} You get a pet **in addition** to the other reward'
     )
-    normalskillsimpact = (
+    basicskillsimpact = (
         f'{emojis.BP} {emojis.SKILL_FAST} **Fast**: Reduces the time to do adventures\n'
         f'{emojis.BP} {emojis.SKILL_DIGGER} **Digger**: Increases the amount of coins you get\n'
         f'{emojis.BP} {emojis.SKILL_LUCKY} **Lucky**: Increases the chance to find better items\n'
         f'{emojis.BP} {emojis.SKILL_TRAVELER} **Time traveler**: Has a chance of finishing instantly\n'
         f'{emojis.BP} {emojis.SKILL_EPIC} **EPIC**: If you send this pet **first**, you can send another\n'
     )
-    specialskillsimpact = (
+    advancedskillsimpact = (
         f'{emojis.BP} {emojis.SKILL_ASCENDED} **Ascended**: Has a chance to find a pet'
     )
-    uniqueskillsimpact = (
+    specialskillsimpact = (
         f'{emojis.BP} {emojis.SKILL_ANTARCTICIAN} **Antarctician**: If it returns fish, they will be EPIC\n'
         f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: If it returns fish, you get `3` times the amount\n'
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
@@ -483,9 +484,9 @@ async def embed_pets_adventures() -> discord.Embed:
     embed.add_field(name='HOW TO SEND PETS', value=usage, inline=False)
     embed.add_field(name='ADVENTURE TYPES', value=types, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
-    embed.add_field(name='NORMAL SKILLS THAT AFFECT ADVENTURES', value=normalskillsimpact, inline=False)
+    embed.add_field(name='BASIC SKILLS THAT AFFECT ADVENTURES', value=basicskillsimpact, inline=False)
+    embed.add_field(name='ADVANCED SKILLS THAT AFFECT ADVENTURES', value=advancedskillsimpact, inline=False)
     embed.add_field(name='SPECIAL SKILLS THAT AFFECT ADVENTURES', value=specialskillsimpact, inline=False)
-    embed.add_field(name='UNIQUE SKILLS THAT AFFECT ADVENTURES', value=uniqueskillsimpact, inline=False)
     embed.add_field(name='BOOST ITEMS THAT AFFECT ADVENTURES', value=boostsimpact, inline=False)
     return embed
 

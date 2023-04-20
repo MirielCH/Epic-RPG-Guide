@@ -52,6 +52,14 @@ TJ_CALCULATOR_STATS = [
     STATS_MANUAL,
 ]
 
+BOOSTS_NONE = 'No boosts'
+BOOSTS_CURRENT = 'Current boosts'
+
+TJ_CALCULATOR_BOOSTS = [
+    BOOSTS_NONE,
+    BOOSTS_CURRENT,
+]
+
 # --- Commands ---
 async def command_time_travel_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Timetravel guide command"""
@@ -103,7 +111,7 @@ async def command_time_jump_score(ctx: discord.ApplicationContext, topic: str) -
 
 
 async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
-                                      option_inventory: str, option_stats: str) -> None:
+                                      option_inventory: str, option_stats: str, option_boosts: str) -> None:
     """STT score calculator command"""
     bot_message_task = asyncio.ensure_future(functions.wait_for_inventory_message(bot, ctx))
     try:
@@ -140,20 +148,21 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
             )
             return
         if bot_message is None: return
-        bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
-        try:
-            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
-                                                            command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
-            bot_message_boosts = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
-        except asyncio.TimeoutError:
-            await ctx.respond(
-                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
-                ephemeral=True
-            )
-            return
-        if bot_message is None: return
         profile_data = await functions.extract_data_from_profile_embed(ctx, bot_message_profile)
-        boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message_boosts)
+        if option_boosts == BOOSTS_CURRENT:
+            bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
+            try:
+                content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                                command=strings.SLASH_COMMANDS_EPIC_RPG["boosts"])
+                bot_message_boosts = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+            except asyncio.TimeoutError:
+                await ctx.respond(
+                    strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='boosts'),
+                    ephemeral=True
+                )
+                return
+            if bot_message is None: return
+            boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message_boosts)
         profile_data['horse_boost'] = 0
         if profile_data['horse_type'] in ('magic', 'defender', 'strong', 'tank'):
             bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
@@ -218,8 +227,9 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Arena cookies\n'
         f'{emojis.BP} Coins (this includes your bank account)\n'
         f'{emojis.BP} Dragon essences\n'
-        f'{emojis.BP} Epic coins\n'
-        f'{emojis.BP} Epic shop items\n'
+        f'{emojis.BP} EPIC berries\n'
+        f'{emojis.BP} EPIC coins\n'
+        f'{emojis.BP} EPIC shop items\n'
         f'{emojis.BP} Event items (if an event is active)\n'
         f'{emojis.BP} GODLY horse tokens\n'
         f'{emojis.BP} Guild rings\n'

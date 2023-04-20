@@ -77,6 +77,7 @@ COG_EXTENSIONS = [
     'cogs.dev',
     'cogs.duel',
     'cogs.dungeons',
+    'cogs.easter',
     'cogs.enchanting',
     'cogs.events',
     'cogs.fun',
