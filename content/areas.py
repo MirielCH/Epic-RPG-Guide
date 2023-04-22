@@ -206,7 +206,8 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} has a high chance to give no items\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["craft"]}, {strings.SLASH_COMMANDS_EPIC_RPG["dismantle"]}, '
             f'{strings.SLASH_COMMANDS_EPIC_RPG["cook"]}, '
-            f'{strings.SLASH_COMMANDS_EPIC_RPG["eat"]}, {strings.SLASH_COMMANDS_EPIC_RPG["withdraw"]} '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["eat"]}, {strings.SLASH_COMMANDS_EPIC_RPG["withdraw"]}, '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["alchemy make"]} '
             f'and {strings.SLASH_COMMANDS_EPIC_RPG["deposit"]} can fail\n'
             f'{emojis.DETAIL} If this happens, you will lose the items from that command\n'
         )

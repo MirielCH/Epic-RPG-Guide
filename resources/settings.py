@@ -29,7 +29,7 @@ DEV_GUILDS = [730115558766411857,812650049565753355,774590797214515201] # Secret
 IMG_THUMBNAIL = os.path.join(BOT_DIR, 'images/erg.png')
 IMG_DUNGEON_11 = os.path.join(BOT_DIR, 'images/dungeon11.png')
 IMG_DUNGEON_13 = os.path.join(BOT_DIR, 'images/dungeon13.png')
-IMG_RASPI = os.path.join(BOT_DIR, 'images/raspi.png')
+IMG_RASPI = os.path.join(BOT_DIR, 'images/raspi2.png')
 IMG_CRANKY = os.path.join(BOT_DIR, 'images/cranky.png')
 
 EPIC_RPG_ID = 555955826880413696

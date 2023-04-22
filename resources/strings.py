@@ -409,8 +409,8 @@ DUNGEONS = (
 )
 
 CRAFTER_RETURNED_PERCENTAGES = {
-    101: 0.125,
-    102: 0.1552,
+    101: 0.1552,
+    102: 0.1597,
     103: 0.1626,
     104: 0.1648,
     105: 0.1666,
@@ -509,7 +509,7 @@ CRAFTER_RETURNED_PERCENTAGES = {
     198: 0.2005,
     199: 0.2006,
     200: 0.2008,
-}
+} # Not used anymore, but I'll keep it for now, in case it's needed elsewhere
 
 
 NUMBERS_ROMAN_INTEGER = {
