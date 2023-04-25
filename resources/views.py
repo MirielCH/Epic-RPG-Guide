@@ -548,8 +548,9 @@ class DropChanceCalculatorView(discord.ui.View):
     None otherwise.
     """
     def __init__(self, ctx: discord.ApplicationContext, embed_function: Callable, drop_types: List[str],
-                 active_drop_type: str, timetravel: int, horse_data: dict, world_boost: bool, boost_percentage: int,
-                 placeholder: Optional[str] = 'Choose drop type ...',
+                 active_drop_type: str, timetravel: int, horse_data: dict, mob_world_boost: bool,
+                 lootbox_world_boost: bool, mob_boost_percentage: int,
+                 lootbox_boost_percentage: int, placeholder: Optional[str] = 'Choose drop type ...',
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.value = None
@@ -561,8 +562,10 @@ class DropChanceCalculatorView(discord.ui.View):
         self.timetravel = timetravel
         self.horse_data = horse_data
         self.placeholder = placeholder
-        self.world_boost = world_boost
-        self.boost_percentage = boost_percentage
+        self.mob_world_boost = mob_world_boost
+        self.lootbox_world_boost = lootbox_world_boost
+        self.mob_boost_percentage = mob_boost_percentage
+        self.lootbox_boost_percentage = lootbox_boost_percentage
         self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:

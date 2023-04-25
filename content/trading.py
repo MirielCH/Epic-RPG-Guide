@@ -126,13 +126,25 @@ async def embed_quick_trade_calculator(area: database.Area, inventory_amount: in
         upper_area = '10+'
     elif 11 <= area.area_no <= 19:
         upper_area = f'{area.area_no}+'
+    elif area.area_no == 21:
+        upper_area = 'TOP'
     else:
         upper_area = area.area_no
     answer = (
         f'{answer}\n'
         f'{emojis.BP} **Area {upper_area}**: {results[10]:,} {emojis.LOG}'
     )
-
+    if 12 <= area.area_no <= 15:
+        answer = (
+            f'{answer}\n'
+            f'{emojis.BP} **Area {upper_area}**: {results[11]:,} {emojis.RUBY}'
+        )
+    elif area.area_no > 15:
+        answer = (
+            f'{answer}\n'
+            f'{emojis.BP} **Area {upper_area}**: {results[16]:,} {emojis.RUBY}'
+        )
+    
     embed = discord.Embed(
         title = 'QUICK TRADE CALCULATOR',
         description = answer.strip(),

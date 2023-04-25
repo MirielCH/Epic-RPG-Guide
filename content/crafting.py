@@ -14,12 +14,14 @@ from resources import functions, strings, views
 
 DROP_BASIC = 'Normal drops (A1~A15)'
 DROP_DARK_ENERGY = 'Dark Energy (A16~A20)'
-DROP_EPIC_BERRY = 'EPIC berry'
+DROP_EPIC_BERRY = 'EPIC berries'
+DROP_LOOTBOX = 'Lootboxes'
 
 DROP_TYPES = [
     DROP_BASIC,
     DROP_DARK_ENERGY,
     DROP_EPIC_BERRY,
+    DROP_LOOTBOX,
 ]
 
 
@@ -28,8 +30,10 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
                                         drop_type: str, timetravel: Optional[int] = None,
                                         horse_tier: Optional[int] = None,
                                         horse_epicness: Optional[int] = None,
-                                        world_boost: Optional[bool] = None,
-                                        boost_percentage: Optional[int] = None) -> None:
+                                        mob_world_boost: Optional[bool] = None,
+                                        lootbox_world_boost: Optional[bool] = None,
+                                        mob_boost_percentage: Optional[int] = None,
+                                        lootbox_boost_percentage: Optional[int] = None) -> None:
     """Dropchance calculator command"""
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
@@ -51,7 +55,7 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
         horse_data = await functions.extract_horse_data_from_horse_embed(ctx, bot_message)
     if horse_tier is not None: horse_data['tier'] = horse_tier
     if horse_epicness is not None: horse_data['epicness'] = horse_epicness
-    if world_boost is None:
+    if mob_world_boost is None or lootbox_world_boost is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_world_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
@@ -65,9 +69,10 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
             return
         if bot_message is None: return
         world_data = await functions.extract_data_from_world_embed(ctx, bot_message)
-        world_boost = world_data['monster boost']
-    if boost_percentage is None:
-        boost_percentage = 0
+        mob_world_boost = world_data['monster boost']
+        lootbox_world_boost = world_data['lootbox boost']
+    if mob_boost_percentage is None or lootbox_boost_percentage is None:
+        mob_boost_percentage = lootbox_boost_percentage = 0
         bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
@@ -81,9 +86,13 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
             return
         if bot_message is None: return
         boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
-        boost_percentage = boosts_data['monster drop chance']
+        mob_boost_percentage = boosts_data['monster drop chance']
+        lootbox_boost_percentage = boosts_data['lootbox drop chance']
     view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data,
-                                          world_boost, boost_percentage)
+                                          mob_world_boost, lootbox_world_boost, mob_boost_percentage,
+                                          lootbox_boost_percentage)
+    world_boost = lootbox_world_boost if drop_type == DROP_LOOTBOX else mob_world_boost
+    boost_percentage = lootbox_boost_percentage if drop_type == DROP_LOOTBOX else mob_boost_percentage
     embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
@@ -326,63 +335,30 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
                            world_boost: bool, boost_percentage: int) -> discord.Embed:
     """Dropchance"""
     tt_chance = (49 + timetravel) * timetravel / 2 / 100
-    horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
     horse_emoji = getattr(emojis, f'HORSE_T{horse_data["tier"]}')
-
     if drop_type == DROP_DARK_ENERGY:
         base_chance = 0.1
-        drop_description = f'{emojis.DARK_ENERGY} **Dark energy**'
+        drop_description = f'**Dark energy** {emojis.DARK_ENERGY} '
+        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
     elif drop_type == DROP_EPIC_BERRY:
         base_chance = 0.01
-        drop_description = f'{emojis.EPIC_BERRY} **EPIC berry**'
+        drop_description = f'**EPIC berries** {emojis.EPIC_BERRY}'
+        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+    elif drop_type == DROP_LOOTBOX:
+        base_chance = 2
+        base_chance_adv = 10
+        drop_description = (
+            f'**Lootboxes**'
+        )
+        horse_chance = strings.HORSE_MULTIPLIER_LOOTBOX[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
     else:
         base_chance = 4
         drop_description = (
-            f'{emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
-            f'{emojis.CHIP}{emojis.DRAGON_SCALE} **Normal drops**'
+            f'**Normal drops** {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
+            f'{emojis.CHIP}{emojis.DRAGON_SCALE}'
         )
+        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
 
-    # Calculations
-    multiplier = 1.2 if world_boost else 1
-    multiplier *= 1 + (boost_percentage / 100)
-    drop_chance = base_chance * (1 + tt_chance) * horse_chance * multiplier
-    drop_chance_daily = round(drop_chance * 1.3, 3)
-    drop_chance_hm = round(drop_chance * 1.7, 3)
-    drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 3)
-    drop_chance = round(drop_chance, 3)
-    if drop_chance >= 100: drop_chance = 100
-    if drop_chance_daily >= 100: drop_chance_daily = 100
-    if drop_chance_hm >= 100: drop_chance_hm = 100
-    if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
-    field_drop_chance = (
-        f'{emojis.BP} Base chance: `{drop_chance:g}`%\n'
-        f'{emojis.BP} If mob is daily mob: `{drop_chance_daily:g}`%\n'
-    )
-    field_drop_chance_hardmode = (
-        f'{emojis.BP} Base chance: `{drop_chance_hm:g}`%\n'
-        f'{emojis.BP} If mob is daily mob: `{drop_chance_daily_hm:g}`%\n'
-    )
-    if drop_type == DROP_DARK_ENERGY:
-        field_encounter_chance = (
-            f'{emojis.BP} Every mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} can drop this item\n'
-        )
-    elif drop_type == DROP_EPIC_BERRY:
-        field_encounter_chance = (
-            f'{emojis.BP} Every mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
-            f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} can drop this item\n'
-        )
-    else:
-        field_encounter_chance = (
-            f'{emojis.BP} You have a 50% chance of encountering a mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
-            f'that can drop an item\n'
-            f'{emojis.DETAIL} Thus, the chance to get an item while hunting is __half__ of the values above\n'
-        )
-    field_boosts = (
-        f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
-        f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
-        f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
-        f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
-    )
     embed = discord.Embed(
         title = 'DROP CHANCE CALCULATOR',
         color = settings.EMBED_COLOR,
@@ -395,8 +371,85 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} Boost percentage: **{boost_percentage}%**\n'
         )
     )
-    embed.add_field(name='NORMAL', value=field_drop_chance, inline=False)
-    embed.add_field(name='HARDMODE', value=field_drop_chance_hardmode, inline=False)
-    embed.add_field(name='ENCOUNTER CHANCE', value=field_encounter_chance, inline=False)
+
+    # Calculations
+    multiplier = 1.2 if world_boost else 1
+    multiplier *= 1 + (boost_percentage / 100)
+    
+    if drop_type != DROP_LOOTBOX:
+        drop_chance = base_chance * (1 + tt_chance) * horse_chance * multiplier
+        drop_chance_daily = round(drop_chance * 1.3, 3)
+        drop_chance_hm = round(drop_chance * 1.7, 3)
+        drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 3)
+        drop_chance = round(drop_chance, 3)
+        if drop_chance >= 100: drop_chance = 100
+        if drop_chance_daily >= 100: drop_chance_daily = 100
+        if drop_chance_hm >= 100: drop_chance_hm = 100
+        if drop_chance_daily_hm >= 100: drop_chance_daily_hm = 100
+        field_drop_chance = (
+            f'{emojis.BP} Base chance: `{drop_chance:g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_daily:g}`%\n'
+        )
+        field_drop_chance_hardmode = (
+            f'{emojis.BP} Base chance: `{drop_chance_hm:g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_daily_hm:g}`%\n'
+        )
+        embed.add_field(name='NORMAL', value=field_drop_chance, inline=False)
+        embed.add_field(name='HARDMODE', value=field_drop_chance_hardmode, inline=False)
+        
+    if drop_type == DROP_LOOTBOX:
+        drop_chance_hunt = base_chance * horse_chance * multiplier
+        drop_chance_adv = base_chance_adv * horse_chance * multiplier
+        drop_chance_hunt_daily = round(drop_chance_hunt * 1.3, 3)
+        drop_chance_adv_daily = round(drop_chance_adv * 1.3, 3)
+        drop_chance_hunt = round(drop_chance_hunt, 3)
+        drop_chance_adv = round(drop_chance_adv, 3)
+        field_drop_chance_hunt = (
+            f'{emojis.BP} Base chance: `{drop_chance_hunt:g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_hunt_daily:g}`%\n'
+        )
+        field_drop_chance_adv= (
+            f'{emojis.BP} Base chance: `{drop_chance_adv:g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_adv_daily:g}`%\n'
+        )
+        embed.add_field(name='HUNT', value=field_drop_chance_hunt, inline=False)
+        embed.add_field(name='ADVENTURE', value=field_drop_chance_adv, inline=False)
+        
+    if drop_type == DROP_DARK_ENERGY:
+        field_encounter_chance = (
+            f'{emojis.BP} Every mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} can drop this item\n'
+        )
+    elif drop_type == DROP_BASIC:
+        field_encounter_chance = (
+            f'{emojis.BP} You have a `50`% chance of encountering a mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+            f'that can drop an item\n'
+            f'{emojis.DETAIL} Thus, the chance to get an item while hunting is __half__ of the values above\n'
+        )
+    elif drop_type == DROP_LOOTBOX:
+        field_encounter_chance = (
+            f'{emojis.BP} Every mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} can drop lootboxes\n'
+            f'{emojis.BP} A chance over `100`% reduces the amount of lower quality lootboxes\n'
+        )
+    else:
+        field_encounter_chance = (
+            f'{emojis.BP} Every mob in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
+            f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} can drop this item\n'
+        )
+    if drop_type == DROP_LOOTBOX:
+        field_boosts = (
+            f'{emojis.BP} {emojis.POTION_LOOTBOX} `Lootbox potion`: +`35`% chance\n'
+            f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+            f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`10`% chance\n'
+        )
+    else:
+        field_boosts = (
+            f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
+            f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
+            f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+            f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
+        )
+
+    embed.add_field(name='NOTE', value=field_encounter_chance, inline=False)
     embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
     return embed

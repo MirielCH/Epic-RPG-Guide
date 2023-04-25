@@ -63,17 +63,25 @@ class CraftingCog(commands.Cog):
                            min_value = 1, max_value = 10, default=None),
         horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',
                                min_value = 0, max_value = 500, default=None),
-        world_boost: Option(str, 'Whether the monster drop chance world boost is active',
-                            choices=['Active','Inactive'], default=None),
-        boost_percentage: Option(int, 'Total boost percentage from active potions',
-                                 min_value = 0, max_value = 145, default=None),
+        mob_world_boost: Option(str, 'Whether the monster drop chance world boost is active',
+                                choices=['Active','Inactive'], default=None),
+        lootbox_world_boost: Option(str, 'Whether the lootbox drop chance world boost is active',
+                                    choices=['Active','Inactive'], default=None),
+        mob_boost_percentage: Option(int, 'Total mob drop chance boost percentage from active potions',
+                                     min_value = 0, max_value = 145, default=None),
+        lootbox_boost_percentage: Option(int, 'Total lootbox drop chance boost percentage from active potions',
+                                         min_value = 0, max_value = 100, default=None),
     ) -> None:
         """Dropchance calculator"""
-        if world_boost is not None:
-            world_boost = True if world_boost == 'Active' else False
+        if mob_world_boost is not None:
+            mob_world_boost = True if mob_world_boost == 'Active' else False
+        if lootbox_world_boost is not None:
+            lootbox_world_boost = True if lootbox_world_boost == 'Active' else False
         await crafting.command_dropchance_calculator(self.bot, ctx, drop_type, timetravel=timetravel,
                                                      horse_tier=horse_tier, horse_epicness=horse_epicness,
-                                                     world_boost=world_boost, boost_percentage=boost_percentage)
+                                                     mob_world_boost=mob_world_boost, lootbox_world_boost=lootbox_world_boost,
+                                                     mob_boost_percentage=mob_boost_percentage,
+                                                     lootbox_boost_percentage=lootbox_boost_percentage)
 
     @cmd_crafting.command(name='calculator', description='Shows the materials you need to craft an item')
     async def crafting_calculator(

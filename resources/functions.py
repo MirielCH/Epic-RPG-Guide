@@ -988,23 +988,26 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
             continue
     boosts_data['active items'] = active_items
 
-    monster_drop_chance = profession_xp = selling_price = stat_at = stat_def = stat_life = 0
+    monster_drop_chance = profession_xp = selling_price = stat_at = stat_def = stat_life = lootbox_drop_chance = 0
     for line in boost_fields.lower().split('\n'):
         at_match = re.search(' at\*\*: \+(.+?)$', line)
         def_match = re.search(' def\*\*: \+(.+?)$', line)
         life_match = re.search(' life\*\*: \+(.+?)$', line)
         monster_drops_match = re.search(' monster drops\*\*: \+(.+?)%', line)
+        lootbox_drops_match = re.search(' lootbox drops\*\*: \+(.+?)%', line)
         profession_xp_match = re.search(' profession xp\*\*: \+(.+?)%', line)
         selling_price_match = re.search(' sell price\*\*: \+(.+?)%', line)
         if at_match: stat_at += int(at_match.group(1).replace('.00',''))
         if def_match: stat_def += int(def_match.group(1).replace('.00',''))
         if life_match: stat_life += int(life_match.group(1).replace('.00',''))
         if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1).replace('.00',''))
+        if lootbox_drops_match: lootbox_drop_chance += int(lootbox_drops_match.group(1).replace('.00',''))
         if profession_xp_match: profession_xp += int(profession_xp_match.group(1).replace('.00',''))
         if selling_price_match: selling_price += int(selling_price_match.group(1).replace('.00',''))
     boosts_data['at'] = stat_at
     boosts_data['def'] = stat_def
     boosts_data['life'] = stat_life
+    boosts_data['lootbox drop chance'] = lootbox_drop_chance
     boosts_data['monster drop chance'] = monster_drop_chance
     boosts_data['profession xp'] = profession_xp
     boosts_data['selling price'] = selling_price

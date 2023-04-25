@@ -433,8 +433,14 @@ class DropTypeSelect(discord.ui.Select):
                     options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
                 child.options = options
                 break
+        if 'lootbox' in self.view.active_drop_type.lower():
+            boost_percentage = self.view.lootbox_boost_percentage
+            world_boost = self.view.lootbox_world_boost
+        else:
+            boost_percentage = self.view.mob_boost_percentage
+            world_boost = self.view.mob_world_boost
         embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data,
-                                               self.view.world_boost, self.view.boost_percentage)
+                                               world_boost, boost_percentage)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
