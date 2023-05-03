@@ -106,12 +106,16 @@ async def embed_quick_trade_calculator(area: database.Area, inventory_amount: in
     answer = ''
     if results[3] > 0:
         results[5] = floor(results[3] / 2)
-        answer = f'{emojis.BP} **Area 3**: {results[3]:,} {emojis.FISH} (includes {emojis.RUBY})'
+        answer = (
+            f'{emojis.BP} **Area 3**\n'
+            f'{emojis.DETAIL} {results[3]:,} {emojis.FISH} (includes {emojis.RUBY})'
+        )
     if results[5] > 0:
         results[7] = results[5] * 15
         answer = (
             f'{answer}\n'
-            f'{emojis.BP} **Area 5**: {results[5]:,} {emojis.APPLE}'
+            f'{emojis.BP} **Area 5**\n'
+            f'{emojis.DETAIL} {results[5]:,} {emojis.APPLE}'
         )
     if results[7] > 0:
         results[8] = floor(results[7] / 8)
@@ -132,18 +136,26 @@ async def embed_quick_trade_calculator(area: database.Area, inventory_amount: in
         upper_area = area.area_no
     answer = (
         f'{answer}\n'
-        f'{emojis.BP} **Area {upper_area}**: {results[10]:,} {emojis.LOG}'
+        f'{emojis.BP} **Area {upper_area}**\n'
+        f'{emojis.DETAIL2} {results[10]:,} {emojis.LOG}'
     )
-    if 12 <= area.area_no <= 15:
-        answer = (
-            f'{answer}\n'
-            f'{emojis.BP} **Area {upper_area}**: {results[11]:,} {emojis.RUBY}'
-        )
+    if area.area_no == 11:
+        result_apple = floor(results[10] / 8)
+        result_ruby = floor(results[10] / 500)
+    elif 12 <= area.area_no <= 15:
+        result_apple = floor(results[10] / 8)
+        result_ruby = floor(results[10] / 350)
     elif area.area_no > 15:
-        answer = (
-            f'{answer}\n'
-            f'{emojis.BP} **Area {upper_area}**: {results[16]:,} {emojis.RUBY}'
-        )
+        result_apple = floor(results[10] / 4)
+        result_ruby = floor(results[10] / 250)
+    else:
+        result_apple = floor(results[10] / 12)
+        result_ruby = floor(results[10] / 500)
+    answer = (
+        f'{answer}\n'
+        f'{emojis.DETAIL2} {result_apple:,} {emojis.APPLE}\n'
+        f'{emojis.DETAIL} {result_ruby:,} {emojis.RUBY}\n'
+    )
     
     embed = discord.Embed(
         title = 'QUICK TRADE CALCULATOR',
