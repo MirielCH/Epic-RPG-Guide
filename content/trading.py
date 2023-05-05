@@ -127,9 +127,9 @@ async def embed_quick_trade_calculator(area: database.Area, inventory_amount: in
     results[12] = floor(results[10] / 350)
     results[16] = floor(results[10] / 250)
     if 1 <= area.area_no <= 10:
-        upper_area = '10+'
+        upper_area = '10'
     elif 11 <= area.area_no <= 19:
-        upper_area = f'{area.area_no}+'
+        upper_area = f'{area.area_no}'
     elif area.area_no == 21:
         upper_area = 'TOP'
     else:

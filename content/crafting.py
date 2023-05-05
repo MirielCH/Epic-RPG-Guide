@@ -69,10 +69,9 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
             return
         if bot_message is None: return
         world_data = await functions.extract_data_from_world_embed(ctx, bot_message)
-        mob_world_boost = world_data['monster boost']
-        lootbox_world_boost = world_data['lootbox boost']
+        if mob_world_boost is None: mob_world_boost = world_data['monster boost']
+        if lootbox_world_boost is None: lootbox_world_boost = world_data['lootbox boost']
     if mob_boost_percentage is None or lootbox_boost_percentage is None:
-        mob_boost_percentage = lootbox_boost_percentage = 0
         bot_message_task = asyncio.ensure_future(functions.wait_for_boosts_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
@@ -86,8 +85,8 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
             return
         if bot_message is None: return
         boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
-        mob_boost_percentage = boosts_data['monster drop chance']
-        lootbox_boost_percentage = boosts_data['lootbox drop chance']
+        if mob_boost_percentage is None: mob_boost_percentage = boosts_data['monster drop chance']
+        if lootbox_boost_percentage is None: lootbox_boost_percentage = boosts_data['lootbox drop chance']
     view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data,
                                           mob_world_boost, lootbox_world_boost, mob_boost_percentage,
                                           lootbox_boost_percentage)
