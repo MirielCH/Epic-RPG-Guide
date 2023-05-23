@@ -34,7 +34,7 @@ class MonstersCog(commands.Cog):
     async def monster_search(self,
         ctx: discord.ApplicationContext,
         name: Option(str, 'Name of the monster(s). Looks up the daily monster if empty.',
-                     autocomplete=monster_searcher, default=None),
+                     autocomplete=monster_searcher, default=None, max_length=100),
     ) -> None:
         """Command to search for a monster"""
         await monsters.command_monster_search(self.bot, ctx, name)

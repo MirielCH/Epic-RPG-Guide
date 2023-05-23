@@ -32,7 +32,8 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
             monsters = await database.get_monsters(name)
         except database.NoDataFound:
             await ctx.respond(
-                'I didn\'t find any monsters with that search query, sorry. Try searching for something else.',
+                f'I didn\'t find any monsters for the search query `{name}`, sorry.\n'
+                f'Try searching for something else.',
                 ephemeral=True
             )
             return
@@ -41,7 +42,7 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
         for chunk in range(0, len(monsters), 6):
             monsters_chunk = monsters[chunk:chunk+6]
             chunk_amount += 1
-            embed = await embed_monsters(len(monsters), monsters_chunk)
+            embed = await embed_monsters(len(monsters), monsters_chunk, name)
             embeds.append(embed)
         if len(embeds) > 1:
             view = views.PaginatorView(ctx, embeds)
@@ -75,7 +76,7 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
                 monster = await database.get_monster_by_name(world_data['monster'])
             except database.NoDataFound:
                 await ctx.respond(
-                    f'I didn\'t find a monster with that name, sorry. This ain\'t intended, so please report this to the '
+                    f'I didn\'t find a monster for `{name}`, sorry. This ain\'t intended, so please report this to the '
                     f'support server if convenient.',
                     ephemeral=True
                 )
@@ -86,9 +87,9 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
 
 
 # --- Embeds ---
-async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster]):
+async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster], name: str):
     """Monster search results"""
-    description = f'Your search returned **{amount_found}** results.'
+    description = f'Your search for `{name}` returned **{amount_found}** results.'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MONSTER SEARCH',

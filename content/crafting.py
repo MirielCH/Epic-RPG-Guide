@@ -338,25 +338,38 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
     if drop_type == DROP_DARK_ENERGY:
         base_chance = 0.1
         drop_description = f'**Dark energy** {emojis.DARK_ENERGY} '
-        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        if horse_data['tier'] > 6:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        else:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
     elif drop_type == DROP_EPIC_BERRY:
         base_chance = 0.01
         drop_description = f'**EPIC berries** {emojis.EPIC_BERRY}'
-        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        if horse_data['tier'] > 6:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        else:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
     elif drop_type == DROP_LOOTBOX:
         base_chance = 2
         base_chance_adv = 10
         drop_description = (
             f'**Lootboxes**'
         )
-        horse_chance = strings.HORSE_MULTIPLIER_LOOTBOX[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        if horse_data['tier'] > 4:
+            horse_chance = strings.HORSE_MULTIPLIER_LOOTBOX[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        else:
+            horse_chance = strings.HORSE_MULTIPLIER_LOOTBOX[horse_data['tier']]
+            
     else:
         base_chance = 4
         drop_description = (
             f'**Normal drops** {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
             f'{emojis.CHIP}{emojis.DRAGON_SCALE}'
         )
-        horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        if horse_data['tier'] > 6:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        else:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
 
     embed = discord.Embed(
         title = 'DROP CHANCE CALCULATOR',

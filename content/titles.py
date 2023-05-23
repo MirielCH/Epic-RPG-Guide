@@ -22,7 +22,7 @@ async def command_title_search(ctx: discord.ApplicationContext, search_string: s
         titles = await database.get_titles(search_string)
     except database.NoDataFound:
         await ctx.respond(
-            'I didn\'t find any titles with that search query, sorry. Try searching for something else.',
+            f'I didn\'t find any titles for the search query `{search_string}`, sorry. Try searching for something else.',
             ephemeral=True
         )
         return
@@ -31,7 +31,7 @@ async def command_title_search(ctx: discord.ApplicationContext, search_string: s
     for chunk in range(0, len(titles), 6):
         titles_chunk = titles[chunk:chunk+6]
         chunk_amount += 1
-        embed = await embed_titles(len(titles), titles_chunk)
+        embed = await embed_titles(len(titles), titles_chunk, search_string)
         embeds.append(embed)
     if len(embeds) > 1:
         view = views.PaginatorView(ctx, embeds)
@@ -47,7 +47,7 @@ async def command_title_search(ctx: discord.ApplicationContext, search_string: s
 
 
 # --- Embeds ---
-async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> discord.Embed:
+async def embed_titles(amount_found: int, titles: Tuple[database.Title], search_string: str) -> discord.Embed:
     """Embed with all search results
 
     Arguments
@@ -56,7 +56,7 @@ async def embed_titles(amount_found: int, titles: Tuple[database.Title]) -> disc
     pages: current page, max page (max. 9 titles per page)
     amount_found: total amount of titles found in the database
     """
-    description = f'Your search returned **{amount_found}** results.'
+    description = f'Your search for `{search_string}` returned **{amount_found}** results.'
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'TITLE / ACHIEVEMENT SEARCH',

@@ -26,7 +26,7 @@ class TitlesCog(commands.Cog):
     async def achievement_search(
         self,
         ctx: discord.ApplicationContext,
-        search_string: Option(str, 'Achievement ID or part of the achievement / title'),
+        search_string: Option(str, 'Achievement ID or part of the achievement / title', max_length=100),
     ) -> None:
         """Command to search for a title/achievement"""
         await titles.command_title_search(ctx, search_string)
@@ -35,7 +35,7 @@ class TitlesCog(commands.Cog):
     async def title_search(
         self,
         ctx: discord.ApplicationContext,
-        search_string: Option(str, 'Achievement ID or part of the title / achievement'),
+        search_string: Option(str, 'Achievement ID or part of the title / achievement', max_length=100),
     ) -> None:
         """Command to search for a title/achievement"""
         await titles.command_title_search(ctx, search_string)
