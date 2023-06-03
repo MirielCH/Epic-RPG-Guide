@@ -61,8 +61,8 @@ async def embed_alchemy_overview() -> discord.Embed:
         f'{emojis.BP} Potions require {emojis.FLASK} flasks to brew\n'
         f'{emojis.BP} Flasks are lost when time traveling\n'
         f'{emojis.BP} Flasks are obtained from the following commands:\n'
-        f'{emojis.DETAIL} `2` from {strings.SLASH_COMMANDS_EPIC_RPG["weekly"]}\n'
-        f'{emojis.DETAIL} `1` from {strings.SLASH_COMMANDS_EPIC_RPG["daily"]} (if you have 7/7 streak)\n'
+        f'{emojis.DETAIL2} `2` from {strings.SLASH_COMMANDS_EPIC_RPG["weekly"]}\n'
+        f'{emojis.DETAIL2} `1` from {strings.SLASH_COMMANDS_EPIC_RPG["daily"]} (if you have 7/7 streak)\n'
         f'{emojis.DETAIL} `1` from {strings.SLASH_COMMANDS_EPIC_RPG["vote"]} (if you have 7/7 streak)\n'
     )
     note = (
@@ -90,13 +90,13 @@ async def embed_alchemy_recommended_potions() -> discord.Embed:
     )
     good_potions_tt0 = (
         f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`\n'
-        f'{emojis.DETAIL} Helps getting mob drops for the EDGY armor faster\n'
+        f'{emojis.DETAIL2} Helps getting mob drops for the EDGY armor faster\n'
         f'{emojis.BP} {emojis.POTION_BANANA} `Banana potion`\n'
         f'{emojis.DETAIL} Helps leveling up faster\n'
     )
     good_potions_tt3 = (
         f'{emojis.BP} {emojis.POTION_COOKIE} `Cookie potion`\n'
-        f'{emojis.DETAIL} Increases pet spawn chance\n'
+        f'{emojis.DETAIL2} Increases pet spawn chance\n'
         f'{emojis.DETAIL} Helps leveling up faster\n'
     )
     good_potions_tt25 = (
@@ -141,7 +141,7 @@ async def embed_alchemy_beginner() -> discord.Embed:
     """Alchemy beginner potion"""
     potion_banana = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`30`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`30`% XP from all sources\n'
         f'{emojis.DETAIL} +`15`% items from work commands\n'
         f'{emojis.BP} **Duration**: `6`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `5` {emojis.BANANA}\n'
@@ -150,7 +150,7 @@ async def embed_alchemy_beginner() -> discord.Embed:
     )
     potion_inverted = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`40`% random event spawn chance\n'
+        f'{emojis.DETAIL2} +`40`% random event spawn chance\n'
         f'{emojis.DETAIL} +`15`% enchanting luck\n'
         f'{emojis.BP} **Duration**: `11`h `11`m `11`s\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1` {emojis.POTATO} + `1` {emojis.UNICORN_HORN} '
@@ -160,11 +160,11 @@ async def embed_alchemy_beginner() -> discord.Embed:
     )
     potion_monster = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`30`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.DETAIL} +`10`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'{emojis.DETAIL2} +`30`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`10`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
-        f'{emojis.DETAIL} +`10`% XP from all sources\n'
-        f'{emojis.DETAIL} +`10`% coins from all sources except selling\n'
+        f'{emojis.DETAIL2} +`10`% XP from all sources\n'
+        f'{emojis.DETAIL} +`10`% coins from all sources except selling & miniboss\n'
         f'{emojis.BP} **Duration**: `7`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `6` {emojis.WOLF_SKIN} + `2` {emojis.ZOMBIE_EYE} '
         f'+ `1` {emojis.UNICORN_HORN}\n'
@@ -173,17 +173,17 @@ async def embed_alchemy_beginner() -> discord.Embed:
     )
     potion_potion = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`50` {emojis.STAT_LIFE} LIFE\n'
+        f'{emojis.DETAIL2} +`50` {emojis.STAT_LIFE} LIFE\n'
         f'{emojis.DETAIL} Automatically heals you if you take damage\n'
         f'{emojis.BP} **Duration**: `20`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1` {emojis.LIFE_POTION}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Helps with taking damage in `hunt together`\n'
+        f'{emojis.DETAIL2} Helps with taking damage in `hunt together`\n'
         f'{emojis.DETAIL} Peace of mind, especially if your horse is not T4 yet\n'
     )
     potion_triple = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`30`% special seed drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
+        f'{emojis.DETAIL2} +`30`% special seed drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
         f'{emojis.DETAIL} +`20`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
         f'{emojis.BP} **Duration**: `10`h\n'
         f'{emojis.BP} **Recipe**: `3` {emojis.FLASK} + `15` {emojis.BREAD} + `15` {emojis.CARROT} '
@@ -207,8 +207,8 @@ async def embed_alchemy_simple() -> discord.Embed:
     """Alchemy simple potion"""
     potion_fish = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`30`% items from work commands\n'
-        f'{emojis.DETAIL} +`15`% profession XP\n'
+        f'{emojis.DETAIL2} +`30`% items from work commands\n'
+        f'{emojis.DETAIL2} +`15`% profession XP\n'
         f'{emojis.DETAIL} +`10`% item rarity from work commands\n'
         f'{emojis.BP} **Duration**: `1`d\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `42` {emojis.FISH_EPIC}\n'
@@ -217,8 +217,8 @@ async def embed_alchemy_simple() -> discord.Embed:
     )
     potion_juice = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`10` {emojis.STAT_AT} AT\n'
-        f'{emojis.DETAIL} +`10` {emojis.STAT_DEF} DEF\n'
+        f'{emojis.DETAIL2} +`10` {emojis.STAT_AT} AT\n'
+        f'{emojis.DETAIL2} +`10` {emojis.STAT_DEF} DEF\n'
         f'{emojis.DETAIL} +`25` {emojis.STAT_LIFE} LIFE\n'
         f'{emojis.BP} **Duration**: `1`d `6`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `45` {emojis.APPLE} + `3` {emojis.EPIC_BERRY} '
@@ -228,7 +228,7 @@ async def embed_alchemy_simple() -> discord.Embed:
     )
     potion_liquid_hair = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} -`10`% pet adventure time if pet returns while boost is active\n'
+        f'{emojis.DETAIL2} -`10`% pet adventure time if pet returns while boost is active\n'
         f'{emojis.DETAIL} +`5`% enchanting luck\n'
         f'{emojis.BP} **Duration**: `5`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `60` {emojis.MERMAID_HAIR}\n'
@@ -237,8 +237,8 @@ async def embed_alchemy_simple() -> discord.Embed:
     )
     potion_wood = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`30`% item rarity from work commands\n'
-        f'{emojis.DETAIL} +`10`% items from work commands\n'
+        f'{emojis.DETAIL2} +`30`% item rarity from work commands\n'
+        f'{emojis.DETAIL2} +`10`% items from work commands\n'
         f'{emojis.DETAIL} +`10`% profession XP\n'
         f'{emojis.BP} **Duration**: `1`d\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `15` {emojis.LOG_MEGA} + `3` {emojis.LOG_ULTRA}\n'
@@ -260,19 +260,19 @@ async def embed_alchemy_advanced() -> discord.Embed:
     """Alchemy advanced potions"""
     potion_cookie = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`55`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`55`% XP from all sources\n'
         f'{emojis.DETAIL} +`10`% pet encounter chance in {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
         f'{emojis.BP} **Duration**: `4`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `500` {emojis.ARENA_COOKIE}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Level up faster in early TTs\n'
+        f'{emojis.DETAIL2} Level up faster in early TTs\n'
         f'{emojis.DETAIL} Get more pets in early TTs and/or with a horse below T10\n'
     )
     potion_dragon_breath = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`100`% dragon scales from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.DETAIL} +`30`% XP from all sources\n'
-        f'{emojis.DETAIL} +`5`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`100`% dragon scales from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`30`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`5`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
         f'{emojis.DETAIL} +`60` {emojis.STAT_AT} AT\n'
         f'{emojis.BP} **Duration**: `14`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `35` {emojis.DRAGON_SCALE} + `500` {emojis.STAT_LIFE}\n'
@@ -281,25 +281,25 @@ async def embed_alchemy_advanced() -> discord.Embed:
     )
     potion_electronical = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`35`% random event spawn chance\n'
-        f'{emojis.DETAIL} +`30`% XP from all sources\n'
-        f'{emojis.DETAIL} +`30`% coins from all sources except selling\n'
-        f'{emojis.DETAIL} -`30`% pet adventure time if pet returns while boost is active\n'
-        f'{emojis.DETAIL} +`25`% items from work commands\n'
-        f'{emojis.DETAIL} +`25`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
+        f'{emojis.DETAIL2} +`35`% random event spawn chance\n'
+        f'{emojis.DETAIL2} +`30`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`30`% coins from all sources except selling & miniboss\n'
+        f'{emojis.DETAIL2} -`30`% pet adventure time if pet returns while boost is active\n'
+        f'{emojis.DETAIL2} +`25`% items from work commands\n'
+        f'{emojis.DETAIL2} +`25`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
         f'{emojis.DETAIL} +`20`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
-        f'{emojis.DETAIL} +`20`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`20`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
         f'{emojis.DETAIL} +`5`% item rarity from work commands\n'
         f'{emojis.BP} **Duration**: `1`d\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `2,222` {emojis.CHIP}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Use in ultraining runs when you have the chips\n'
+        f'{emojis.DETAIL2} Use in ultraining runs when you have the chips\n'
         f'{emojis.DETAIL} Get an auto flex in Navi\n'
     )
     potion_lootbox = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`35`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'{emojis.DETAIL2} +`35`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
         f'{emojis.DETAIL} +`1` lootbox rarity in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
@@ -332,8 +332,8 @@ async def embed_alchemy_endgame() -> discord.Embed:
     )
     potion_king = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`250`% coins from all sources except selling\n'
-        f'{emojis.DETAIL} +`50`% random event spawn chance\n'
+        f'{emojis.DETAIL2} +`250`% coins from all sources except selling & miniboss\n'
+        f'{emojis.DETAIL2} +`50`% random event spawn chance\n'
         f'{emojis.DETAIL} +`35`% increased selling price of all items\n'
         f'{emojis.BP} **Duration**: `8`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1t` {emojis.COIN} + `100k` {emojis.RUBY}\n'
@@ -351,16 +351,16 @@ async def embed_alchemy_endgame() -> discord.Embed:
     )
     potion_void = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL} +`300`% enchanting luck\n'
-        f'{emojis.DETAIL} +`50`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.DETAIL} +`10`% is refunded when contributing items to areas 16-20\n'
+        f'{emojis.DETAIL2} +`300`% enchanting luck\n'
+        f'{emojis.DETAIL2} +`50`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`10`% is refunded when contributing items to areas 16-20\n'
         f'{emojis.DETAIL} +`2` lootbox rarity in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
         f'{emojis.BP} **Duration**: `1`d `12`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `250` {emojis.DARK_ENERGY} + `1` {emojis.LOG_ULTIMATE} '
         f'+ `1` {emojis.FISH_SUPER} + `1` {emojis.WATERMELON}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Save money enchanting in VOID areas\n'
+        f'{emojis.DETAIL2} Save money enchanting in VOID areas\n'
         f'{emojis.DETAIL} Get dark energy faster in VOID areas\n'
     )
     embed = discord.Embed(

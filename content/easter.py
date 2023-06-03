@@ -87,7 +87,7 @@ async def embed_overview() -> discord.Embed:
     boost_egg_blessing = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`60`% XP from all sources\n'
-        f'{emojis.DETAIL2} +`60`% coins from all sources except selling\n'
+        f'{emojis.DETAIL2} +`60`% coins from all sources except selling & miniboss\n'
         f'{emojis.DETAIL2} +`35`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
         f'{emojis.DETAIL2} +`35`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
