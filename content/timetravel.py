@@ -272,6 +272,8 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     bonus_xp = (99 + tt.tt) * tt.tt / 2
     bonus_duel_xp = (99 + tt.tt) * tt.tt / 4
     bonus_drop_chance = (49 + tt.tt) * tt.tt / 2
+    berry_drop_chance = bonus_drop_chance / 10
+    #artifacts_drop_chance = bonus_drop_chance / 4
     dynamite_rubies = 1 + (bonus_drop_chance / 100)
     crops_normal_min =  dynamite_rubies * 2
     crops_normal_max =  dynamite_rubies * 3
@@ -311,6 +313,8 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     bonus_xp = f'{bonus_xp:,g}'
     bonus_duel_xp = f'{bonus_duel_xp:,g}'
     bonus_drop_chance = f'{bonus_drop_chance:,g}'
+    berry_drop_chance = f'{berry_drop_chance:,g}'
+    #artifacts_drop_chance = f'{artifacts_drop_chance:,g}'
     if mytt:
         embed_description = (
             f'This is your current TT according to your settings.\n'
@@ -330,42 +334,44 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     if tt.unlock_title is not None:
         unlocks = f'{unlocks}{emojis.BP} Unlocks the title **{tt.unlock_title}**\n'
     unlocks = (
-        f"{unlocks}{emojis.BP} **{bonus_xp} %** increased **XP** from everything except duels\n"
-        f'{emojis.BP} **{bonus_duel_xp} %** increased **XP** from **duels**\n'
-        f'{emojis.BP} **{bonus_drop_chance} %** extra chance to get **monster drops**\n'
-        f'{emojis.BP} **{bonus_drop_chance} %** more **items** with work commands\n'
-        f'{emojis.BP} **x{enchant_multiplier}** enchanting multiplier (_approximation formula_)\n'
+        f"{unlocks}{emojis.BP} `{bonus_xp}` % increased **XP** from everything except duels\n"
+        f'{emojis.BP} `{bonus_duel_xp}` % increased **XP** from **duels**\n'
+        f'{emojis.BP} `{bonus_drop_chance}` % extra chance to get **monster drops**\n'
+        f'{emojis.BP} `{bonus_drop_chance}` % more **items** with work commands\n'
+        f'{emojis.BP} `{berry_drop_chance}` % more **EPIC berries** with pickup commands\n'
+        #f'{emojis.BP} `{artifacts_drop_chance}` % extra chance to find **artifact parts**\n'
+        f'{emojis.BP} `x{enchant_multiplier}` enchanting multiplier (_approximation formula_)\n'
     )
     if tt.tt > 1:
         unlocks = (
             f'{unlocks.strip()}\n'
-            f'{emojis.BP} **{tt.tt + 5}** base pet slots\n'
+            f'{emojis.BP} `{tt.tt + 5}` base pet slots\n'
             f'{emojis.DETAIL} Your total pet slots depend on the coolness pet slot multiplier\n'
             f'{emojis.DETAIL} See {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your multiplier\n'
         )
     if tt.tt > 0:
         unlocks = (
             f'{unlocks.strip()}\n'
-            f'{emojis.BP} Higher chance to get +1 tier in {strings.SLASH_COMMANDS_EPIC_RPG["horse breeding"]} and '
+            f'{emojis.BP} Higher chance to get `+1` tier in {strings.SLASH_COMMANDS_EPIC_RPG["horse breeding"]} and '
             f'{strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]} (chance unknown)\n'
         )
-    coin_cap = f'{pow(tt.tt, 4) * 500_000_000:,}' if tt.tt > 0 else '100,000 - 14,400,000'
+    coin_cap = f'`{pow(tt.tt, 4) * 500_000_000:,}`' if tt.tt > 0 else '`100,000` - `14,400,000`'
     field_coin_cap = (
-        f'{emojis.BP} ~**{coin_cap}** {emojis.COIN} coins\n'
+        f'{emojis.BP} ~{coin_cap} {emojis.COIN} coins\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["coin cap calculator"]} to see your exact cap\n'
     )
     work_multiplier = (
-        f'{emojis.BP} **{crops_special_min:,}**, **{crops_special_med:,}** or **{crops_special_max:,}** {emojis.BREAD}'
+        f'{emojis.BP} `{crops_special_min:,}`, `{crops_special_med:,}` or `{crops_special_max:,}` {emojis.BREAD}'
         f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from special seeds\n'
-        f'{emojis.BP} **{crops_normal_min:,}** or **{crops_normal_max:,}** {emojis.BREAD}'
+        f'{emojis.BP} `{crops_normal_min:,}` or `{crops_normal_max:,}` {emojis.BREAD}'
         f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from normal seeds\n'
-        f'{emojis.BP} ~**{watermelon_min:,}**-**{watermelon_max:,}** {emojis.WATERMELON} with '
+        f'{emojis.BP} ~`{watermelon_min:,}` - `{watermelon_max:,}` {emojis.WATERMELON} with '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["greenhouse"]}\n'
-        f'{emojis.BP} **{mega_log:,}** {emojis.LOG_MEGA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.RUBY} with {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}\n'
-        f'{emojis.BP} **{rubies:,}** {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
-        f'{emojis.BP} ~**{super_fish:,}** {emojis.FISH_SUPER} with {strings.SLASH_COMMANDS_EPIC_RPG["bigboat"]}\n'
-        f'{emojis.BP} ~**{ultimate_logs:,}** {emojis.LOG_ULTIMATE} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
+        f'{emojis.BP} `{mega_log:,}` {emojis.LOG_MEGA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
+        f'{emojis.BP} `{rubies:,}` {emojis.RUBY} with {strings.SLASH_COMMANDS_EPIC_RPG["dynamite"]}\n'
+        f'{emojis.BP} `{rubies:,}` {emojis.LOG_HYPER} / {emojis.LOG_ULTRA} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
+        f'{emojis.BP} ~`{super_fish:,}` {emojis.FISH_SUPER} with {strings.SLASH_COMMANDS_EPIC_RPG["bigboat"]}\n'
+        f'{emojis.BP} ~`{ultimate_logs:,}` {emojis.LOG_ULTIMATE} with {strings.SLASH_COMMANDS_EPIC_RPG["chainsaw"]}\n'
     )
     prep_tt1_to_2 = (
         f'{emojis.BP} If your horse is T6+: Get 30m coins\n'

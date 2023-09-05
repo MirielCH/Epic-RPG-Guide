@@ -426,8 +426,8 @@ async def embed_breeding() -> discord.Embed:
         f'{emojis.BP} T5 ➜ T6: `5`% chance (guaranteed after `24` attempts)\n'
         f'{emojis.BP} T6 ➜ T7: `2`% chance (guaranteed after `60` attempts)\n'
         f'{emojis.BP} T7 ➜ T8: `1`% chance (guaranteed after `120` attempts)\n'
-        f'{emojis.BP} T8 ➜ T9: chance unknown (guaranteed after `360` attempts)\n'
-        f'{emojis.BP} T9 ➜ T10: chance unknown (guaranteed after `1080` attempts)\n'
+        f'{emojis.BP} T8 ➜ T9: `0.3`% chance (guaranteed after `360` attempts)\n'
+        f'{emojis.BP} T9 ➜ T10: `0.1`% chance (guaranteed after `1080` attempts)\n'
     )
     horse_level = (
         f'{emojis.BP} The new horses will have an average of both horse\'s levels\n'

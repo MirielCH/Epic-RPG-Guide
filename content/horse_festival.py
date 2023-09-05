@@ -41,53 +41,74 @@ async def command_horse_festival_guide(ctx: discord.ApplicationContext, topic: s
 async def embed_overview() -> discord.Embed:
     """Horse overview embed"""
     activities = (
-        f'{emojis.BP} Get 25 {emojis.HORSESHOE} horseshoes each day in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, '
+        f'{emojis.BP} Get `25` {emojis.HORSESHOE} horseshoes each day in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}, '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} and all fish command tiers\n'
         f'{emojis.BP} Get {emojis.HORSESHOE} horseshoes and {emojis.HORSESHOE_GOLDEN} golden horseshoes in the daily '
-        f'and weekly **tasks** (see {emojis.EPIC_RPG_LOGO_SMALL}`/hf tasks`)\n'
+        f'and weekly {strings.SLASH_COMMANDS_EPIC_RPG["hf tasks"]}\n'
         #f'{emojis.BP} Play in the daily **minirace** (see topic `Minirace`)\n'
-        f'{emojis.BP} Play in the weekly **megarace** (see topic `Megarace`)\n'
+        f'{emojis.BP} Play in the weekly {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} (see topic `Megarace`)\n'
         f'{emojis.BP} Defeat the {emojis.HORSLIME} **horslime** in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'(drops 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token)\n'
-        f'{emojis.BP} Complete the **quest** to get the {emojis.PET_PONY} pony pet (see {emojis.EPIC_RPG_LOGO_SMALL}`/hf quest`)\n'
-        f'{emojis.BP} Buy stuff in the event shop (see {emojis.EPIC_RPG_LOGO_SMALL}`/hf shop`)\n'
+        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["hf quest"]} to get the {emojis.PET_PONY} pony pet\n'
+        f'{emojis.BP} Buy stuff in the {strings.SLASH_COMMANDS_EPIC_RPG["hf shop"]}\n'
     )
     bonuses = (
-        f'{emojis.BP} Horse breed cooldown is reduced by 35%\n'
-        f'{emojis.BP} You can use {emojis.EPIC_RPG_LOGO_SMALL}`/hf lightspeed` to reduce your active cooldowns by half.\n'
-        f'{emojis.DETAIL} This consumes 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token and your horse cooldown.\n'
+        f'{emojis.BP} Horse breed cooldown is reduced by `35`%\n'
+        f'{emojis.BP} You can use {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]} to reduce your active cooldowns by half.\n'
+        f'{emojis.DETAIL2} This consumes `1` {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token and your horse cooldown.\n'
         f'{emojis.DETAIL} This does not affect `vote` and `guild`.\n'
     )
     whattodo = (
         #f'{emojis.BP} Play in the minirace every day\n'
-        f'{emojis.BP} Do megarace whenever a stage is available\n'
+        f'{emojis.BP} Do {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} whenever a stage is available\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]} whenever your horse cd is ready\n'
         f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.ARMOR_COWBOY}{emojis.SWORD_COWBOY} cowboy gear.\n'
-        f'{emojis.DETAIL} This will increase your chance to encounter the {emojis.HORSLIME} horslime to 0.6%.\n'
-        f'{emojis.DETAIL} Materials required: 25 {emojis.HORSESHOE}\n'
-        f'{emojis.BP} Melt 21 {emojis.STEEL} and 4 {emojis.GOLD} and craft the {emojis.HORSE_ARMOR} horse armor.\n'
-        f'{emojis.DETAIL} This will increase your luck in the megarace.\n'
-        f'{emojis.DETAIL} Materials required: 525 {emojis.HORSESHOE} and 8 {emojis.HORSESHOE_GOLDEN}\n'
-        f'{emojis.BP} Complete the event quest and get showered in stuff'
+        f'{emojis.DETAIL2} This will increase your chance to encounter the {emojis.HORSLIME} horslime.\n'
+        f'{emojis.DETAIL} Materials required: `25` {emojis.HORSESHOE}\n'
+        f'{emojis.BP} Melt `21` {emojis.STEEL} and `4` {emojis.GOLD} and craft the {emojis.HORSE_ARMOR} horse armor.\n'
+        f'{emojis.DETAIL2} This will increase your luck in the megarace.\n'
+        f'{emojis.DETAIL} Materials required: `525` {emojis.HORSESHOE} and `8` {emojis.HORSESHOE_GOLDEN}\n'
+        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["hf quest"]} to get the pet\n'
+        f'{emojis.BP} Get whatever you want in the {strings.SLASH_COMMANDS_EPIC_RPG["hf shop"]}'
+    )
+    titles = (
+        f'{emojis.BP} **this is the best title** (complete the {strings.SLASH_COMMANDS_EPIC_RPG["hf quest"]})\n'
+        f'{emojis.BP} **h0w0rse** (buy in the {strings.SLASH_COMMANDS_EPIC_RPG["hf shop"]})\n'
+        f'{emojis.BP} **MEGARACER** (Reach the 9th stage of a {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]})\n'
+        f'{emojis.BP} **strong fren** (Craft the horse armor - Achievement #187)\n'
+        f'{emojis.BP} **smol fren fren?** (Get the pony pet - Achievement #188)\n'
+        f'{emojis.BP} **Racer** (Complete a megarace - Achievement #189)\n'
+    )
+    boost = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`25`% random event spawn chance\n'
+        f'{emojis.DETAIL2} +`20`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`20`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.DETAIL} +`20`% item rarity from work commands\n'
+        f'{emojis.BP} **Duration**: `2`h\n'
     )
     chances = (
-        f'{emojis.BP} 0.5% to encounter a {emojis.HORSLIME} with {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.DETAIL} 0.05% extra chance with each cowboy item, so 0.6% chance max\n'
+        f'{emojis.BP} `0.5`% to encounter a {emojis.HORSLIME} with {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL} `0.05`% extra chance with each cowboy item, so `0.6`% chance max\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on August 1, 2022\n'
-        f'{emojis.BP} Event ends on August 21, 2022, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on August 28, 2022, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
+        f'{emojis.BP} Event started on August 1, 2023\n'
+        f'{emojis.BP} Event ends on August 20, 2023, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on August 27, 2023, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
         f'GODLY horse token'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'HORSE FESTIVAL EVENT 2022 {emojis.HORSE_T10}',
+        title = f'HORSE FESTIVAL EVENT 2023 {emojis.HORSE_T10}',
         description = 'Neigh?'
     )
+    embed.add_field(name='TL;DR GUIDE', value=whattodo, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
+    embed.add_field(name='TITLES', value=titles, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
-    embed.add_field(name='WHAT TO DO FIRST', value=whattodo, inline=False)
-    embed.add_field(name='CHANCES', value=chances, inline=False)
+    embed.add_field(name='I SAW THERE IS A BOOST?', value=boost, inline=False)
+    #embed.add_field(name='CHANCES', value=chances, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
     return embed
 
@@ -95,9 +116,9 @@ async def embed_overview() -> discord.Embed:
 async def embed_megarace() -> discord.Embed:
     """Megarace embed"""
     overview = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/hf megarace action: start` to start a stage\n'
-        f'{emojis.BP} Every megarace has 9 stages and resets weekly\n'
-        f'{emojis.BP} Every stage you will encounter 3 random events and have to choose what to do\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} `action: start` to start a stage\n'
+        f'{emojis.BP} Every megarace has `9` stages and resets weekly\n'
+        f'{emojis.BP} Every stage you will encounter `3` random events and have to choose what to do\n'
         f'{emojis.BP} The cooldown of the next stage depends on your answers\n'
     )
     best_answers_1 = (
@@ -146,7 +167,7 @@ async def embed_megarace() -> discord.Embed:
     )
     megarace_boost = (
         f'{emojis.BP} You can find a boost in commands while you are in a megarace\n'
-        f'{emojis.BP} If you accept it, it will slightly lower or increase your remaining time\n'
+        f'{emojis.DETAIL} If you accept it, it will slightly lower or increase your remaining time\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -164,16 +185,16 @@ async def embed_megarace() -> discord.Embed:
 async def embed_minirace() -> discord.Embed:
     """Minirace embed"""
     overview = (
-        f'{emojis.BP} Miniraces are 16 player knockout tournaments\n'
-        f'{emojis.BP} There are 4 rounds in every minirace\n'
+        f'{emojis.BP} Miniraces are `16` player knockout tournaments\n'
+        f'{emojis.BP} There are `4` rounds in every minirace\n'
         f'{emojis.BP} Every round lasts up to one day\n'
         f'{emojis.BP} You can do one round a day\n'
     )
     howtoplay = (
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/hf minirace` to check your minirace or join one\n'
-        f'{emojis.BP} If your round is ready, the game will notify you\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/hf minirace` again to choose an action\n'
-        f'{emojis.BP} Use {emojis.EPIC_RPG_LOGO_SMALL}`/hf minirace` after the round ended to see the players\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf minirace"]} to check your minirace or join one\n'
+        f'{emojis.DETAIL} The game will notify you When your round is ready\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf minirace"]} again to choose an action\n'
+        f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf minirace"]} after the round ended to see the players\n'
     )
     actions = (
         f'{emojis.BP} `RIDE` vs `SUS`: `RIDE` has higher chance to win\n'
@@ -187,10 +208,10 @@ async def embed_minirace() -> discord.Embed:
     )
     debuffs = (
         f'{emojis.BP} Suspiciousness lowers the chance to win using `SUS`\n'
-        f'{emojis.DETAIL} `SPEEDRUN` lowers your suspiciousness greatly\n'
+        f'{emojis.DETAIL2} `SPEEDRUN` lowers your suspiciousness greatly\n'
         f'{emojis.DETAIL} `RIDE` lowers your suspiciousness slightly\n'
         f'{emojis.BP} Horse fatigue lowers the chance to win using `SPEEDRUN`\n'
-        f'{emojis.DETAIL} `SUS` lowers your horse fatigue greatly\n'
+        f'{emojis.DETAIL2} `SUS` lowers your horse fatigue greatly\n'
         f'{emojis.DETAIL} `RIDE` lowers your horse fatigue slightly\n'
     )
     round_win = (
@@ -200,17 +221,18 @@ async def embed_minirace() -> discord.Embed:
         f'{emojis.DETAIL} You can join a new minirace next day.\n'
     )
     race_win = (
-        f'{emojis.BP} If you win a tournament, you advance a tier and get 1 {emojis.POTION_SLEEPY}.\n'
+        f'{emojis.BP} If you win a tournament, you advance a tier and get `1` {emojis.POTION_SLEEPY}.\n'
         f'{emojis.DETAIL} Higher tiered tournaments play exactly the same.\n'
         f'{emojis.BP} If you manage to win a tier III tournament, you get an exclusive background\n'
     )
     disabled = (
-        f'{emojis.BP} Miniraces are not available anymore due to bugs.\n'
+        f'{emojis.BP} Miniraces are not available yet.\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MINIRACE',
-        description = 'Good luck with that background, lol.'
+        description = 'Miniraces got cancelled.'
+        #description = 'Good luck with that background, lol.'
     )
     #embed.add_field(name='OVERVIEW', value=overview, inline=False)
     #embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
@@ -218,5 +240,4 @@ async def embed_minirace() -> discord.Embed:
     #embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
     #embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
     #embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
-    embed.add_field(name='NOTE', value=disabled, inline=False)
     return embed
