@@ -48,7 +48,7 @@ async def command_set_progress(ctx: discord.ApplicationContext, timetravel: int,
     await user.update(tt=timetravel, ascended=ascended)
     if user.tt == timetravel and user.ascended == ascended:
         await ctx.respond(
-            f'Alright **{ctx.author.name}**, your progress is now set to **TT {user.tt}**, '
+            f'Alright **{ctx.author.name}**, your progress is now set to **TT {user.tt:,}**, '
             f'**{"ascended" if user.ascended else "not ascended"}**.'
         )
     else:
@@ -66,7 +66,7 @@ async def embed_user_settings(ctx: commands.Context, user_settings: database.Use
     ascended = 'Ascended' if user_settings.ascended else 'Not ascended'
     quick_trade = f'{emojis.ENABLED}`Enabled`' if user_settings.quick_trade_enabled else f'{emojis.DISABLED}`Disabled`'
     settings_field = (
-        f'{emojis.BP} **Current TT**: `{user_settings.tt}`\n'
+        f'{emojis.BP} **Current TT**: `{user_settings.tt:,}`\n'
         f'{emojis.BP} **Ascension**: `{ascended}`\n'
     )
     settings_calculators = (

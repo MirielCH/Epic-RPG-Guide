@@ -103,7 +103,7 @@ async def embed_pets_overview() -> discord.Embed:
         f'{emojis.BP} See topic `Advanced skills` for details\n'
     )
     specialskills = (
-        f'{emojis.BP} There are 8 special skills\n'
+        f'{emojis.BP} There are 9 special skills\n'
         f'{emojis.BP} Special skills don\'t have a rank and can **not** be lost\n'
         f'{emojis.BP} Each special skill is tied to a certain pet\n'
         f'{emojis.BP} See topic `Special skills` for details\n'
@@ -396,6 +396,12 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.BP} This skill is unique to the {emojis.PET_PONY} pony pet\n'
         f'{emojis.DETAIL} This pet is a reward in the horse festival'
     )
+    leader = (
+        f'{emojis.BP} Increases the amount of items from pet adventures by `30`%\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_WORKER} worker pet\n'
+        f'{emojis.DETAIL2} This pet is a crossreward from the IDLE FARM game\n'
+        f'{emojis.DETAIL} Use `idle crossrewards` in IDLE FARM to check on how to get it'
+    )
     resetter = (
         f'{emojis.BP} If the pet also has the {emojis.SKILL_TRAVELER} time traveler skill and it triggers, '
         f'it has a chance to reset **all** pets sent at the same time as this pet.\n'
@@ -420,6 +426,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     embed.add_field(name=f'FASTER {emojis.SKILL_FASTER}', value=faster, inline=False)
     embed.add_field(name=f'FISHERFISH {emojis.SKILL_FISHER_FISH}', value=fisherfish, inline=False)
     embed.add_field(name=f'GIFTER {emojis.SKILL_GIFTER}', value=gifter, inline=False)
+    embed.add_field(name=f'LEADER {emojis.SKILL_LEADER}', value=leader, inline=False)
     embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
     embed.add_field(name=f'RESETTER {emojis.SKILL_RESETTER}', value=resetter, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
@@ -465,6 +472,7 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} {emojis.SKILL_ANTARCTICIAN} **Antarctician**: If it returns fish, they will be EPIC\n'
         f'{emojis.BP} {emojis.SKILL_FISHER_FISH} **Fisherfish**: If it returns fish, you get `3` times the amount\n'
         f'{emojis.BP} {emojis.SKILL_FASTER} **Faster**: Doubles time reduction from {emojis.SKILL_FAST} fast skill\n'
+        f'{emojis.BP} {emojis.SKILL_LEADER} **Leader**: Increases the amount of items brought back by `30`%\n'
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
         f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
@@ -509,7 +517,7 @@ async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
     else:
         column = 'tt_121_plus'
     what_to_fuse_with_tier = field_fusions = ''
-    title = f'RECOMMENDED PET FUSIONS • TT {tt_no}'
+    title = f'RECOMMENDED PET FUSIONS • TT {tt_no:,}'
     if pet_tier > 0:
         title = f'{title} • TIER {pet_tier}'
     embed = discord.Embed(

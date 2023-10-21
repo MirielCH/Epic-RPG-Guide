@@ -97,7 +97,7 @@ class MiscCog(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         timetravel: Option(int, 'The TT you want to calculate for. Reads from EPIC RPG if empty.',
-                           min_value=0, max_value=999, default=None),
+                           min_value=0, max_value=9999, default=None),
         area_no: Option(int, 'The area you want to calculate for. Reads from EPIC RPG if empty.', name='area',
                         min_value=1, max_value=20, choices=strings.CHOICES_AREA_NO_TOP, default=None),
     ) -> None:

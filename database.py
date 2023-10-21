@@ -724,10 +724,11 @@ async def get_time_travel(tt_no: int) -> TimeTravel:
     table = 'timetravels'
     function_name = 'get_time_travel'
     sql = f'SELECT * FROM timetravels WHERE tt=?'
+    tt_no_select = 999 if tt_no > 999 else tt_no 
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute(sql, (tt_no,))
+        cur.execute(sql, (tt_no_select,))
         record = cur.fetchone()
     except sqlite3.Error as error:
         await log_error(
@@ -738,7 +739,7 @@ async def get_time_travel(tt_no: int) -> TimeTravel:
         await log_error(
             INTERNAL_ERROR_NO_DATA_FOUND.format(table=table, function=function_name, sql=sql)
         )
-        raise NoDataFound(f'Time travel {tt_no} not found in database.')
+        raise NoDataFound(f'Time travel {tt_no_select} not found in database.')
     record = dict(record)
     tt = TimeTravel(
         a3_fish = record['a3_fish'],
@@ -1691,7 +1692,7 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         command_data = str(ctx.interaction.data.get('options','None'))
         try:
             user = await get_user(ctx.author.id)
-            user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
+            user_settings = f'TT{user.tt:,}, {"ascended" if user.ascended else "not ascended"}'
         except:
             user_settings = 'N/A'
     elif isinstance(ctx, commands.Context):
@@ -1699,7 +1700,7 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
         command_data = " ".join(ctx.args[2:])
         try:
             user = await get_user(ctx.author.id)
-            user_settings = f'TT{user.tt}, {"ascended" if user.ascended else "not ascended"}'
+            user_settings = f'TT{user.tt:,}, {"ascended" if user.ascended else "not ascended"}'
         except:
             user_settings = 'N/A'
     else:

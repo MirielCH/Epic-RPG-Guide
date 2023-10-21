@@ -32,7 +32,7 @@ class PetsCog(commands.Cog):
         pet_tier: Option(int, 'The pet tier you want to see. Shows all tiers if empty.', min_value=1, max_value=20,
                          default=None),
         timetravel: Option(int, 'The TT you want a recommendation for. Uses your progress setting if empty.',
-                           min_value=0, max_value=999, default=None),
+                           min_value=0, max_value=9999, default=None),
     ) -> None:
         """Pet fuse recommendations"""
         await pets.command_pets_fuse(ctx, pet_tier, timetravel)

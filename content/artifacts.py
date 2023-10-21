@@ -12,6 +12,7 @@ TOPIC_ARTIFACTS_COIN_RING = 'Coin ring'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
+TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
 TOPIC_ARTIFACTS_SOURCE_SUMMARY = 'Source summary'
 
 TOPICS_ARTIFACTS = [
@@ -21,6 +22,7 @@ TOPICS_ARTIFACTS = [
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
+    TOPIC_ARTIFACTS_VAMPIRE_TEETH,
     TOPIC_ARTIFACTS_SOURCE_SUMMARY,
 ]
 
@@ -35,6 +37,7 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
+        TOPIC_ARTIFACTS_VAMPIRE_TEETH: embed_artifacts_vampire_teeth,
         TOPIC_ARTIFACTS_SOURCE_SUMMARY: embed_artifacts_source_summary,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
@@ -160,7 +163,7 @@ async def embed_artifacts_master_key() -> discord.Embed:
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
-        f'in areas 12, 14 and 15 (maybe more)\n'
+        f'in areas 12-15\n'
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_C} `Part C` • Drops from enchant commands\n'
     )
     embed = discord.Embed(
@@ -177,7 +180,7 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     effects = (
         f'{emojis.BP} Doubles the duration of all boosts\n'
         f'{emojis.BP} Unlocks a personal cooldown reduction\n'
-        f'{emojis.DETAIL} The cd reduction increases with time travels (up to `5` %)\n'
+        f'{emojis.DETAIL} The cd reduction increases with time travels (up to `5`%)\n'
     )
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_POCKET_WATCH_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["pets claim"]}\n'
@@ -190,6 +193,29 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+async def embed_artifacts_vampire_teeth() -> discord.Embed:
+    """Vampire teeth guide"""
+    effects = (
+        f'{emojis.BP} Increases rewards from {strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
+        f'{emojis.BP} Increases monster drop chance by `5`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_VAMPIRE_TEETH_PART_A} `Part A` • Drops from the {emojis.HAL_BOSS} pumpkin bat '
+        f'(scroll boss)\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VAMPIRE_TEETH_PART_B} `Part B` • Drops from '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VAMPIRE_TEETH_PART_C} `Part C` • Drops from joining a '
+        f'{emojis.HAL_SLEEPYNT_JACK_O_LANTERN} sleepyn\'t jack-o-lantern miniboss\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}',
+        description = 'This artifact is only available during the halloween event!',
     )
     embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
@@ -219,7 +245,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     master_key = (
         f'{emojis.ARTIFACT_MASTER_KEY_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
         f'{emojis.ARTIFACT_MASTER_KEY_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
-        f'in areas 12, 14 and 15 (maybe more)\n'
+        f'in areas 12-15\n'
         f'{emojis.ARTIFACT_MASTER_KEY_PART_C} `Part C` • Drops from enchant commands\n'
     )
     pocket_watch = (
@@ -230,6 +256,12 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_POCKET_WATCH_PART_E} `Part E` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
         f'in the TOP\n'
     )
+    vampire_teeth = (
+        f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_A} `Part A` • Drops from the {emojis.HAL_BOSS} pumpkin bat (scroll boss)\n'
+        f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
+        f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_C} `Part C` • Drops from joining a {emojis.HAL_SLEEPYNT_JACK_O_LANTERN} '
+        f'sleepyn\'t jack-o-lantern miniboss\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ARTIFACT SOURCES',
@@ -239,4 +271,5 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)
+    embed.add_field(name=f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}', value=vampire_teeth, inline=False)
     return embed

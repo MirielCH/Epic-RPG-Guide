@@ -530,7 +530,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
             f'{requirements}\n'
             f'{emojis.BP} {emojis.SWORD_GODLYCOOKIE} GODLY cookie (`eat` it to start the fight)\n'
             f'{emojis.BP} No gear (having a sword or armor results in instant death)\n'
-            f'{emojis.BP} 750,000+ {emojis.LOG} wooden logs to sell during the fight\n'
+            f'{emojis.BP} 15m+ {emojis.LOG} wooden logs to sell during the fight\n'
             f'{emojis.BP} **4** T10 or higher pets to send on adventures\n'
             f'{emojis.DETAIL} At least **3** of these pets **must** have the {emojis.SKILL_EPIC} EPIC skill\n'
             f'{emojis.DETAIL} Only **1** can have a {emojis.SKILL_TRAVELER} time traveler skill\n'
@@ -550,7 +550,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
             f'{emojis.BP} {emojis.PET_DRAGON} T5+ dragon pet'
         )
     if dungeon.tt is not None:
-        if dungeon.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon.tt}+'
+        if dungeon.tt != 0: requirements = f'{requirements}\n{emojis.BP} {emojis.TIME_TRAVEL} TT {dungeon.tt:,}+'
     if dungeon_no == 15.2:
         requirements = f'{requirements}\n{emojis.BP} {emojis.STAT_COOLNESS} 2,000+ coolness'
 

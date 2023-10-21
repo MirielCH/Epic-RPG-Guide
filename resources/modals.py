@@ -5,7 +5,7 @@ import discord
 from discord.ui import InputText, Modal
 
 from content import crafting
-from resources import functions, strings
+from resources import emojis, functions, strings
 
 
 class CraftingCalculatorAmountModal(Modal):
@@ -117,24 +117,38 @@ class SetCurrentTTModal(Modal):
         self.view = view
         self.add_item(
             InputText(
-                label='Your current TT [0-999]',
+                label='Your current TT [0-9,999]',
                 placeholder="Enter TT number ..."
             )
         )
 
     async def callback(self, interaction: discord.Interaction):
         tt_no = self.children[0].value.lower()
-        msg_error = 'Invalid TT number. Please enter a number between 0 and 999.'
+        msg_error = 'Invalid TT number. Please enter a number between 0 and 9,999.'
         try:
             tt_no = int(tt_no)
         except:
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return
-        if not 0 <= tt_no <= 999:
+        if not 0 <= tt_no <= 9999:
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return
-        await self.view.user_settings.update(tt=tt_no)
+        if not self.view.user_settings.ascended and tt_no >= 25:
+            await interaction.response.send_message(
+                f'Invalid combination. You can\'t set yourself as {emojis.TIME_TRAVEL} TT 25+ if you are not ascended',
+                ephemeral=True
+            )
+        elif self.view.user_settings.ascended and tt_no == 0:
+            await interaction.response.send_message(
+                f'Invalid combination. You can\'t set yourself as {emojis.TIME_TRAVEL} TT 0 if you are ascended',
+                ephemeral=True
+            )
+        else:
+            await self.view.user_settings.update(tt=tt_no)
         embed = await self.view.embed_function(self.view.ctx, self.view.user_settings)
-        await interaction.response.edit_message(embed=embed, view=self.view)
+        if interaction.response.is_done():
+            await interaction.message.edit(embed=embed, view=self.view)
+        else:
+            await interaction.response.edit_message(embed=embed, view=self.view)

@@ -679,7 +679,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     if user.tt < area.unlocked_in_tt:
         area_locked = (
             f'{emojis.BP} **You can not reach this area in your current TT**\n'
-            f'{emojis.BP} This area is unlocked in {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt}'
+            f'{emojis.BP} This area is unlocked in {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt:,}'
             )
         footer = f'Tip: See "/time travel guide" for details about time traveling'
 
@@ -723,7 +723,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         )
     if area.unlocked_in_tt > 0:
         area_req = (
-            f'{emojis.BP} {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt}+\n'
+            f'{emojis.BP} {emojis.TIME_TRAVEL} TT {area.unlocked_in_tt:,}+\n'
             f'{area_req}'
         )
 
@@ -872,7 +872,7 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
         )
 
     # Title
-    title = f'{area_no_str}  •  TT {user.tt}'
+    title = f'{area_no_str}  •  TT {user.tt:,}'
     if user.ascended: title = f'{title}, ASCENDED'
 
     # Create embed

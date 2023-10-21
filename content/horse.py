@@ -388,7 +388,7 @@ async def embed_types() -> discord.Embed:
     embed.add_field(name='GOLDEN', value=golden, inline=False)
     embed.add_field(name='MAGIC', value=magic, inline=False)
     embed.add_field(name='SPECIAL', value=special, inline=False)
-    #embed.add_field(name=f'SPOOKY {emojis.HAL_PUMPKIN}', value=spooky, inline=False)
+    embed.add_field(name=f'SPOOKY {emojis.HAL_PUMPKIN}', value=spooky, inline=False)
     embed.add_field(name='STRONG', value=strong, inline=False)
     embed.add_field(name='SUPER SPECIAL', value=super_special, inline=False)
     embed.add_field(name='TANK', value=tank, inline=False)

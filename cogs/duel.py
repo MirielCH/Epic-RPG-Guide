@@ -31,7 +31,7 @@ class DuelCog(commands.Cog):
                            min_value=1, max_value=999_999_999),
         donor: Option(str, 'The donor status you want to calculate for.', choices=duel.CHOICES_DONOR),
         timetravel: Option(int, 'The TT you want to calculate for. Uses your progress setting if empty.',
-                           min_value=0, max_value=999, default=None),
+                           min_value=0, max_value=9999, default=None),
         guild_bonus: Option(int, 'The guild bonus you want to calculate with. Reads from EPIC RPG if empty.',
                             min_value=0, max_value=999_999, default=None),
     ) -> None:

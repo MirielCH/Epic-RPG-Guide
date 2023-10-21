@@ -317,7 +317,7 @@ async def command_coincap_calculator(
     if area_no == 1: coin_cap += 1
     area_str = 'the TOP' if area_no == 21 else f'area {area_no}'
     await ctx.respond(
-        f'The coin cap for **TT {timetravel}**, **{area_str}** is '
+        f'The coin cap for **TT {timetravel:,}**, **{area_str}** is '
         f'**{coin_cap:,}** {emojis.COIN} coins.\n'
         f'You can not receive coins with {strings.SLASH_COMMANDS_EPIC_RPG["give"]}, '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["multidice"]} '

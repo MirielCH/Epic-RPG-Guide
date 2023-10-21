@@ -33,7 +33,8 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
                                         mob_world_boost: Optional[bool] = None,
                                         lootbox_world_boost: Optional[bool] = None,
                                         mob_boost_percentage: Optional[int] = None,
-                                        lootbox_boost_percentage: Optional[int] = None) -> None:
+                                        lootbox_boost_percentage: Optional[int] = None,
+                                        vampire_teeth_artifact: Optional[bool] = None) -> None:
     """Dropchance calculator command"""
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
@@ -87,12 +88,27 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
         boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
         if mob_boost_percentage is None: mob_boost_percentage = boosts_data['monster drop chance']
         if lootbox_boost_percentage is None: lootbox_boost_percentage = boosts_data['lootbox drop chance']
+    if vampire_teeth_artifact is None:
+        bot_message_task = asyncio.ensure_future(functions.wait_for_artifacts_message(bot, ctx))
+        try:
+            content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
+                                                            command=strings.SLASH_COMMANDS_EPIC_RPG["artifacts"])
+            bot_message = await functions.wait_for_bot_or_abort(ctx, bot_message_task, content)
+        except asyncio.TimeoutError:
+            await ctx.respond(
+                strings.MSG_BOT_MESSAGE_NOT_FOUND.format(user=ctx.author.name, information='artifacts'),
+                ephemeral=True
+            )
+            return
+        if bot_message is None: return
+        artifact_data = await functions.extract_data_from_artifacts_embed(ctx, bot_message)
+        if artifact_data['vampire teeth']: vampire_teeth_artifact = True
     view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data,
                                           mob_world_boost, lootbox_world_boost, mob_boost_percentage,
-                                          lootbox_boost_percentage)
+                                          lootbox_boost_percentage, vampire_teeth_artifact)
     world_boost = lootbox_world_boost if drop_type == DROP_LOOTBOX else mob_world_boost
     boost_percentage = lootbox_boost_percentage if drop_type == DROP_LOOTBOX else mob_boost_percentage
-    embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage)
+    embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage, vampire_teeth_artifact)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
@@ -331,7 +347,7 @@ async def get_item_breakdown(item: database.Item, amount: int, dismantle: bool =
 
 # --- Embeds ---
 async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
-                           world_boost: bool, boost_percentage: int) -> discord.Embed:
+                           world_boost: bool, boost_percentage: int, vampire_teeth_artifact: bool) -> discord.Embed:
     """Dropchance"""
     tt_chance = (49 + timetravel) * timetravel / 2 / 100
     horse_emoji = getattr(emojis, f'HORSE_T{horse_data["tier"]}')
@@ -376,11 +392,12 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
         color = settings.EMBED_COLOR,
         description = (
             f'{emojis.BP} Drop type: {drop_description}\n'
-            f'{emojis.BP} Time travel: {emojis.TIME_TRAVEL} **{timetravel}**\n'
+            f'{emojis.BP} Time travel: {emojis.TIME_TRAVEL} **{timetravel:,}**\n'
             f'{emojis.BP} Horse tier: {horse_emoji} **T{horse_data["tier"]}**\n'
             f'{emojis.BP} Horse epicness: **{horse_data["epicness"]}**\n'
             f'{emojis.BP} World boost active: **{"Yes" if world_boost else "No"}**\n'
             f'{emojis.BP} Boost percentage: **{boost_percentage}%**\n'
+            f'{emojis.BP} Vampire teeth artifact: **{"Yes" if vampire_teeth_artifact else "No"}**\n'
         )
     )
 
@@ -390,6 +407,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
     
     if drop_type != DROP_LOOTBOX:
         drop_chance = base_chance * (1 + tt_chance) * horse_chance * multiplier
+        if vampire_teeth_artifact: drop_chance *= 1.05
         drop_chance_daily = round(drop_chance * 1.3, 3)
         drop_chance_hm = round(drop_chance * 1.7, 3)
         drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 3)

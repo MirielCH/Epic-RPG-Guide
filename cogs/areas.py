@@ -24,7 +24,7 @@ class AreasCog(commands.Cog):
         length: Option(str, 'The guide length you want to see. Short only shows the most important points.',
                       choices=strings.CHOICES_AREA_GUIDES, default=None),
         timetravel: Option(int, 'The TT you want to see the guide for. Uses your progress setting if empty.',
-                           min_value=0, max_value=999, default=None),
+                           min_value=0, max_value=9999, default=None),
         ascension: Option(str, 'The ascension you want to see the guide for. Uses your progress setting if empty.',
                            choices=strings.CHOICES_ASCENSION, default=None),
 

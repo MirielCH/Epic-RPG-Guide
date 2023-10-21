@@ -58,7 +58,7 @@ class CraftingCog(commands.Cog):
         drop_type: Option(str, 'The drop type you want to check the chance of',
                            choices=crafting.DROP_TYPES, default=crafting.DROP_BASIC),
         timetravel: Option(int, 'The TT you want to calculate for. Uses your progress setting if empty.',
-                           min_value = 0, max_value = 999, default=None),
+                           min_value = 0, max_value = 9999, default=None),
         horse_tier: Option(int, 'The horse tier you want to calculate for. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 10, default=None),
         horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',
@@ -71,17 +71,22 @@ class CraftingCog(commands.Cog):
                                      min_value = 0, max_value = 145, default=None),
         lootbox_boost_percentage: Option(int, 'Total lootbox drop chance boost percentage from active potions',
                                          min_value = 0, max_value = 100, default=None),
+        vampire_teeth_artifact: Option(str, 'Whether you have the vampire teeth artifact',
+                                       choices=['Owned','Not owned'], default=None),
     ) -> None:
         """Dropchance calculator"""
         if mob_world_boost is not None:
             mob_world_boost = True if mob_world_boost == 'Active' else False
+        if vampire_teeth_artifact is not None:
+            vampire_teeth_artifact = True if vampire_teeth_artifact == 'Owned' else False
         if lootbox_world_boost is not None:
             lootbox_world_boost = True if lootbox_world_boost == 'Active' else False
         await crafting.command_dropchance_calculator(self.bot, ctx, drop_type, timetravel=timetravel,
                                                      horse_tier=horse_tier, horse_epicness=horse_epicness,
                                                      mob_world_boost=mob_world_boost, lootbox_world_boost=lootbox_world_boost,
                                                      mob_boost_percentage=mob_boost_percentage,
-                                                     lootbox_boost_percentage=lootbox_boost_percentage)
+                                                     lootbox_boost_percentage=lootbox_boost_percentage,
+                                                     vampire_teeth_artifact=vampire_teeth_artifact)
 
     @cmd_crafting.command(name='calculator', description='Shows the materials you need to craft an item')
     async def crafting_calculator(

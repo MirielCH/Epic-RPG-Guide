@@ -440,7 +440,7 @@ class DropTypeSelect(discord.ui.Select):
             boost_percentage = self.view.mob_boost_percentage
             world_boost = self.view.mob_world_boost
         embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data,
-                                               world_boost, boost_percentage)
+                                               world_boost, boost_percentage, self.view.vampire_teeth_artifact)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -607,7 +607,18 @@ class ManageUserSettingsSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         if select_value == 'toggle_ascension':
-            await self.view.user_settings.update(ascended=not self.view.user_settings.ascended)
+            if self.view.user_settings.ascended and self.view.user_settings.tt >= 25:
+                await interaction.response.send_message(
+                    f'Invalid combination. You can\'t set yourself as not ascended if you are {emojis.TIME_TRAVEL} TT 25+.',
+                    ephemeral=True
+                )
+            elif not self.view.user_settings.ascended and self.view.user_settings.tt == 0:
+                await interaction.response.send_message(
+                    f'Invalid combination. You can\'t ascend in {emojis.TIME_TRAVEL} TT 0.',
+                    ephemeral=True
+                )
+            else:
+                await self.view.user_settings.update(ascended=not self.view.user_settings.ascended)
         elif select_value == 'toggle_quick_trade':
             await self.view.user_settings.update(quick_trade_enabled=not self.view.user_settings.quick_trade_enabled)
         elif select_value == 'set_tt':

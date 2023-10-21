@@ -506,6 +506,36 @@ async def wait_for_world_message(bot: commands.Bot, ctx: discord.ApplicationCont
     return result[1] if isinstance(result, tuple) else result
 
 
+async def wait_for_artifacts_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
+    """Waits for and returns the message with the artifacts embed from EPIC RPG"""
+    def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
+        correct_message = False
+        message = message_after if message_after is not None else message_before
+        if message.embeds:
+            embed = message.embeds[0]
+            if embed.description:
+                try:
+                    search_strings = [
+                        'you can find parts of the artifacts across', #English
+                        'puedes encontrar partes de los artefactos en muchos', #Spanish,
+                        'você pode encontrar partes dos artefatos em muitos', #Portuguese,
+                    ]
+                    if any(search_string in embed.description.lower() for search_string in search_strings):
+                        correct_message = True
+                except:
+                    pass
+
+        return ((message.author.id in (settings.EPIC_RPG_ID, settings.TESTY_ID)) and (message.channel == ctx.channel)
+                and correct_message)
+
+    message_task = asyncio.ensure_future(bot.wait_for('message', check=epic_rpg_check,
+                                                      timeout = settings.ABORT_TIMEOUT))
+    message_edit_task = asyncio.ensure_future(bot.wait_for('message_edit', check=epic_rpg_check,
+                                                           timeout = settings.ABORT_TIMEOUT))
+    result = await get_result_from_tasks(ctx, [message_task, message_edit_task])
+    return result[1] if isinstance(result, tuple) else result
+
+
 async def wait_for_boosts_message(bot: commands.Bot, ctx: discord.ApplicationContext) -> discord.Message:
     """Waits for and returns the message with the boosts list from EPIC RPG"""
     def epic_rpg_check(message_before: discord.Message, message_after: Optional[discord.Message] = None):
@@ -940,6 +970,57 @@ async def extract_data_from_world_embed(ctx: discord.ApplicationContext,
     world_data['lootbox boost'] = lootbox_boost
 
     return world_data
+
+
+async def extract_data_from_artifacts_embed(ctx: discord.ApplicationContext,
+                                            bot_message: discord.Message) -> str:
+    """Extracts data from the artifacts embed.
+
+    Arguments
+    ---------
+    ctx: Context.
+    bot_message: Message the data is extracted from.
+
+    Returns
+    -------
+    Dict{
+        'top hat': bool,
+        'coin ring': bool,
+        'golden pan': bool,
+        'master key': bool,
+        'pocket watch': bool,
+        'vampire teeth': bool,
+    }
+
+    Raises
+    ------
+    ValueError if something goes wrong during extraction.
+    Also logs the errors to the database.
+    """
+    artifact_data = {
+        'top hat': False,
+        'coin ring': False,
+        'golden pan': False,
+        'master key': False,
+        'pocket watch': False,
+        'vampire teeth': False,
+    }
+
+    for field in bot_message.embeds[0].fields:
+        top_hat_active_match = re.search(r'✅ \| <:tophat', field.value.lower())
+        coin_ring_active_match = re.search(r'✅ \| <:coinring', field.value.lower())
+        golden_pan_active_match = re.search(r'✅ \| <:goldenpan', field.value.lower())
+        master_key_active_match = re.search(r'✅ \| <:masterkey', field.value.lower())
+        pocket_watch_active_match = re.search(r'✅ \| <:pocketwatch', field.value.lower())
+        vampire_teeth_active_match = re.search(r'✅ \| <:vampireteeth', field.value.lower())
+        if top_hat_active_match: artifact_data['top hat'] = True
+        if coin_ring_active_match: artifact_data['coin ring'] = True
+        if golden_pan_active_match: artifact_data['golden pan'] = True
+        if master_key_active_match: artifact_data['master key'] = True
+        if pocket_watch_active_match: artifact_data['pocket watch'] = True
+        if vampire_teeth_active_match: artifact_data['vampire teeth'] = True
+        
+    return artifact_data
 
 
 async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,

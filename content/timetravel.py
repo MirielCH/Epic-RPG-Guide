@@ -84,7 +84,7 @@ async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetrave
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
         timetravel = user.tt
-    if timetravel == 1000:
+    if timetravel == 10_000:
         await ctx.respond('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
         return
     tt: database.TimeTravel = await database.get_time_travel(timetravel)
@@ -164,6 +164,9 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
             if bot_message is None: return
             boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message_boosts)
         profile_data['horse_boost'] = 0
+        profile_data['horse_epicness'] = 0
+        profile_data['horse_level'] = 0
+        profile_data['horse_tier'] = 0
         if profile_data['horse_type'] in ('magic', 'defender', 'strong', 'tank'):
             bot_message_task = asyncio.ensure_future(functions.wait_for_horse_message(bot, ctx))
             try:
@@ -179,6 +182,9 @@ async def command_time_jump_calculator(bot: discord.Bot, ctx: discord.Applicatio
             if bot_message is None: return
             horse_data = await functions.extract_horse_data_from_horse_embed(ctx, bot_message)
             profile_data['horse_boost'] = horse_data['boost']
+            profile_data['horse_epicness'] = horse_data['epicness']
+            profile_data['horse_level'] = horse_data['level']
+            profile_data['horse_tier'] = horse_data['tier']
 
     if option_stats == STATS_MANUAL:
         all_items_list = list(await database.get_all_items())
@@ -310,10 +316,10 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         enchant_multiplier = tt_enchant_multipliers[tt.tt]
     else:
         enchant_multiplier = round((tt.tt ** 2 / 64) + (7 * tt.tt / 73) + (19 / 35))
-    bonus_xp = f'{bonus_xp:,g}'
-    bonus_duel_xp = f'{bonus_duel_xp:,g}'
-    bonus_drop_chance = f'{bonus_drop_chance:,g}'
-    berry_drop_chance = f'{berry_drop_chance:,g}'
+    bonus_xp = f'{bonus_xp:,.1f}'.replace('.0','')
+    bonus_duel_xp = f'{bonus_duel_xp:,.1f}'.replace('.0','')
+    bonus_drop_chance = f'{bonus_drop_chance:,.1f}'.replace('.0','')
+    berry_drop_chance = f'{berry_drop_chance:,.1f}'.replace('.0','')
     #artifacts_drop_chance = f'{artifacts_drop_chance:,g}'
     if mytt:
         embed_description = (
@@ -340,12 +346,12 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} `{bonus_drop_chance}` % more **items** with work commands\n'
         f'{emojis.BP} `{berry_drop_chance}` % more **EPIC berries** with pickup commands\n'
         #f'{emojis.BP} `{artifacts_drop_chance}` % extra chance to find **artifact parts**\n'
-        f'{emojis.BP} `x{enchant_multiplier}` enchanting multiplier (_approximation formula_)\n'
+        f'{emojis.BP} `x{enchant_multiplier:,}` enchanting multiplier (_approximation formula_)\n'
     )
     if tt.tt > 1:
         unlocks = (
             f'{unlocks.strip()}\n'
-            f'{emojis.BP} `{tt.tt + 5}` base pet slots\n'
+            f'{emojis.BP} `{tt.tt + 5:,}` base pet slots\n'
             f'{emojis.DETAIL} Your total pet slots depend on the coolness pet slot multiplier\n'
             f'{emojis.DETAIL} See {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your multiplier\n'
         )
@@ -452,7 +458,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'TIME TRAVEL {tt.tt} BONUSES',
+        title = f'TIME TRAVEL {tt.tt:,} BONUSES',
         description = embed_description
     )
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
@@ -1095,15 +1101,22 @@ async def embed_time_jump_calculator(area_no: int, inventory: str, profile_data:
 
         if option_stats == STATS_CURRENT:
             at_multiplier = def_multiplier = life_multiplier = 1
-            if profile_data['horse_type'] == 'magic':
-                armor_enchant_multiplier *= 1 + profile_data['horse_boost'] / 100
-                sword_enchant_multiplier *= 1 + profile_data['horse_boost'] / 100
-            if profile_data['horse_type'] == 'strong':
-                at_multiplier += profile_data['horse_boost'] / 100
-            if profile_data['horse_type'] == 'defender':
-                def_multiplier += profile_data['horse_boost'] / 100
-            if profile_data['horse_type'] == 'tank':
-                life_multiplier += profile_data['horse_boost'] / 100
+            if profile_data['horse_type'] in ('magic', 'strong', 'defender', 'tank'):
+                horse_data: database.Horse = await database.get_horse(profile_data['horse_tier'])
+                horse_epicness_type_factor = 1 + profile_data['horse_epicness'] * 0.005
+                if profile_data['horse_type'] == 'magic':
+                    horse_boost = horse_data.magic_level_bonus * profile_data['horse_level'] * horse_epicness_type_factor
+                    armor_enchant_multiplier *= 1 + horse_boost / 100
+                    sword_enchant_multiplier *= 1 + horse_boost / 100
+                if profile_data['horse_type'] == 'strong':
+                    horse_boost = horse_data.strong_level_bonus * profile_data['horse_level'] * horse_epicness_type_factor
+                    at_multiplier += horse_boost / 100
+                if profile_data['horse_type'] == 'defender':
+                    horse_boost = horse_data.def_level_bonus * profile_data['horse_level'] * horse_epicness_type_factor
+                    def_multiplier += horse_boost / 100
+                if profile_data['horse_type'] == 'tank':
+                    horse_boost = horse_data.tank_level_bonus * profile_data['horse_level'] * horse_epicness_type_factor
+                    life_multiplier += horse_boost / 100
             base_at = functions.round_school(profile_data['at'] / (1 + sword_enchant_multiplier) / at_multiplier) - boosts_data['at']
             base_def = functions.round_school(profile_data['def'] / (1 + armor_enchant_multiplier) / def_multiplier) - boosts_data['def']
             base_life = functions.round_school(profile_data['life'] / life_multiplier) - boosts_data['life']
