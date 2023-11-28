@@ -82,7 +82,7 @@ class TradingCog(commands.Cog):
             "— inventory", #All languages
         ]
         if any(search_string in embed_author.lower() for search_string in search_strings):
-            if icon_url == embed.Empty: return
+            if icon_url is None: return
             user_id = user_name = user_command_message = None
             embed_user = None
             if message.interaction is not None: return

@@ -80,11 +80,11 @@ async def embed_pets_overview() -> discord.Embed:
     )
     whattodo = f'{emojis.BP} Send them on adventures (see topic `Pet adventures`)'
     tier = (
-        f'{emojis.BP} Tiers range from I to XX (1 to 20)\n'
+        f'{emojis.BP} Tiers range from I to XXV (1 to 25)\n'
         f'{emojis.BP} Increases the number of items you get in adventures\n'
         f'{emojis.DETAIL} Tier I and higher has a chance of returning up to `1` ULTRA log\n'
         f'{emojis.DETAIL} Tier X and higher has a chance of returning up to `2` ULTRA logs\n'
-        f'{emojis.DETAIL} Tier XX has a chance of returning up to `3` ULTRA logs\n'
+        f'{emojis.DETAIL} Tier XX and higher has a chance of returning up to `3` ULTRA logs\n'
         f'{emojis.BP} Increases the chance to increase a skill rank in adventures\n'
         f'{emojis.BP} Increases the chance to keep a skill when fusing\n'
         f'{emojis.BP} Increased by fusing pets (see topic `Fusing pets`)'
@@ -523,7 +523,12 @@ async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = title,
-        description = 'This guide lists the minimum recommended pet fusions for a decent tier up chance.'
+        description = (
+            'This guide lists the minimum recommended pet fusions for a decent tier up chance.\n'
+            'For a more in-depth calculation (especially for high TT players) check out the [Pet Fusion Calculator]'
+            f'(https://docs.google.com/spreadsheets/d/183Gp30PHNj1isWnjT6XQ8LDiGedXjApDxX5eYsOFyXY/edit?usp=sharing) '
+            f'by <@292483348738080769>.'
+        )
     )
     for pet_fusion in pet_fusions:
         fusion = getattr(pet_fusion, column)
@@ -537,7 +542,7 @@ async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
                     )
             if pet_fusion.tier != pet_tier: continue
         if fusion is None:
-            fusion = f'Chance too low' if pet_fusion.tier > 1 else f'None'
+            fusion = 'None found'
         field_fusions = (
             f'{field_fusions}\n'
             f'{emojis.BP} **T{pet_fusion.tier}**: {fusion}'
@@ -546,7 +551,7 @@ async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
 
     if pet_tier > 0:
         if what_to_fuse_with_tier == '':
-            what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None'
+            what_to_fuse_with_tier = f'{emojis.BP} Chance too low' if pet_tier < 15 else f'{emojis.BP} None found'
         embed.add_field(name=f'FUSIONS THAT INCLUDE A T{pet_tier} PET', value=what_to_fuse_with_tier, inline=False)
     note = (
         f'{emojis.BP} Tier up is **not** guaranteed!\n'

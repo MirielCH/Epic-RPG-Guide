@@ -4,7 +4,7 @@ import discord
 from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
-from content import dungeons
+from content import areas, dungeons
 from resources import strings
 
 
@@ -23,7 +23,7 @@ class DungeonsCog(commands.Cog):
                         min_value=1, max_value=21, choices=strings.CHOICES_DUNGEON),
     ) -> None:
         """Dungeon guide"""
-        await dungeons.command_dungeon_guide(ctx, dungeon_no)
+        await dungeons.command_dungeon_guide(ctx, dungeon_no, areas.command_area_guide)
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
@@ -38,7 +38,7 @@ class DungeonsCog(commands.Cog):
         user_life: Option(int, 'Your LIFE. Reads from EPIC RPG if empty.', name='life', min_value=100, default=None),
     ) -> None:
         """Dungeon check"""
-        await dungeons.command_dungeon_check(self.bot, ctx, dungeon_no, user_at, user_def, user_life)
+        await dungeons.command_dungeon_check(self.bot, ctx, dungeon_no, areas.command_area_check, user_at, user_def, user_life)
 
 
 # Initialization

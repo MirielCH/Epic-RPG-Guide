@@ -11,7 +11,7 @@ MSG_ABORTED = 'Aborted.'
 MSG_ABORTING = 'Aborting.'
 MSG_BOT_MESSAGE_NOT_FOUND = '**{user}**, couldn\'t find your {information} information, RIP.'
 MSG_ERROR = 'Whelp, something went wrong here, sorry.'
-MSG_INTERACTION_ERROR = 'You are not allowed to use this interaction.'
+MSG_INTERACTION_ERROR = 'You are not allowed to use this interaction. If you feel this is wrong, try using the command again.'
 MSG_INVALID_AMOUNT = 'That\'s not a valid amount.'
 MSG_AMOUNT_TOO_HIGH = 'Are you trying to break me or something? :thinking:'
 MSG_AMOUNT_TOO_LOW = 'Imagine trying to use an amount lower than 1.'
@@ -718,6 +718,10 @@ SLASH_COMMANDS_EPIC_RPG = {
     'boosts': '</boosts:1074072450809200771>',
     'bowsaw': '</bowsaw:959162696371146883>',
     'buy': '</buy:964351964651601961>',
+    'cards deck': '`rpg cards deck`',
+    'cards hand': '`rpg cards hand`',
+    'cards info': '`rpg cards`',
+    'cards slots': '`rpg cards slots`',
     'cel dailyquest': '</cel dailyquest:0>',
     'cel multiply': '</cel multiply:0>',
     'cel title': '</cel title:0>',
@@ -931,6 +935,7 @@ SLASH_COMMANDS_GUIDE = {
     'badges': '</badges:972045824869679140>',
     'beginner guide': '</beginner guide:972045824869679143>',
     'calculator': '</calculator:972045824940965899>',
+    'cards guide': '</cards guide:1178088077042917596>',
     'cel guide': '</cel guide:0>',
     'codes': '</codes:972045824869679139>',
     'coin cap calculator': '</coin cap calculator:972045824940965900>',

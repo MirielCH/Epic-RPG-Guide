@@ -1,13 +1,13 @@
 # views.py
 """Contains global interaction views"""
 
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Optional, Union
 
 import discord
 from discord.ext import commands
 
 import database
-from resources import components, emojis, functions, settings, strings
+from resources import components, emojis, settings, strings
 
 
 class AbortView(discord.ui.View):
@@ -35,7 +35,6 @@ class AbortView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
             return False
         return True
 
@@ -64,7 +63,8 @@ class AreaCheckView(discord.ui.View):
     None otherwise.
     """
     def __init__(self, bot: discord.Bot, ctx: discord.ApplicationContext, active_area: int, user_at: int,
-                 user_def: int, user_life: int, function: Callable,
+                 user_def: int, user_life: int, function_embed: Callable, function_area_check: Callable,
+                 function_dungeon_check: Callable,
                  interaction: Optional[Union[discord.Interaction, discord.WebhookMessage]] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.bot = bot
@@ -76,7 +76,9 @@ class AreaCheckView(discord.ui.View):
         self.user_at = user_at
         self.user_def = user_def
         self.user_life = user_life
-        self.function = function
+        self.function_embed = function_embed
+        self.function_area_check = function_area_check
+        self.function_dungeon_check = function_dungeon_check
         self.add_item(components.AreaCheckSelect(self.active_area))
         prev_disabled = True if active_area == 1 else False
         next_disabled = True if active_area == 21 else False
@@ -89,9 +91,9 @@ class AreaCheckView(discord.ui.View):
 
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -116,7 +118,8 @@ class AreaGuideView(discord.ui.View):
     None otherwise.
     """
     def __init__(self, ctx: discord.ApplicationContext, active_area: int, db_user: database.User, full_guide: bool,
-                 function: Callable, interaction: Optional[discord.Interaction] = None):
+                 function_embed: Callable, function_area_guide: Callable, function_dungeon_guide: Callable,
+                 interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.ctx = ctx
         self.value = None
@@ -125,7 +128,9 @@ class AreaGuideView(discord.ui.View):
         self.active_area = active_area
         self.db_user = db_user
         self.full_guide = full_guide
-        self.function = function
+        self.function_embed = function_embed
+        self.function_area_guide = function_area_guide
+        self.function_dungeon_guide = function_dungeon_guide
         self.add_item(components.AreaGuideSelect(self.active_area))
         prev_disabled = True if active_area == 1 else False
         next_disabled = True if active_area == 21 else False
@@ -138,8 +143,17 @@ class AreaGuideView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+            from resources import logs
+            logs.logger.error(
+                f'--- Mismatched user ---\n'
+                f'Interaction user: {interaction.user.name} ({interaction.user.id})\n'
+                f'Self interaction user: {self.interaction.user.name} ({self.interaction.user.id})\n'
+                f'Self user: {self.user.name} ({self.user.id})\n'
+                f'Context user: {self.ctx.author.name} ({self.ctx.author.id})\n'
+                f'DB user: {self.db_user.user_id}\n'
+            )
+            #await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            #return False
         return True
 
     async def on_timeout(self) -> None:
@@ -167,7 +181,8 @@ class DungeonCheckView(discord.ui.View):
     None otherwise.
     """
     def __init__(self, bot: discord.Bot, ctx: discord.ApplicationContext, active_dungeon: float, user_at: int,
-                 user_def: int, user_life: int, function: Callable,
+                 user_def: int, user_life: int, function_embed: Callable, function_area_check: Callable,
+                 function_dungeon_check: Callable,
                  interaction: Optional[Union[discord.Interaction, discord.Webhook]] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
         self.bot = bot
@@ -179,7 +194,9 @@ class DungeonCheckView(discord.ui.View):
         self.user_at = user_at
         self.user_def = user_def
         self.user_life = user_life
-        self.function = function
+        self.function_embed = function_embed
+        self.function_area_check = function_area_check
+        self.function_dungeon_check = function_dungeon_check
         self.add_item(components.DungeonCheckSelect(self.active_dungeon))
         prev_disabled = True if active_dungeon == 1 else False
         next_disabled = True if active_dungeon == 21 else False
@@ -191,9 +208,9 @@ class DungeonCheckView(discord.ui.View):
                                                               emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -217,7 +234,8 @@ class DungeonGuideView(discord.ui.View):
     'timeout if timed out.
     None otherwise.
     """
-    def __init__(self, ctx: discord.ApplicationContext, active_dungeon: float, function: Callable,
+    def __init__(self, ctx: discord.ApplicationContext, active_dungeon: float, function_embed: Callable,
+                 function_area_guide: Callable, function_dungeon_guide: Callable,
                  db_user: Optional[database.User] = None, full_guide: Optional[bool] = None,
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
@@ -226,7 +244,9 @@ class DungeonGuideView(discord.ui.View):
         self.interaction = interaction
         self.user = ctx.author
         self.active_dungeon = active_dungeon
-        self.function = function
+        self.function_embed = function_embed
+        self.function_area_guide = function_area_guide
+        self.function_dungeon_guide = function_dungeon_guide
         self.db_user = db_user
         self.full_guide = full_guide
         self.add_item(components.DungeonGuideSelect(self.active_dungeon))
@@ -240,9 +260,9 @@ class DungeonGuideView(discord.ui.View):
                                                               emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -279,9 +299,9 @@ class TopicView(discord.ui.View):
         self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+            #await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+            #return False
         return True
 
     async def on_timeout(self) -> None:
@@ -313,9 +333,9 @@ class PaginatorView(discord.ui.View):
         self.add_item(components.PaginatorButton(custom_id='next', label='▶', emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -357,7 +377,10 @@ class ConfirmCancelView(discord.ui.View):
         self.value = None
         if self.interaction is not None:
             try:
-                await functions.edit_interaction(self.interaction, view=None)
+                if isinstance(self.interaction, discord.WebhookMessage):
+                    await self.interaction.edit(view=None)
+                else:
+                    await self.interaction.edit_original_response(view=None)
             except discord.errors.NotFound:
                 pass
         self.stop()
@@ -386,9 +409,9 @@ class FollowupCommandView(discord.ui.View):
                                               style=discord.ButtonStyle.grey))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -418,16 +441,19 @@ class FollowupCraftingCalculatorView(discord.ui.View):
         self.add_item(components.CraftingRecalculateButton(custom_id='craft', label=label))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
         self.value = 'timeout'
         if self.interaction is not None:
             try:
-                await functions.edit_interaction(self.interaction, view=None)
+                if isinstance(self.interaction, discord.WebhookMessage):
+                    await self.interaction.edit(view=None)
+                else:
+                    await self.interaction.edit_original_response(view=None)
             except discord.errors.NotFound:
                 pass
         self.stop()
@@ -472,9 +498,9 @@ class ComplainView(discord.ui.View):
         self.stop()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.ctx.author.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.ctx.author.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -517,15 +543,18 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.add_item(components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats'))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
         if self.interaction is not None:
             try:
-                await functions.edit_interaction(self.interaction, view=None)
+                if isinstance(self.interaction, discord.WebhookMessage):
+                    await self.interaction.edit(view=None)
+                else:
+                    await self.interaction.edit_original_response(view=None)
             except discord.errors.NotFound:
                 pass
         self.stop()
@@ -571,9 +600,9 @@ class DropChanceCalculatorView(discord.ui.View):
         self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -607,9 +636,9 @@ class PetTierView(discord.ui.View):
         self.add_item(components.PetTierSelect(self.pet_tier, 'Choose pet tier ...'))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -646,9 +675,9 @@ class ItemView(discord.ui.View):
         self.add_item(components.ItemSelect(self.items, self.active_item, self.placeholder))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+          #  return False
         return True
 
     async def on_timeout(self) -> None:
@@ -692,5 +721,8 @@ class SettingsUserView(discord.ui.View):
         return True
 
     async def on_timeout(self) -> None:
-        await functions.edit_interaction(self.interaction, view=None)
+        if isinstance(self.interaction, discord.WebhookMessage):
+            await self.interaction.edit(view=None)
+        else:
+            await self.interaction.edit_original_response(view=None)
         self.stop()

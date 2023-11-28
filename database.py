@@ -195,6 +195,7 @@ class Monster():
     """Container for monster data"""
     activity: str
     areas: Tuple[int, int]
+    card_tier: str
     drop_emoji: str
     drop_name: str
     emoji: str
@@ -205,6 +206,7 @@ class Monster():
         new_settings: Monster = await get_monster_by_name(self.name)
         self.activity = new_settings.activity
         self.areas = new_settings.areas
+        self.card_tier = new_settings.card_tier
         self.is_daily = new_settings.is_daily
         self.drop_emoji = new_settings.drop_emoji
         self.drop_name = new_settings.drop_name
@@ -407,6 +409,7 @@ async def _dict_to_monster(record: dict) -> Monster:
         monster = Monster(
             activity = record['activity'],
             areas = (record['area_from'], record['area_until']),
+            card_tier = record['card_tier'],
             drop_emoji = getattr(emojis, record['drop_emoji']) if record['drop_emoji'] is not None else None,
             drop_name = record['drop_name'],
             emoji = getattr(emojis, record['emoji']),

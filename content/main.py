@@ -56,9 +56,9 @@ class HelpView(discord.ui.View):
         self.add_item(discord.ui.Button(label="Support", style=discord.ButtonStyle.link, url=strings.LINK_SUPPORT, row=1))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.user.id:
-            await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-            return False
+        #if interaction.user.id != self.user.id:
+        #    await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
+         #   return False
         return True
 
     async def on_timeout(self) -> None:
@@ -115,6 +115,7 @@ async def embed_help_guides() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["area guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["artifacts guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["beginner guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["cards guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["coolness guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["dungeon guide"]}\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["enchanting guide"]}\n'

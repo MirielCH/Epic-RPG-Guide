@@ -4,7 +4,6 @@
 import asyncio
 
 import discord
-from discord.embeds import EmptyEmbed
 
 import database
 from resources import emojis, functions, settings
@@ -19,12 +18,12 @@ async def command_oracle(bot: discord.Bot, ctx: discord.ApplicationContext, ques
     answer: database.OracleAnswer = await database.get_oracle_answer()
     embed = discord.Embed(
         title = question,
-        description = answer.answer if answer.answer is not None else discord.Embed.Empty
+        description = answer.answer if answer.answer is not None else None
     )
     if ctx.author.avatar is not None:
         icon_url = ctx.author.avatar.url
     else:
-        icon_url = EmptyEmbed
+        icon_url = None
     embed.set_author(icon_url=icon_url, name=f'{ctx.author.name} is consulting the oracle')
     if answer.image_url is not None:
         embed.set_image(url=answer.image_url)

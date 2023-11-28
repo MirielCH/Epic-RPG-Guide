@@ -74,6 +74,7 @@ COG_EXTENSIONS = [
     'cogs.areas',
     'cogs.artifacts',
     'cogs.cache',
+    'cogs.cards',
     #'cogs.celebration',
     'cogs.crafting',
     'cogs.dev',

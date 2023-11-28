@@ -4,7 +4,7 @@ import discord
 from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
-from content import areas
+from content import areas, dungeons
 from resources import strings
 
 
@@ -30,7 +30,7 @@ class AreasCog(commands.Cog):
 
     ) -> None:
         """Area guide"""
-        await areas.command_area_guide(ctx, area_no, timetravel, ascension, length)
+        await areas.command_area_guide(ctx, area_no, dungeons.command_dungeon_guide, timetravel, ascension, length)
 
     @commands.bot_has_permissions(view_channel=True)
     @commands.guild_only()
@@ -45,7 +45,7 @@ class AreasCog(commands.Cog):
         user_life: Option(int, 'Your LIFE. Reads from EPIC RPG if empty.', name='life', min_value=100, default=None),
     ) -> None:
         """Area check"""
-        await areas.command_area_check(self.bot, ctx, area_no, user_at, user_def, user_life)
+        await areas.command_area_check(self.bot, ctx, area_no, dungeons.command_dungeon_check, user_at, user_def, user_life)
 
 
 # Initialization

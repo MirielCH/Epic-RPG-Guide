@@ -1,11 +1,10 @@
 # components.py
 """Contains global interaction components"""
 
-from typing import List, Literal, Optional, Tuple
+from typing import List, Literal, Optional
 
 import discord
 
-from content import areas, dungeons
 from resources import emojis, strings, modals
 
 
@@ -23,8 +22,8 @@ class AreaCheckSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
-        embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
-                                         self.view.user_life)
+        embed = await self.view.function_embed(self.view.active_area, self.view.user_at, self.view.user_def,
+                                               self.view.user_life)
         for child in self.view.children.copy():
             if child.custom_id == 'select_area':
                 self.view.remove_item(child)
@@ -46,16 +45,18 @@ class AreaDungeonCheckSwitchButton(discord.ui.Button):
         await interaction.response.edit_message()
         if self.custom_id == 'dungeon-switch':
             area_dungeon = float(self.view.active_area)
-            function = dungeons.command_dungeon_check
+            function = self.view.function_dungeon_check
+            function_check_switch = self.view.function_area_check
         else:
             area_dungeon = self.view.active_dungeon
             if area_dungeon.is_integer(): area_dungeon = int(self.view.active_dungeon)
             if area_dungeon == 15.2: area_dungeon = 15
-            function = areas.command_area_check
+            function = self.view.function_area_check
+            function_check_switch = self.view.function_dungeon_check
 
         self.view.value = 'switched'
         self.view.stop()
-        await function(self.view.bot, self.view.ctx, area_dungeon, switch_view=self.view)
+        await function(self.view.bot, self.view.ctx, area_dungeon, function_check_switch, switch_view=self.view)
 
 
 class AreaDungeonGuideSwitchButton(discord.ui.Button):
@@ -68,16 +69,17 @@ class AreaDungeonGuideSwitchButton(discord.ui.Button):
         await interaction.response.edit_message()
         if self.custom_id == 'dungeon-switch':
             area_dungeon = float(self.view.active_area)
-            function = dungeons.command_dungeon_guide
+            function = self.view.function_dungeon_guide
+            function_guide_switch = self.view.function_area_guide
         else:
             area_dungeon = self.view.active_dungeon
             if area_dungeon.is_integer(): area_dungeon = int(self.view.active_dungeon)
             if area_dungeon == 15.2: area_dungeon = 15
-            function = areas.command_area_guide
-
+            function = self.view.function_area_guide
+            function_guide_switch = self.view.function_dungeon_guide
         self.view.value = 'switched'
         self.view.stop()
-        await function(self.view.ctx, area_dungeon, switch_view=self.view)
+        await function(self.view.ctx, area_dungeon, function_guide_switch, switch_view=self.view)
 
 
 class AreaCheckPaginatorButton(discord.ui.Button):
@@ -112,8 +114,8 @@ class AreaCheckPaginatorButton(discord.ui.Button):
                     options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
                 child.options = options
                 break
-        embed = await self.view.function(self.view.active_area, self.view.user_at, self.view.user_def,
-                                         self.view.user_life)
+        embed = await self.view.function_embed(self.view.active_area, self.view.user_at, self.view.user_def,
+                                               self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -131,7 +133,7 @@ class AreaGuideSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
-        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
+        embed = await self.view.function_embed(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
         for child in self.view.children.copy():
             if child.custom_id == 'select_area':
                 self.view.remove_item(child)
@@ -175,7 +177,7 @@ class AreaGuidePaginatorButton(discord.ui.Button):
                     options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
                 child.options = options
                 break
-        embed = await self.view.function(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
+        embed = await self.view.function_embed(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -205,8 +207,8 @@ class DungeonCheckSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
-        embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
-                                         self.view.user_life)
+        embed = await self.view.function_embed(self.view.active_dungeon, self.view.user_at, self.view.user_def,
+                                               self.view.user_life)
         for child in self.view.children.copy():
             if child.custom_id == 'select_dungeon':
                 self.view.remove_item(child)
@@ -261,8 +263,8 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
                     options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
                 child.options = options
                 break
-        embed = await self.view.function(self.view.active_dungeon, self.view.user_at, self.view.user_def,
-                                         self.view.user_life)
+        embed = await self.view.function_embed(self.view.active_dungeon, self.view.user_at, self.view.user_def,
+                                               self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -281,7 +283,7 @@ class DungeonGuideSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
-        embed = await self.view.function(self.view.active_dungeon)
+        embed = await self.view.function_embed(self.view.active_dungeon)
         for child in self.view.children.copy():
             if child.custom_id == 'select_dungeon':
                 self.view.remove_item(child)
@@ -336,7 +338,7 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
                     options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
                 child.options = options
                 break
-        embed = await self.view.function(self.view.active_dungeon)
+        embed = await self.view.function_embed(self.view.active_dungeon)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 

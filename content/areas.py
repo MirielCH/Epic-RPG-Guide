@@ -12,8 +12,9 @@ from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
-async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_no: Optional[int] = None,
-                             ascension: Optional[str] = None, length: Optional[str] = None,
+async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, function_dungeon_guide: callable,
+                             tt_no: Optional[int] = None, ascension: Optional[str] = None,
+                             length: Optional[str] = None,
                              switch_view: Optional[discord.ui.View] = None) -> None:
     """Area guide command"""
     full_guide = user = interaction = None
@@ -43,7 +44,8 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
             ephemeral=True
         )
         return
-    view = views.AreaGuideView(ctx, area_no, user, full_guide, embed_area_guide)
+    view = views.AreaGuideView(ctx, area_no, user, full_guide, embed_area_guide,
+                               command_area_guide, function_dungeon_guide)
     embed = await embed_area_guide(ctx, area_no, user, full_guide)
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)
@@ -58,7 +60,7 @@ async def command_area_guide(ctx: discord.ApplicationContext, area_no: int, tt_n
                 pass
 
 
-async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int,
+async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, area_no: int, function_dungeon_check: callable,
                              user_at: Optional[int] = None, user_def: Optional[int] = None,
                              user_life: Optional[int] = None,
                              switch_view: Optional[discord.ui.View] = None)  -> None:
@@ -89,7 +91,8 @@ async def command_area_check(bot: discord.Bot, ctx: discord.ApplicationContext, 
         if user_at is None: user_at = at_found
         if user_def is None: user_def = def_found
         if user_life is None: user_life = life_found
-    view = views.AreaCheckView(bot, ctx, area_no, user_at, user_def, user_life, embed_area_check)
+    view = views.AreaCheckView(bot, ctx, area_no, user_at, user_def, user_life, embed_area_check, command_area_check,
+                               function_dungeon_check)
     embed = await embed_area_check(area_no, user_at, user_def, user_life)
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)
@@ -655,7 +658,7 @@ async def design_field_area_check(area_no: int, user_at: int, user_def: int, use
 
 
 # --- Embeds ---
-async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.User, full_version: bool) -> discord.Embed:
+async def embed_area_guide(ctx: discord.ApplicationContext, area_no: int, user: database.User, full_version: bool) -> discord.Embed:
     """Returns embed with area guide"""
     area = await database.get_area(area_no)
     dungeon: database.Dungeon = await database.get_dungeon(area.dungeon_no)
@@ -841,10 +844,24 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     for monster in monsters:
         if monster.activity == 'hunt':
             field_monsters_hunt = f'{field_monsters_hunt}\n{emojis.BP} {monster.emoji} {monster.name}'
+            drops = ''
             if monster.drop_emoji is not None:
-                field_monsters_hunt = f'{field_monsters_hunt} (drops {monster.drop_emoji})'
+                drops = monster.drop_emoji
+            if monster.card_tier is not None:
+                card_emoji = getattr(emojis, f'CARD_{monster.card_tier.upper()}', '')
+                drops = f'{drops}{card_emoji}'
+            if drops != '':
+                field_monsters_hunt = f'{field_monsters_hunt} (drops {drops})'
         elif monster.activity == 'adventure':
             field_monsters_adv = f'{field_monsters_adv}\n{emojis.BP} {monster.emoji} {monster.name}'
+            drops = ''
+            if monster.drop_emoji is not None:
+                drops = monster.drop_emoji
+            if monster.card_tier is not None:
+                card_emoji = getattr(emojis, f'CARD_{monster.card_tier.upper()}', '')
+                drops = f'{drops}{card_emoji}'
+            if drops != '':
+                field_monsters_adv = f'{field_monsters_adv} (drops {drops})'
 
 
     area_no_str = 'THE TOP' if area.area_no == 21 else f'AREA {area.area_no}'
@@ -852,7 +869,6 @@ async def embed_area_guide(ctx: commands.Context, area_no: int, user: database.U
     dungeon_no_str = 'EPIC NPC FIGHT' if area.area_no == 21 else f'D{area.dungeon_no}'
 
     # Note
-    guide_area = 'top' if area.area_no == 21 else area.area_no
     note = (
         f'{emojis.BP} To change your personal TT settings, use {strings.SLASH_COMMANDS_GUIDE["set progress"]}.'
     )

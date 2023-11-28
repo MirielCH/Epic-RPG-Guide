@@ -54,7 +54,9 @@ async def embed_alchemy_overview() -> discord.Embed:
         f'{emojis.DETAIL} Potions are instantly active after brewing!\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["boosts"]} to check your active boosts\n'
         f'{emojis.BP} Boosts of different potions stack additively (e.g. `10`% + `15`% = `25`% total)\n'
-        f'{emojis.BP} You can not brew a potion if it\'s already active\n'
+        f'{emojis.BP} You can not brew a potion already active...\n'
+        f'{emojis.DETAIL2} ...unless you have the {emojis.ARTIFACT_GOLDEN_PAN} golden pan artifact\n'
+        f'{emojis.DETAIL} This will refresh their duration, not add time\n'
         f'{emojis.BP} **Boosts are not lost when time traveling!**\n'
     )
     flasks = (

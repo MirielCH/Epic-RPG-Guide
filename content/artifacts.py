@@ -139,6 +139,9 @@ async def embed_artifacts_golden_pan() -> discord.Embed:
     effects = (
         f'{emojis.BP} Lets you keep a percentage of cooked stats when time traveling\n'
         f'{emojis.DETAIL} The percentage increases with time travels\n'
+        f'{emojis.BP} Increases the cooking item cap to `1m` per command\n'
+        f'{emojis.BP} Grants the ability to brew potions already active\n'
+        f'{emojis.DETAIL} This will refresh their duration, not add time\n'
     )
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_GOLDEN_PAN_PART_A} `Part A` • Drops from level ups (except from cooking)\n'
@@ -163,7 +166,7 @@ async def embed_artifacts_master_key() -> discord.Embed:
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
-        f'in areas 12-15\n'
+        f'in areas 11-15\n'
         f'{emojis.BP} {emojis.ARTIFACT_MASTER_KEY_PART_C} `Part C` • Drops from enchant commands\n'
     )
     embed = discord.Embed(
@@ -180,7 +183,19 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     effects = (
         f'{emojis.BP} Doubles the duration of all boosts\n'
         f'{emojis.BP} Unlocks a personal cooldown reduction\n'
-        f'{emojis.DETAIL} The cd reduction increases with time travels (up to `5`%)\n'
+        f'{emojis.DETAIL2} Increases with time travels (up to `5`%)\n'
+        f'{emojis.DETAIL} Your current reduction is shown in {strings.SLASH_COMMANDS_EPIC_RPG["artifacts"]}\n'
+    )
+    affected_commands = (
+        f'{emojis.BP} `adventure`\n'
+        f'{emojis.BP} `arena`\n'
+        f'{emojis.BP} `dungeon` / `miniboss`\n'
+        f'{emojis.BP} `farm`\n'
+        f'{emojis.BP} `horse breed`\n'
+        f'{emojis.BP} `hunt`\n'
+        f'{emojis.BP} `quest` / `epic quest`\n'
+        f'{emojis.BP} `training`\n'
+        f'{emojis.BP} `chop`, `fish`, `pickup` and `mine` commands\n'
     )
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_POCKET_WATCH_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["pets claim"]}\n'
@@ -195,6 +210,7 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
         title = f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}',
     )
     embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='AFFECTED COMMANDS', value=affected_commands, inline=False)
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed
 
@@ -245,7 +261,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     master_key = (
         f'{emojis.ARTIFACT_MASTER_KEY_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["dungeon"]}\n'
         f'{emojis.ARTIFACT_MASTER_KEY_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
-        f'in areas 12-15\n'
+        f'in areas 11-15\n'
         f'{emojis.ARTIFACT_MASTER_KEY_PART_C} `Part C` • Drops from enchant commands\n'
     )
     pocket_watch = (

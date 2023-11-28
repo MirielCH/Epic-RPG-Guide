@@ -11,7 +11,7 @@ from resources import emojis, functions, settings, strings, views
 
 
 # --- Commands ---
-async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: float,
+async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: float, function_area_guide: callable,
                                 switch_view: Optional[discord.ui.View] = None) -> None:
     """Dungeon guide command"""
     if dungeon_no not in strings.DUNGEONS:
@@ -23,7 +23,7 @@ async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: flo
         user = getattr(switch_view, 'db_user', None)
         full_guide = getattr(switch_view, 'full_guide', True)
         interaction = getattr(switch_view, 'interaction', None)
-    view = views.DungeonGuideView(ctx, dungeon_no, embed_dungeon_guide, user, full_guide)
+    view = views.DungeonGuideView(ctx, dungeon_no, embed_dungeon_guide, function_area_guide, command_dungeon_guide, user, full_guide)
     embed = await embed_dungeon_guide(dungeon_no)
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)
@@ -38,7 +38,7 @@ async def command_dungeon_guide(ctx: discord.ApplicationContext, dungeon_no: flo
             pass
 
 
-async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContext, dungeon_no: float,
+async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContext, dungeon_no: float, function_area_check: callable,
                                 user_at: Optional[int] = None, user_def: Optional[int] = None,
                                 user_life: Optional[int] = None,
                                 switch_view: Optional[discord.ui.View] = None)  -> None:
@@ -69,7 +69,8 @@ async def command_dungeon_check(bot: discord.Bot, ctx: discord.ApplicationContex
         if user_at is None: user_at = at_found
         if user_def is None: user_def = def_found
         if user_life is None: user_life = life_found
-    view = views.DungeonCheckView(bot, ctx, dungeon_no, user_at, user_def, user_life, embed_dungeon_check)
+    view = views.DungeonCheckView(bot, ctx, dungeon_no, user_at, user_def, user_life, embed_dungeon_check,
+                                  function_area_check, command_dungeon_check)
     embed = await embed_dungeon_check(dungeon_no, user_at, user_def, user_life)
     if interaction is None:
         interaction = await ctx.respond(embed=embed, view=view)

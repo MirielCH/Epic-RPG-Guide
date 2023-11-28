@@ -29,7 +29,7 @@ class PetsCog(commands.Cog):
     async def pets_fuse(
         self,
         ctx: discord.ApplicationContext,
-        pet_tier: Option(int, 'The pet tier you want to see. Shows all tiers if empty.', min_value=1, max_value=20,
+        pet_tier: Option(int, 'The pet tier you want to see. Shows all tiers if empty.', min_value=1, max_value=25,
                          default=None),
         timetravel: Option(int, 'The TT you want a recommendation for. Uses your progress setting if empty.',
                            min_value=0, max_value=9999, default=None),

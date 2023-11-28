@@ -37,12 +37,16 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
                 ephemeral=True
             )
             return
+        areas = {}
+        areas_db = await database.get_all_areas()
+        for area in areas_db:
+            areas[area.area_no] = area
         embeds = []
         chunk_amount = 0
         for chunk in range(0, len(monsters), 6):
             monsters_chunk = monsters[chunk:chunk+6]
             chunk_amount += 1
-            embed = await embed_monsters(len(monsters), monsters_chunk, name)
+            embed = await embed_monsters(len(monsters), monsters_chunk, name, areas)
             embeds.append(embed)
         if len(embeds) > 1:
             view = views.PaginatorView(ctx, embeds)
@@ -87,7 +91,8 @@ async def command_monster_search(bot: discord.Bot, ctx: discord.ApplicationConte
 
 
 # --- Embeds ---
-async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster], name: str):
+async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster], name: str,
+                         areas: dict[int, database.Area]):
     """Monster search results"""
     description = f'Your search for `{name}` returned **{amount_found}** results.'
     embed = discord.Embed(
@@ -98,18 +103,25 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster], n
     embed.set_footer(text='Use "/monster drops" to see all monster drops at once')
     monster = type(database.Monster)
     for monster in monsters:
-        if monster.areas[0] == monster.areas[1]:
+        area_from, area_to = monster.areas
+        if area_from == area_to:
             field_value = (
-                f'{emojis.BP} Found in area **{monster.areas[0]}** with '
+                f'{emojis.BP} Found in area **{area_from}** with '
                 f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         else:
             field_value = (
-                f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
+                f'{emojis.BP} Found in areas **{area_from}~{area_to}** with '
                 f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         if monster.drop_name is not None:
             field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
+        if monster.card_tier is not None:
+            card_emoji = getattr(emojis, f'CARD_{monster.card_tier.upper()}', '')
+            field_value = (
+                f'{field_value}\n'
+                f'{emojis.BP} Drops {card_emoji} {monster.card_tier} card'
+            )
         embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)
     return embed
 
@@ -120,18 +132,25 @@ async def embed_daily_monster(monster: database.Monster):
         color = settings.EMBED_COLOR,
         title = 'DAILY MONSTER SEARCH',
     )
-    if monster.areas[0] == monster.areas[1]:
+    area_from, area_to = monster.areas
+    if area_from == area_to:
         field_value = (
-            f'{emojis.BP} Found in area **{monster.areas[0]}** with '
+            f'{emojis.BP} Found in area **{area_from}** with '
             f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
         )
     else:
         field_value = (
-            f'{emojis.BP} Found in areas **{monster.areas[0]}~{monster.areas[1]}** with '
+            f'{emojis.BP} Found in areas **{area_from}~{area_to}** with '
             f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
         )
     if monster.drop_name is not None:
         field_value = f'{field_value}\n{emojis.BP} Drops {monster.drop_emoji} {monster.drop_name}'
+    if monster.card_tier is not None:
+        card_emoji = getattr(emojis, f'CARD_{monster.card_tier.upper()}', '')
+        field_value = (
+            f'{field_value}\n'
+            f'{emojis.BP} Drops {card_emoji} {monster.card_tier} card'
+        )
     embed.add_field(name=f'{monster.name.upper()} {monster.emoji}', value=field_value, inline=False)
     return embed
 
