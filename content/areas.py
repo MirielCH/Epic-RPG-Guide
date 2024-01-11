@@ -230,6 +230,7 @@ async def design_field_debuffs(area: database.Area) -> str:
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["dice"]} and {strings.SLASH_COMMANDS_EPIC_RPG["coinflip"]} '
             f'do not work properly\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["cook"]} has a chance to only yield half of the amount\n'
+            f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["alchemy make"]} has a chance to also give the `unepic` boost (see below)\n'
             f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}, {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} '
             f'and all work commands do not work at all\n'
             f'{emojis.BP} Your horse is taking a break, disabling all of its boosts\n'
@@ -907,6 +908,19 @@ async def embed_area_guide(ctx: discord.ApplicationContext, area_no: int, user: 
         embed.add_field(name=f'HOW TO REACH {area_no_str}', value=area_req, inline=False)
     if debuffs is not None:
         embed.add_field(name='AREA DEBUFFS', value=debuffs, inline=False)
+    if  area.area_no == 19:
+        embed.add_field(
+            name='UNEPIC BOOST 💢',
+            value=(
+                f'{emojis.BP} **Debuffs**\n'
+                f'{emojis.DETAIL2} -`85`% random event spawn chance\n'
+                f'{emojis.DETAIL2} -`50`% enchanting luck\n'
+                f'{emojis.DETAIL2} -`15`% items from work commands\n'
+                f'{emojis.DETAIL} -`10`% XP from all sources\n'
+                f'{emojis.BP} **Duration**: `15`m\n'
+            ),
+            inline=False
+        )
     if field_monsters_hunt != '' and full_version:
         embed.add_field(name='MONSTERS IN HUNT', value=field_monsters_hunt, inline=True)
     if field_monsters_hunt != '' and full_version:

@@ -998,26 +998,29 @@ async def extract_data_from_artifacts_embed(ctx: discord.ApplicationContext,
     Also logs the errors to the database.
     """
     artifact_data = {
-        'top hat': False,
+        'claus belt': False,
         'coin ring': False,
         'golden pan': False,
         'master key': False,
         'pocket watch': False,
+        'top hat': False,
         'vampire teeth': False,
     }
 
     for field in bot_message.embeds[0].fields:
-        top_hat_active_match = re.search(r'✅ \| <:tophat', field.value.lower())
+        claus_belt_active_match = re.search(r'✅ \| <:clausbelt', field.value.lower())
         coin_ring_active_match = re.search(r'✅ \| <:coinring', field.value.lower())
         golden_pan_active_match = re.search(r'✅ \| <:goldenpan', field.value.lower())
         master_key_active_match = re.search(r'✅ \| <:masterkey', field.value.lower())
         pocket_watch_active_match = re.search(r'✅ \| <:pocketwatch', field.value.lower())
+        top_hat_active_match = re.search(r'✅ \| <:tophat', field.value.lower())
         vampire_teeth_active_match = re.search(r'✅ \| <:vampireteeth', field.value.lower())
-        if top_hat_active_match: artifact_data['top hat'] = True
+        if claus_belt_active_match: artifact_data['claus belt'] = True
         if coin_ring_active_match: artifact_data['coin ring'] = True
         if golden_pan_active_match: artifact_data['golden pan'] = True
         if master_key_active_match: artifact_data['master key'] = True
         if pocket_watch_active_match: artifact_data['pocket watch'] = True
+        if top_hat_active_match: artifact_data['top hat'] = True
         if vampire_teeth_active_match: artifact_data['vampire teeth'] = True
         
     return artifact_data

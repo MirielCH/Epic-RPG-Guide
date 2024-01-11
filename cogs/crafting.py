@@ -62,21 +62,25 @@ class CraftingCog(commands.Cog):
         horse_tier: Option(int, 'The horse tier you want to calculate for. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 10, default=None),
         horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',
-                               min_value = 0, max_value = 500, default=None),
+                               min_value = 0, max_value = 99_999, default=None),
         mob_world_boost: Option(str, 'Whether the monster drop chance world boost is active',
                                 choices=['Active','Inactive'], default=None),
         lootbox_world_boost: Option(str, 'Whether the lootbox drop chance world boost is active',
                                     choices=['Active','Inactive'], default=None),
         mob_boost_percentage: Option(int, 'Total mob drop chance boost percentage from active potions',
-                                     min_value = 0, max_value = 145, default=None),
+                                     min_value = 0, max_value = 1_000, default=None),
         lootbox_boost_percentage: Option(int, 'Total lootbox drop chance boost percentage from active potions',
-                                         min_value = 0, max_value = 100, default=None),
+                                         min_value = 0, max_value = 1_000, default=None),
+        claus_belt_artifact: Option(str, 'Whether you have the claus belt artifact',
+                                    choices=['Owned','Not owned'], default=None),
         vampire_teeth_artifact: Option(str, 'Whether you have the vampire teeth artifact',
                                        choices=['Owned','Not owned'], default=None),
     ) -> None:
         """Dropchance calculator"""
         if mob_world_boost is not None:
             mob_world_boost = True if mob_world_boost == 'Active' else False
+        if claus_belt_artifact is not None:
+            claus_belt_artifact = True if claus_belt_artifact == 'Owned' else False
         if vampire_teeth_artifact is not None:
             vampire_teeth_artifact = True if vampire_teeth_artifact == 'Owned' else False
         if lootbox_world_boost is not None:
@@ -86,7 +90,8 @@ class CraftingCog(commands.Cog):
                                                      mob_world_boost=mob_world_boost, lootbox_world_boost=lootbox_world_boost,
                                                      mob_boost_percentage=mob_boost_percentage,
                                                      lootbox_boost_percentage=lootbox_boost_percentage,
-                                                     vampire_teeth_artifact=vampire_teeth_artifact)
+                                                     vampire_teeth_artifact=vampire_teeth_artifact,
+                                                     claus_belt_artifact=claus_belt_artifact)
 
     @cmd_crafting.command(name='calculator', description='Shows the materials you need to craft an item')
     async def crafting_calculator(

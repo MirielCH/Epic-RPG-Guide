@@ -442,7 +442,8 @@ class DropTypeSelect(discord.ui.Select):
             boost_percentage = self.view.mob_boost_percentage
             world_boost = self.view.mob_world_boost
         embed = await self.view.embed_function(self.view.active_drop_type, self.view.timetravel, self.view.horse_data,
-                                               world_boost, boost_percentage, self.view.vampire_teeth_artifact)
+                                               world_boost, boost_percentage, self.view.vampire_teeth_artifact,
+                                               self.view.claus_belt_artifact)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 

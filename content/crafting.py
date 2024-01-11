@@ -34,7 +34,8 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
                                         lootbox_world_boost: Optional[bool] = None,
                                         mob_boost_percentage: Optional[int] = None,
                                         lootbox_boost_percentage: Optional[int] = None,
-                                        vampire_teeth_artifact: Optional[bool] = None) -> None:
+                                        vampire_teeth_artifact: Optional[bool] = None,
+                                        claus_belt_artifact: Optional[bool] = None) -> None:
     """Dropchance calculator command"""
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
@@ -88,7 +89,7 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
         boosts_data = await functions.extract_data_from_boosts_embed(ctx, bot_message)
         if mob_boost_percentage is None: mob_boost_percentage = boosts_data['monster drop chance']
         if lootbox_boost_percentage is None: lootbox_boost_percentage = boosts_data['lootbox drop chance']
-    if vampire_teeth_artifact is None:
+    if vampire_teeth_artifact is None or claus_belt_artifact is None:
         bot_message_task = asyncio.ensure_future(functions.wait_for_artifacts_message(bot, ctx))
         try:
             content = strings.MSG_WAIT_FOR_INPUT_SLASH.format(user=ctx.author.name,
@@ -102,13 +103,17 @@ async def command_dropchance_calculator(bot: discord.Bot, ctx: discord.Applicati
             return
         if bot_message is None: return
         artifact_data = await functions.extract_data_from_artifacts_embed(ctx, bot_message)
-        if artifact_data['vampire teeth']: vampire_teeth_artifact = True
+        if claus_belt_artifact is None:
+            claus_belt_artifact = artifact_data['claus belt']
+        if vampire_teeth_artifact is None:
+            vampire_teeth_artifact = artifact_data['vampire teeth']
     view = views.DropChanceCalculatorView(ctx, embed_dropchance, DROP_TYPES, drop_type, timetravel, horse_data,
                                           mob_world_boost, lootbox_world_boost, mob_boost_percentage,
-                                          lootbox_boost_percentage, vampire_teeth_artifact)
+                                          lootbox_boost_percentage, vampire_teeth_artifact, claus_belt_artifact)
     world_boost = lootbox_world_boost if drop_type == DROP_LOOTBOX else mob_world_boost
     boost_percentage = lootbox_boost_percentage if drop_type == DROP_LOOTBOX else mob_boost_percentage
-    embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage, vampire_teeth_artifact)
+    embed = await embed_dropchance(drop_type, timetravel, horse_data, world_boost, boost_percentage,
+                                   vampire_teeth_artifact, claus_belt_artifact)
     interaction = await ctx.respond(embed=embed, view=view)
     view.interaction = interaction
     await view.wait()
@@ -347,7 +352,8 @@ async def get_item_breakdown(item: database.Item, amount: int, dismantle: bool =
 
 # --- Embeds ---
 async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
-                           world_boost: bool, boost_percentage: int, vampire_teeth_artifact: bool) -> discord.Embed:
+                           world_boost: bool, boost_percentage: int, vampire_teeth_artifact: bool,
+                           claus_belt_artifact: bool) -> discord.Embed:
     """Dropchance"""
     tt_chance = (49 + timetravel) * timetravel / 2 / 100
     horse_emoji = getattr(emojis, f'HORSE_T{horse_data["tier"]}')
@@ -394,9 +400,10 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} Drop type: {drop_description}\n'
             f'{emojis.BP} Time travel: {emojis.TIME_TRAVEL} **{timetravel:,}**\n'
             f'{emojis.BP} Horse tier: {horse_emoji} **T{horse_data["tier"]}**\n'
-            f'{emojis.BP} Horse epicness: **{horse_data["epicness"]}**\n'
+            f'{emojis.BP} Horse epicness: **{horse_data["epicness"]:,}**\n'
             f'{emojis.BP} World boost active: **{"Yes" if world_boost else "No"}**\n'
-            f'{emojis.BP} Boost percentage: **{boost_percentage}%**\n'
+            f'{emojis.BP} Boost percentage: **{boost_percentage:,}%**\n'
+            f'{emojis.BP} Claus belt artifact: **{"Yes" if claus_belt_artifact else "No"}**\n'
             f'{emojis.BP} Vampire teeth artifact: **{"Yes" if vampire_teeth_artifact else "No"}**\n'
         )
     )
@@ -430,17 +437,20 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
     if drop_type == DROP_LOOTBOX:
         drop_chance_hunt = base_chance * horse_chance * multiplier
         drop_chance_adv = base_chance_adv * horse_chance * multiplier
+        if claus_belt_artifact:
+            drop_chance_hunt *= 1.05
+            drop_chance_adv *= 1.05
         drop_chance_hunt_daily = round(drop_chance_hunt * 1.3, 3)
         drop_chance_adv_daily = round(drop_chance_adv * 1.3, 3)
         drop_chance_hunt = round(drop_chance_hunt, 3)
         drop_chance_adv = round(drop_chance_adv, 3)
         field_drop_chance_hunt = (
-            f'{emojis.BP} Base chance: `{drop_chance_hunt:g}`%\n'
-            f'{emojis.BP} If mob is daily mob: `{drop_chance_hunt_daily:g}`%\n'
+            f'{emojis.BP} Base chance: `{drop_chance_hunt:,g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_hunt_daily:,g}`%\n'
         )
         field_drop_chance_adv= (
-            f'{emojis.BP} Base chance: `{drop_chance_adv:g}`%\n'
-            f'{emojis.BP} If mob is daily mob: `{drop_chance_adv_daily:g}`%\n'
+            f'{emojis.BP} Base chance: `{drop_chance_adv:,g}`%\n'
+            f'{emojis.BP} If mob is daily mob: `{drop_chance_adv_daily:,g}`%\n'
         )
         embed.add_field(name='HUNT', value=field_drop_chance_hunt, inline=False)
         embed.add_field(name='ADVENTURE', value=field_drop_chance_adv, inline=False)
@@ -472,6 +482,9 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
             f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`10`% chance\n'
         )
+        field_artifacts = (
+            f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT} `Claus belt`: +`5`% chance\n'
+        )
     else:
         field_boosts = (
             f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
@@ -479,7 +492,11 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
             f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
         )
+        field_artifacts = (
+            f'{emojis.BP} {emojis.ARTIFACT_VAMPIRE_TEETH} `Vampire teeth`: +`5`% chance\n'
+        )
 
     embed.add_field(name='NOTE', value=field_encounter_chance, inline=False)
     embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
+    embed.add_field(name='ARTIFACTS THAT INCREASE DROP CHANCE', value=field_artifacts, inline=False)
     return embed

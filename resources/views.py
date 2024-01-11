@@ -579,7 +579,7 @@ class DropChanceCalculatorView(discord.ui.View):
     def __init__(self, ctx: discord.ApplicationContext, embed_function: Callable, drop_types: List[str],
                  active_drop_type: str, timetravel: int, horse_data: dict, mob_world_boost: bool,
                  lootbox_world_boost: bool, mob_boost_percentage: int,
-                 lootbox_boost_percentage: int, vampire_teeth_artifact: bool,
+                 lootbox_boost_percentage: int, vampire_teeth_artifact: bool, claus_belt_artifact: bool,
                  placeholder: Optional[str] = 'Choose drop type ...',
                  interaction: Optional[discord.Interaction] = None):
         super().__init__(timeout=settings.INTERACTION_TIMEOUT)
@@ -596,6 +596,7 @@ class DropChanceCalculatorView(discord.ui.View):
         self.lootbox_world_boost = lootbox_world_boost
         self.mob_boost_percentage = mob_boost_percentage
         self.lootbox_boost_percentage = lootbox_boost_percentage
+        self.claus_belt_artifact = claus_belt_artifact
         self.vampire_teeth_artifact = vampire_teeth_artifact
         self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
 

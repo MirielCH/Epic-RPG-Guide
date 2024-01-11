@@ -215,12 +215,22 @@ async def embed_monster_drops() -> discord.Embed:
     )
     chance = (
         f'{emojis.BP} The drop chance depends on the following:\n'
-        f'{emojis.DETAIL} Your horse tier\n'
-        f'{emojis.DETAIL} Your time travel count\n'
-        f'{emojis.DETAIL} The command mode (`hardmode` increases drop chance)\n'
+        f'{emojis.DETAIL2} Your horse tier\n'
+        f'{emojis.DETAIL2} Your time travel count\n'
+        f'{emojis.DETAIL2} The command mode (`hardmode` increases drop chance)\n'
+        f'{emojis.DETAIL2} Your active boosts\n'
+        f'{emojis.DETAIL2} Your artifacts\n'
         f'{emojis.DETAIL} World buffs in {strings.SLASH_COMMANDS_EPIC_RPG["world"]}\n'
         f'{emojis.BP} To see the your drop chance, use {strings.SLASH_COMMANDS_GUIDE["drop chance calculator"]}\n'
-        f'{emojis.BLANK}'
+    )
+    field_boosts = (
+        f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
+        f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
+        f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+        f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
+    )
+    field_artifacts = (
+        f'{emojis.BP} {emojis.ARTIFACT_VAMPIRE_TEETH} `Vampire teeth`: +`5`% chance\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -241,4 +251,6 @@ async def embed_monster_drops() -> discord.Embed:
     embed.add_field(name=f'DARK ENERGY {emojis.DARK_ENERGY}', value=dark_energy, inline=True)
     embed.add_field(name=f'EPIC BERRY {emojis.EPIC_BERRY}', value=epic_berry, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
+    embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
+    embed.add_field(name='ARTIFACTS THAT INCREASE DROP CHANCE', value=field_artifacts, inline=False)
     return embed

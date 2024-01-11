@@ -10,6 +10,7 @@ from resources import emojis, functions, settings, strings, views
 TOPIC_OVERVIEW = 'Overview'
 TOPIC_TLDR_GUIDE = 'TL;DR guide'
 TOPIC_CHRISTMAS_AREA = 'Christmas area'
+TOPIC_CLAUS_BELT = 'Claus belt artifact'
 TOPIC_SANTEVIL = 'SANTEVIL event'
 TOPIC_SNOWBALL = 'Snowball event'
 
@@ -17,6 +18,7 @@ TOPICS = [
     TOPIC_OVERVIEW,
     TOPIC_TLDR_GUIDE,
     TOPIC_CHRISTMAS_AREA,
+    TOPIC_CLAUS_BELT,
     TOPIC_SANTEVIL,
     TOPIC_SNOWBALL,
 ]
@@ -82,6 +84,7 @@ async def command_xmas_guide(ctx: discord.ApplicationContext, topic: str) -> Non
         TOPIC_OVERVIEW: embed_overview,
         TOPIC_TLDR_GUIDE: embed_tldr_guide,
         TOPIC_CHRISTMAS_AREA: embed_christmas_area,
+        TOPIC_CLAUS_BELT: embed_claus_belt,
         TOPIC_SANTEVIL: embed_santevil,
         TOPIC_SNOWBALL: embed_snowball,
     }
@@ -141,6 +144,7 @@ async def embed_overview() -> discord.Embed:
     activities = (
         f'{emojis.BP} Get various {strings.SLASH_COMMANDS_GUIDE["xmas items"]}\n'
         f'{emojis.BP} Complete daily and weekly {strings.SLASH_COMMANDS_EPIC_RPG["xmas tasks"]}\n'
+        f'{emojis.BP} Find the {emojis.ARTIFACT_CLAUS_BELT} claus belt artifact (see topic `Claus belt`)\n'
         f'{emojis.BP} Craft various items (see {strings.SLASH_COMMANDS_EPIC_RPG["xmas recipes"]})\n'
         f'{emojis.BP} Find, craft and open {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
         f'{emojis.BP} Get stuck in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
@@ -149,15 +153,15 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Visit the christmas area (see topic `Christmas area`)\n'
         f'{emojis.BP} Beat the candy dragon in the christmas dungeon '
         f'(see {strings.SLASH_COMMANDS_EPIC_RPG["xmas info"]} `topic: dungeon`)\n'
-        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}\n'
+        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}\n'
         f'{emojis.BP} Decorate a {strings.SLASH_COMMANDS_EPIC_RPG["xmas tree"]}\n'
         f'{emojis.BP} Get into a snowball fight (see topic `Snowball event`)\n'
-        f'{emojis.BP} Encounter the super rare SANTEVIL (see topic `SANTEVIL event`)\n'
+        f'{emojis.BP} Encounter the rare SANTEVIL (see topic `SANTEVIL event`)\n'
         f'{emojis.BP} Buy rewards in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]}\n'
     )
     pets = (
         f'{emojis.BP} **A** {emojis.PET_PENGUIN} **penguin**!\n'
-        f'{emojis.DETAIL} Drops from {emojis.PRESENT_VOID} VOID presents.\n'
+        f'{emojis.DETAIL} Drops from presents (POG tier).\n'
         f'{emojis.DETAIL} Has the {emojis.SKILL_ANTARCTICIAN} antarctician skill which turns all fish found into EPIC.\n'
         f'{emojis.BP} **A** {emojis.PET_SNOWBALL} **snowball!**\n'
         f'{emojis.DETAIL} Reward for completing the tree.\n'
@@ -171,21 +175,34 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Double XP when eating {emojis.ARENA_COOKIE} arena cookies (**not** super cookies!)\n'
         f'{emojis.DETAIL} Note that even at double XP 1 super cookie is still worth more than 1000 cookies\n'
     )
+    boost = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`40`% coins from all sources except selling & miniboss\n'
+        f'{emojis.DETAIL2} +`35`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} and '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.DETAIL2} +`35`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
+        f'{emojis.DETAIL2} +`30`% item rarity from work commands\n'
+        f'{emojis.DETAIL} +`25` {emojis.STAT_LIFE} LIFE\n'
+        f'{emojis.BP} **Duration**: `4`h\n'
+    )
     schedule = (
-        f'{emojis.BP} Event started on December 1, 2022\n'
-        f'{emojis.DETAIL} World boss starts later on December 5, 2022\n'
-        f'{emojis.BP} Event ends on January 5, 2023, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on January 12, 2023, 23:55 UTC\n'
+        f'{emojis.BP} Event started on December 1, 2023\n'
+        #f'{emojis.DETAIL} World boss starts later on December 5, 2023\n'
+        f'{emojis.BP} Event ends on January 5, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on January 12, 2024, 23:55 UTC\n'
         f'{emojis.DETAIL} Exception: {emojis.TIME_COOKIE} TIME cookies do not vanish'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'CHRISTMAS EVENT 2022 {emojis.XMAS_TREE}',
-        description = 'HO HO HO (yes, very imaginative, I know)'
+        title = f'CHRISTMAS EVENT 2023 {emojis.XMAS_TREE}',
+        description = (
+            f'[Merry Christmas](https://www.youtube.com/watch?v=ask1B-m26aU)'
+        )
     )
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='UNIQUE CHRISTMAS PETS YOU CAN GET', value=pets, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
+    embed.add_field(name='A CHRISTMAS BOOST? YAY!', value=boost, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
     return embed
 
@@ -231,15 +248,17 @@ async def embed_tldr_guide() -> discord.Embed:
         f'{emojis.BP} Craft as many {emojis.COOKIES_AND_MILK} cookies and milk as you can\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]} on cooldown\n'
         f'{emojis.DETAIL} This event command has a `3`h cooldown\n'
+        f'{emojis.BP} Open your {emojis.PRESENT_ETERNAL} ETERNAL presents on cooldown\n'
+        f'{emojis.DETAIL} The presents have a `24`h cooldown\n'
         f'{emojis.BP} Complete your {strings.SLASH_COMMANDS_EPIC_RPG["xmas tasks"]} daily\n'
         f'{emojis.BP} Check your {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]} daily\n'
         f'{emojis.BP} **Optional**: Craft the {emojis.SWORD_SANTA}{emojis.ARMOR_SANTA} santa gear if you want to stay in '
         f'the christmas area as long as possible. This allows you to advance your max area beating the christmas dungeon.\n'
         f'{emojis.BP} Beat the christmas dungeon at least twice for the quest\n'
-        f'{emojis.BP} Complete the christmas quests in {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}.\n'
-        f'{emojis.DETAIL} Do the quest that tasks you to open 600 presents last.\n'
-        f'{emojis.BP} Complete the tree in {strings.SLASH_COMMANDS_EPIC_RPG["xmas tree"]} before december 25th\n'
-        f'{emojis.BP} Buy whatever you want from the shop in {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]}\n'
+        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}.\n'
+        f'{emojis.DETAIL} Do the quest that tasks you to open `600` presents last.\n'
+        f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas tree"]} before december 25th\n'
+        f'{emojis.BP} Buy whatever you want from the {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -296,7 +315,7 @@ async def embed_santevil() -> discord.Embed:
     )
     rewards_win = (
         f'{emojis.BP} {emojis.PRESENT}{emojis.PRESENT_EPIC}{emojis.PRESENT_MEGA}{emojis.PRESENT_ULTRA}'
-        f'{emojis.PRESENT_OMEGA}{emojis.PRESENT_GODLY}{emojis.PRESENT_VOID} random presents (common)\n'
+        f'{emojis.PRESENT_OMEGA}{emojis.PRESENT_GODLY}{emojis.PRESENT_VOID}{emojis.PRESENT_ETERNAL} random presents (common)\n'
         f'{emojis.BP} {emojis.SANTA_HAIR} santa hair (rare)\n'
     )
     best_answer = (
@@ -405,7 +424,7 @@ async def embed_item_christmas_star() -> discord.Embed:
     """Item: Christmas star"""
     source = (
         f'{emojis.BP} Can be crafted (see {strings.SLASH_COMMANDS_EPIC_RPG["xmas recipes"]}).\n'
-        f'{emojis.DETAIL} You need to complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]} to get the parts.\n'
+        f'{emojis.DETAIL} You need to complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]} to get the parts.\n'
     )
     usage = (
         f'{emojis.BP} Required to complete the {strings.SLASH_COMMANDS_EPIC_RPG["xmas tree"]}\n'
@@ -422,7 +441,7 @@ async def embed_item_christmas_star() -> discord.Embed:
 async def embed_item_christmas_star_parts() -> discord.Embed:
     """Item: Christmas star parts"""
     source = (
-        f'{emojis.BP} Acquired by completing the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}\n'
+        f'{emojis.BP} Acquired by completing the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}\n'
     )
     usage = (
         f'{emojis.BP} Required to craft the christmas star (see item `Christmas star`)\n'
@@ -605,9 +624,10 @@ async def embed_item_present() -> discord.Embed:
     source = (
         f'{emojis.BP} Drops from various commands\n'
         f'{emojis.BP} Can be crafted (see {strings.SLASH_COMMANDS_EPIC_RPG["xmas recipes"]})\n'
+        f'{emojis.DETAIL} Exception: {emojis.PRESENT_ETERNAL} ETERNAL presents are not craftable!\n'
         f'{emojis.BP} Uncommon loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
         f'{emojis.BP} You can get some in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]}\n'
-        f'{emojis.BP} Reward from {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}\n'
+        f'{emojis.BP} Reward from {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}\n'
         f'{emojis.BP} Random reward from the snowball fight (see {strings.SLASH_COMMANDS_GUIDE["xmas guide"]} '
         f'`topic: snowball event`)\n'
     )
@@ -639,15 +659,16 @@ async def embed_item_present() -> discord.Embed:
     usage_void = (
         f'{emojis.BP} Open them\n'
     )
+    usage_eternal = (
+        f'{emojis.BP} Open them. They will **not** be used, instead opening them has a `24`h cooldown\n'
+        f'{emojis.DETAIL} Make sure you open **all** of them in **one** command!\n'
+    )
     usage_otherwise = (
         f'{emojis.BP} Well, idk, gift them to your mother\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = (
-            f'PRESENTS {emojis.PRESENT}{emojis.PRESENT_EPIC}{emojis.PRESENT_MEGA}{emojis.PRESENT_ULTRA}'
-            f'{emojis.PRESENT_OMEGA}{emojis.PRESENT_GODLY}{emojis.PRESENT_VOID}'
-        ),
+        title = 'PRESENTS',
     )
     embed.add_field(name=f'COMMON PRESENTS {emojis.PRESENT} USAGE', value=usage_common, inline=False)
     embed.add_field(name=f'EPIC PRESENTS {emojis.PRESENT_EPIC} USAGE', value=usage_epic, inline=False)
@@ -656,6 +677,7 @@ async def embed_item_present() -> discord.Embed:
     embed.add_field(name=f'OMEGA PRESENTS {emojis.PRESENT_OMEGA} USAGE', value=usage_omega, inline=False)
     embed.add_field(name=f'GODLY PRESENTS {emojis.PRESENT_GODLY} USAGE', value=usage_godly, inline=False)
     embed.add_field(name=f'VOID PRESENTS {emojis.PRESENT_VOID} USAGE', value=usage_void, inline=False)
+    embed.add_field(name=f'ETERNAL PRESENTS {emojis.PRESENT_ETERNAL} USAGE', value=usage_eternal, inline=False)
     embed.add_field(name='IF YOU DON\'T LIKE ANY OF THESE OPTIONS', value=usage_otherwise, inline=False)
     embed.add_field(name='SOURCE', value=source, inline=False)
     return embed
@@ -684,6 +706,7 @@ async def embed_item_santa_hair() -> discord.Embed:
         f'{emojis.BP} Pog loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
         f'{emojis.BP} Random reward from the SANTEVIL event (see {strings.SLASH_COMMANDS_GUIDE["xmas guide"]} '
         f'`topic: SANTEVIL event`)\n'
+        f'{emojis.BP} You can get some in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]}\n'
     )
     usage = (
         f'{emojis.BP} Used to craft the {emojis.SWORD_SANTA} santa sword and {emojis.ARMOR_SANTA} armor\n'
@@ -724,7 +747,8 @@ async def embed_item_snow_box() -> discord.Embed:
     source = (
         f'{emojis.BP} Rare loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]} (`15` max)\n'
         f'{emojis.BP} Can be bought in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]} (`10` max)\n'
-        f'{emojis.BP} Reward from one of the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}'
+        f'{emojis.BP} Reward from one of the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}'
+        f'{emojis.BP} You can get some in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas calendar"]}\n'
     )
     usage = (
         f'{emojis.BP} Can be opened to get 2 - 20 {emojis.SNOWBALL} snowballs\n'
@@ -767,7 +791,7 @@ async def embed_item_snowflake() -> discord.Embed:
     source = (
         f'{emojis.BP} Reward for completing {strings.SLASH_COMMANDS_EPIC_RPG["xmas tasks"]}\n'
         f'{emojis.BP} Common loot from {strings.SLASH_COMMANDS_EPIC_RPG["xmas presents"]}\n'
-        f'{emojis.BP} Reward from one of the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quests"]}'
+        f'{emojis.BP} Reward from one of the {strings.SLASH_COMMANDS_EPIC_RPG["xmas quest"]}'
     )
     usage = (
         f'{emojis.BP} Used as a currency in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]}\n'
@@ -824,4 +848,26 @@ async def embed_item_time_cookie() -> discord.Embed:
     embed.add_field(name='USAGE', value=usage, inline=False)
     embed.add_field(name='SOURCE', value=source, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_claus_belt() -> discord.Embed:
+    """Claus belt artifact embed"""
+    effects = (
+        f'{emojis.BP} Increases chances to get better presents from {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Doubles rewards from {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Halves the chance to get stuck in {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Increases lootbox drop chance by `5`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT_PART_A} `Part A` • Drops from beating the area 0 dungeon\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT_PART_B} `Part B` • Drops from opening presents\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}',
+        description = 'This artifact is only available during the christmas event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed

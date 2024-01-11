@@ -675,7 +675,7 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
 
     # Images
     if dungeon_no == 11:
-        image_url = 'https://erg.zoneseven.ch/ïmages/dungeon11.png'
+        image_url = 'https://erg.zoneseven.ch/images/dungeon11.png'
         image_name = 'MOVEMENT BEHAVIOUR'
     elif dungeon_no == 13:
         image_url = 'https://erg.zoneseven.ch/images/dungeon13.png'

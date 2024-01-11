@@ -7,23 +7,25 @@ from resources import emojis, functions, settings, strings, views
 
 # --- Topics ---
 TOPIC_OVERVIEW = 'Overview'
-TOPIC_ARTIFACTS_TOP_HAT = 'Top hat'
+TOPIC_ARTIFACTS_SOURCE_SUMMARY = 'Source summary'
+TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
 TOPIC_ARTIFACTS_COIN_RING = 'Coin ring'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
+TOPIC_ARTIFACTS_TOP_HAT = 'Top hat'
 TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
-TOPIC_ARTIFACTS_SOURCE_SUMMARY = 'Source summary'
 
 TOPICS_ARTIFACTS = [
     TOPIC_OVERVIEW,
-    TOPIC_ARTIFACTS_TOP_HAT,
+    TOPIC_ARTIFACTS_SOURCE_SUMMARY,
+    TOPIC_ARTIFACTS_CLAUS_BELT,
     TOPIC_ARTIFACTS_COIN_RING,
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
     TOPIC_ARTIFACTS_VAMPIRE_TEETH,
-    TOPIC_ARTIFACTS_SOURCE_SUMMARY,
+    TOPIC_ARTIFACTS_TOP_HAT,
 ]
 
 
@@ -32,13 +34,14 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
     """Artifacts command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_artifacts_overview,
-        TOPIC_ARTIFACTS_TOP_HAT: embed_artifacts_top_hat,
+        TOPIC_ARTIFACTS_SOURCE_SUMMARY: embed_artifacts_source_summary,
+        TOPIC_ARTIFACTS_CLAUS_BELT: embed_artifacts_claus_belt,
         TOPIC_ARTIFACTS_COIN_RING: embed_artifacts_coin_ring,
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
+        TOPIC_ARTIFACTS_TOP_HAT: embed_artifacts_top_hat,
         TOPIC_ARTIFACTS_VAMPIRE_TEETH: embed_artifacts_vampire_teeth,
-        TOPIC_ARTIFACTS_SOURCE_SUMMARY: embed_artifacts_source_summary,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -106,6 +109,28 @@ async def embed_artifacts_top_hat() -> discord.Embed:
     )
     embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='POSSIBLE DAILY TRADES', value=possible_trades, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
+async def embed_artifacts_claus_belt() -> discord.Embed:
+    """Claus belt artifact embed"""
+    effects = (
+        f'{emojis.BP} Increases chances to get better presents from {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Doubles rewards from {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Halves the chance to get stuck in {strings.SLASH_COMMANDS_EPIC_RPG["xmas chimney"]}\n'
+        f'{emojis.BP} Increases lootbox drop chance by `5`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT_PART_A} `Part A` • Drops from beating the area 0 dungeon\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT_PART_B} `Part B` • Drops from opening presents\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}',
+        description = 'This artifact is only available during the christmas event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed
 
@@ -240,12 +265,9 @@ async def embed_artifacts_vampire_teeth() -> discord.Embed:
 
 async def embed_artifacts_source_summary() -> discord.Embed:
     """Artifacts sources"""
-    top_hat = (
-        f'{emojis.ARTIFACT_TOP_HAT_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
-        f'in areas 3, 5 and TOP\n'
-        f'{emojis.ARTIFACT_TOP_HAT_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
-        f'in areas 3, 5 and TOP\n'
-        f'{emojis.ARTIFACT_TOP_HAT_PART_C} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["trade items"]}\n'
+    claus_belt = (
+        f'{emojis.ARTIFACT_CLAUS_BELT_PART_A} `Part A` • Drops from beating the area 0 dungeon\n'
+        f'{emojis.ARTIFACT_CLAUS_BELT_PART_B} `Part B` • Drops from opening presents\n'
     )
     coin_ring = (
         f'{emojis.ARTIFACT_COIN_RING_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["sell"]}\n'
@@ -272,6 +294,13 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_POCKET_WATCH_PART_E} `Part E` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
         f'in the TOP\n'
     )
+    top_hat = (
+        f'{emojis.ARTIFACT_TOP_HAT_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'in areas 3, 5 and TOP\n'
+        f'{emojis.ARTIFACT_TOP_HAT_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
+        f'in areas 3, 5 and TOP\n'
+        f'{emojis.ARTIFACT_TOP_HAT_PART_C} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["trade items"]}\n'
+    )
     vampire_teeth = (
         f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_A} `Part A` • Drops from the {emojis.HAL_BOSS} pumpkin bat (scroll boss)\n'
         f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hal boo"]}\n'
@@ -282,10 +311,11 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         color = settings.EMBED_COLOR,
         title = 'ARTIFACT SOURCES',
     )
-    embed.add_field(name=f'TOP HAT {emojis.ARTIFACT_TOP_HAT}', value=top_hat, inline=False)
+    embed.add_field(name=f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}', value=claus_belt, inline=False)
     embed.add_field(name=f'COIN RING {emojis.ARTIFACT_COIN_RING}', value=coin_ring, inline=False)
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)
+    embed.add_field(name=f'TOP HAT {emojis.ARTIFACT_TOP_HAT}', value=top_hat, inline=False)
     embed.add_field(name=f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}', value=vampire_teeth, inline=False)
     return embed

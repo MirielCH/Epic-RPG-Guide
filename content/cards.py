@@ -68,43 +68,43 @@ async def embed_cards_overview() -> discord.Embed:
 async def embed_cards_sources() -> discord.Embed:
     """Cards sources guide"""
     monsters = (
-        f'{emojis.BP} Areas 1-3: {emojis.CARD_COMMON} common cards\n'
-        f'{emojis.BP} Areas 4-5 : {emojis.CARD_UNCOMMON} uncommon cards\n'
-        f'{emojis.BP} Areas 6-8 : {emojis.CARD_RARE} rare cards\n'
-        f'{emojis.BP} Areas 9-10 : {emojis.CARD_EPIC} EPIC cards\n'
-        f'{emojis.BP} Areas 11-13 : {emojis.CARD_OMEGA} OMEGA cards\n'
-        f'{emojis.BP} Areas 14-15 : {emojis.CARD_GODLY} GODLY cards\n'
-        f'{emojis.BP} Areas 16-19 : {emojis.CARD_VOID} VOID cards\n'
-        f'{emojis.BP} Area 20 : {emojis.CARD_ETERNAL} ETERNAL cards\n'
+        f'{emojis.BP} Areas 1-3: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} Areas 4-5 : {emojis.CARD_UNCOMMON} uncommon\n'
+        f'{emojis.BP} Areas 6-8 : {emojis.CARD_RARE} rare\n'
+        f'{emojis.BP} Areas 9-10 : {emojis.CARD_EPIC} EPIC\n'
+        f'{emojis.BP} Areas 11-13 : {emojis.CARD_OMEGA} OMEGA\n'
+        f'{emojis.BP} Areas 14-15 : {emojis.CARD_GODLY} GODLY\n'
+        f'{emojis.BP} Areas 16-19 : {emojis.CARD_VOID} VOID\n'
+        f'{emojis.BP} Area 20 : {emojis.CARD_ETERNAL} ETERNAL\n'
     )
     chop_commands = (
-        f'{emojis.BP} {emojis.LOG} wooden logs: {emojis.CARD_COMMON} common card\n'
-        f'{emojis.BP} {emojis.LOG_EPIC} EPIC logs: TBA\n'
-        f'{emojis.BP} {emojis.LOG_SUPER} SUPER logs: TBA\n'
-        f'{emojis.BP} {emojis.LOG_MEGA} MEGA logs: TBA\n'
-        f'{emojis.BP} {emojis.LOG_HYPER} HYPER logs: TBA\n'
-        f'{emojis.BP} {emojis.LOG_ULTRA} ULTRA logs: TBA\n'
-        f'{emojis.BP} {emojis.LOG_ULTIMATE} ULTIMATE logs: {emojis.CARD_ETERNAL} ETERNAL card\n'
+        f'{emojis.BP} {emojis.LOG} wooden logs: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.LOG_EPIC} EPIC logs: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.LOG_SUPER} SUPER logs: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.LOG_MEGA} MEGA logs: {emojis.CARD_RARE} rare\n'
+        f'{emojis.BP} {emojis.LOG_HYPER} HYPER logs: {emojis.CARD_RARE} rare\n'
+        f'{emojis.BP} {emojis.LOG_ULTRA} ULTRA logs: {emojis.CARD_RARE} rare\n'
+        f'{emojis.BP} {emojis.LOG_ULTIMATE} ULTIMATE logs: {emojis.CARD_ETERNAL} ETERNAL\n'
     )
     fish_commands = (
-        f'{emojis.BP} {emojis.FISH} normie fish: {emojis.CARD_COMMON} common card\n'
-        f'{emojis.BP} {emojis.FISH_GOLDEN} golden fish: TBA\n'
-        f'{emojis.BP} {emojis.FISH_EPIC} EPIC fish: TBA\n'
-        f'{emojis.BP} {emojis.FISH_SUPER} SUPER fish: {emojis.CARD_ETERNAL} ETERNAL card\n'
+        f'{emojis.BP} {emojis.FISH} normie fish: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.FISH_GOLDEN} golden fish: {emojis.CARD_UNCOMMON} uncommon\n'
+        f'{emojis.BP} {emojis.FISH_EPIC} EPIC fish: {emojis.CARD_RARE} rare\n'
+        f'{emojis.BP} {emojis.FISH_SUPER} SUPER fish: {emojis.CARD_ETERNAL} ETERNAL\n'
     )
     pickup_commands = (
-        f'{emojis.BP} {emojis.APPLE} apples: {emojis.CARD_COMMON} common card\n'
-        f'{emojis.BP} {emojis.BANANA} bananas: TBA\n'
-        f'{emojis.BP} {emojis.WATERMELON} watermelon: {emojis.CARD_ETERNAL} ETERNAL card\n'
+        f'{emojis.BP} {emojis.APPLE} apples: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.BANANA} bananas: {emojis.CARD_UNCOMMON} uncommon\n'
+        f'{emojis.BP} {emojis.WATERMELON} watermelon: {emojis.CARD_ETERNAL} ETERNAL\n'
     )
     mine_commands = (
-        f'{emojis.BP} {emojis.COIN} coins: TBA\n'
-        f'{emojis.BP} {emojis.RUBY} rubies: {emojis.CARD_UNCOMMON} uncommon card\n'
+        f'{emojis.BP} {emojis.COIN} coins: {emojis.CARD_COMMON} common\n'
+        f'{emojis.BP} {emojis.RUBY} rubies: {emojis.CARD_UNCOMMON} uncommon\n'
     )
     farm_command = (
-        f'{emojis.BP} {emojis.POTATO} potatoes: TBA\n'
-        f'{emojis.BP} {emojis.BREAD} bread: TBA\n'
-        f'{emojis.BP} {emojis.CARROT} carrots: TBA\n'
+        f'{emojis.BP} {emojis.POTATO} potatoes: {emojis.CARD_EPIC} EPIC\n'
+        f'{emojis.BP} {emojis.BREAD} bread: {emojis.CARD_EPIC} EPIC\n'
+        f'{emojis.BP} {emojis.CARROT} carrots: {emojis.CARD_EPIC} EPIC\n'
     )
     note = (
         f'{emojis.BP} Every monster or material can drop exactly **once**\n'
