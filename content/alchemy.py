@@ -93,7 +93,7 @@ async def embed_alchemy_recommended_potions() -> discord.Embed:
     good_potions_tt0 = (
         f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`\n'
         f'{emojis.DETAIL2} Helps getting mob drops for the EDGY armor faster\n'
-        f'{emojis.BP} {emojis.POTION_BANANA} `Banana potion`\n'
+        f'{emojis.BP} {emojis.POTION_BANANA} `Banana potion` and {emojis.POTION_SMOL} `Smol potion`\n'
         f'{emojis.DETAIL} Helps leveling up faster\n'
     )
     good_potions_tt3 = (
@@ -183,6 +183,14 @@ async def embed_alchemy_beginner() -> discord.Embed:
         f'{emojis.DETAIL2} Helps with taking damage in `hunt together`\n'
         f'{emojis.DETAIL} Peace of mind, especially if your horse is not T4 yet\n'
     )
+    potion_smol = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL} +`80`% XP from all sources\n'
+        f'{emojis.BP} **Duration**: `2`h\n'
+        f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1` {emojis.LOG} + `1` {emojis.FISH}\n'
+        f'{emojis.BP} **Possible use**\n'
+        f'{emojis.DETAIL} Level up faster in early TTs\n'
+    )
     potion_triple = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`30`% special seed drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
@@ -201,6 +209,7 @@ async def embed_alchemy_beginner() -> discord.Embed:
     embed.add_field(name=f'INVERTED POTION {emojis.POTION_INVERTED}', value=potion_inverted, inline=False)
     embed.add_field(name=f'MONSTER POTION {emojis.POTION_MONSTER}', value=potion_monster, inline=False)
     embed.add_field(name=f'POTION POTION {emojis.POTION_POTION}', value=potion_potion, inline=False)
+    embed.add_field(name=f'SMOL POTION {emojis.POTION_SMOL}', value=potion_smol, inline=False)
     embed.add_field(name=f'TRIPLE POTION {emojis.POTION_TRIPLE}', value=potion_triple, inline=False)
     return embed
 
@@ -216,6 +225,14 @@ async def embed_alchemy_simple() -> discord.Embed:
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `42` {emojis.FISH_EPIC}\n'
         f'{emojis.BP} **Possible use**\n'
         f'{emojis.DETAIL} Use before TT to level professions and get more items after TT\n'
+    )
+    potion_flask = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL} -`0.01`% cooldown reduction\n'
+        f'{emojis.BP} **Duration**: `12`h\n'
+        f'{emojis.BP} **Recipe**: `2` {emojis.FLASK}\n'
+        f'{emojis.BP} **Possible use**\n'
+        f'{emojis.DETAIL} If you somehow don\'t know what else to do with your flasks, do this\n'
     )
     potion_juice = (
         f'{emojis.BP} **Boosts**\n'
@@ -237,6 +254,18 @@ async def embed_alchemy_simple() -> discord.Embed:
         f'{emojis.BP} **Possible use**\n'
         f'{emojis.DETAIL} Lol\n'
     )
+    potion_p2w = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`15` {emojis.STAT_AT} AT\n'
+        f'{emojis.DETAIL2} +`15` {emojis.STAT_DEF} DEF\n'
+        f'{emojis.DETAIL2} +`35` {emojis.STAT_LIFE} LIFE\n'
+        f'{emojis.DETAIL2} +`100`% coins from all sources except selling & miniboss\n'
+        f'{emojis.DETAIL} +`20`% increased selling price of all items\n'
+        f'{emojis.BP} **Duration**: `10`h\n'
+        f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `2` {emojis.COIN_TRUMPET} + `2` {emojis.EPIC_SEED} + `2`{emojis.ULTRA_BAIT}\n'
+        f'{emojis.BP} **Possible use**\n'
+        f'{emojis.DETAIL} It\'s basically a potion to turn epic coins into coins, hence the name\n'
+    )
     potion_wood = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`30`% item rarity from work commands\n'
@@ -252,8 +281,10 @@ async def embed_alchemy_simple() -> discord.Embed:
         title = 'ALCHEMY: SIMPLE POTIONS',
     )
     embed.add_field(name=f'FISH POTION {emojis.POTION_FISH}', value=potion_fish, inline=False)
+    embed.add_field(name=f'FLASK POTION {emojis.POTION_FLASK}', value=potion_flask, inline=False)
     embed.add_field(name=f'JUICE POTION {emojis.POTION_JUICE}', value=potion_juice, inline=False)
     embed.add_field(name=f'LIQUID HAIR POTION {emojis.POTION_LIQUID_HAIR}', value=potion_liquid_hair, inline=False)
+    embed.add_field(name=f'P2W POTION {emojis.POTION_P2W}', value=potion_p2w, inline=False)
     embed.add_field(name=f'WOOD POTION {emojis.POTION_WOOD}', value=potion_wood, inline=False)
     return embed
 
@@ -263,7 +294,7 @@ async def embed_alchemy_advanced() -> discord.Embed:
     potion_cookie = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`55`% XP from all sources\n'
-        f'{emojis.DETAIL} +`10`% pet encounter chance in {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
+        f'{emojis.DETAIL} +`15`% pet encounter chance in {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
         f'{emojis.BP} **Duration**: `4`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `500` {emojis.ARENA_COOKIE}\n'
         f'{emojis.BP} **Possible use**\n'
@@ -347,7 +378,7 @@ async def embed_alchemy_endgame() -> discord.Embed:
         f'{emojis.DETAIL} You keep `7.5`% of the items in your inventory when time traveling\n'
         f'{emojis.BP} **Duration**: `5`m\n'
         f'{emojis.DETAIL} Only brew this potion right before you time travel!\n'
-        f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `142` {emojis.TIME_COOKIE}\n'
+        f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `42` {emojis.TIME_COOKIE}\n'
         f'{emojis.BP} **Possible use**\n'
         f'{emojis.DETAIL} Use right before TT to trade TIME cookies for more materials\n'
     )

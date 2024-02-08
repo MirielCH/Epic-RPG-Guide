@@ -259,11 +259,11 @@ async def embed_about(
             f'{emojis.BP} Bot latency: {bot_latency}\n'
             f'{emojis.BP} API latency: {round(api_latency.total_seconds() * 1000):,} ms'
         )
-    creator = f'{emojis.BP} Miriel#0001'
+    creator = f'{emojis.BP} miriel.ch'
     thanks = (
-        f'{emojis.BP} FlyingPanda#0328\n'
-        f'{emojis.BP} Hakiobo#6097\n'
-        f'{emojis.BP} r5#2253\n'
+        f'{emojis.BP} flyingpanda\n'
+        f'{emojis.BP} hakiobo\n'
+        f'{emojis.BP} therealr5\n'
         f'{emojis.BP} Everyone contributing one way or the other'
     )
     documents = (

@@ -946,6 +946,7 @@ SLASH_COMMANDS_GUIDE = {
     'badges': '</badges:972045824869679140>',
     'beginner guide': '</beginner guide:972045824869679143>',
     'calculator': '</calculator:972045824940965899>',
+    'cards drops': '</cards drops:1178088077042917596>',
     'cards guide': '</cards guide:1178088077042917596>',
     'cel guide': '</cel guide:0>',
     'codes': '</codes:972045824869679139>',
