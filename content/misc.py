@@ -386,6 +386,7 @@ async def embed_badges() -> discord.Embed:
         f'{emojis.BP} {emojis.BADGE_EPIC_NPC} : Unlocked by beating the EPIC NPC in the TOP\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
+        f'{emojis.BP} {emojis.BADGE_CROSSOVER} : Unlock by getting `100` achievements in the IDLE FARM game\n'
     )
     howtouse = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge list"]} to see all badges\n'
@@ -426,6 +427,7 @@ async def embed_coolness_overview() -> discord.Embed:
     howtoget = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["ultraining"]} awards 2 coolness per stage '
         f'(see {strings.SLASH_COMMANDS_GUIDE["ultraining guide"]})\n'
+        f'{emojis.BP} Sell {emojis.DRAGON_SCALE} dragon scales\n'
         f'{emojis.BP} Do an adventure with full HP and survive with 1 HP\n'
         f'{emojis.BP} Open {emojis.LB_OMEGA} OMEGA and {emojis.LB_GODLY} GODLY lootboxes\n'
         f'{emojis.BP} Get HYPER, ULTRA or ULTIMATE logs from work commands\n'

@@ -347,8 +347,9 @@ async def embed_types() -> discord.Embed:
         f'{emojis.BP} The higher the horse level, the more coins and XP the epic quest gives\n'
         f'{emojis.BP} The coin and XP bonus is `50`% higher than SPECIAL\n'
         f'{emojis.BP} **You only have a chance getting this type when breeding two SPECIAL horses**\n'
-        f'{emojis.DETAIL} You can only get this type if you don\'t use a horse token in the breeding.\n'
-        f'{emojis.DETAIL} The other person, however, **is** free to use one if they don\'t want one!\n'
+        f'{emojis.DETAIL2} You can only get this type if you don\'t use a horse token in the breeding.\n'
+        f'{emojis.DETAIL2} The other person, however, **is** free to use one if they don\'t want one!\n'
+        f'{emojis.DETAIL} The chance to get this type when breeding is `7.5`%\n'
     )
     magic = (
         f'{emojis.BP} Increases the effectiveness of enchantments\n'

@@ -1210,7 +1210,7 @@ async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
     field_equipment = bot_message.embeds[0].fields[2]
     sword, armor, horse_type = field_equipment.value.split('\n')
     search_patterns_tt = [
-        'time travels\*\*: (.+?)$', #English
+        'time travels\*\*: (.+?)[$|\n]', #English
         'viajes en el tiempo\*\*: (.+?)$', #Spanish
         'viagens no tempo\*\*: (.+?)$', #Portuguese
     ]
@@ -1307,7 +1307,7 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     """
     progress_field = bot_message.embeds[0].fields[0]
     search_patterns_tt = [
-        'time travels\*\*: (.+?)$', #English
+        'time travels\*\*: (.+?)[$|\n]', #English
         'viajes en el tiempo\*\*: (.+?)$', #Spanish
         'viagens no tempo\*\*: (.+?)$', #Portuguese
     ]

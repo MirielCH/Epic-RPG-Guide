@@ -3,14 +3,34 @@
 
 import discord
 
-from resources import emojis, settings, strings
+from resources import emojis, functions, settings, strings, views
 
+
+# --- Topics ---
+TOPIC_OVERVIEW = 'Overview'
+TOPIC_CHOCOLATE_BOX = 'Chocolate box artifact'
+
+TOPICS = [
+    TOPIC_OVERVIEW,
+    TOPIC_CHOCOLATE_BOX,
+]
 
 # --- Commands ---
-async def command_valentine_guide(ctx: discord.ApplicationContext) -> None:
+async def command_valentine_guide(ctx: discord.ApplicationContext, topic: str) -> None:
     """Valentine guide command"""
-    embed = await embed_valentine_guide()
-    await ctx.respond(embed=embed)
+    topics_functions = {
+        TOPIC_OVERVIEW: embed_valentine_guide,
+        TOPIC_CHOCOLATE_BOX: embed_chocolate_box,
+    }
+    view = views.TopicView(ctx, topics_functions, active_topic=topic)
+    embed = await topics_functions[topic]()
+    interaction = await ctx.respond(embed=embed, view=view)
+    view.interaction = interaction
+    await view.wait()
+    try:
+        await functions.edit_interaction(interaction, view=None)
+    except discord.errors.NotFound:
+        pass
 
 
 # --- Embeds ---
@@ -20,6 +40,7 @@ async def embed_valentine_guide() -> discord.Embed:
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["love share"]} to get {emojis.COIN_LOVE} love coins\n'
         f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["love quest"]} to get a '
         f'{emojis.PET_PINK_FISH} pink fish pet\n'
+        f'{emojis.BP} Find the {emojis.ARTIFACT_CHOCOLATE_BOX} chocolate box artifact (see topic `Chocolate box`)\n'
         f'{emojis.BP} Kill the rare {emojis.MOB_PINK_WOLF} pink wolf in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'to get extra coins\n'
         f'{emojis.BP} Buy various rewards in the {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
@@ -47,13 +68,13 @@ async def embed_valentine_guide() -> discord.Embed:
     )
     titles = (
         f'{emojis.BP} **Wood you be my valentine?** (bought in {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]})\n'
-        f'{emojis.BP} **lovely fren** (Achievement #197)\n'
-        f'{emojis.BP} **Heart broken** (Achievement #198)\n'
+        f'{emojis.BP} **lovely fren** (Achievement #211)\n'
+        f'{emojis.BP} **Heart broken** (Achievement #212)\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on February 11, 2023\n'
-        f'{emojis.BP} Event ended on February 18, 2023, 23:55 UTC\n'
-        f'{emojis.BP} Love tokens and coins can be used until February 25, 23:55 UTC\n'
+        f'{emojis.BP} Event started on February 9, 2024\n'
+        f'{emojis.BP} Event ended on February 22, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Love tokens and coins can be used until February 29, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["love share"]} after every hunt '
@@ -76,7 +97,7 @@ async def embed_valentine_guide() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'VALENTINE EVENT 2023 {emojis.COIN_LOVE}',
+        title = f'VALENTINE EVENT 2024 {emojis.COIN_LOVE}',
         description = 'Voulez-vous trinquer avec moi, ce soir ?'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
@@ -88,4 +109,26 @@ async def embed_valentine_guide() -> discord.Embed:
     embed.add_field(name='OK, BUT WHAT DOES THE VALENTINE BOOST DO?', value=boost, inline=False)
     #embed.add_field(name='CHANCES', value=chances, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    return embed
+
+
+async def embed_chocolate_box() -> discord.Embed:
+    """Chocolate box artifact embed"""
+    effects = (
+        f'{emojis.BP} Doubles rewards from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
+        f'{emojis.BP} Reduces {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} cooldown by `2`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love slots"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_C} `Part C` • Drops from buying items in the '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'CHOCOLATE BOX {emojis.ARTIFACT_CHOCOLATE_BOX}',
+        description = 'This artifact is only available during the valentine event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed

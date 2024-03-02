@@ -175,7 +175,7 @@ async def embed_alchemy_beginner() -> discord.Embed:
     )
     potion_potion = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL2} +`50` {emojis.STAT_LIFE} LIFE\n'
+        f'{emojis.DETAIL2} +`60` {emojis.STAT_LIFE} LIFE\n'
         f'{emojis.DETAIL} Automatically heals you if you take damage\n'
         f'{emojis.BP} **Duration**: `20`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `1` {emojis.LIFE_POTION}\n'
@@ -294,8 +294,8 @@ async def embed_alchemy_advanced() -> discord.Embed:
     potion_cookie = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`55`% XP from all sources\n'
-        f'{emojis.DETAIL} +`15`% pet encounter chance in {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
-        f'{emojis.BP} **Duration**: `4`h\n'
+        f'{emojis.DETAIL} +`20`% pet encounter chance in {strings.SLASH_COMMANDS_EPIC_RPG["training"]}\n'
+        f'{emojis.BP} **Duration**: `10`h\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `500` {emojis.ARENA_COOKIE}\n'
         f'{emojis.BP} **Possible use**\n'
         f'{emojis.DETAIL2} Level up faster in early TTs\n'

@@ -92,14 +92,15 @@ async def embed_cards_overview() -> discord.Embed:
     )
     round_card = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL2} -`95`% cooldown reduction\n'
-        f'{emojis.DETAIL2} +`200`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'{emojis.DETAIL2} -`90`% cooldown reduction\n'
+        f'{emojis.DETAIL2} +`350`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
-        f'{emojis.DETAIL2} +`200`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
-        f'{emojis.DETAIL2} +`200`% items from work commands\n'
-        f'{emojis.DETAIL2} +`100`% item rarity from work commands\n'
-        f'{emojis.DETAIL} Automatically heals you if you take damage\n'
-        f'{emojis.BP} **Duration**: `3`m\n'
+        f'{emojis.DETAIL2} +`350`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`500`% items from work commands\n'
+        f'{emojis.DETAIL2} +`200`% item rarity from work commands\n'
+        f'{emojis.DETAIL2} Automatically heals you if you take damage\n'
+        f'{emojis.DETAIL} You can not use `dungeon`, `horse` and `card` commands during the boost\n'
+        f'{emojis.BP} **Duration**: `5`m\n'
         f'{emojis.BP} **Source**: {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
     embed = discord.Embed(
@@ -146,6 +147,7 @@ async def embed_cards_drops_monsters() -> discord.Embed:
     note = (
         f'{emojis.BP} Every source can drop exactly **once**\n'
         f'{emojis.BP} The drop rate is **not** affected by TT and hardmode (or anything else)\n'
+        f'{emojis.BP} Contributing a lootbox also has a chance to drop its card\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["cards info"]} to track your drops so far\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["area guide"]} to see all monsters in an area\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["monster search"]} to look up monsters by name\n'
@@ -166,31 +168,31 @@ async def embed_cards_drops_alchemy() -> discord.Embed:
     """Cards sources alchemy guide"""
     beginner_potions = (
         f'{emojis.POTION_BANANA} Banana Potion: {emojis.CARD_COMMON} common\n'
-        f'{emojis.POTION_INVERTED} Inverted Potion: TBA\n'
-        f'{emojis.POTION_MONSTER} Monster Potion: TBA\n'
+        f'{emojis.POTION_INVERTED} Inverted Potion: {emojis.CARD_COMMON} common\n'
         f'{emojis.POTION_POTION} Potion Potion: {emojis.CARD_COMMON} common\n'
-        f'{emojis.POTION_SMOL} Smol Potion: {emojis.CARD_UNCOMMON} uncommon\n'
         f'{emojis.POTION_TRIPLE} Triple Potion: {emojis.CARD_COMMON} common\n'
+        f'{emojis.POTION_MONSTER} Monster Potion: {emojis.CARD_UNCOMMON} uncommon\n'
+        f'{emojis.POTION_SMOL} Smol Potion: {emojis.CARD_UNCOMMON} uncommon\n'
     )
     simple_potions = (
-        f'{emojis.POTION_FISH} Fish Potion: {emojis.CARD_RARE} rare\n'
-        f'{emojis.POTION_FLASK} Flask Potion: {emojis.CARD_RARE} rare\n'
         f'{emojis.POTION_JUICE} Juice Potion: {emojis.CARD_UNCOMMON} uncommon\n'
         f'{emojis.POTION_LIQUID_HAIR} Liquid Hair Potion: {emojis.CARD_UNCOMMON} uncommon\n'
-        f'{emojis.POTION_P2W} P2W Potion: TBA\n'
+        f'{emojis.POTION_FISH} Fish Potion: {emojis.CARD_RARE} rare\n'
+        f'{emojis.POTION_FLASK} Flask Potion: {emojis.CARD_RARE} rare\n'
+        f'{emojis.POTION_P2W} P2W Potion: {emojis.CARD_RARE} rare\n'
         f'{emojis.POTION_WOOD} Wood Potion: {emojis.CARD_RARE} rare\n'        
     )
     advanced_potions = (
         f'{emojis.POTION_COOKIE} Cookie Potion: {emojis.CARD_EPIC} EPIC\n'
         f'{emojis.POTION_DRAGON_BREATH} Dragon Breath Potion: {emojis.CARD_EPIC} EPIC\n'
-        f'{emojis.POTION_ELECTRONICAL} Electronical potion: TBA\n'
+        f'{emojis.POTION_ELECTRONICAL} Electronical potion: {emojis.CARD_EPIC} EPIC\n'
         f'{emojis.POTION_LOOTBOX} Lootbox potion: {emojis.CARD_EPIC} EPIC\n'
     )
     endgame_potions = (
         f'{emojis.POTION_JUMPY} Jumpy potion: {emojis.CARD_GODLY} GODLY\n'
         f'{emojis.POTION_KING} King potion: {emojis.CARD_GODLY} GODLY\n'
         f'{emojis.POTION_TIME} TIME potion: {emojis.CARD_GODLY} GODLY\n'
-        f'{emojis.POTION_VOID} VOID potion: TBA\n'
+        f'{emojis.POTION_VOID} VOID potion: {emojis.CARD_GODLY} GODLY\n'
     )
     pets = (
         f'{emojis.BP} ?\n'
@@ -328,15 +330,15 @@ async def embed_cards_hand_winning_hands() -> discord.Embed:
         f'{emojis.BP} **Base rewards**: '
         f'250 {emojis.TIME_COOKIE} + 4 {emojis.LB_OMEGA} + 14 {emojis.FLASK} + 3 {emojis.CARD_ROUND}\n'
     )
-    game_of_kings = (
-        f'{emojis.BP} **Winning condition**\n'
-        f'{emojis.DETAIL} You have 2 Kings and 2 Queens\n'
-        f'{emojis.BP} **Base rewards**: '
-        f'175 {emojis.TIME_COOKIE} + 3 {emojis.LB_OMEGA} + 12 {emojis.FLASK} + 3 {emojis.CARD_ROUND}\n'
-    )
     full_house = (
         f'{emojis.BP} **Winning condition**\n'
         f'{emojis.DETAIL} 3 cards are of one rank + 2 cards are of another rank\n'
+        f'{emojis.BP} **Base rewards**: '
+        f'160 {emojis.TIME_COOKIE} + 3 {emojis.LB_OMEGA} + 12 {emojis.FLASK} + 3 {emojis.CARD_ROUND}\n'
+    )
+    game_of_kings = (
+        f'{emojis.BP} **Winning condition**\n'
+        f'{emojis.DETAIL} You have 2 Kings and 2 Queens\n'
         f'{emojis.BP} **Base rewards**: '
         f'140 {emojis.TIME_COOKIE} + 3 {emojis.LB_OMEGA} + 10 {emojis.FLASK} + 2 {emojis.CARD_ROUND}\n'
     )
@@ -398,8 +400,8 @@ async def embed_cards_hand_winning_hands() -> discord.Embed:
     embed.add_field(name='ACE GALA', value=ace_gala, inline=False)
     embed.add_field(name='STRAIGHT FLUSH', value=straight_flush, inline=False)
     embed.add_field(name='FOUR OF A KIND', value=four_of_a_kind, inline=False)
-    embed.add_field(name='GAME OF KINGS', value=game_of_kings, inline=False)
     embed.add_field(name='FULL HOUSE', value=full_house, inline=False)
+    embed.add_field(name='GAME OF KINGS', value=game_of_kings, inline=False)
     embed.add_field(name='FLUSH', value=flush, inline=False)
     embed.add_field(name='UNBREAKABLE FORTRESS', value=unbreakable_fortress, inline=False)
     embed.add_field(name='STRAIGHT', value=straight, inline=False)

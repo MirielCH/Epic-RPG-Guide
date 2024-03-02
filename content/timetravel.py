@@ -34,7 +34,7 @@ TOPICS_SCORE = [
 # --- Calculator options ---
 INVENTORY_CURRENT = 'Calculate as is'
 INVENTORY_TRADE_A15 = 'Trade to A15 rubies'
-INVENTORY_TRADE_A16 = 'Trade to A16+ rubies'
+INVENTORY_TRADE_A16 = 'Trade to A16+/TOP rubies'
 
 TJ_CALCULATOR_INVENTORY = [
     INVENTORY_CURRENT,
@@ -241,6 +241,7 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Guild rings\n'
         f'{emojis.BP} Legendary toothbrushes\n'
         f'{emojis.BP} Magic chairs\n'
+        f'{emojis.BP} Mega boosts\n'
         f'{emojis.BP} Profession levels\n'
         f'{emojis.BP} OMEGA horse tokens\n'
         f'{emojis.BP} Party poppers\n'
@@ -360,6 +361,11 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
             f'{unlocks.strip()}\n'
             f'{emojis.BP} Higher chance to get `+1` tier in {strings.SLASH_COMMANDS_EPIC_RPG["horse breeding"]} and '
             f'{strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]} (chance unknown)\n'
+        )
+    if tt.tt >= 50:
+        unlocks = (
+            f'{unlocks.strip()}\n'
+            f'{emojis.BP} Unlocks ability to sell gear below GODLY without confirmation\n'
         )
     coin_cap = f'`{pow(tt.tt, 4) * 500_000_000:,}`' if tt.tt > 0 else '`100,000` - `14,400,000`'
     field_coin_cap = (

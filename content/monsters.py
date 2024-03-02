@@ -227,6 +227,7 @@ async def embed_monster_drops() -> discord.Embed:
         f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
         f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
         f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+        f'{emojis.BP} {emojis.MEGA_BOOST} `Mega boost`: +`10`% chance\n'
         f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
     )
     field_artifacts = (
@@ -251,6 +252,6 @@ async def embed_monster_drops() -> discord.Embed:
     embed.add_field(name=f'DARK ENERGY {emojis.DARK_ENERGY}', value=dark_energy, inline=True)
     embed.add_field(name=f'EPIC BERRY {emojis.EPIC_BERRY}', value=epic_berry, inline=True)
     embed.add_field(name='DROP CHANCE', value=chance, inline=False)
-    embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
+    embed.add_field(name='BOOSTS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
     embed.add_field(name='ARTIFACTS THAT INCREASE DROP CHANCE', value=field_artifacts, inline=False)
     return embed

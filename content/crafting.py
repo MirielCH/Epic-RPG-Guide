@@ -372,8 +372,8 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
         else:
             horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
     elif drop_type == DROP_LOOTBOX:
-        base_chance = 2
-        base_chance_adv = 10
+        base_chance = 3
+        base_chance_adv = 15
         drop_description = (
             f'**Lootboxes**'
         )
@@ -383,7 +383,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             horse_chance = strings.HORSE_MULTIPLIER_LOOTBOX[horse_data['tier']]
             
     else:
-        base_chance = 4
+        base_chance = 7
         drop_description = (
             f'**Normal drops** {emojis.WOLF_SKIN}{emojis.ZOMBIE_EYE}{emojis.UNICORN_HORN}{emojis.MERMAID_HAIR}'
             f'{emojis.CHIP}{emojis.DRAGON_SCALE}'
@@ -481,6 +481,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} {emojis.POTION_LOOTBOX} `Lootbox potion`: +`35`% chance\n'
             f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
             f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`10`% chance\n'
+            f'{emojis.BP} {emojis.MEGA_BOOST} `Mega boost`: +`10`% chance\n'
         )
         field_artifacts = (
             f'{emojis.BP} {emojis.ARTIFACT_CLAUS_BELT} `Claus belt`: +`5`% chance\n'
@@ -490,6 +491,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             f'{emojis.BP} {emojis.POTION_VOID} `VOID potion`: +`50`% chance\n'
             f'{emojis.BP} {emojis.POTION_MONSTER} `Monster potion`: +`30`% chance\n'
             f'{emojis.BP} {emojis.POTION_ELECTRONICAL} `Electronical potion`: +`20`% chance\n'
+            f'{emojis.BP} {emojis.MEGA_BOOST} `Mega boost`: +`10`% chance\n'
             f'{emojis.BP} {emojis.POTION_DRAGON_BREATH} `Dragon breath potion`: +`5`% chance\n'
         )
         field_artifacts = (
@@ -497,6 +499,6 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
         )
 
     embed.add_field(name='NOTE', value=field_encounter_chance, inline=False)
-    embed.add_field(name='POTIONS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
+    embed.add_field(name='BOOSTS THAT INCREASE DROP CHANCE', value=field_boosts, inline=False)
     embed.add_field(name='ARTIFACTS THAT INCREASE DROP CHANCE', value=field_artifacts, inline=False)
     return embed

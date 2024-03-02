@@ -274,9 +274,9 @@ async def embed_tasks() -> discord.Embed:
     """Tasks embed"""
     guild_tasks_1 = (
         f'{emojis.BP} Answer `16/40/80` EPIC guard questions correctly\n'
-        f'{emojis.BP} Chop `48/120/240` MEGA logs\n'
+        f'{emojis.BP} Chop `32/80/160` MEGA logs\n'
         f'{emojis.BP} Complete `6/15/30` dungeons\n'
-        f'{emojis.BP} Craft `12/30/60` swords or armors\n'
+        f'{emojis.BP} Craft `8/20/40` swords or armors\n'
         f'{emojis.BP} Collect `800/2,000/4,000` profession XP\n'
         f'{emojis.BP} Complete `8/20/40` quests\n'
         f'{emojis.BP} Cook `30/75/150` recipes\n'
@@ -285,12 +285,12 @@ async def embed_tasks() -> discord.Embed:
         f'{emojis.BP} Drop `40/100/200` monster items\n'
     )
     guild_tasks_2 = (
-        f'{emojis.BP} Fish `6/15/30` EPIC fish\n'
+        f'{emojis.BP} Fish `4/10/20` EPIC fish\n'
         f'{emojis.BP} Gain `16/40/80` levels (outside random events)\n'
         f'{emojis.BP} Hunt `32/800/1,600` times\n'
         f'{emojis.BP} Obtain `20/50/100` special seeds\n'
         f'{emojis.BP} Open `72/180/360` lootboxes\n'
-        f'{emojis.BP} Pick up `48/120/240` bananas\n'
+        f'{emojis.BP} Pick up `32/80/160` bananas\n'
         f'{emojis.BP} Raid `4/10/20` other guilds\n'
         f'{emojis.BP} Trigger or start `12/30/60` random events\n'
         f'{emojis.BP} Vote for the bot `10/25/50` times\n'

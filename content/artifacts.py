@@ -8,6 +8,7 @@ from resources import emojis, functions, settings, strings, views
 # --- Topics ---
 TOPIC_OVERVIEW = 'Overview'
 TOPIC_ARTIFACTS_SOURCE_SUMMARY = 'Source summary'
+TOPIC_ARTIFACTS_CHOCOLATE_BOX = 'Chocolate box'
 TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
 TOPIC_ARTIFACTS_COIN_RING = 'Coin ring'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
@@ -19,13 +20,14 @@ TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
 TOPICS_ARTIFACTS = [
     TOPIC_OVERVIEW,
     TOPIC_ARTIFACTS_SOURCE_SUMMARY,
+    TOPIC_ARTIFACTS_CHOCOLATE_BOX,
     TOPIC_ARTIFACTS_CLAUS_BELT,
     TOPIC_ARTIFACTS_COIN_RING,
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
-    TOPIC_ARTIFACTS_VAMPIRE_TEETH,
     TOPIC_ARTIFACTS_TOP_HAT,
+    TOPIC_ARTIFACTS_VAMPIRE_TEETH,
 ]
 
 
@@ -35,6 +37,7 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
     topics_functions = {
         TOPIC_OVERVIEW: embed_artifacts_overview,
         TOPIC_ARTIFACTS_SOURCE_SUMMARY: embed_artifacts_source_summary,
+        TOPIC_ARTIFACTS_CHOCOLATE_BOX: embed_artifacts_chocolate_box,
         TOPIC_ARTIFACTS_CLAUS_BELT: embed_artifacts_claus_belt,
         TOPIC_ARTIFACTS_COIN_RING: embed_artifacts_coin_ring,
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
@@ -109,6 +112,28 @@ async def embed_artifacts_top_hat() -> discord.Embed:
     )
     embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='POSSIBLE DAILY TRADES', value=possible_trades, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
+async def embed_artifacts_chocolate_box() -> discord.Embed:
+    """Chocolate box guide"""
+    effects = (
+        f'{emojis.BP} Doubles rewards from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
+        f'{emojis.BP} Reduces {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} cooldown by `2`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love slots"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_CHOCOLATE_BOX_PART_C} `Part C` • Drops from buying items in the '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'CHOCOLATE BOX {emojis.ARTIFACT_CHOCOLATE_BOX}',
+        description = 'This artifact is only available during the valentine event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed
 
@@ -239,6 +264,7 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed
 
+
 async def embed_artifacts_vampire_teeth() -> discord.Embed:
     """Vampire teeth guide"""
     effects = (
@@ -265,6 +291,12 @@ async def embed_artifacts_vampire_teeth() -> discord.Embed:
 
 async def embed_artifacts_source_summary() -> discord.Embed:
     """Artifacts sources"""
+    chocolate_box = (
+        f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
+        f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love slots"]}\n'
+        f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_C} `Part C` • Drops from buying items in the '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
+    )
     claus_belt = (
         f'{emojis.ARTIFACT_CLAUS_BELT_PART_A} `Part A` • Drops from beating the area 0 dungeon\n'
         f'{emojis.ARTIFACT_CLAUS_BELT_PART_B} `Part B` • Drops from opening presents\n'
@@ -311,6 +343,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         color = settings.EMBED_COLOR,
         title = 'ARTIFACT SOURCES',
     )
+    embed.add_field(name=f'CHOCOLATE BOX {emojis.ARTIFACT_CHOCOLATE_BOX}', value=chocolate_box, inline=False)
     embed.add_field(name=f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}', value=claus_belt, inline=False)
     embed.add_field(name=f'COIN RING {emojis.ARTIFACT_COIN_RING}', value=coin_ring, inline=False)
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
