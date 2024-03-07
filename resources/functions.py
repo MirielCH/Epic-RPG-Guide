@@ -206,6 +206,11 @@ async def design_field_rec_gear(dungeon: database.Dungeon) -> str:
             f'{field_value}\n{emojis.BP} {dungeon.player_armor.emoji} {dungeon.player_armor.name} '
             f'{player_armor_enchant}'
         )
+    if 16 <= dungeon.dungeon_no <= 20:
+        field_value = (
+            f'{field_value}\n{emojis.BP} {emojis.HORSE_T10} T10 L105+ horse [MAGIC]'
+        )
+        
 
     if field_value == '': field_value = None
     return field_value
@@ -232,11 +237,6 @@ async def design_field_rec_stats(dungeon: database.Dungeon, short_version: bool 
         f'{emojis.BP} {emojis.STAT_LIFE} **LIFE**: {player_life}\n'
         f'{emojis.BP} {emojis.STAT_LEVEL} **LEVEL**: {player_level}'
     )
-    if 16 <= dungeon.dungeon_no <= 20:
-        field_value = (
-            f'{field_value}\n'
-            f'{emojis.BP} _To be balanced!_'
-        )
 
     return field_value
 

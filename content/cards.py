@@ -194,9 +194,6 @@ async def embed_cards_drops_alchemy() -> discord.Embed:
         f'{emojis.POTION_TIME} TIME potion: {emojis.CARD_GODLY} GODLY\n'
         f'{emojis.POTION_VOID} VOID potion: {emojis.CARD_GODLY} GODLY\n'
     )
-    pets = (
-        f'{emojis.BP} ?\n'
-    )
     note = (
         f'{emojis.BP} Every source can drop exactly **once**\n'
         f'{emojis.BP} The drop rate is **not** affected by TT and hardmode (or anything else)\n'

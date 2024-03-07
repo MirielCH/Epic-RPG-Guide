@@ -216,48 +216,73 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
                 user_life_check_result = 'fail'
         elif user_life >= dungeon.player_life:
             user_life_check_result = 'pass'
+            
+    elif 16 <= dungeon_no <= 20:
+        if not dungeon.player_at == 0:
+            if user_at < dungeon.player_at:
+                user_at_check_result = 'fail'
+            else:
+                user_at_check_result = 'pass'
+        else:
+            check_at = f'{emojis.CHECK_IGNORE} **AT**: -'
+
+        if not dungeon.player_def == 0:
+            if user_def < dungeon.player_def:
+                user_def_check_result = 'fail'
+            elif user_def >= dungeon.player_def:
+                user_def_check_result = 'pass'
+        else:
+            check_def = f'{emojis.CHECK_IGNORE} **DEF**: -'
+
+        if not dungeon.player_life == 0:
+            if user_life < dungeon.player_life:
+                user_life_check_result = 'fail'
+            else:
+                user_life_check_result = 'pass'
+        else:
+            check_life = f'{emojis.CHECK_IGNORE} **LIFE**: -'
 
     if user_at_check_result == 'pass':
-        check_at = f'{emojis.CHECK_OK} **AT**: {dungeon.player_at}'
+        check_at = f'{emojis.CHECK_OK} **AT**: {dungeon.player_at:,}'
     elif user_at_check_result == 'warn':
-        check_at = f'{emojis.CHECK_WARN} **AT**: {dungeon.player_at}'
+        check_at = f'{emojis.CHECK_WARN} **AT**: {dungeon.player_at:,}'
     elif user_at_check_result == 'fail':
-        check_at = f'{emojis.CHECK_FAIL} **AT**: {dungeon.player_at}'
+        check_at = f'{emojis.CHECK_FAIL} **AT**: {dungeon.player_at:,}'
     elif user_at_check_result == 'ignore':
-        check_at = f'{emojis.CHECK_IGNORE} **AT**: {dungeon.player_at}'
+        check_at = f'{emojis.CHECK_IGNORE} **AT**: {dungeon.player_at:,}'
 
     if user_def_check_result == 'pass':
-        check_def = f'{emojis.CHECK_OK} **DEF**: {dungeon.player_def}'
+        check_def = f'{emojis.CHECK_OK} **DEF**: {dungeon.player_def:,}'
     elif user_def_check_result == 'warn':
-        check_def = f'{emojis.CHECK_WARN} **DEF**: {dungeon.player_def}'
+        check_def = f'{emojis.CHECK_WARN} **DEF**: {dungeon.player_def:,}'
     elif user_def_check_result == 'fail':
-        check_def = f'{emojis.CHECK_FAIL} **DEF**: {dungeon.player_def}'
+        check_def = f'{emojis.CHECK_FAIL} **DEF**: {dungeon.player_def:,}'
     elif user_def_check_result == 'ignore':
-        check_def = f'{emojis.CHECK_IGNORE} **DEF**: {dungeon.player_def}'
+        check_def = f'{emojis.CHECK_IGNORE} **DEF**: {dungeon.player_def:,}'
 
     if user_carry_def_check_result == 'pass':
-        check_carry_def = f'{emojis.CHECK_OK} **Carry DEF**: {dungeon.player_carry_def}'
+        check_carry_def = f'{emojis.CHECK_OK} **Carry DEF**: {dungeon.player_carry_def:,}'
     elif user_carry_def_check_result == 'warn':
-        check_carry_def = f'{emojis.CHECK_WARN} **Carry DEF**: {dungeon.player_carry_def}'
+        check_carry_def = f'{emojis.CHECK_WARN} **Carry DEF**: {dungeon.player_carry_def:,}'
     elif user_carry_def_check_result == 'fail':
-        check_carry_def = f'{emojis.CHECK_FAIL} **Carry DEF**: {dungeon.player_carry_def}'
+        check_carry_def = f'{emojis.CHECK_FAIL} **Carry DEF**: {dungeon.player_carry_def:,}'
     elif user_carry_def_check_result == 'ignore':
-        check_carry_def = f'{emojis.CHECK_IGNORE} **Carry DEF**: {dungeon.player_carry_def}'
+        check_carry_def = f'{emojis.CHECK_IGNORE} **Carry DEF**: {dungeon.player_carry_def:,}'
 
     if user_life_check_result == 'pass':
-        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life}'
+        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life:,}'
     elif user_life_check_result == 'passA':
-        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life} • {emojis.LIFE_BOOST}**A**'
+        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life:,} • {emojis.LIFE_BOOST}**A**'
     elif user_life_check_result == 'passB':
-        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life} • {emojis.LIFE_BOOST}**B**'
+        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life:,} • {emojis.LIFE_BOOST}**B**'
     elif user_life_check_result == 'passC':
-        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life} • {emojis.LIFE_BOOST}**C**'
+        check_life = f'{emojis.CHECK_OK} **LIFE**: {dungeon.player_life:,} • {emojis.LIFE_BOOST}**C**'
     elif user_life_check_result == 'warn':
-        check_life = f'{emojis.CHECK_WARN} **LIFE**: {dungeon.player_life}'
+        check_life = f'{emojis.CHECK_WARN} **LIFE**: {dungeon.player_life:,}'
     elif user_life_check_result == 'fail':
-        check_life = f'{emojis.CHECK_FAIL} **LIFE**: {dungeon.player_life}'
+        check_life = f'{emojis.CHECK_FAIL} **LIFE**: {dungeon.player_life:,}'
     elif user_life_check_result == 'ignore':
-        check_life = f'{emojis.CHECK_IGNORE} **LIFE**: {dungeon.player_life}'
+        check_life = f'{emojis.CHECK_IGNORE} **LIFE**: {dungeon.player_life:,}'
 
     field_value = ''
     if not check_at == 'N/A':
@@ -270,7 +295,7 @@ async def design_field_dungeon_check(dungeon_no: float, user_at: int, user_def: 
         field_value =   f'{field_value}\n{emojis.BP} {check_life}'
     field_value = field_value.strip()
     if field_value == '':
-        if dungeon_no <= 15.2:
+        if dungeon_no <= 15.2 or dungeon_no == 21:
             field_value = f'{emojis.BP} Stats irrelevant'
         else:
             field_value = f'{emojis.BP} Stats unknown'
@@ -497,21 +522,22 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
     player_amount = f'{emojis.BP} {dungeon.player_amount[0]}'
     if dungeon.player_amount[0] != dungeon.player_amount[1]:
         player_amount = f'{player_amount}-{dungeon.player_amount[1]}'
-    if dungeon.player_amount in ((1,1),(2,2)):
-        boss_life = '-' if boss_life is None else f'{boss_life:,}'
-    else:
-        boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
-    boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
     if 16 <= dungeon_no <= 20:
+        boss_life = '-' if boss_life is None else f'{boss_life:,}'
         boss_at = 'Unknown'
-        boss_life = 'Unknown'
+    else:
+        if dungeon.player_amount in ((1,1),(2,2)):
+            boss_life = '-' if boss_life is None else f'{boss_life:,}'
+        else:
+            boss_life = '-' if boss_life is None else f'{boss_life:,} per player'
+        boss_at = '-' if dungeon.boss_at is None else f'~{dungeon.boss_at:,}'
     if dungeon_no == 14: boss_life = f'2x {boss_life}'
 
     # Key price
     if dungeon.key_price is not None:
         key_price = f'{dungeon.key_price:,} coins'
     else:
-        if dungeon_no != 21:
+        if dungeon_no < 16:
             key_price = f'You can only enter this dungeon with a {emojis.HORSE_T6} T6+ horse'
 
     # Requirements
@@ -521,7 +547,8 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         requirements = f'{emojis.BP} {emojis.DUNGEON_KEY_10} Dungeon key **OR** {emojis.HORSE_T6} T6+ horse'
     elif dungeon_no == 21:
         requirements = f'{emojis.BP} {emojis.HORSE_T9} T9+ horse (T10 recommended)'
-
+    elif 16 <= dungeon_no <= 20:
+        requirements = f'{emojis.BP} {emojis.HORSE_T10} T10 horse'
     else:
         requirements = f'{emojis.BP} {emojis.HORSE_T6} T6+ horse'
     if dungeon_no in (10, 11, 13, 15, 15.2):
@@ -590,13 +617,6 @@ async def embed_dungeon_guide(dungeon_no: float) -> Tuple[discord.File, discord.
         strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.1'
     elif dungeon_no == 15.2:
         strategy = f'{emojis.BP} https://epic-rpg.fandom.com/wiki/Dungeon_15.2'
-    elif 16 <= dungeon_no <= 19:
-        strategy = f'{emojis.BP} Use `power`'
-    elif dungeon_no == 20:
-        strategy = (
-            f'{emojis.BP} Use `power` if you can survive the damage\n'
-            f'{emojis.BP} Use `sacrifice` if you are about to die'
-        )
 
     # Tips
     if dungeon_no == 11:

@@ -376,11 +376,10 @@ async def embed_alchemy_endgame() -> discord.Embed:
     potion_time = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL} You keep `7.5`% of the items in your inventory when time traveling\n'
-        f'{emojis.BP} **Duration**: `5`m\n'
-        f'{emojis.DETAIL} Only brew this potion right before you time travel!\n'
+        f'{emojis.BP} **Duration**: `42`y or until you time travel\n'
         f'{emojis.BP} **Recipe**: `1` {emojis.FLASK} + `42` {emojis.TIME_COOKIE}\n'
         f'{emojis.BP} **Possible use**\n'
-        f'{emojis.DETAIL} Use right before TT to trade TIME cookies for more materials\n'
+        f'{emojis.DETAIL} Use before TT to trade TIME cookies for more materials\n'
     )
     potion_void = (
         f'{emojis.BP} **Boosts**\n'
