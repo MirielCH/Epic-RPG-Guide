@@ -24,7 +24,7 @@ class SettingsCog(commands.Cog):
     async def set_progress(
         self,
         ctx: discord.ApplicationContext,
-        timetravel: Option(int, 'Your current TT', min_value=0, max_value=9999),
+        timetravel: Option(int, 'Your current TT', min_value=0, max_value=999999),
         ascension: Option(str, 'Your current ascension', choices=settings_content.CHOICES_ASCENSION)
     ) -> None:
         """Sets user progress settings"""

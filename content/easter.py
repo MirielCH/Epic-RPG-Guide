@@ -10,11 +10,13 @@ from resources import emojis, settings, functions, strings, views
 TOPIC_BUNNY = 'Bunny event'
 TOPIC_BUNNY_BOSS = 'Bunny boss event'
 TOPIC_OVERVIEW = 'Overview'
+TOPIC_BUNNY_MASK = 'Bunny mask artifact'
 
 TOPICS = [
     TOPIC_OVERVIEW,
     TOPIC_BUNNY,
     TOPIC_BUNNY_BOSS,
+    TOPIC_BUNNY_MASK,
 ]
 
 
@@ -24,6 +26,7 @@ async def command_easter_guide(ctx: discord.ApplicationContext, topic: str) -> N
         TOPIC_OVERVIEW: embed_overview,
         TOPIC_BUNNY: embed_event_bunny,
         TOPIC_BUNNY_BOSS: embed_event_bunnyboss,
+        TOPIC_BUNNY_MASK: embed_bunny_mask,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -33,7 +36,7 @@ async def command_easter_guide(ctx: discord.ApplicationContext, topic: str) -> N
     try:
         await functions.edit_interaction(interaction, view=None)
     except discord.errors.NotFound:
-        pass
+        pass    
 
 
 # --- Embeds ---
@@ -50,6 +53,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} See topic `Bunny boss event` for details.\n'
         f'{emojis.BP} Summon the {emojis.EASTER_BUNNY_GOD} **bunny god** with {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]} '
         f'to make powerful wishes\n'
+        f'{emojis.BP} Find the {emojis.ARTIFACT_BUNNY_MASK} bunny mask artifact (see topic `Bunny mask`)\n'
         f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["egg quest"]} to get the '
         f'{emojis.PET_GOLDEN_BUNNY} golden bunny pet\n'
         f'{emojis.BP} Gamble all your eggs away with {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}'
@@ -72,9 +76,9 @@ async def embed_overview() -> discord.Embed:
     titles = (
         f'{emojis.BP} **Eggspert player** (bought in {strings.SLASH_COMMANDS_EPIC_RPG["egg shop"]})\n'
         f'{emojis.BP} **this is the best title** (Reward from the {strings.SLASH_COMMANDS_EPIC_RPG["egg quest"]})\n'
-        f'{emojis.BP} **egg** (Achievement #199)\n'
-        f'{emojis.BP} **Egg slayer** (Achievement #200)\n'
-        f'{emojis.BP} **jumping fren** (Achievement #201)\n'
+        f'{emojis.BP} **egg** (Achievement #213)\n'
+        f'{emojis.BP} **Egg slayer** (Achievement #214)\n'
+        f'{emojis.BP} **jumping fren** (Achievement #215)\n'
     )
     boost_easter = (
         f'{emojis.BP} **Boosts**\n'
@@ -106,14 +110,14 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} See topic `Bunny event` for details.\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on April 4, 2023\n'
-        f'{emojis.BP} Event ended on April 23, 2023, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on April 30, 2023, 23:55 UTC'
+        f'{emojis.BP} Event started on March 25, 2024\n'
+        f'{emojis.BP} Event will end on April 14, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on April 21, 2024, 23:55 UTC'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'EASTER EVENT 2023 {emojis.EASTER_EGG_ROUND}',
-        description = 'The eggs now come in different shapes!'
+        title = f'EASTER EVENT 2024 {emojis.EASTER_EGG_ROUND}',
+        description = 'These are some weird eggs'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
@@ -205,4 +209,25 @@ async def embed_event_bunnyboss() -> discord.Embed:
     embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
     embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_bunny_mask() -> discord.Embed:
+    """Bunny mask artifact embed"""
+    effects = (
+        f'{emojis.BP} You get 1 round egg back after summoning the {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+        f'{emojis.BP} Increases chance to encounter pets in {strings.SLASH_COMMANDS_EPIC_RPG["training"]} by `10`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg eat"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}\n'
+        f'{emojis.BP} {emojis.BLANK} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'BUNNY MASK {emojis.ARTIFACT_BUNNY_MASK}',
+        description = 'This artifact is only available during the easter event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed

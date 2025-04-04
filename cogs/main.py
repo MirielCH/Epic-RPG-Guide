@@ -117,8 +117,6 @@ class MainCog(commands.Cog):
         startup_info = f'{self.bot.user.name} has connected to Discord!'
         print(startup_info)
         logs.logger.info(startup_info)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
-                                                                 name='your questions'))
         if not self.update_stats.is_running(): await self.update_stats.start()
 
     @commands.Cog.listener()

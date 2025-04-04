@@ -11,6 +11,7 @@ TOPIC_OVERVIEW = 'Overview'
 TOPIC_TLDR_GUIDE = 'TL;DR guide'
 TOPIC_CHRISTMAS_AREA = 'Christmas area'
 TOPIC_CLAUS_BELT = 'Claus belt artifact'
+TOPIC_HELLISHRISHMAS_STAR = 'The Hellishrishmas Star'
 TOPIC_SANTEVIL = 'SANTEVIL event'
 TOPIC_SNOWBALL = 'Snowball event'
 
@@ -19,6 +20,7 @@ TOPICS = [
     TOPIC_TLDR_GUIDE,
     TOPIC_CHRISTMAS_AREA,
     TOPIC_CLAUS_BELT,
+    TOPIC_HELLISHRISHMAS_STAR,
     TOPIC_SANTEVIL,
     TOPIC_SNOWBALL,
 ]
@@ -85,6 +87,7 @@ async def command_xmas_guide(ctx: discord.ApplicationContext, topic: str) -> Non
         TOPIC_TLDR_GUIDE: embed_tldr_guide,
         TOPIC_CHRISTMAS_AREA: embed_christmas_area,
         TOPIC_CLAUS_BELT: embed_claus_belt,
+        TOPIC_HELLISHRISHMAS_STAR: embed_hellishrishmas_star,
         TOPIC_SANTEVIL: embed_santevil,
         TOPIC_SNOWBALL: embed_snowball,
     }
@@ -157,6 +160,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Decorate a {strings.SLASH_COMMANDS_EPIC_RPG["xmas tree"]}\n'
         f'{emojis.BP} Get into a snowball fight (see topic `Snowball event`)\n'
         f'{emojis.BP} Encounter the rare SANTEVIL (see topic `SANTEVIL event`)\n'
+        f'{emojis.BP} Encounter the very rare HELLISHRISHMAS STAR (see topic `The Hellishrishmas Star`)\n'
         f'{emojis.BP} Buy rewards in the {strings.SLASH_COMMANDS_EPIC_RPG["xmas shop"]}\n'
     )
     pets = (
@@ -186,15 +190,15 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} **Duration**: `4`h\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on December 1, 2023\n'
+        f'{emojis.BP} Event started on December 1, 2024\n'
         #f'{emojis.DETAIL} World boss starts later on December 5, 2023\n'
-        f'{emojis.BP} Event ends on January 5, 2024, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on January 12, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Event ends on January 5, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on January 12, 2025, 23:55 UTC\n'
         f'{emojis.DETAIL} Exception: {emojis.TIME_COOKIE} TIME cookies do not vanish'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'CHRISTMAS EVENT 2023 {emojis.XMAS_TREE}',
+        title = f'CHRISTMAS EVENT 2024 {emojis.XMAS_TREE}',
         description = (
             f'[Merry Christmas](https://www.youtube.com/watch?v=ask1B-m26aU)'
         )
@@ -239,6 +243,37 @@ async def embed_christmas_area() -> discord.Embed:
     embed.add_field(name='HOW TO ACCESS', value=requirements, inline=False)
     embed.add_field(name='DIFFERENCES TO NORMAL AREAS', value=differences, inline=False)
     embed.add_field(name='CHRISTMAS DUNGEON', value=dungeon, inline=False)
+    return embed
+
+
+async def embed_hellishrishmas_star() -> discord.Embed:
+    """The Hellishrishmas Star"""
+    description = (
+        f'{emojis.BP} Spawns randomly in all servers on a specific cluster\n'
+        f'{emojis.DETAIL2} There are 32 clusters in total\n'
+        f'{emojis.DETAIL} Use `rpg info` to check which cluster you are on\n'
+        f'{emojis.BP} You will get rare random hints on which cluster it will spawn next\n'
+        f'{emojis.BP} To change to another cluster, you need to find and join a server that is on the cluster you want\n'
+        f'{emojis.BP} For more details check `rpg xmas info bosses`\n'
+    )
+    how_to_join = (
+        f'{emojis.BP} Type `for santa` to join the event\n'
+        f'{emojis.BP} Up to `200` players can join\n'
+    )
+    rewards = (
+        f'{emojis.BP} Your christmas tree rewards are multiplied by `1.5`\n'
+        f'{emojis.BP} This is a **one time** reward that does **not** stack\n'
+        f'{emojis.DETAIL} Therefore there is no point in doing it more than once\n'
+        
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'THE HELLISHRISHMAS STAR {emojis.HELLISHRISHMAS_STAR}',
+        description = 'An event with questionable mechanics.'
+    )
+    embed.add_field(name='DESCRIPTION', value=description, inline=False)
+    embed.add_field(name='HOW TO JOIN THE EVENT', value=how_to_join, inline=False)
+    embed.add_field(name='REWARDS', value=rewards, inline=False)
     return embed
 
 

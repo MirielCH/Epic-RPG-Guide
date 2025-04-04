@@ -40,9 +40,11 @@ async def embed_valentine_guide() -> discord.Embed:
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["love share"]} to get {emojis.COIN_LOVE} love coins\n'
         f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["love quest"]} to get a '
         f'{emojis.PET_PINK_FISH} pink fish pet\n'
+        f'{emojis.DETAIL} Tip: Gamble in batches of `67` to complete the slots quest.\n'
         f'{emojis.BP} Find the {emojis.ARTIFACT_CHOCOLATE_BOX} chocolate box artifact (see topic `Chocolate box`)\n'
         f'{emojis.BP} Kill the rare {emojis.MOB_PINK_WOLF} pink wolf in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'to get extra coins\n'
+        f'{emojis.BP} Use `flirt` in dungeons 1~9\n'
         f'{emojis.BP} Buy various rewards in the {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
         f'{emojis.BP} Gamble all your love coins away with {strings.SLASH_COMMANDS_EPIC_RPG["love slots"]}\n'
     )
@@ -66,15 +68,22 @@ async def embed_valentine_guide() -> discord.Embed:
         f'{emojis.BP} You need at least 1 {emojis.LIFE_POTION} life potion in your inventory\n'
         f'{emojis.BP} This command has the same cooldown as {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
     )
+    flirt = (
+        f'{emojis.BP} In dungeons 1~9 it\'s possible to use `flirt` as an action.\n'
+        f'{emojis.BP} Type `flirt` as your action to trigger it.\n'
+        f'{emojis.BP} `70`% chance to kill the dragon and **not** use the dungeon cooldown.\n'
+        f'{emojis.BP} `30`% chance to kill the whole team and use up the dungeon cooldown.\n'
+        
+    )
     titles = (
         f'{emojis.BP} **Wood you be my valentine?** (bought in {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]})\n'
-        f'{emojis.BP} **lovely fren** (Achievement #211)\n'
-        f'{emojis.BP} **Heart broken** (Achievement #212)\n'
+        f'{emojis.BP} **lovely fren** (Achievement #220)\n'
+        f'{emojis.BP} **Heart broken** (Achievement #221)\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on February 9, 2024\n'
-        f'{emojis.BP} Event ended on February 22, 2024, 23:55 UTC\n'
-        f'{emojis.BP} Love tokens and coins can be used until February 29, 23:55 UTC\n'
+        f'{emojis.BP} Event started on February 13, 2025\n'
+        f'{emojis.BP} Event ended on February 26, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Love tokens and coins can be used until March 5, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["love share"]} after every hunt '
@@ -97,13 +106,14 @@ async def embed_valentine_guide() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'VALENTINE EVENT 2024 {emojis.COIN_LOVE}',
+        title = f'VALENTINE EVENT 2025 {emojis.COIN_LOVE}',
         description = 'Voulez-vous trinquer avec moi, ce soir ?'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='TITLES', value=titles, inline=False)
     embed.add_field(name='HOW LOVE SHARING WORKS', value=love_share, inline=False)
+    embed.add_field(name='FLIRTING WITH DRAGONS', value=flirt, inline=False)
     embed.add_field(name=f'WHAT TO DO WITH {emojis.TOKEN_LOVE} LOVE TOKENS', value=love_tokens, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='OK, BUT WHAT DOES THE VALENTINE BOOST DO?', value=boost, inline=False)

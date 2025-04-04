@@ -8,11 +8,13 @@ from resources import emojis, functions, settings, strings, views
 
 # --- Topics ---
 TOPIC_OVERVIEW = 'Overview'
+TOPIC_COWBOY_BOOTS = 'Cowboy boots artifact'
 TOPIC_MEGARACE = 'Megarace'
 TOPIC_MINIRACE = 'Minirace'
 
 TOPICS = [
     TOPIC_OVERVIEW,
+    TOPIC_COWBOY_BOOTS,
     TOPIC_MEGARACE,
     TOPIC_MINIRACE,
 ]
@@ -23,6 +25,7 @@ async def command_horse_festival_guide(ctx: discord.ApplicationContext, topic: s
     """Horse festival guide command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_overview,
+        TOPIC_COWBOY_BOOTS: embed_cowboy_boots,
         TOPIC_MEGARACE: embed_megarace,
         TOPIC_MINIRACE: embed_minirace,
     }
@@ -45,8 +48,9 @@ async def embed_overview() -> discord.Embed:
         f'{strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} and all fish command tiers\n'
         f'{emojis.BP} Get {emojis.HORSESHOE} horseshoes and {emojis.HORSESHOE_GOLDEN} golden horseshoes in the daily '
         f'and weekly {strings.SLASH_COMMANDS_EPIC_RPG["hf tasks"]}\n'
-        #f'{emojis.BP} Play in the daily **minirace** (see topic `Minirace`)\n'
+        f'{emojis.BP} Play in the daily **minirace** (see topic `Minirace`)\n'
         f'{emojis.BP} Play in the weekly {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} (see topic `Megarace`)\n'
+        f'{emojis.BP} Find the {emojis.ARTIFACT_COWBOY_BOOTS} cowboy boots artifact (see topic `Cowboy boots`)\n'
         f'{emojis.BP} Defeat the {emojis.HORSLIME} **horslime** in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'(drops 1 {emojis.OMEGA_HORSE_TOKEN} OMEGA horse token)\n'
         f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["hf quest"]} to get the {emojis.PET_PONY} pony pet\n'
@@ -59,7 +63,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} This does not affect `vote` and `guild`.\n'
     )
     whattodo = (
-        #f'{emojis.BP} Play in the minirace every day\n'
+        f'{emojis.BP} Play in the minirace every day\n'
         f'{emojis.BP} Do {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} whenever a stage is available\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]} whenever your horse cd is ready\n'
         f'{emojis.BP} Optional: Melt 1 {emojis.STEEL} and craft the {emojis.ARMOR_COWBOY}{emojis.SWORD_COWBOY} cowboy gear.\n'
@@ -75,9 +79,9 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} **this is the best title** (complete the {strings.SLASH_COMMANDS_EPIC_RPG["hf quest"]})\n'
         f'{emojis.BP} **h0w0rse** (buy in the {strings.SLASH_COMMANDS_EPIC_RPG["hf shop"]})\n'
         f'{emojis.BP} **MEGARACER** (Reach the 9th stage of a {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]})\n'
-        f'{emojis.BP} **strong fren** (Craft the horse armor - Achievement #187)\n'
-        f'{emojis.BP} **smol fren fren?** (Get the pony pet - Achievement #188)\n'
-        f'{emojis.BP} **Racer** (Complete a megarace - Achievement #189)\n'
+        f'{emojis.BP} **strong fren** (Craft the horse armor - Achievement #207)\n'
+        f'{emojis.BP} **smol fren fren?** (Get the pony pet - Achievement #208)\n'
+        f'{emojis.BP} **Racer** (Complete a megarace - Achievement #209)\n'
     )
     boost = (
         f'{emojis.BP} **Boosts**\n'
@@ -93,14 +97,14 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} `0.05`% extra chance with each cowboy item, so `0.6`% chance max\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on August 1, 2023\n'
-        f'{emojis.BP} Event ends on August 20, 2023, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on August 27, 2023, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
+        f'{emojis.BP} Event started on August 5, 2024\n'
+        f'{emojis.BP} Event ends on August 20, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on August 27, 2024, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
         f'GODLY horse token'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'HORSE FESTIVAL EVENT 2023 {emojis.HORSE_T10}',
+        title = f'HORSE FESTIVAL EVENT 2024 {emojis.HORSE_T10}',
         description = 'Neigh?'
     )
     embed.add_field(name='TL;DR GUIDE', value=whattodo, inline=False)
@@ -231,13 +235,32 @@ async def embed_minirace() -> discord.Embed:
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'MINIRACE',
-        description = 'Miniraces got cancelled.'
-        #description = 'Good luck with that background, lol.'
+        description = 'Good luck with that background, lol.'
     )
-    #embed.add_field(name='OVERVIEW', value=overview, inline=False)
-    #embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
-    #embed.add_field(name='POSSIBLE ACTIONS', value=actions, inline=False)
-    #embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
-    #embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
-    #embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
+    embed.add_field(name='OVERVIEW', value=overview, inline=False)
+    embed.add_field(name='HOW TO PLAY', value=howtoplay, inline=False)
+    embed.add_field(name='POSSIBLE ACTIONS', value=actions, inline=False)
+    embed.add_field(name='DEBUFFS', value=debuffs, inline=False)
+    embed.add_field(name='WINNING A ROUND', value=round_win, inline=False)
+    embed.add_field(name='WINNING THE TOURNAMENT', value=race_win, inline=False)
+    return embed
+
+
+async def embed_cowboy_boots() -> discord.Embed:
+    """Cowboy boots artifact embed"""
+    effects = (
+        f'{emojis.BP} Increases your luck in {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]}\n'
+        f'{emojis.BP} Increases your horse\'s chance to gain epicness when breeding by `5`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_COWBOY_BOOTS_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_COWBOY_BOOTS_PART_B} `Part B` • Drops from starting {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'COWBOY BOOTS {emojis.ARTIFACT_COWBOY_BOOTS}',
+        description = 'This artifact is only available during the horse festival event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed

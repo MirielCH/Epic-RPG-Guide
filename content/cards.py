@@ -90,6 +90,11 @@ async def embed_cards_overview() -> discord.Embed:
         f'{emojis.BP} Check `Playing card basics` for an explanation of rank and suit\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["cards deck"]} to see your current playing cards\n'
     )
+    golden_cards = (
+        f'{emojis.BP} If you win a hand and own **all 5** cards in your hand, you have a chance to golden them\n'
+        f'{emojis.BP} Golden cards increase the rewards when used in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.BP} Goldening cards requires {emojis.TIME_TRAVEL} TT `100`+\n'
+    )
     round_card = (
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} -`90`% cooldown reduction\n'
@@ -99,7 +104,7 @@ async def embed_cards_overview() -> discord.Embed:
         f'{emojis.DETAIL2} +`500`% items from work commands\n'
         f'{emojis.DETAIL2} +`200`% item rarity from work commands\n'
         f'{emojis.DETAIL2} Automatically heals you if you take damage\n'
-        f'{emojis.DETAIL} You can not use `dungeon`, `horse` and `card` commands during the boost\n'
+        f'{emojis.DETAIL} You can not use `duel`, `dungeon`, `horse` and `card` commands during the boost\n'
         f'{emojis.BP} **Duration**: `5`m\n'
         f'{emojis.BP} **Source**: {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
@@ -111,6 +116,7 @@ async def embed_cards_overview() -> discord.Embed:
     embed.add_field(name='WHAT ARE CARDS?', value=overview, inline=False)
     embed.add_field(name='SLOTTING CARDS', value=slotting_cards, inline=False)
     embed.add_field(name='PLAYING CARDS', value=playing_cards, inline=False)
+    embed.add_field(name='GOLDEN CARDS', value=golden_cards, inline=False)
     embed.add_field(name='ROUND CARD', value=round_card, inline=False)
     return embed
 
@@ -294,6 +300,12 @@ async def embed_cards_hand() -> discord.Embed:
 
 async def embed_cards_hand_winning_hands() -> discord.Embed:
     """Cards hand winning hands guide"""
+    ace_extravaganza = (
+        f'{emojis.BP} **Winning condition**\n'
+        f'{emojis.DETAIL} You have 4 Aces and 1 Joker\n'
+        f'{emojis.BP} **Base rewards**: '
+        f'10 {emojis.TIME_CAPSULE} + 5,000 {emojis.TIME_COOKIE} + 40 {emojis.CARD_ROUND}\n'
+    )
     royal_hearted_flush = (
         f'{emojis.BP} **Winning conditions**\n'
         f'{emojis.DETAIL2} You have 10, Jack, Queen, King, Ace\n'
@@ -371,7 +383,7 @@ async def embed_cards_hand_winning_hands() -> discord.Embed:
     pair = (
         f'{emojis.BP} **Winning condition**\n'
         f'{emojis.DETAIL} 2 cards are of the same rank\n'
-        f'{emojis.BP} **Base rewards**: 10 {emojis.TIME_COOKIE} + 15 {emojis.GUILD_RING} + 30 {emojis.ARENA_COOKIE}\n'
+        f'{emojis.BP} **Base rewards**: 10 {emojis.TIME_COOKIE} + 25 {emojis.GUILD_RING} + 30 {emojis.ARENA_COOKIE}\n'
     )
     random_cards = (
         f'{emojis.BP} **Winning condition**\n'
@@ -392,6 +404,7 @@ async def embed_cards_hand_winning_hands() -> discord.Embed:
         title = 'CARDS HAND: WINNING HANDS',
         description = 'These winning hands are listed in descending order by rarity / reward amount',
     )
+    embed.add_field(name='ACE EXTRAVAGANZA', value=ace_extravaganza, inline=False)
     embed.add_field(name='ROYAL HEARTED FLUSH', value=royal_hearted_flush, inline=False)
     embed.add_field(name='ROYAL FLUSH', value=royal_flush, inline=False)
     embed.add_field(name='ACE GALA', value=ace_gala, inline=False)
@@ -425,18 +438,18 @@ async def embed_cards_hand_calculations() -> discord.Embed:
     )
     card_rank = (
         f'{emojis.BP} If a winning hand is rank independent, rewards **increase** by `5`% per rank\n'
-        f'{emojis.DETAIL2} Example 1: A pair of 2s will give a `5`% increase\n'
-        f'{emojis.DETAIL} Example 2: A pair of queens will give a `55`% increase\n'
+        f'{emojis.DETAIL2} Example 1: A pair of 2s will give a `10`% increase\n'
+        f'{emojis.DETAIL} Example 2: A pair of queens will give a `60`% increase\n'
         f'{emojis.BP} If different ranks form one hand, the increase is averaged\n'
-        f'{emojis.DETAIL} Example: A full house of 2s (`5`%) and queens (`55`%) will give a `30`% increase\n'
+        f'{emojis.DETAIL} Example: A full house of 2s (`10`%) and queens (`60`%) will give a `35`% increase\n'
     )
     example = (
         f'{emojis.BP} You finish with 5, K, 5, 10, K\n'
         f'{emojis.DETAIL2} This is a two pair of 5,5 and K,K\n'
-        f'{emojis.DETAIL} Kings give +`60`% rewards, 5s give +`20`% rewards, so average is +`40`%\n'
+        f'{emojis.DETAIL} Kings give +`65`% rewards, 5s give +`25`% rewards, so average is +`45`%\n'
         f'{emojis.BP} You own 3 of the 5 cards you finished with\n'
         f'{emojis.DETAIL} This reduces rewards by `2 * 17`%, so you get `66`% of the rewards\n'
-        f'{emojis.BP} Final rewards are `[Base amount] * 1.4 * 0.66`\n'
+        f'{emojis.BP} Final rewards are `[Base amount] * 1.45 * 0.66`\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,

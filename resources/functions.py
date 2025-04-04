@@ -179,7 +179,7 @@ async def design_field_trades(area: database.Area, user: database.User) -> str:
         field_value = f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)'
     elif area.area_no == 15:
         field_value = (
-            f'{emojis.BP} Dismantle {emojis.FISH_GOLDEN} golden fish and below\n'
+            f'{emojis.BP} Dismantle {emojis.FISH_EPIC} EPIC fish and below\n'
             f'{emojis.BP} Dismantle {emojis.BANANA} bananas\n'
             f'{emojis.BP} Trade {emojis.RUBY} rubies to {emojis.LOG} logs (E)\n'
             f'{emojis.BP} Trade {emojis.FISH} fish to {emojis.LOG} logs (A)\n'
@@ -854,7 +854,7 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
     level_match = await get_match_from_patterns(search_patterns_level, pr_field.value.lower())
     xp_match = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
     try:
-        level = int(level_match.group(1))
+        level = int(level_match.group(1).replace(',',''))
         current_xp = int(xp_match.group(1).replace(',',''))
         needed_xp = int(xp_match.group(2).replace(',',''))
     except Exception as error:
@@ -905,7 +905,7 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
                 level_match = await get_match_from_patterns(search_patterns, field.name.lower())
                 try:
                     level = level_match.group(1)
-                    level = int(level)
+                    level = int(level.replace(',',''))
                 except Exception as error:
                     await database.log_error(
                         f'{profession.capitalize} data not found in profession overview message field: {str(field)}',
@@ -1081,9 +1081,9 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
         lootbox_drops_match = re.search(' lootbox drops\*\*: \+(.+?)%', line)
         profession_xp_match = re.search(' profession xp\*\*: \+(.+?)%', line)
         selling_price_match = re.search(' sell price\*\*: \+(.+?)%', line)
-        if at_match: stat_at += int(at_match.group(1).replace('.00',''))
-        if def_match: stat_def += int(def_match.group(1).replace('.00',''))
-        if life_match: stat_life += int(life_match.group(1).replace('.00',''))
+        if at_match: stat_at += int(at_match.group(1).replace('.00','').replace(',',''))
+        if def_match: stat_def += int(def_match.group(1).replace('.00','').replace(',',''))
+        if life_match: stat_life += int(life_match.group(1).replace('.00','').replace(',',''))
         if monster_drops_match: monster_drop_chance += int(monster_drops_match.group(1).replace('.00',''))
         if lootbox_drops_match: lootbox_drop_chance += int(lootbox_drops_match.group(1).replace('.00',''))
         if profession_xp_match: profession_xp += int(profession_xp_match.group(1).replace('.00',''))
@@ -1254,10 +1254,10 @@ async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
             sword_item = None
         profile_data['armor'] = armor_item
         profile_data['sword'] = sword_item
-        profile_data['at'] = int(at_match.group(1))
-        profile_data['def'] = int(def_match.group(1))
-        profile_data['level'] = int(level_match.group(1))
-        profile_data['life'] = int(life_match.group(2))
+        profile_data['at'] = int(at_match.group(1).replace(',',''))
+        profile_data['def'] = int(def_match.group(1).replace(',',''))
+        profile_data['level'] = int(level_match.group(1).replace(',',''))
+        profile_data['life'] = int(life_match.group(2).replace(',',''))
         if enchant_armor_match:
             profile_data['enchant_armor'] = enchant_armor_match.group(1)
         else:
@@ -1272,7 +1272,7 @@ async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
             horse_type = 'None'
         if horse_type in strings.HORSE_TYPES_ENGLISH: horse_type = strings.HORSE_TYPES_ENGLISH[horse_type]
         profile_data['horse_type'] = horse_type
-        profile_data['time_travel'] = int(tt_match.group(1)) if tt_match is not None else 0
+        profile_data['time_travel'] = int(tt_match.group(1).replace(',','')) if tt_match is not None else 0
     except Exception as error:
         await database.log_error(
             f'Error extracting data in profile message: {error}\n'
@@ -1317,7 +1317,7 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     tt_match = await get_match_from_patterns(search_patterns_tt, progress_field.value.lower())
     area_match = await get_match_from_patterns(search_patterns_area, progress_field.value.lower())
     try:
-        tt = int(tt_match.group(1)) if tt_match is not None else 0
+        tt = int(tt_match.group(1).replace(',','')) if tt_match is not None else 0
         area = area_match.group(1)
         if area.lower() == 'top': area = '21'
         area = int(area)
@@ -1362,9 +1362,9 @@ async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationCont
     def_search = re.search('def\*\*: (.+?)\\n', stats_field.value.lower())
     life_search = re.search('life\*\*: (.+?)\/(.+?)$', stats_field.value.lower())
     try:
-        user_at = int(at_search.group(1))
-        user_def = int(def_search.group(1))
-        user_life = int(life_search.group(2))
+        user_at = int(at_search.group(1).replace(',',''))
+        user_def = int(def_search.group(1).replace(',',''))
+        user_life = int(life_search.group(2).replace(',',''))
     except Exception as error:
         await database.log_error(
             f'Error extracting stats in profile or stats message: {str(stats_field)}',

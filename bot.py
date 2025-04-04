@@ -19,11 +19,12 @@ intents.guilds = True   # for on_guild_join(), bot.guilds and everything guild r
 intents.messages = True   # for the calculators that read the game
 intents.message_content = True   # for the calculators that read the game
 
-
+bot_activity=discord.Activity(type=discord.ActivityType.listening, name='your questions')
 if settings.DEBUG_MODE:
-    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID, debug_guilds=settings.DEV_GUILDS)
+    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID, debug_guilds=settings.DEV_GUILDS,
+                                 activity=bot_activity)
 else:
-    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID)
+    bot = discord.AutoShardedBot(intents=intents, owner_id=settings.OWNER_ID, activity=bot_activity)
 
 
 @bot.event
@@ -80,13 +81,13 @@ COG_EXTENSIONS = [
     'cogs.dev',
     'cogs.duel',
     'cogs.dungeons',
-    'cogs.easter',
+    #'cogs.easter',
     'cogs.enchanting',
     'cogs.events',
     'cogs.fun',
     'cogs.guild',
     'cogs.gambling',
-    'cogs.halloween',
+    #'cogs.halloween',
     #'cogs.horse_festival',
     'cogs.horse',
     'cogs.main',
@@ -99,7 +100,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
-    #'cogs.valentine',
+    'cogs.valentine',
     #'cogs.xmas',
 ]
 

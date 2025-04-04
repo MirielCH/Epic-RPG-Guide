@@ -494,6 +494,10 @@ async def embed_epicness() -> discord.Embed:
         f'{emojis.BP} Using a {emojis.GODLY_HORSE_TOKEN} GODLY horse token nets `50` berries if your horse is '
         f'{emojis.HORSE_T10} T10\n'
     )
+    field_artifacts = (
+        f'{emojis.BP} {emojis.ARTIFACT_COWBOY_BOOTS} `Cowboy boots`: +`5`% chance to increase epicness when breeding\n'
+    )
+
     note = (
         f'{emojis.BP} Epicness is independent of horse tier and thus not reset on tier up\n'
     )
@@ -506,6 +510,7 @@ async def embed_epicness() -> discord.Embed:
     embed.add_field(name='HOW TO INCREASE', value=increase, inline=False)
     embed.add_field(name=f'EPIC BERRIES {emojis.EPIC_BERRY}', value=epic_berry, inline=False)
     embed.add_field(name='HOW TO GET EPIC BERRIES', value=how_to_get_berries, inline=False)
+    embed.add_field(name='ARTIFACTS THAT AFFECT EPICNESS', value=field_artifacts, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 

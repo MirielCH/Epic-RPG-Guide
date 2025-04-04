@@ -108,7 +108,7 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["valentine guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["love guide"]}\n'
     )
     guides = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["alchemy guide"]}\n'
@@ -160,7 +160,7 @@ async def embed_help_guides() -> discord.Embed:
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    #embed.add_field(name=f'VALENTINE GUIDE {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'VALENTINE GUIDE {emojis.COIN_LOVE}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
@@ -262,7 +262,7 @@ async def embed_about(
     thanks = (
         f'{emojis.BP} flyingpanda\n'
         f'{emojis.BP} hakiobo\n'
-        f'{emojis.BP} therealr5\n'
+        f'{emojis.BP} rouven_u\n'
         f'{emojis.BP} Everyone contributing one way or the other'
     )
     documents = (

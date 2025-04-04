@@ -15,12 +15,14 @@ from resources import functions, strings, views
 DROP_BASIC = 'Normal drops (A1~A15)'
 DROP_DARK_ENERGY = 'Dark Energy (A16~A20)'
 DROP_EPIC_BERRY = 'EPIC berries'
+DROP_ETERNITY_FLAME = 'ETERNITY flame'
 DROP_LOOTBOX = 'Lootboxes'
 
 DROP_TYPES = [
     DROP_BASIC,
     DROP_DARK_ENERGY,
     DROP_EPIC_BERRY,
+    DROP_ETERNITY_FLAME,
     DROP_LOOTBOX,
 ]
 
@@ -371,6 +373,13 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
             horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
         else:
             horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
+    elif drop_type == DROP_ETERNITY_FLAME:
+        base_chance = 0.0001
+        drop_description = f'**ETERNITY flame** {emojis.ETERNITY_FLAME}'
+        if horse_data['tier'] > 6:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
+        else:
+            horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
     elif drop_type == DROP_LOOTBOX:
         base_chance = 3
         base_chance_adv = 15
@@ -415,10 +424,10 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
     if drop_type != DROP_LOOTBOX:
         drop_chance = base_chance * (1 + tt_chance) * horse_chance * multiplier
         if vampire_teeth_artifact: drop_chance *= 1.05
-        drop_chance_daily = round(drop_chance * 1.3, 3)
-        drop_chance_hm = round(drop_chance * 1.7, 3)
-        drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 3)
-        drop_chance = round(drop_chance, 3)
+        drop_chance_daily = round(drop_chance * 1.3, 4)
+        drop_chance_hm = round(drop_chance * 1.7, 4)
+        drop_chance_daily_hm = round(drop_chance * 1.3 * 1.7, 4)
+        drop_chance = round(drop_chance, 4)
         if drop_chance >= 100: drop_chance = 100
         if drop_chance_daily >= 100: drop_chance_daily = 100
         if drop_chance_hm >= 100: drop_chance_hm = 100
@@ -440,10 +449,10 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
         if claus_belt_artifact:
             drop_chance_hunt *= 1.05
             drop_chance_adv *= 1.05
-        drop_chance_hunt_daily = round(drop_chance_hunt * 1.3, 3)
-        drop_chance_adv_daily = round(drop_chance_adv * 1.3, 3)
-        drop_chance_hunt = round(drop_chance_hunt, 3)
-        drop_chance_adv = round(drop_chance_adv, 3)
+        drop_chance_hunt_daily = round(drop_chance_hunt * 1.3, 4)
+        drop_chance_adv_daily = round(drop_chance_adv * 1.3, 4)
+        drop_chance_hunt = round(drop_chance_hunt, 4)
+        drop_chance_adv = round(drop_chance_adv, 4)
         field_drop_chance_hunt = (
             f'{emojis.BP} Base chance: `{drop_chance_hunt:,g}`%\n'
             f'{emojis.BP} If mob is daily mob: `{drop_chance_hunt_daily:,g}`%\n'

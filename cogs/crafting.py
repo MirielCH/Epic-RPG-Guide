@@ -58,7 +58,7 @@ class CraftingCog(commands.Cog):
         drop_type: Option(str, 'The drop type you want to check the chance of',
                            choices=crafting.DROP_TYPES, default=crafting.DROP_BASIC),
         timetravel: Option(int, 'The TT you want to calculate for. Uses your progress setting if empty.',
-                           min_value = 0, max_value = 9999, default=None),
+                           min_value = 0, max_value = 999999, default=None),
         horse_tier: Option(int, 'The horse tier you want to calculate for. Reads from EPIC RPG if empty.',
                            min_value = 1, max_value = 10, default=None),
         horse_epicness: Option(int, 'The horse epicness you want to calculate for. Reads from EPIC RPG if empty.',

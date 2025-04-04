@@ -252,7 +252,10 @@ async def embed_event_heal() -> discord.Embed:
 
 async def embed_event_lootbox() -> discord.Embed:
     """Lootbox opening event"""
-    trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["open"]} (chance unknown)'
+    trigger = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["open"]} {emojis.LB_COMMON}{emojis.LB_UNCOMMON}{emojis.LB_RARE}'
+        f'{emojis.LB_EPIC}{emojis.LB_EDGY} lootboxes (chance unknown)'
+    )
     answers = (
         f'{emojis.BP} `cry`: You get a {emojis.LB_EPIC} EPIC, {emojis.LB_RARE} rare or '
         f'{emojis.LB_UNCOMMON} uncommon lootbox\n'
@@ -260,8 +263,7 @@ async def embed_event_lootbox() -> discord.Embed:
         f'{emojis.BP} `magic spell`: Low chance to get an {emojis.LB_OMEGA} OMEGA lootbox, high chance to get nothing'
     )
     rec_answer = (
-        f'{emojis.BP} `fight` if lootboxer < `100`\n'
-        f'{emojis.BP} `magic spell` if lootboxer `100`+'
+        f'{emojis.BP} `fight`'
     )
     note = f'{emojis.BP} {events_personal}'
     embed = discord.Embed(

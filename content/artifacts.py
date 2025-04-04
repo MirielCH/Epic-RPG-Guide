@@ -8,26 +8,33 @@ from resources import emojis, functions, settings, strings, views
 # --- Topics ---
 TOPIC_OVERVIEW = 'Overview'
 TOPIC_ARTIFACTS_SOURCE_SUMMARY = 'Source summary'
+TOPIC_ARTIFACTS_BUNNY_MASK = 'Bunny mask'
 TOPIC_ARTIFACTS_CHOCOLATE_BOX = 'Chocolate box'
 TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
 TOPIC_ARTIFACTS_COIN_RING = 'Coin ring'
+TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
+TOPIC_ARTIFACTS_COWBOY_BOOTS = 'Cowboy boots'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
 TOPIC_ARTIFACTS_TOP_HAT = 'Top hat'
 TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
+TOPIC_ARTIFACTS_VOID_TOME = 'Void tome'
 
 TOPICS_ARTIFACTS = [
     TOPIC_OVERVIEW,
     TOPIC_ARTIFACTS_SOURCE_SUMMARY,
+    TOPIC_ARTIFACTS_BUNNY_MASK,
     TOPIC_ARTIFACTS_CHOCOLATE_BOX,
     TOPIC_ARTIFACTS_CLAUS_BELT,
     TOPIC_ARTIFACTS_COIN_RING,
+    TOPIC_ARTIFACTS_COWBOY_BOOTS,
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
     TOPIC_ARTIFACTS_TOP_HAT,
     TOPIC_ARTIFACTS_VAMPIRE_TEETH,
+    TOPIC_ARTIFACTS_VOID_TOME,
 ]
 
 
@@ -37,14 +44,17 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
     topics_functions = {
         TOPIC_OVERVIEW: embed_artifacts_overview,
         TOPIC_ARTIFACTS_SOURCE_SUMMARY: embed_artifacts_source_summary,
+        TOPIC_ARTIFACTS_BUNNY_MASK: embed_artifacts_bunny_mask,
         TOPIC_ARTIFACTS_CHOCOLATE_BOX: embed_artifacts_chocolate_box,
         TOPIC_ARTIFACTS_CLAUS_BELT: embed_artifacts_claus_belt,
         TOPIC_ARTIFACTS_COIN_RING: embed_artifacts_coin_ring,
+        TOPIC_ARTIFACTS_COWBOY_BOOTS: embed_artifacts_cowboy_boots,
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
         TOPIC_ARTIFACTS_TOP_HAT: embed_artifacts_top_hat,
         TOPIC_ARTIFACTS_VAMPIRE_TEETH: embed_artifacts_vampire_teeth,
+        TOPIC_ARTIFACTS_VOID_TOME: embed_artifacts_void_tome,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
     embed = await topics_functions[topic]()
@@ -67,6 +77,7 @@ async def embed_artifacts_overview() -> discord.Embed:
     )
     how_to_get = (
         f'{emojis.BP} To craft an artifact, you need to find all its parts (see topics below)\n'
+        f'{emojis.DETAIL} Artifact parts start dropping in {emojis.TIME_TRAVEL} TT `1+`\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["artifacts"]} to see the status of your artifacts\n'
         f'{emojis.BP} The chance to get artifacts parts increases with your time travel\n'
         f'{emojis.DETAIL} Check {strings.SLASH_COMMANDS_GUIDE["time travel bonuses"]} to see the numbers\n'
@@ -184,6 +195,26 @@ async def embed_artifacts_coin_ring() -> discord.Embed:
     return embed
 
 
+async def embed_artifacts_cowboy_boots() -> discord.Embed:
+    """Cowboy boots guide"""
+    effects = (
+        f'{emojis.BP} Increases your luck in {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]}\n'
+        f'{emojis.BP} Increases your horse\'s chance to gain epicness when breeding by `5`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_COWBOY_BOOTS_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_COWBOY_BOOTS_PART_B} `Part B` • Drops from starting {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'COWBOY BOOTS {emojis.ARTIFACT_COWBOY_BOOTS}',
+        description = 'This artifact is only available during the horse festival event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
 async def embed_artifacts_golden_pan() -> discord.Embed:
     """Golden pan guide"""
     effects = (
@@ -289,8 +320,58 @@ async def embed_artifacts_vampire_teeth() -> discord.Embed:
     return embed
 
 
+async def embed_artifacts_bunny_mask() -> discord.Embed:
+    """Bunny mask artifact embed"""
+    effects = (
+        f'{emojis.BP} You get 1 round egg back after summoning the {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+        f'{emojis.BP} Increases chance to encounter pets in {strings.SLASH_COMMANDS_EPIC_RPG["training"]} by `10`%\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg eat"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}\n'
+        f'{emojis.BP} {emojis.BLANK} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'BUNNY MASK {emojis.ARTIFACT_BUNNY_MASK}',
+        description = 'This artifact is only available during the easter event!',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
+async def embed_artifacts_void_tome() -> discord.Embed:
+    """Void tome artifact embed"""
+    effects = (
+        f'{emojis.BP} Reduces the price of the {emojis.EPIC_JUMP} EPIC jump to `1` {emojis.TIME_DRAGON_ESSENCE} TIME dragon essence\n'
+        f'{emojis.BP} Increases the VOID contribution rewards by `1.2x`\n'
+        f'{emojis.BP} Gives you a {emojis.VOIDICE} VOIDice every time you time travel\n'
+        f'{emojis.DETAIL} Using the item will reward you with `0`~`5` {emojis.TIME_TRAVEL} time travels\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_A} `Part A` • Drops from beating dungeon 16\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_B} `Part B` • Drops from beating dungeon 17\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_C} `Part C` • Drops from beating dungeon 18\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_D} `Part D` • Drops from beating dungeon 19\n'
+        f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_E} `Part E` • Drops from beating dungeon 20\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'VOID TOME {emojis.ARTIFACT_VOID_TOME}',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
 async def embed_artifacts_source_summary() -> discord.Embed:
     """Artifacts sources"""
+    bunny_mask = (
+        f'{emojis.ARTIFACT_BUNNY_MASK_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg eat"]}\n'
+        f'{emojis.ARTIFACT_BUNNY_MASK_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}\n'
+        f'{emojis.BLANK} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+    )
     chocolate_box = (
         f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
         f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love slots"]}\n'
@@ -307,6 +388,10 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'(wins only, more coins = higher chance)\n'
         f'{emojis.ARTIFACT_COIN_RING_PART_C} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["buy"]} '
         f'(lootboxes only)\n'
+    )
+    cowboy_boots = (
+        f'{emojis.ARTIFACT_COWBOY_BOOTS_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]}\n'
+        f'{emojis.ARTIFACT_COWBOY_BOOTS_PART_B} `Part B` • Drops from starting {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} '
     )
     golden_pan = (
         f'{emojis.ARTIFACT_GOLDEN_PAN_PART_A} `Part A` • Drops from level ups (except from cooking)\n'
@@ -339,16 +424,26 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_VAMPIRE_TEETH_PART_C} `Part C` • Drops from joining a {emojis.HAL_SLEEPYNT_JACK_O_LANTERN} '
         f'sleepyn\'t jack-o-lantern miniboss\n'
     )
+    void_tome = (
+        f'{emojis.ARTIFACT_VOID_TOME_PART_A} `Part A` • Drops from beating dungeon 16\n'
+        f'{emojis.ARTIFACT_VOID_TOME_PART_B} `Part B` • Drops from beating dungeon 17\n'
+        f'{emojis.ARTIFACT_VOID_TOME_PART_C} `Part C` • Drops from beating dungeon 18\n'
+        f'{emojis.ARTIFACT_VOID_TOME_PART_D} `Part D` • Drops from beating dungeon 19\n'
+        f'{emojis.ARTIFACT_VOID_TOME_PART_E} `Part E` • Drops from beating dungeon 20\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'ARTIFACT SOURCES',
     )
+    embed.add_field(name=f'BUNNY MASK {emojis.ARTIFACT_BUNNY_MASK}', value=bunny_mask, inline=False)
     embed.add_field(name=f'CHOCOLATE BOX {emojis.ARTIFACT_CHOCOLATE_BOX}', value=chocolate_box, inline=False)
     embed.add_field(name=f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}', value=claus_belt, inline=False)
     embed.add_field(name=f'COIN RING {emojis.ARTIFACT_COIN_RING}', value=coin_ring, inline=False)
+    embed.add_field(name=f'COWBOY BOOTS {emojis.ARTIFACT_COWBOY_BOOTS}', value=cowboy_boots, inline=False)
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)
     embed.add_field(name=f'TOP HAT {emojis.ARTIFACT_TOP_HAT}', value=top_hat, inline=False)
     embed.add_field(name=f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}', value=vampire_teeth, inline=False)
+    embed.add_field(name=f'VOID TOME {emojis.ARTIFACT_VOID_TOME}', value=void_tome, inline=False)
     return embed

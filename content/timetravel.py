@@ -84,7 +84,7 @@ async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetrave
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
         timetravel = user.tt
-    if timetravel == 10_000:
+    if timetravel == 1_000_000:
         await ctx.respond('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
         return
     tt: database.TimeTravel = await database.get_time_travel(timetravel)
@@ -230,6 +230,7 @@ async def embed_time_travel() -> discord.Embed:
     )
     keptitems = (
         f'{emojis.BP} Active boosts\n'
+        f'{emojis.BP} Anniversary lootboxes\n'
         f'{emojis.BP} Arena cookies\n'
         f'{emojis.BP} Coins (this includes your bank account)\n'
         f'{emojis.BP} Dragon essences\n'
@@ -245,9 +246,11 @@ async def embed_time_travel() -> discord.Embed:
         f'{emojis.BP} Profession levels\n'
         f'{emojis.BP} OMEGA horse tokens\n'
         f'{emojis.BP} Party poppers\n'
+        f'{emojis.BP} Round cards\n'
         f'{emojis.BP} TIME capsules\n'
         f'{emojis.BP} TIME cookies\n'
         f'{emojis.BP} TIME dragon essences\n'
+        f'{emojis.BP} Wishing tokens\n'
         f'{emojis.BP} Your guild\n'
         f'{emojis.BP} Your horse\n'
         f'{emojis.BP} Your marriage partner\n'

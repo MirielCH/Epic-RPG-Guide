@@ -379,6 +379,7 @@ async def embed_professions_enchanter() -> discord.Embed:
         f'{emojis.BP} **ULTRA-OMEGA**: 11 XP\n'
         f'{emojis.BP} **GODLY**: 12 XP\n'
         f'{emojis.BP} **VOID**: 13 XP\n'
+        f'{emojis.BP} **ETERNAL**: 14 XP\n'
     )
     command_multipliers = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["enchant"]}: 1\n'
@@ -425,7 +426,7 @@ async def embed_professions_lootboxer() -> discord.Embed:
     )
     how_to_get_xp = (
         f'{emojis.BP} Open lootboxes\n'
-        f'{emojis.BP} ~~Cook {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes (100 XP each)~~ (don\'t do that)\n'
+        f'{emojis.BP} Cook {emojis.FOOD_FILLED_LOOTBOX} filled lootboxes (100 XP each)\n'
     )
     xp_gain = (
         f'{emojis.BP} {emojis.LB_COMMON} common lootbox: 4 XP\n'
@@ -436,6 +437,7 @@ async def embed_professions_lootboxer() -> discord.Embed:
         f'{emojis.BP} {emojis.LB_OMEGA} OMEGA lootbox: 800 XP\n'
         f'{emojis.BP} {emojis.LB_GODLY} GODLY lootbox: 15,000 XP\n'
         f'{emojis.BP} {emojis.LB_VOID} VOID lootbox: -1000 XP\n'
+        f'{emojis.BP} {emojis.LB_ETERNAL} ETERNAL lootbox: 100,000 XP\n'
     )
     boosts = (
         f'{emojis.BP} {emojis.POTION_FISH} `Fish potion`: +`15`% profession XP\n'

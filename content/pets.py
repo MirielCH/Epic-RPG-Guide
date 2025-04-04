@@ -164,9 +164,14 @@ async def embed_pets_catch() -> discord.Embed:
         f'{emojis.BP} The less commands you use, the higher the chance to get rarer skills\n'
     )
     boosts = (
-        f'{emojis.BP} {emojis.POTION_COOKIE} `Cookie potion`: +`10`% pet encounter chance in '
+        f'{emojis.BP} {emojis.POTION_COOKIE} `Cookie potion`: +`20`% pet encounter chance in '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["training"]}'
     )
+    artifacts = (
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK} `Bunny mask`: +`10`% pet encounter chance in '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["training"]}'
+    )
+    
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'CATCHING PETS',
@@ -178,6 +183,7 @@ async def embed_pets_catch() -> discord.Embed:
     embed.add_field(name='HOW TO FIND PETS', value=source, inline=False)
     embed.add_field(name='HOW TO CATCH PETS', value=catch, inline=False)
     embed.add_field(name='POTIONS THAT AFFECT PET SPAWNS', value=boosts, inline=False)
+    embed.add_field(name='ARTIFACTS THAT AFFECT PET SPAWNS', value=artifacts, inline=False)
     return embed
 
 

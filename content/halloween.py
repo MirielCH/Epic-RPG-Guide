@@ -81,10 +81,10 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} **Duration**: `2`h `30`m\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on October 16, 2023\n'
+        f'{emojis.BP} Event started on October 21, 2024\n'
         #f'{emojis.BP} World boss fight ends on October 31, 2022, 23:55 UTC\n'
-        f'{emojis.BP} Event ends on November 12, 2023, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on November 19, 2023, 23:55 UTC\n'
+        f'{emojis.BP} Event ends on November 17, 2024, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on November 24, 2024, 23:55 UTC\n'
         f'{emojis.DETAIL} Exceptions: {emojis.TIME_COOKIE} TIME cookies and {emojis.ARTIFACT_VAMPIRE_TEETH} vampire '
         f'teeth'
     )
@@ -106,7 +106,7 @@ async def embed_overview() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'HALLOWEEN EVENT 2023 {emojis.HAL_PUMPKIN}',
+        title = f'HALLOWEEN EVENT 2024 {emojis.HAL_PUMPKIN}',
         description = 'Boo!'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)

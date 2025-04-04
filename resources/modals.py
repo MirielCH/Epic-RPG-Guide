@@ -131,7 +131,7 @@ class SetCurrentTTModal(Modal):
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return
-        if not 0 <= tt_no <= 9999:
+        if not 0 <= tt_no <= 999999:
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return
