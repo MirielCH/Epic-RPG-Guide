@@ -40,6 +40,7 @@ EVENT_LEGENDARY_BOSS = 'Legendary Boss (time to fight)'
 EVENT_LB_SUMMON = 'Lootbox summoning (summon)'
 EVENT_FISH = 'Megalodon (fish)'
 EVENT_MINIBOSS = 'Miniboss'
+EVENT_RARE_HUNT_MONSTER = 'Rare hunt monster (pickaxe)'
 
 EVENTS_MULTIPLAYER = [
     EVENT_ARENA,
@@ -49,7 +50,8 @@ EVENTS_MULTIPLAYER = [
     EVENT_LEGENDARY_BOSS,
     EVENT_LB_SUMMON,
     EVENT_FISH,
-    EVENT_MINIBOSS
+    EVENT_MINIBOSS,
+    EVENT_RARE_HUNT_MONSTER,
 ]
 
 # Global events
@@ -108,6 +110,7 @@ async def command_event_guide(ctx: discord.ApplicationContext, event: str) -> No
         EVENT_FISH: embed_event_megalodon,
         EVENT_MINIBOSS: embed_event_miniboss,
         EVENT_MININTBOSS: embed_event_minintboss,
+        EVENT_RARE_HUNT_MONSTER: embed_event_rare_hunt_monster,
         EVENT_TOURNAMENT: embed_event_pettournament,
         EVENT_TRADE: embed_event_specialtrade,
         EVENT_TRAINING: embed_event_training,
@@ -280,16 +283,19 @@ async def embed_event_lootbox() -> discord.Embed:
 
 async def embed_event_rubydragon() -> discord.Embed:
     """Work event (ruby dragon)"""
-    trigger = f'{emojis.BP} Work commands (chance unknown)'
+    trigger = (
+        f'{emojis.BP} Work commands (chance unknown)\n'
+        f'{emojis.DETAIL} The {emojis.ARTIFACT_SHINY_PICKAXE} shiny pickaxe artifact increases the spawn chance for `mine` commands by `x10`'
+    )
     answers = (
-        f'{emojis.BP} `cry`: You get `1` {emojis.ARENA_COOKIE} arena cookie\n'
-        f'{emojis.BP} `move`: You move to another area and spawn the ruby dragon (see below)\n'
+        f'{emojis.BP} `cry`: The event ends, you get `1` {emojis.ARENA_COOKIE} arena cookie\n'
+        f'{emojis.BP} `move`: You move to phase 2 and spawn the ruby dragon (see below)\n'
         f'{emojis.BP} `sleep`: The event ends, you get nothing'
     )
     answers_ruby = (
-        f'{emojis.BP} `run`: The event ends, you get nothing\n'
-        f'{emojis.BP} `fight`: You fight the dragon and get `10` {emojis.RUBY} rubies\n'
-        f'{emojis.BP} `sleep`: The dragon leaves and you get `2` {emojis.RUBY} rubies'
+        f'{emojis.BP} `run`: You get nothing\n'
+        f'{emojis.BP} `fight`: You get `1` {emojis.DRAGON_ESSENCE} dragon essence and `25 x [TT count]` {emojis.RUBY} rubies\n'
+        f'{emojis.BP} `sleep`: You get `5 x [TT count]` {emojis.RUBY} rubies'
     )
     best_answer = (
         f'{emojis.BP} First `move`, then `fight`\n'
@@ -307,8 +313,8 @@ async def embed_event_rubydragon() -> discord.Embed:
         f'but a ruby dragon instead.'
     )
     embed.add_field(name='TRIGGER', value=trigger, inline=False)
-    embed.add_field(name='POSSIBLE ANSWERS (START)', value=answers, inline=False)
-    embed.add_field(name='POSSIBLE ANSWERS (RUBY DRAGON)', value=answers_ruby, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS (PHASE 1)', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE ANSWERS (PHASE 2)', value=answers_ruby, inline=False)
     embed.add_field(name='BEST ANSWERS', value=best_answer, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
@@ -934,5 +940,32 @@ async def embed_event_returning() -> discord.Embed:
     embed.add_field(name='ACTIVITIES', value=activities, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_event_rare_hunt_monster() -> discord.Embed:
+    """Rare hunt monster event embed"""
+    trigger = f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} in areas 1~10 (chance unknown)'
+    answers = f'{emojis.BP} `lets get that pickaxe`'
+    rewards = (
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_A} Shiny pickaxe part A from {emojis.MOB_GOLDEN_WOLF} golden wolf in areas 1~2\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_B} Shiny pickaxe part B from {emojis.MOB_RUBY_ZOMBIE} ruby zombie in areas 3~4\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_C} Shiny pickaxe part C from {emojis.MOB_DIAMOND_UNICORN} diamond unicorn in areas 5~6\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_D} Shiny pickaxe part D from {emojis.MOB_EMERALD_MERMAID} emerald mermaid in areas 7~8\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_E} Shiny pickaxe part E from {emojis.MOB_SAPPHIRE_KILLER_ROBOT} sapphire killer robot in areas 9~10\n'
+    )
+    note = (
+        f'{emojis.BP} {events_multiplayer}\n'
+        f'{emojis.BP} {events_player_no.format(no=20)}'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'RARE HUNT MONSTER (PICKAXE)',
+        description = 'This is a multiplayer event in which you can get an artifact part from a rare hunt monster.'
+    )
+    embed.add_field(name='TRIGGER', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed

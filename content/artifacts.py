@@ -17,6 +17,7 @@ TOPIC_ARTIFACTS_COWBOY_BOOTS = 'Cowboy boots'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
+TOPIC_ARTIFACTS_SHINY_PICKAXE = 'Shiny pickaxe'
 TOPIC_ARTIFACTS_TOP_HAT = 'Top hat'
 TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
 TOPIC_ARTIFACTS_VOID_TOME = 'Void tome'
@@ -32,6 +33,7 @@ TOPICS_ARTIFACTS = [
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
+    TOPIC_ARTIFACTS_SHINY_PICKAXE,
     TOPIC_ARTIFACTS_TOP_HAT,
     TOPIC_ARTIFACTS_VAMPIRE_TEETH,
     TOPIC_ARTIFACTS_VOID_TOME,
@@ -52,6 +54,7 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
+        TOPIC_ARTIFACTS_SHINY_PICKAXE: embed_artifacts_shiny_pickaxe,
         TOPIC_ARTIFACTS_TOP_HAT: embed_artifacts_top_hat,
         TOPIC_ARTIFACTS_VAMPIRE_TEETH: embed_artifacts_vampire_teeth,
         TOPIC_ARTIFACTS_VOID_TOME: embed_artifacts_void_tome,
@@ -220,7 +223,7 @@ async def embed_artifacts_golden_pan() -> discord.Embed:
     effects = (
         f'{emojis.BP} Lets you keep a percentage of cooked stats when time traveling\n'
         f'{emojis.DETAIL} The percentage increases with time travels\n'
-        f'{emojis.BP} Increases the cooking item cap to `1m` per command\n'
+        f'{emojis.BP} Increases the cooking item cap to `1.5b`\n'
         f'{emojis.BP} Grants the ability to brew potions already active\n'
         f'{emojis.DETAIL} This will refresh their duration, not add time\n'
     )
@@ -292,6 +295,33 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     )
     embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='AFFECTED COMMANDS', value=affected_commands, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
+async def embed_artifacts_shiny_pickaxe() -> discord.Embed:
+    """Shiny pickaxe guide"""
+    effects = (
+        f'{emojis.BP} Increases the drop amount with `mine` commands by `x2.5`\n'
+        f'{emojis.BP} Increases the chance to get a ruby dragon event when using `mine` commands by `x10`\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_A} `Part A` • Reward from the {emojis.MOB_GOLDEN_WOLF} golden wolf '
+        f'hunt event in areas 1~2\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_B} `Part B` • Reward from the {emojis.MOB_RUBY_ZOMBIE} ruby zombie '
+        f'hunt event in areas 3~4\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_C} `Part C` • Reward from the {emojis.MOB_DIAMOND_UNICORN} diamond '
+        f'unicorn hunt event in areas 5~6\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_D} `Part D` • Reward from the {emojis.MOB_EMERALD_MERMAID} emerald mermaid '
+        f'hunt event in areas 7~8\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SHINY_PICKAXE_PART_E} `Part E` • Reward from the {emojis.MOB_SAPPHIRE_KILLER_ROBOT} sapphire '
+        f'killer robot hunt event in areas 9~10\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'SHINY PICKAXE {emojis.ARTIFACT_SHINY_PICKAXE}',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
     embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
     return embed
 
@@ -411,6 +441,18 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_POCKET_WATCH_PART_E} `Part E` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]} '
         f'in the TOP\n'
     )
+    shiny_pickaxe = (
+        f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_A} `Part A` • Reward from the {emojis.MOB_GOLDEN_WOLF} golden wolf '
+        f'hunt event in areas 1~2\n'
+        f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_B} `Part B` • Reward from the {emojis.MOB_RUBY_ZOMBIE} ruby zombie '
+        f'hunt event in areas 3~4\n'
+        f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_C} `Part C` • Reward from the {emojis.MOB_DIAMOND_UNICORN} diamond '
+        f'unicorn hunt event in areas 5~6\n'
+        f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_D} `Part D` • Reward from the {emojis.MOB_EMERALD_MERMAID} emerald mermaid '
+        f'hunt event in areas 7~8\n'
+        f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_E} `Part E` • Reward from the {emojis.MOB_SAPPHIRE_KILLER_ROBOT} sapphire '
+        f'killer robot hunt event in areas 9~10\n'
+    )
     top_hat = (
         f'{emojis.ARTIFACT_TOP_HAT_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'in areas 3, 5 and TOP\n'
@@ -443,6 +485,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)
+    embed.add_field(name=f'SHINY PICKAXE {emojis.ARTIFACT_SHINY_PICKAXE}', value=shiny_pickaxe, inline=False)
     embed.add_field(name=f'TOP HAT {emojis.ARTIFACT_TOP_HAT}', value=top_hat, inline=False)
     embed.add_field(name=f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}', value=vampire_teeth, inline=False)
     embed.add_field(name=f'VOID TOME {emojis.ARTIFACT_VOID_TOME}', value=void_tome, inline=False)

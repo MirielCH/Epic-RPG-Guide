@@ -374,7 +374,7 @@ async def embed_dropchance(drop_type: str, timetravel: int, horse_data: dict,
         else:
             horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']]
     elif drop_type == DROP_ETERNITY_FLAME:
-        base_chance = 0.0001
+        base_chance = 0.0003
         drop_description = f'**ETERNITY flame** {emojis.ETERNITY_FLAME}'
         if horse_data['tier'] > 6:
             horse_chance = strings.HORSE_MULTIPLIER_DROPS[horse_data['tier']] * (1 + (horse_data['epicness'] // 5 * 0.04))
