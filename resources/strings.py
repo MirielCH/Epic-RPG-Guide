@@ -967,7 +967,7 @@ SLASH_COMMANDS_GUIDE = {
     'duel weapons': '</duel weapons:972045824806760473>',
     'dungeon check': '</dungeon check:972045824806760474>',
     'dungeon guide': '</dungeon guide:972045824806760474>',
-    'easter guide': '</easter guide:1092914302626832565>',
+    'easter guide': '</easter guide:1362128755015024953>',
     'egg guide': '</egg guide:1092915608129118208>',
     'enchanting guide': '</enchanting guide:972045824806760475>',
     'event guide': '</event guide:972045824806760476>',

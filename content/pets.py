@@ -109,7 +109,7 @@ async def embed_pets_overview() -> discord.Embed:
         f'{emojis.BP} Each special skill is tied to a certain pet\n'
         f'{emojis.BP} See topic `Special skills` for details\n'
     )
-    type = (
+    pet_type = (
         f'{emojis.BP} The basic types are {emojis.PET_CAT} cat, {emojis.PET_DOG} dog and {emojis.PET_DRAGON} dragon\n'
         f'{emojis.BP} Event pets can have unique types\n'
         f'{emojis.BP} The type you get when catching pets is random\n'
@@ -135,7 +135,7 @@ async def embed_pets_overview() -> discord.Embed:
     embed.add_field(name='BASIC SKILLS', value=basicskills, inline=False)
     embed.add_field(name='ADVANCED SKILLS', value=advancedskills, inline=False)
     embed.add_field(name='SPECIAL SKILLS', value=specialskills, inline=False)
-    embed.add_field(name='TYPE', value=type, inline=False)
+    embed.add_field(name='TYPE', value=pet_type, inline=False)
     embed.add_field(name='SCORE', value=score, inline=False)
     return embed
 
@@ -258,8 +258,8 @@ async def embed_pets_skills_basic() -> discord.Embed:
     """Basic skills guide"""
     normie = f'{emojis.BP} This is not a skill, it simply means the pet has no skills'
     fast = (
-        f'{emojis.BP} Reduces the time to do adventures\n'
-        f'{emojis.BP} Reduces the time down to 2h 33m 36s at rank SS+'
+        f'{emojis.BP} Reduces the time to do adventures by `9m 36s` per rank\n'
+        f'{emojis.BP} Reduces the time down to `2h 33m 36s` at rank SS+'
     )
     happy = f'{emojis.BP} Increases the chance to tier up when fusing'
     clever = f'{emojis.BP} Increases the chance to rank up skills in adventures'
@@ -376,7 +376,8 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.DETAIL} This pet is a reward in the valentine event'
     )
     faster = (
-        f'{emojis.BP} If the pet also has the {emojis.SKILL_FAST} fast skill, the time reduction is doubled\n'
+        f'{emojis.BP} Doubles the time reduction of the {emojis.SKILL_FAST} fast skill to `19m 12s` per rank\n'
+        f'{emojis.DETAIL} Reduces the adventure time down to `1h 7m 12s` at rank SS+\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_GOLDEN_BUNNY} golden bunny pet\n'
         f'{emojis.DETAIL} This pet is a reward in the easter event'
     )

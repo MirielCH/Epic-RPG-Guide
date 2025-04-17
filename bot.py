@@ -81,7 +81,7 @@ COG_EXTENSIONS = [
     'cogs.dev',
     'cogs.duel',
     'cogs.dungeons',
-    #'cogs.easter',
+    'cogs.easter',
     'cogs.enchanting',
     'cogs.events',
     'cogs.fun',
@@ -100,7 +100,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
-    'cogs.valentine',
+    #'cogs.valentine',
     #'cogs.xmas',
 ]
 

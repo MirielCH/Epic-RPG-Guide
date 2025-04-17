@@ -7,13 +7,15 @@ from resources import emojis, settings, functions, strings, views
 
 
 # --- Topics ---
+TOPIC_OVERVIEW = 'Overview'
+TOPIC_BOOSTS = 'Boosts'
 TOPIC_BUNNY = 'Bunny event'
 TOPIC_BUNNY_BOSS = 'Bunny boss event'
-TOPIC_OVERVIEW = 'Overview'
 TOPIC_BUNNY_MASK = 'Bunny mask artifact'
 
 TOPICS = [
     TOPIC_OVERVIEW,
+    TOPIC_BOOSTS,
     TOPIC_BUNNY,
     TOPIC_BUNNY_BOSS,
     TOPIC_BUNNY_MASK,
@@ -24,6 +26,7 @@ async def command_easter_guide(ctx: discord.ApplicationContext, topic: str) -> N
     """Easter guide command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_overview,
+        TOPIC_BOOSTS: embed_boosts,
         TOPIC_BUNNY: embed_event_bunny,
         TOPIC_BUNNY_BOSS: embed_event_bunnyboss,
         TOPIC_BUNNY_MASK: embed_bunny_mask,
@@ -70,17 +73,48 @@ async def embed_overview() -> discord.Embed:
         f'`7` {emojis.EASTER_EGG_ROUND} round eggs\n'
         f'{emojis.BP} Get at least `10` {emojis.EASTER_EGG_GOLDEN} golden eggs to complete the quest\n'
         f'{emojis.BP} Throw all {emojis.EASTER_EGG_PINK} pink eggs you get at the worldboss with '
-        f'{strings.SLASH_COMMANDS_EPIC_RPG["egg wb"]} `action: throw`\n'
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["egg wb"]}\n'
         f'{emojis.BP} Empty the {strings.SLASH_COMMANDS_EPIC_RPG["egg shop"]}\n'
     )
     titles = (
         f'{emojis.BP} **Eggspert player** (bought in {strings.SLASH_COMMANDS_EPIC_RPG["egg shop"]})\n'
         f'{emojis.BP} **this is the best title** (Reward from the {strings.SLASH_COMMANDS_EPIC_RPG["egg quest"]})\n'
-        f'{emojis.BP} **egg** (Achievement #213)\n'
-        f'{emojis.BP} **Egg slayer** (Achievement #214)\n'
-        f'{emojis.BP} **jumping fren** (Achievement #215)\n'
+        f'{emojis.BP} **egg** (Achievement #222)\n'
+        f'{emojis.BP} **Egg slayer** (Achievement #223)\n'
+        f'{emojis.BP} **jumping fren** (Achievement #224)\n'
     )
+    chocolate_bunny = (
+        f'{emojis.BP} It\'s a Swiss chocolate delicacy, you should try it\n'
+        f'{emojis.BP} It spawns a {emojis.PET_GOLDEN_BUNNY} fake golden bunny which you can try to catch\n'
+        f'{emojis.DETAIL} See topic `Bunny event` for details.\n'
+    )
+    schedule = (
+        f'{emojis.BP} Event started on April 17, 2025\n'
+        f'{emojis.BP} Event will end on May 7, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on May 14, 2025, 23:55 UTC'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'EASTER EVENT 2025 {emojis.EASTER_EGG_ROUND}',
+        description = 'These are some weird eggs'
+    )
+    embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
+    embed.add_field(name='ACTIVITIES', value=activities, inline=False)
+    embed.add_field(name='TITLES', value=titles, inline=False)
+    embed.add_field(name='BONUSES', value=bonuses, inline=False)
+    embed.add_field(
+        name=f'WTH IS A {emojis.EASTER_CHOCOLATE_BUNNY} CHOCOLATE BUNNY?',
+        value=chocolate_bunny,
+        inline=False
+    )
+    embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    return embed
+
+
+async def embed_boosts() -> discord.Embed:
+    """Embed with easter boosts guide"""
     boost_easter = (
+        f'{emojis.BP} **Source**: Bought in the {strings.SLASH_COMMANDS_EPIC_RPG["egg shop"]} for 50 {emojis.EASTER_CHOCOLATE_COIN}\n'
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`40` {emojis.STAT_DEF} DEF\n'
         f'{emojis.DETAIL2} +`40`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
@@ -88,7 +122,41 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} -`10`% pet adventure time if pet returns while boost is active\n'
         f'{emojis.BP} **Duration**: `1`h\n'
     )
+    boost_easterng_1 = (
+        f'{emojis.BP} **Source**: 1 of 3 possible boosts from eating a {emojis.EASTER_EGG_SQUARE} square egg\n'
+        f'{emojis.DETAIL} Square eggs have a `10`% chance to drop from daily tasks\n'
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`1,000` {emojis.STAT_LIFE} LIFE\n'
+        f'{emojis.DETAIL2} +`400`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`300`% coins from all sources except selling & miniboss\n'
+        f'{emojis.DETAIL} +`250` {emojis.STAT_DEF} DEF\n'
+        f'{emojis.BP} **Duration**: `30`m\n'
+    )
+    boost_easterng_2 = (
+        f'{emojis.BP} **Source**: 1 of 3 possible boosts from eating a {emojis.EASTER_EGG_SQUARE} square egg\n'
+        f'{emojis.DETAIL} Square eggs have a `10`% chance to drop from daily tasks\n'
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`300`% items from work commands\n'
+        f'{emojis.DETAIL2} +`200`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'        
+        f'{emojis.DETAIL2} +`50`% item rarity from work commands\n'
+        f'{emojis.DETAIL} +`30`% profession XP\n'
+        f'{emojis.BP} **Duration**: `30`m\n'
+    )
+    boost_easterng_3 = (
+        f'{emojis.BP} **Source**: 1 of 3 possible boosts from eating a {emojis.EASTER_EGG_SQUARE} square egg\n'
+        f'{emojis.DETAIL} Square eggs have a `10`% chance to drop from daily tasks\n'
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`200`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`100`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.DETAIL2} +`100`% random event spawn chance\n'
+        f'{emojis.DETAIL2} +`50`% easter event item drop chance\n'
+        f'{emojis.DETAIL} +`1` lootbox rarity in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.BP} **Duration**: `30`m\n'
+    )
     boost_egg_blessing = (
+        f'{emojis.BP} **Source**: Reward for defeating the bunny god\n'
         f'{emojis.BP} **Boosts**\n'
         f'{emojis.DETAIL2} +`60`% XP from all sources\n'
         f'{emojis.DETAIL2} +`60`% coins from all sources except selling & miniboss\n'
@@ -104,33 +172,16 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} Automatically heals you if you take damage\n'
         f'{emojis.BP} **Duration**: `30`d\n'
     )
-    chocolate_bunny = (
-        f'{emojis.BP} It\'s a Swiss chocolate delicacy, you should try it\n'
-        f'{emojis.BP} It spawns a {emojis.PET_GOLDEN_BUNNY} fake golden bunny which you can try to catch\n'
-        f'{emojis.DETAIL} See topic `Bunny event` for details.\n'
-    )
-    schedule = (
-        f'{emojis.BP} Event started on March 25, 2024\n'
-        f'{emojis.BP} Event will end on April 14, 2024, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on April 21, 2024, 23:55 UTC'
-    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'EASTER EVENT 2024 {emojis.EASTER_EGG_ROUND}',
-        description = 'These are some weird eggs'
+        title = f'EASTER EVENT BOOSTS {emojis.EASTER_EGG}',
+        description = 'Quite the eggceptional boosts.'
     )
-    embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
-    embed.add_field(name='ACTIVITIES', value=activities, inline=False)
-    embed.add_field(name='TITLES', value=titles, inline=False)
-    embed.add_field(name='BONUSES', value=bonuses, inline=False)
-    embed.add_field(name='OK, BUT WHAT DOES THE EASTER BOOST DO?', value=boost_easter, inline=False)
-    embed.add_field(name='EGG BLESSING IS BETTER THO, RIGHT?', value=boost_egg_blessing, inline=False)
-    embed.add_field(
-        name=f'...AND WTH IS A {emojis.EASTER_CHOCOLATE_BUNNY} CHOCOLATE BUNNY?',
-        value=chocolate_bunny,
-        inline=False
-    )
-    embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    embed.add_field(name=f'EASTER BOOST {emojis.EASTER_EGG}', value=boost_easter, inline=False)
+    embed.add_field(name=f'EASTERNG BOOST I {emojis.EASTER_EGG_SQUARE}', value=boost_easterng_1, inline=False)
+    embed.add_field(name=f'EASTERNG BOOST II {emojis.EASTER_EGG_SQUARE}', value=boost_easterng_2, inline=False)
+    embed.add_field(name=f'EASTERNG BOOST III {emojis.EASTER_EGG_SQUARE}', value=boost_easterng_3, inline=False)
+    embed.add_field(name=f'EGG BLESSING {emojis.EASTER_BUNNY_GOD}', value=boost_egg_blessing, inline=False)
     return embed
 
 

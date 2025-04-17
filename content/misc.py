@@ -387,7 +387,8 @@ async def embed_badges() -> discord.Embed:
         f'{emojis.BP} {emojis.BADGE_ETERNAL} : Unlocked by unlocking the eternity\n'
         f'{emojis.BP} {emojis.BADGE_OMEGA} : Unlock requirements unknown\n'
         f'{emojis.BP} {emojis.BADGE_GODLY} : Unlock requirements unknown\n'
-        f'{emojis.BP} {emojis.BADGE_CROSSOVER} : Unlock by getting `100` achievements in the IDLE FARM game\n'
+        f'{emojis.BP} {emojis.BADGE_CROSSOVER} : Unlocked by getting `100` achievements in the IDLE FARM game\n'
+        f'{emojis.BP} {emojis.BADGE_MINER} : Unlocked by using the `water58` code\n'
     )
     howtouse = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["badge list"]} to see all badges\n'
