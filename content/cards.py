@@ -304,7 +304,7 @@ async def embed_cards_hand_winning_hands() -> discord.Embed:
         f'{emojis.BP} **Winning condition**\n'
         f'{emojis.DETAIL} You have 4 Aces and 1 Joker\n'
         f'{emojis.BP} **Base rewards**: '
-        f'10 {emojis.TIME_CAPSULE} + 5,000 {emojis.TIME_COOKIE} + 40 {emojis.CARD_ROUND}\n'
+        f'10 {emojis.TIME_CAPSULE} + 5,000 {emojis.TIME_COOKIE} + 1 {emojis.LB_ETERNAL} + 42 {emojis.CARD_ROUND}\n'
     )
     royal_hearted_flush = (
         f'{emojis.BP} **Winning conditions**\n'

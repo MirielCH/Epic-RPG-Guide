@@ -419,6 +419,12 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.DETAIL2} The drop chance increases with higher dungeons.\n'
         f'{emojis.DETAIL} You can get multiple, but each time you get one, the drop chance lowers.\n'
     )
+    slower = (
+        f'{emojis.BP} Has a `9`% chance to find `1` {emojis.ARENA_COOKIE} arena cookie and a `1`% chance to find `1` {emojis.TIME_COOKIE} TIME cookie in pet adventures\n'
+        f'{emojis.BP} Adventures take twice as long\n'
+        f'{emojis.BP} This skill is unique to the {emojis.PET_TURTLE} turtle pet\n'
+        f'{emojis.DETAIL} This pet is a reward in the summer festival'
+    )
     time_resetter = (
         f'{emojis.BP} Has a very (very) small chance to find a {emojis.TIME_CAPSULE} time capsule in a pet adventure\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_CATERNAL} caternal pet\n'
@@ -442,6 +448,7 @@ async def embed_pets_skills_special() -> discord.Embed:
     embed.add_field(name=f'LEADER {emojis.SKILL_LEADER}', value=leader, inline=False)
     embed.add_field(name=f'MONSTER HUNTER {emojis.SKILL_MONSTER_HUNTER}', value=monsterhunter, inline=False)
     embed.add_field(name=f'RESETTER {emojis.SKILL_RESETTER}', value=resetter, inline=False)
+    embed.add_field(name=f'SLOWER {emojis.SKILL_SLOWER}', value=slower, inline=False)
     embed.add_field(name=f'TIME RESETTER {emojis.SKILL_TIME_RESETTER}', value=time_resetter, inline=False)
     embed.add_field(name='SKILL RANKS', value=skillranks, inline=False)
     return embed
@@ -490,6 +497,7 @@ async def embed_pets_adventures() -> discord.Embed:
         f'{emojis.BP} {emojis.SKILL_MONSTER_HUNTER} **Monster hunter**: Has a chance to find mob drops\n'
         f'{emojis.BP} {emojis.SKILL_GIFTER} **Gifter**: Has a chance to find a lootbox\n'
         f'{emojis.BP} {emojis.SKILL_BOOSTER} **BOOSTER**: All pets have a chance to advance skills twice\n'
+        f'{emojis.BP} {emojis.SKILL_SLOWER} **Slower**: Takes twice as long in adventures, but can find {emojis.ARENA_COOKIE}{emojis.TIME_COOKIE} cookies\n'
         f'{emojis.BP} {emojis.SKILL_RESETTER} **Resetter**: Adds a chance to {emojis.SKILL_TRAVELER} time traveler skill '
         f'to reset all pets\n'
     )

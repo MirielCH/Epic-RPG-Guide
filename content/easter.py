@@ -62,7 +62,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Gamble all your eggs away with {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}'
     )
     bonuses = (
-        f'{emojis.BP} Dungeon/Miniboss cooldown is reduced by `33`%'
+        f'{emojis.BP} Command cooldown is reduced by `10`%'
     )
     tldr_guide = (
         f'{emojis.BP} Complete your {strings.SLASH_COMMANDS_EPIC_RPG["egg tasks"]}\n'
@@ -130,7 +130,7 @@ async def embed_boosts() -> discord.Embed:
         f'{emojis.DETAIL2} +`400`% XP from all sources\n'
         f'{emojis.DETAIL2} +`300`% coins from all sources except selling & miniboss\n'
         f'{emojis.DETAIL} +`250` {emojis.STAT_DEF} DEF\n'
-        f'{emojis.BP} **Duration**: `30`m\n'
+        f'{emojis.BP} **Duration**: `4`h\n'
     )
     boost_easterng_2 = (
         f'{emojis.BP} **Source**: 1 of 3 possible boosts from eating a {emojis.EASTER_EGG_SQUARE} square egg\n'
@@ -140,7 +140,7 @@ async def embed_boosts() -> discord.Embed:
         f'{emojis.DETAIL2} +`200`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'        
         f'{emojis.DETAIL2} +`50`% item rarity from work commands\n'
         f'{emojis.DETAIL} +`30`% profession XP\n'
-        f'{emojis.BP} **Duration**: `30`m\n'
+        f'{emojis.BP} **Duration**: `2`h\n'
     )
     boost_easterng_3 = (
         f'{emojis.BP} **Source**: 1 of 3 possible boosts from eating a {emojis.EASTER_EGG_SQUARE} square egg\n'
@@ -153,7 +153,7 @@ async def embed_boosts() -> discord.Embed:
         f'{emojis.DETAIL2} +`50`% easter event item drop chance\n'
         f'{emojis.DETAIL} +`1` lootbox rarity in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
-        f'{emojis.BP} **Duration**: `30`m\n'
+        f'{emojis.BP} **Duration**: `3`h\n'
     )
     boost_egg_blessing = (
         f'{emojis.BP} **Source**: Reward for defeating the bunny god\n'

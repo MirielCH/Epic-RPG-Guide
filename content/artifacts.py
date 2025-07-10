@@ -18,6 +18,7 @@ TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
 TOPIC_ARTIFACTS_SHINY_PICKAXE = 'Shiny pickaxe'
+TOPIC_ARTIFACTS_SUNGLASSES = 'Sunglasses'
 TOPIC_ARTIFACTS_TOP_HAT = 'Top hat'
 TOPIC_ARTIFACTS_VAMPIRE_TEETH = 'Vampire teeth'
 TOPIC_ARTIFACTS_VOID_TOME = 'Void tome'
@@ -34,6 +35,7 @@ TOPICS_ARTIFACTS = [
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
     TOPIC_ARTIFACTS_SHINY_PICKAXE,
+    TOPIC_ARTIFACTS_SUNGLASSES,
     TOPIC_ARTIFACTS_TOP_HAT,
     TOPIC_ARTIFACTS_VAMPIRE_TEETH,
     TOPIC_ARTIFACTS_VOID_TOME,
@@ -55,6 +57,7 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
         TOPIC_ARTIFACTS_SHINY_PICKAXE: embed_artifacts_shiny_pickaxe,
+        TOPIC_ARTIFACTS_SUNGLASSES: embed_artifacts_sunglasses,
         TOPIC_ARTIFACTS_TOP_HAT: embed_artifacts_top_hat,
         TOPIC_ARTIFACTS_VAMPIRE_TEETH: embed_artifacts_vampire_teeth,
         TOPIC_ARTIFACTS_VOID_TOME: embed_artifacts_void_tome,
@@ -326,6 +329,28 @@ async def embed_artifacts_shiny_pickaxe() -> discord.Embed:
     return embed
 
 
+async def embed_artifacts_sunglasses() -> discord.Embed:
+    """Sunglasses artifact embed"""
+    effects = (
+        f'{emojis.BP} Adds compensation reward when slipping off in {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
+        f'{emojis.BP} Sometimes increases amount healed by {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_SUNGLASSES_PART_A} `Part A` • Reward for not slipping off in any round in '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_SUNGLASSES_PART_B} `Part B` • Drops from drinking {emojis.SMR_DRINK_BLUE}'
+        f'{emojis.SMR_DRINK_GREEN}{emojis.SMR_DRINK_PINK}{emojis.SMR_DRINK_YELLOW} drinks with '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["smr drink"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'SUNGLASSES {emojis.ARTIFACT_SUNGLASSES}',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
 async def embed_artifacts_vampire_teeth() -> discord.Embed:
     """Vampire teeth guide"""
     effects = (
@@ -453,6 +478,13 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_SHINY_PICKAXE_PART_E} `Part E` • Reward from the {emojis.MOB_SAPPHIRE_KILLER_ROBOT} sapphire '
         f'killer robot hunt event in areas 9~10\n'
     )
+    sunglasses = (
+        f'{emojis.ARTIFACT_SUNGLASSES_PART_A} `Part A` • Reward for not slipping off in any round in '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
+        f'{emojis.ARTIFACT_SUNGLASSES_PART_B} `Part B` • Drops from drinking {emojis.SMR_DRINK_BLUE}'
+        f'{emojis.SMR_DRINK_GREEN}{emojis.SMR_DRINK_PINK}{emojis.SMR_DRINK_YELLOW} drinks with '
+        f'{strings.SLASH_COMMANDS_EPIC_RPG["smr drink"]}\n'
+    )
     top_hat = (
         f'{emojis.ARTIFACT_TOP_HAT_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'in areas 3, 5 and TOP\n'
@@ -486,6 +518,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)
     embed.add_field(name=f'SHINY PICKAXE {emojis.ARTIFACT_SHINY_PICKAXE}', value=shiny_pickaxe, inline=False)
+    embed.add_field(name=f'SUNGLASSES {emojis.ARTIFACT_SUNGLASSES}', value=sunglasses, inline=False)
     embed.add_field(name=f'TOP HAT {emojis.ARTIFACT_TOP_HAT}', value=top_hat, inline=False)
     embed.add_field(name=f'VAMPIRE TEETH {emojis.ARTIFACT_VAMPIRE_TEETH}', value=vampire_teeth, inline=False)
     embed.add_field(name=f'VOID TOME {emojis.ARTIFACT_VOID_TOME}', value=void_tome, inline=False)
