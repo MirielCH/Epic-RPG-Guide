@@ -16,6 +16,7 @@ TOPIC_OVERVIEW = 'Overview'
 TOPIC_BREEDING = 'Breeding'
 TOPIC_EPICNESS = 'Epicness'
 TOPIC_TIERS = 'Tiers'
+TOPIC_TIER_10_999 = 'Tier 10.999'
 TOPIC_TYPES = 'Types'
 
 TOPICS = [
@@ -23,6 +24,7 @@ TOPICS = [
     TOPIC_BREEDING,
     TOPIC_EPICNESS,
     TOPIC_TIERS,
+    TOPIC_TIER_10_999,
     TOPIC_TYPES,
 ]
 
@@ -35,6 +37,7 @@ async def command_horse_guide(ctx: discord.ApplicationContext, topic: str) -> No
         TOPIC_BREEDING: embed_breeding,
         TOPIC_EPICNESS: embed_epicness,
         TOPIC_TIERS: embed_tiers,
+        TOPIC_TIER_10_999: embed_t10_999,
         TOPIC_TYPES: embed_types,
     }
     view = views.TopicView(ctx, topics_functions, active_topic=topic)
@@ -286,6 +289,9 @@ async def embed_tiers() -> discord.Embed:
         f'{emojis.BP} {buff_lootbox.format(increase=strings.HORSE_MULTIPLIER_LOOTBOX[10])}\n'
         f'{emojis.BP} {buff_coins.format(increase=200, daily=command_daily, weekly=command_weekly)}\n'
     )
+    tier10_999 = (
+        f'{emojis.BP} Buffs not implemented yet\n'
+    )
     note = (
         f'{emojis.BP} Every tier only lists the unlocks for this tier.\n'
         f'{emojis.DETAIL} You don\'t lose earlier unlocks when tiering up.\n'
@@ -306,6 +312,7 @@ async def embed_tiers() -> discord.Embed:
     embed.add_field(name=f'TIER VIII {emojis.HORSE_T8}', value=tier8, inline=False)
     embed.add_field(name=f'TIER IX {emojis.HORSE_T9}', value=tier9, inline=False)
     embed.add_field(name=f'TIER X {emojis.HORSE_T10}', value=tier10, inline=False)
+    embed.add_field(name=f'TIER 10.999 {emojis.HORSE_T10}', value=tier10_999, inline=False)
     embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 
@@ -403,7 +410,8 @@ async def embed_breeding() -> discord.Embed:
     howto = (
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_EPIC_RPG["horse breeding"]}\n'
         f'{emojis.BP} You can only breed with a horse of the **same** tier\n'
-        f'{emojis.BP} Ideally breed with a horse of the same level'
+        f'{emojis.BP} Ideally breed with a horse of the same level\n'
+        f'{emojis.BP} Breeding does **not** unlock T10.999 (check topic `Tier 10.0999`)'
     )
     whereto = f'{emojis.BP} You can find players in the [official EPIC RPG server](https://discord.gg/w5dej5m)'
     horse_tier = (
@@ -463,6 +471,37 @@ async def embed_breeding() -> discord.Embed:
     embed.add_field(name='TIER UP FAIL COUNT', value=fail_count, inline=False)
     embed.add_field(name='CHANCE TO TIER UP', value=chances, inline=False)
     embed.add_field(name='CALCULATORS', value=calculators, inline=False)
+    return embed
+
+
+async def embed_t10_999() -> discord.Embed:
+    """T10.999 horse embed"""
+    what_is_it = (
+        f'{emojis.BP} Horse tier 10.999 is a special tier you can\'t get by breeding\n'
+        f'{emojis.BP} The horse tier is currently only partially implemented\n'
+        f'{emojis.DETAIL} It is possible to get, but acts the same as T10\n'
+    )
+    requirements = (
+        f'{emojis.BP} {emojis.HORSE_T10} T10 horse with `99` epicness\n'
+    )
+    howto = (
+        f'{emojis.BP} 1. Find `3` {emojis.FISH_WALKING} walking normie fish\n'
+        f'{emojis.BP} 2. Use `rpg craft fish god bait`\n'
+        f'{emojis.BP} 3. Use `rpg use fish god bait`\n'
+        f'{emojis.DETAIL2} This starts the {emojis.FISH_GOD} fish god multiplayer event\n'
+        f'{emojis.DETAIL2} Players can use `COOK` to participate\n'
+        f'{emojis.DETAIL2} The event has a `100`% success chance\n'
+        f'{emojis.DETAIL2} Every participant gets `1` {emojis.TIME_CAPSULE} time capsule\n'
+        f'{emojis.DETAIL} The one starting the event gets the {emojis.FISH_GOD_COOKED} cooked fish god\n'
+        f'{emojis.BP} 4. Use `rpg use cooked fish god`\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'HORSE TIER 10.999',
+    )
+    embed.add_field(name='WHAT IS IT?', value=what_is_it, inline=False)
+    embed.add_field(name='REQUIREMENTS', value=requirements, inline=False)
+    embed.add_field(name='HOW TO GET T10.999', value=howto, inline=False)
     return embed
 
 

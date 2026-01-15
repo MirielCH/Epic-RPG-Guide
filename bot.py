@@ -5,12 +5,13 @@ import sys
 import traceback
 
 import discord
+from discord import utils
 
 import database
 from resources import functions, settings, logs
 
 
-startup_time = datetime.isoformat(datetime.utcnow().replace(microsecond=0), sep=' ')
+startup_time = datetime.isoformat(utils.utcnow().replace(microsecond=0), sep=' ')
 functions.await_coroutine(database.update_setting('startup_time', startup_time))
 
 
@@ -96,7 +97,7 @@ COG_EXTENSIONS = [
     'cogs.pets',
     'cogs.professions',
     'cogs.settings',
-    'cogs.summer',
+    #'cogs.summer',
     'cogs.timetravel',
     'cogs.titles',
     'cogs.trading',

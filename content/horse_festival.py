@@ -97,14 +97,14 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL} `0.05`% extra chance with each cowboy item, so `0.6`% chance max\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on August 5, 2024\n'
-        f'{emojis.BP} Event ends on August 20, 2024, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on August 27, 2024, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
+        f'{emojis.BP} Event started on August 26, 2025\n'
+        f'{emojis.BP} Event ends on September 14, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on September 21, 2025, with the exception of the {emojis.GODLY_HORSE_TOKEN} '
         f'GODLY horse token'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'HORSE FESTIVAL EVENT 2024 {emojis.HORSE_T10}',
+        title = f'HORSE FESTIVAL EVENT 2025 {emojis.HORSE_T10}',
         description = 'Neigh?'
     )
     embed.add_field(name='TL;DR GUIDE', value=whattodo, inline=False)

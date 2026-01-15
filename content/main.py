@@ -8,6 +8,7 @@ from humanfriendly import format_timespan
 import psutil
 
 import discord
+from discord import utils
 from discord.ext import commands
 
 import database
@@ -95,9 +96,9 @@ async def command_help(ctx: discord.ApplicationContext, topic: str) -> None:
 
 async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> None:
     """About command"""
-    start_time = datetime.utcnow()
+    start_time = utils.utcnow()
     interaction = await ctx.respond('Testing API latency...')
-    end_time = datetime.utcnow()
+    end_time = utils.utcnow()
     api_latency = end_time - start_time
     image, embed = await embed_about(bot, ctx, api_latency)
     view = LinksView()
@@ -108,7 +109,7 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["summer guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["xmas guide"]}\n'
     )
     guides = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["alchemy guide"]}\n'
@@ -160,7 +161,7 @@ async def embed_help_guides() -> discord.Embed:
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    embed.add_field(name=f'SUMMER GUIDE {emojis.SMR_DRINK_BLUE}', value=seasonal_event, inline=False)
+    #embed.add_field(name=f'CHRISTMAS GUIDE {emojis.XMAS_TREE}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)
@@ -242,7 +243,7 @@ async def embed_about(
         else:
             closed_shards += 1
     settings_db = await database.get_settings()
-    uptime = datetime.utcnow().replace(microsecond=0) - datetime.fromisoformat(settings_db['startup_time'])
+    uptime = utils.utcnow().replace(microsecond=0) - datetime.fromisoformat(settings_db['startup_time'])
     general = (
         f'{emojis.BP} {len(bot.guilds):,} servers\n'
         f'{emojis.BP} {user_count:,} users\n'

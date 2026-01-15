@@ -349,13 +349,12 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} `{bonus_drop_chance}` % extra chance to get **monster drops**\n'
         f'{emojis.BP} `{bonus_drop_chance}` % more **items** with work commands\n'
         f'{emojis.BP} `{berry_drop_chance}` % more **EPIC berries** with pickup commands\n'
-        #f'{emojis.BP} `{artifacts_drop_chance}` % extra chance to find **artifact parts**\n'
-        f'{emojis.BP} `x{enchant_multiplier:,}` enchanting multiplier (_approximation formula_)\n'
+        f'{emojis.BP} `x{enchant_multiplier:,}` **enchanting multiplier**\n'
     )
     if tt.tt > 1:
         unlocks = (
             f'{unlocks.strip()}\n'
-            f'{emojis.BP} `{tt.tt + 5:,}` base pet slots\n'
+            f'{emojis.BP} `{tt.tt + 5:,}` base **pet slots**\n'
             f'{emojis.DETAIL} Your total pet slots depend on the coolness pet slot multiplier\n'
             f'{emojis.DETAIL} See {strings.SLASH_COMMANDS_EPIC_RPG["ultraining progress"]} to see your multiplier\n'
         )
@@ -364,6 +363,7 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
             f'{unlocks.strip()}\n'
             f'{emojis.BP} Higher chance to get `+1` tier in {strings.SLASH_COMMANDS_EPIC_RPG["horse breeding"]} and '
             f'{strings.SLASH_COMMANDS_EPIC_RPG["pets fusion"]} (chance unknown)\n'
+            f'{emojis.BP} Higher chance to find **artifact parts**\n'
         )
     if tt.tt >= 50:
         unlocks = (

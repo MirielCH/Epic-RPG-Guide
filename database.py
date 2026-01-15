@@ -9,6 +9,7 @@ import traceback
 from typing import NamedTuple, Optional, Tuple, Union
 
 import discord
+from discord import utils
 from discord.ext import commands
 
 from resources import emojis
@@ -26,7 +27,7 @@ INTERNAL_ERROR_NO_DATA_FOUND = 'No data found in database.\nTable: {table}\nFunc
 INTERNAL_ERROR_NO_ARGUMENTS = 'You need to specify at least one keyword argument.\nTable: {table}\nFunction: {function}'
 INTERNAL_ERROR_INVALID_ARGUMENTS = 'Invalid value {value} for argument {argument}.\nTable: {table}\nFunction: {function}'
 INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: {function}\nRecord: {record}\n'
-INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\SQL: {sql}'
+INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\nSQL: {sql}'
 
 
 class FirstTimeUser(Exception):
@@ -403,7 +404,7 @@ async def _dict_to_monster(record: dict) -> Monster:
     try:
         is_daily = False
         if record['daily_mob_date'] is not None:
-            today = datetime.utcnow().date()
+            today = utils.utcnow().date()
             daily_date = datetime.fromisoformat(record['daily_mob_date'])
             if daily_date == today: is_daily = True
         monster = Monster(
@@ -1370,7 +1371,7 @@ async def get_daily_monster(name: str) -> Monster:
     table = 'monsters'
     function_name = 'get_daily_monster'
     sql = f'SELECT * FROM {table} WHERE daily_mob_date = ?'
-    today = datetime.utcnow().date()
+    today = utils.utcnow().date()
     today_str = today.isoformat()
     try:
         ERG_DB.row_factory = sqlite3.Row
@@ -1660,11 +1661,52 @@ async def _set_daily_monster(monster: Monster) -> None:
     table = 'monsters'
     function_name = '_set_daily_monster'
     try:
-        today = datetime.utcnow().date()
+        today = utils.utcnow().date()
         today_str = today.isoformat()
         cur = ERG_DB.cursor()
         sql = f'UPDATE {table} SET daily_mob_date = ? WHERE name = ?'
         cur.execute(sql, (today_str, monster.name))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def delete_code(code: str) -> None:
+    """Deletes a code from the table "codes".
+
+    Raises:
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'codes'
+    function_name = 'insert_code'
+    sql = f'DELETE FROM {table} WHERE code = ?'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        cur.execute(sql, (code,))
+    except sqlite3.Error as error:
+        await log_error(
+            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
+        )
+        raise
+
+
+async def insert_code(code: str, content: str, temporary_code: bool) -> None:
+    """Adds a new code to the table "codes".
+
+    Raises:
+        sqlite3.Error if something happened within the database. Also logs it to the database.
+    """
+    table = 'codes'
+    function_name = 'insert_code'
+    sql = f'INSERT INTO {table} VALUES (?, ?, ?)'
+    try:
+        ERG_DB.row_factory = sqlite3.Row
+        cur=ERG_DB.cursor()
+        temporary_code_str = 'True' if temporary_code else 'False' 
+        cur.execute(sql, (code, content, temporary_code_str))
     except sqlite3.Error as error:
         await log_error(
             INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
@@ -1689,7 +1731,7 @@ async def log_error(error: Union[Exception, str], ctx: Optional[discord.Applicat
     table = 'errors'
     function_name = 'log_error'
     sql = 'INSERT INTO errors VALUES (?, ?, ?, ?, ?)'
-    timestamp = datetime.utcnow()
+    timestamp = utils.utcnow()
     if isinstance(ctx, discord.ApplicationContext):
         command_name = f'{ctx.command.full_parent_name} {ctx.command.name}'.strip()
         command_data = str(ctx.interaction.data.get('options','None'))
@@ -1780,7 +1822,7 @@ async def set_weekly_profession(profession: str) -> None:
     table = 'professions_weekly'
     function_name = 'set_weekly_profession'
     try:
-        today = datetime.utcnow().date()
+        today = utils.utcnow().date()
         today_str = today.isoformat()
         cur = ERG_DB.cursor()
         sql = f'UPDATE {table} SET date = ? WHERE profession = ?'

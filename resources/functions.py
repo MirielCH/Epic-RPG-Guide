@@ -847,12 +847,12 @@ async def extract_data_from_profession_embed(ctx: discord.ApplicationContext,
         if profession in pr_field.name.lower():
             profession_found = strings.PROFESSIONS[profession]
     search_patterns_level = [
-        'level\*\*: (.+?) \(', #English
-        'nivel\*\*: (.+?) \(', #Spanish
-        'nível\*\*: (.+?) \(', #Portuguese
+        r'level\*\*: (.+?) \(', #English
+        r'nivel\*\*: (.+?) \(', #Spanish
+        r'nível\*\*: (.+?) \(', #Portuguese
     ]
     level_match = await get_match_from_patterns(search_patterns_level, pr_field.value.lower())
-    xp_match = re.search('xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
+    xp_match = re.search(r'xp\*\*: (.+?)/(.+?)$', pr_field.value.lower())
     try:
         level = int(level_match.group(1).replace(',',''))
         current_xp = int(xp_match.group(1).replace(',',''))
@@ -899,8 +899,8 @@ async def extract_data_from_profession_overview_embed(ctx: discord.ApplicationCo
         for profession_translation in profession_translations:
             if profession_translation in field.name.lower():
                 search_patterns = [
-                    'lv (.+?) \|', #English
-                    'nv (.+?) \|', #Spanish, Portuguese
+                    r'lv (.+?) \|', #English
+                    r'nv (.+?) \|', #Spanish, Portuguese
                 ]
                 level_match = await get_match_from_patterns(search_patterns, field.name.lower())
                 try:
@@ -945,7 +945,7 @@ async def extract_data_from_world_embed(ctx: discord.ApplicationContext,
     mob_field = bot_message.embeds[0].fields[1]
     boosts_field = bot_message.embeds[0].fields[2]
 
-    profession_search = re.search(', \*\*(.+?)\*\* ', profession_field.value.lower())
+    profession_search = re.search(r', \*\*(.+?)\*\* ', profession_field.value.lower())
     try:
         profession_name = profession_search.group(1)
     except Exception as error:
@@ -953,7 +953,7 @@ async def extract_data_from_world_embed(ctx: discord.ApplicationContext,
         raise ValueError(error)
     world_data['profession'] = profession_name
 
-    name_search = re.search('> \*\*(.+?)\*\*', mob_field.value.lower())
+    name_search = re.search(r'> \*\*(.+?)\*\*', mob_field.value.lower())
     try:
         mob_name = name_search.group(1)
     except Exception as error:
@@ -1064,7 +1064,7 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
             boost_fields = field.value
     active_items = []
     for line in potion_fields.lower().split('\n'):
-        item_name_search = re.search('> \*\*(.+?)\*\*:', line)
+        item_name_search = re.search(r'> \*\*(.+?)\*\*:', line)
         try:
             item_name = item_name_search.group(1)
             active_items.append(item_name)
@@ -1074,13 +1074,13 @@ async def extract_data_from_boosts_embed(ctx: discord.ApplicationContext,
 
     monster_drop_chance = profession_xp = selling_price = stat_at = stat_def = stat_life = lootbox_drop_chance = 0
     for line in boost_fields.lower().split('\n'):
-        at_match = re.search(' at\*\*: \+(.+?)$', line)
-        def_match = re.search(' def\*\*: \+(.+?)$', line)
-        life_match = re.search(' life\*\*: \+(.+?)$', line)
-        monster_drops_match = re.search(' monster drops\*\*: \+(.+?)%', line)
-        lootbox_drops_match = re.search(' lootbox drops\*\*: \+(.+?)%', line)
-        profession_xp_match = re.search(' profession xp\*\*: \+(.+?)%', line)
-        selling_price_match = re.search(' sell price\*\*: \+(.+?)%', line)
+        at_match = re.search(r' at\*\*: \+(.+?)$', line)
+        def_match = re.search(r' def\*\*: \+(.+?)$', line)
+        life_match = re.search(r' life\*\*: \+(.+?)$', line)
+        monster_drops_match = re.search(r' monster drops\*\*: \+(.+?)%', line)
+        lootbox_drops_match = re.search(r' lootbox drops\*\*: \+(.+?)%', line)
+        profession_xp_match = re.search(r' profession xp\*\*: \+(.+?)%', line)
+        selling_price_match = re.search(r' sell price\*\*: \+(.+?)%', line)
         if at_match: stat_at += int(at_match.group(1).replace('.00','').replace(',',''))
         if def_match: stat_def += int(def_match.group(1).replace('.00','').replace(',',''))
         if life_match: stat_life += int(life_match.group(1).replace('.00','').replace(',',''))
@@ -1124,27 +1124,27 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
     """
     data_field = bot_message.embeds[0].fields[0]
     search_patterns_tier = [
-        'tier\*\* - (.+?) <', #English
-        'tier del? caballo\*\* - (.+?) <', #Spanish
-        'tier d[eo] cavalo\*\* - (.+?) <', #Portuguese
+        r'tier\*\* - (.+?) <', #English
+        r'tier del? caballo\*\* - (.+?) <', #Spanish
+        r'tier d[eo] cavalo\*\* - (.+?) <', #Portuguese
     ]
     search_patterns_level = [
-        'level\*\* - (.+?) \(', #English 1
-        'level\*\* - (.+?)\\n', #English 2
-        'nivel del? caballo\*\* - (.+?) \(', #Spanish 1
-        'nivel del? caballo\*\* - (.+?)\\n', #Spanish 2
-        'nível d[eo] cavalo\*\* - (.+?) ?\(', #Portuguese 1
-        'nível d[eo] cavalo\*\* - (.+?)\\n', #Portuguese 2
+        r'level\*\* - (.+?) \(', #English 1
+        r'level\*\* - (.+?)\n', #English 2
+        r'nivel del? caballo\*\* - (.+?) \(', #Spanish 1
+        r'nivel del? caballo\*\* - (.+?)\n', #Spanish 2
+        r'nível d[eo] cavalo\*\* - (.+?) ?\(', #Portuguese 1
+        r'nível d[eo] cavalo\*\* - (.+?)\n', #Portuguese 2
     ]
     search_patterns_boost = [
-        'boost\*\* - (.+?)%', #English
-        'boost del? caballo\*\* - (.+?)%', #Spanish
-        'boost d[eo] cavalo\*\* - (.+?)%', #Portuguese
+        r'boost\*\* - (.+?)%', #English
+        r'boost del? caballo\*\* - (.+?)%', #Spanish
+        r'boost d[eo] cavalo\*\* - (.+?)%', #Portuguese
     ]
     search_patterns_epicness = [
-        'epicness\*\* - (.+?)\n', #English
-        'epicidad del? caballo\*\* - (.+?)\n', #Spanish
-        'epicidade d[eo] cavalo\*\* - (.+?)\n', #Portuguese
+        r'epicness\*\* - (.+?)\n', #English
+        r'epicidad del? caballo\*\* - (.+?)\n', #Spanish
+        r'epicidade d[eo] cavalo\*\* - (.+?)\n', #Portuguese
     ]
     tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
     level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
@@ -1210,16 +1210,16 @@ async def extract_data_from_profile_embed(ctx: discord.ApplicationContext,
     field_equipment = bot_message.embeds[0].fields[2]
     sword, armor, horse_type = field_equipment.value.split('\n')
     search_patterns_tt = [
-        'time travels\*\*: (.+?)[$|\n]', #English
-        'viajes en el tiempo\*\*: (.+?)$', #Spanish
-        'viagens no tempo\*\*: (.+?)$', #Portuguese
+        r'time travels\*\*: (.+?)[$|\n]', #English
+        r'viajes en el tiempo\*\*: (.+?)$', #Spanish
+        r'viagens no tempo\*\*: (.+?)$', #Portuguese
     ]
     search_patterns_area = [
-        'max: (.+?)\)', #All languages
+        r'max: (.+?)\)', #All languages
     ]
     search_patterns_level = [
-        'level\*\*: (.+?)\(', #English & Spanish
-        'n[ií]vel\*\*: (.+?)\(', #Spanish & Portuguese
+        r'level\*\*: (.+?)\(', #English & Spanish
+        r'n[ií]vel\*\*: (.+?)\(', #Spanish & Portuguese
     ]
     area_match = await get_match_from_patterns(search_patterns_area, field_progress.value.lower())
     at_match = re.search(r'at\*\*: (.+?)\n', field_stats.value.lower())
@@ -1307,12 +1307,12 @@ async def extract_progress_data_from_profile_or_progress_embed(ctx: discord.Appl
     """
     progress_field = bot_message.embeds[0].fields[0]
     search_patterns_tt = [
-        'time travels\*\*: (.+?)[$|\n]', #English
-        'viajes en el tiempo\*\*: (.+?)$', #Spanish
-        'viagens no tempo\*\*: (.+?)$', #Portuguese
+        r'time travels\*\*: (.+?)[$|\n]', #English
+        r'viajes en el tiempo\*\*: (.+?)$', #Spanish
+        r'viagens no tempo\*\*: (.+?)$', #Portuguese
     ]
     search_patterns_area = [
-        'max: (.+?)\)', #English & Spanish
+        r'max: (.+?)\)', #English & Spanish
     ]
     tt_match = await get_match_from_patterns(search_patterns_tt, progress_field.value.lower())
     area_match = await get_match_from_patterns(search_patterns_area, progress_field.value.lower())
@@ -1358,9 +1358,9 @@ async def extract_stats_from_profile_or_stats_embed(ctx: discord.ApplicationCont
         stats_field = bot_message.embeds[0].fields[1]
     else:
         stats_field = bot_message.embeds[0].fields[0]
-    at_search = re.search('at\*\*: (.+?)\\n', stats_field.value.lower())
-    def_search = re.search('def\*\*: (.+?)\\n', stats_field.value.lower())
-    life_search = re.search('life\*\*: (.+?)\/(.+?)$', stats_field.value.lower())
+    at_search = re.search(r'at\*\*: (.+?)\n', stats_field.value.lower())
+    def_search = re.search(r'def\*\*: (.+?)\n', stats_field.value.lower())
+    life_search = re.search(r'life\*\*: (.+?)\/(.+?)$', stats_field.value.lower())
     try:
         user_at = int(at_search.group(1).replace(',',''))
         user_def = int(def_search.group(1).replace(',',''))
@@ -1395,9 +1395,9 @@ async def extract_duel_bonus_from_guild_embed(ctx: discord.ApplicationContext,
     """
     progress_field = bot_message.embeds[0].fields[0]
     search_patterns = [
-        'duel bonus\*\*: (.+?)%', #English
-        'bonus en duel\*\*: (.+?)%', #Spanish
-        'bônus de duel\*\*: (.+?)%', #Portuguese
+        r'duel bonus\*\*: (.+?)%', #English
+        r'bonus en duel\*\*: (.+?)%', #Spanish
+        r'bônus de duel\*\*: (.+?)%', #Portuguese
     ]
     duel_bonus_match = await get_match_from_patterns(search_patterns, progress_field.value.lower())
     if duel_bonus_match:

@@ -8,6 +8,7 @@ import discord
 from discord.commands import SlashCommandGroup, Option
 from discord.ext import commands
 
+import database
 from resources import functions, settings, views
 
 
@@ -96,6 +97,7 @@ class DevCog(commands.Cog):
         else:
             await functions.edit_interaction(interaction, content='Shutdown aborted.', view=None)
 
+
     @dev.command(name='sync-commands')
     @commands.is_owner()
     async def sync_commands(self, ctx: discord.ApplicationContext) -> None:
@@ -115,6 +117,32 @@ class DevCog(commands.Cog):
         """Manually sync commands"""
         test = functions.format_string(None)
         pass
+
+    @dev.command()
+    @commands.is_owner()
+    async def add_code(
+        self,
+        ctx: discord.ApplicationContext,
+        code: Option(str, 'Code to add'),
+        content: Option(str, 'Content of the code'),
+        temporary: Option(bool, 'Whether the code is temporary or permanent', default=False),
+    ) -> None:
+        """Adds a code to the database"""
+
+        await database.insert_code(code, content, temporary)
+        await ctx.respond('Done')
+
+    @dev.command()
+    @commands.is_owner()
+    async def delete_code(
+        self,
+        ctx: discord.ApplicationContext,
+        code: Option(str, 'Code to delete'),
+    ) -> None:
+        """Adds a code to the database"""
+
+        await database.delete_code(code)
+        await ctx.respond('Done')
 
 
 # Initialization

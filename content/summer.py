@@ -243,11 +243,12 @@ async def embed_surf() -> discord.Embed:
 async def embed_sunglasses() -> discord.Embed:
     """Sunglasses artifact embed"""
     effects = (
-        f'{emojis.BP} Adds compensation reward when slipping off in {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
-        f'{emojis.BP} Adds a `5`% chance to increase the amount healed by {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}\n'
+        f'{emojis.BP} Adds a compensation reward when you slip off in {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
+        f'{emojis.BP} Adds a `5`% chance to trigger a 2 minute boost when using {strings.SLASH_COMMANDS_EPIC_RPG["heal"]}\n'
+        f'{emojis.DETAIL} The boost includes `5` LIFE, `5`% mob drop chance and `5`% profession XP\n'
     )
     parts = (
-        f'{emojis.BP} {emojis.ARTIFACT_SUNGLASSES_PART_A} `Part A` • Reward for not slipping off in any round in '
+        f'{emojis.BP} {emojis.ARTIFACT_SUNGLASSES_PART_A} `Part A` • Reward for not slipping off in all 3 rounds of '
         f'{strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_SUNGLASSES_PART_B} `Part B` • Drops from drinking {emojis.SMR_DRINK_BLUE}'
         f'{emojis.SMR_DRINK_GREEN}{emojis.SMR_DRINK_PINK}{emojis.SMR_DRINK_YELLOW} drinks with '

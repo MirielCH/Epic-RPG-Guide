@@ -190,15 +190,15 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} **Duration**: `4`h\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on December 1, 2024\n'
+        f'{emojis.BP} Event started on December 1, 2025\n'
         #f'{emojis.DETAIL} World boss starts later on December 5, 2023\n'
-        f'{emojis.BP} Event ends on January 5, 2025, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on January 12, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Event ends on January 5, 2026, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on January 12, 2026, 23:55 UTC\n'
         f'{emojis.DETAIL} Exception: {emojis.TIME_COOKIE} TIME cookies do not vanish'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'CHRISTMAS EVENT 2024 {emojis.XMAS_TREE}',
+        title = f'CHRISTMAS EVENT 2025 {emojis.XMAS_TREE}',
         description = (
             f'[Merry Christmas](https://www.youtube.com/watch?v=ask1B-m26aU)'
         )
