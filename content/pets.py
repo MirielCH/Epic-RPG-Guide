@@ -546,10 +546,7 @@ async def embed_fuse(tt_no: int, pet_tier: int) -> discord.Embed:
         color = settings.EMBED_COLOR,
         title = title,
         description = (
-            'This guide lists the minimum recommended pet fusions for a decent tier up chance.\n'
-            'For a more in-depth calculation (especially for high TT players) check out the [Pet Fusion Calculator]'
-            f'(https://docs.google.com/spreadsheets/d/183Gp30PHNj1isWnjT6XQ8LDiGedXjApDxX5eYsOFyXY/edit?usp=sharing) '
-            f'by <@292483348738080769>.'
+            'This guide lists the minimum recommended pet fusions for a decent tier up chance.'
         )
     )
     for pet_fusion in pet_fusions:

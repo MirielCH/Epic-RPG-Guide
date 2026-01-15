@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 
 import database
-from resources import components, emojis, settings, strings
+from resources import components, settings, strings
 
 
 class AbortView(discord.ui.View):
@@ -26,12 +26,7 @@ class AbortView(discord.ui.View):
         self.value = None
         self.interaction = interaction
         self.user = ctx.author
-
-    @discord.ui.button(custom_id="abort", style=discord.ButtonStyle.grey, label='Abort')
-    async def button_abort(self, button: discord.ui.Button, interaction: discord.Interaction):
-        """Abort button"""
-        self.value = button.custom_id
-        self.stop()
+        self.add_item(discord.ui.ActionRow(components.AbortButton(custom_id='abort', label='Abort', emoji=None)))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
@@ -43,7 +38,7 @@ class AbortView(discord.ui.View):
         self.stop()
 
 
-class AreaCheckView(discord.ui.View):
+class AreaCheckView(discord.ui.DesignerView):
     """View with an area select that shows area checks on select.
     Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
 
@@ -79,16 +74,16 @@ class AreaCheckView(discord.ui.View):
         self.function_embed = function_embed
         self.function_area_check = function_area_check
         self.function_dungeon_check = function_dungeon_check
-        self.add_item(components.AreaCheckSelect(self.active_area))
+        self.add_item(discord.ui.ActionRow(components.AreaCheckSelect(self.active_area)))
         prev_disabled = True if active_area == 1 else False
         next_disabled = True if active_area == 21 else False
-        self.add_item(components.AreaCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled,
-                                                          emoji=None))
-        self.add_item(components.AreaCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled,
-                                                          emoji=None))
-        self.add_item(components.AreaDungeonCheckSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon check',
-                                                              emoji=None))
-
+        self.add_item(
+            discord.ui.ActionRow(
+                components.AreaCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None),
+                components.AreaCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None),
+                components.AreaDungeonCheckSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon check', emoji=None)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -101,7 +96,7 @@ class AreaCheckView(discord.ui.View):
         self.stop()
 
 
-class AreaGuideView(discord.ui.View):
+class AreaGuideView(discord.ui.DesignerView):
     """View with an area select that shows area guides on select.
     Also needs the interaction of the response with the view, so do AreaView.interaction = await ctx.respond('foo').
 
@@ -131,15 +126,20 @@ class AreaGuideView(discord.ui.View):
         self.function_embed = function_embed
         self.function_area_guide = function_area_guide
         self.function_dungeon_guide = function_dungeon_guide
-        self.add_item(components.AreaGuideSelect(self.active_area))
+        self.add_item(discord.ui.ActionRow(components.AreaGuideSelect(active_area)))
         prev_disabled = True if active_area == 1 else False
         next_disabled = True if active_area == 21 else False
-        self.add_item(components.AreaGuidePaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled,
-                                                          emoji=None))
-        self.add_item(components.AreaGuidePaginatorButton(custom_id='next', label='▶', disabled=next_disabled,
-                                                          emoji=None))
-        self.add_item(components.AreaDungeonGuideSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon guide',
-                                                              emoji=None))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.AreaGuidePaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None),
+                components.AreaGuidePaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None),
+                components.AreaDungeonGuideSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon guide', emoji=None)
+            )
+        )
+        #self.add_item(components.AreaGuidePaginatorButton(custom_id='next', label='▶', disabled=next_disabled,
+        #                                                  emoji=None))
+        #self.add_item(components.AreaDungeonGuideSwitchButton(custom_id="dungeon-switch", label='↪ Dungeon guide',
+        #                                                      emoji=None))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
@@ -161,7 +161,7 @@ class AreaGuideView(discord.ui.View):
         self.stop()
 
 
-class DungeonCheckView(discord.ui.View):
+class DungeonCheckView(discord.ui.DesignerView):
     """View with a dungeon select that shows dungeon checks on select.
     Also needs the interaction of the response with the view, so do DungeonCheckView.interaction = await ctx.respond('foo').
 
@@ -197,15 +197,16 @@ class DungeonCheckView(discord.ui.View):
         self.function_embed = function_embed
         self.function_area_check = function_area_check
         self.function_dungeon_check = function_dungeon_check
-        self.add_item(components.DungeonCheckSelect(self.active_dungeon))
+        self.add_item(discord.ui.ActionRow(components.DungeonCheckSelect(self.active_dungeon)))
         prev_disabled = True if active_dungeon == 1 else False
         next_disabled = True if active_dungeon == 21 else False
-        self.add_item(components.DungeonCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled,
-                                                             emoji=None))
-        self.add_item(components.DungeonCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled,
-                                                             emoji=None))
-        self.add_item(components.AreaDungeonCheckSwitchButton(custom_id="area-switch", label='↪ Area check',
-                                                              emoji=None))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.DungeonCheckPaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None),
+                components.DungeonCheckPaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None),
+                components.AreaDungeonCheckSwitchButton(custom_id="area-switch", label='↪ Area check', emoji=None)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -218,7 +219,7 @@ class DungeonCheckView(discord.ui.View):
         self.stop()
 
 
-class DungeonGuideView(discord.ui.View):
+class DungeonGuideView(discord.ui.DesignerView):
     """View with a dungeon select that shows dungeon guides on select.
     Also needs the interaction of the response with the view, so do DungeonGuideView.interaction = await ctx.respond('foo').
 
@@ -249,15 +250,16 @@ class DungeonGuideView(discord.ui.View):
         self.function_dungeon_guide = function_dungeon_guide
         self.db_user = db_user
         self.full_guide = full_guide
-        self.add_item(components.DungeonGuideSelect(self.active_dungeon))
+        self.add_item(discord.ui.ActionRow(components.DungeonGuideSelect(self.active_dungeon)))
         prev_disabled = True if active_dungeon == 1 else False
         next_disabled = True if active_dungeon == 21 else False
-        self.add_item(components.DungeonGuidePaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled,
-                                                             emoji=None))
-        self.add_item(components.DungeonGuidePaginatorButton(custom_id='next', label='▶', disabled=next_disabled,
-                                                             emoji=None))
-        self.add_item(components.AreaDungeonGuideSwitchButton(custom_id="area-switch", label='↪ Area guide',
-                                                              emoji=None))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.DungeonGuidePaginatorButton(custom_id='prev', label='◀', disabled=prev_disabled, emoji=None),
+                components.DungeonGuidePaginatorButton(custom_id='next', label='▶', disabled=next_disabled, emoji=None),
+                components.AreaDungeonGuideSwitchButton(custom_id="area-switch", label='↪ Area guide', emoji=None)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -270,7 +272,7 @@ class DungeonGuideView(discord.ui.View):
         self.stop()
 
 
-class TopicView(discord.ui.View):
+class TopicView(discord.ui.DesignerView):
     """View with a topic select.
     Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
 
@@ -296,7 +298,7 @@ class TopicView(discord.ui.View):
         self.topics = topics
         self.active_topic = active_topic
         self.placeholder = placeholder
-        self.add_item(components.TopicSelect(self.topics, self.active_topic, self.placeholder))
+        self.add_item(discord.ui.ActionRow(components.TopicSelect(topics, active_topic, placeholder)))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -309,7 +311,7 @@ class TopicView(discord.ui.View):
         self.stop()
 
 
-class PaginatorView(discord.ui.View):
+class PaginatorView(discord.ui.DesignerView):
     """Paginator view with three buttons (previous, page count, next).
 
     Also needs the interaction of the response with the view, so do AbortView.interaction = await ctx.respond('foo').
@@ -327,10 +329,13 @@ class PaginatorView(discord.ui.View):
         self.user = ctx.author
         self.pages = pages
         self.active_page = 1
-        self.add_item(components.PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None))
-        self.add_item(discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True,
-                                        label=f'1/{len(self.pages)}'))
-        self.add_item(components.PaginatorButton(custom_id='next', label='▶', emoji=None))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.PaginatorButton(custom_id='prev', label='◀', disabled=True, emoji=None),
+                discord.ui.Button(custom_id="pages", style=discord.ButtonStyle.grey, disabled=True, label=f'1/{len(self.pages)}'),
+                components.PaginatorButton(custom_id='next', label='▶', emoji=None)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -343,7 +348,7 @@ class PaginatorView(discord.ui.View):
         self.stop()
 
 
-class ConfirmCancelView(discord.ui.View):
+class ConfirmCancelView(discord.ui.DesignerView):
     """View with confirm and cancel button.
 
     Args: ctx, labels: Optional[list[str]]
@@ -361,12 +366,12 @@ class ConfirmCancelView(discord.ui.View):
         self.user = ctx.author
         self.label_confirm = labels[0]
         self.label_cancel = labels[1]
-        self.add_item(components.CustomButton(style=discord.ButtonStyle.green,
-                                              custom_id='confirm',
-                                              label=self.label_confirm))
-        self.add_item(components.CustomButton(style=discord.ButtonStyle.red,
-                                              custom_id='cancel',
-                                              label=self.label_cancel))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.CustomButton(style=discord.ButtonStyle.green, custom_id='confirm', label=self.label_confirm),
+                components.CustomButton(style=discord.ButtonStyle.red, custom_id='cancel', label=self.label_cancel)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user.id != self.user.id:
@@ -386,7 +391,7 @@ class ConfirmCancelView(discord.ui.View):
         self.stop()
 
 
-class FollowupCommandView(discord.ui.View):
+class FollowupCommandView(discord.ui.DesignerView):
     """Followup view with a single button that calls another command and then removes itself.
 
     Also needs the interaction of the response with the view, so do
@@ -405,8 +410,11 @@ class FollowupCommandView(discord.ui.View):
         self.user = user
         self.label = label
         self.active_page = 1
-        self.add_item(components.CustomButton(custom_id='followup', label=label, emoji=None,
-                                              style=discord.ButtonStyle.grey))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.CustomButton(custom_id='followup', label=label, emoji=None, style=discord.ButtonStyle.grey)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -418,7 +426,7 @@ class FollowupCommandView(discord.ui.View):
         self.stop()
 
 
-class FollowupCraftingCalculatorView(discord.ui.View):
+class FollowupCraftingCalculatorView(discord.ui.DesignerView):
     """Followup view with a single button that calls the CraftinCalculatorAmountModal and then removes itself.
 
     Also needs the interaction of the response with the view, so do
@@ -438,7 +446,7 @@ class FollowupCraftingCalculatorView(discord.ui.View):
         self.user = ctx.author
         self.item_name = item_name
         self.item_emoji = item_emoji
-        self.add_item(components.CraftingRecalculateButton(custom_id='craft', label=label))
+        self.add_item(discord.ui.ActionRow(components.CraftingRecalculateButton(custom_id='craft', label=label)))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -459,57 +467,7 @@ class FollowupCraftingCalculatorView(discord.ui.View):
         self.stop()
 
 
-class ComplainView(discord.ui.View):
-    """View with button to complain. Because yes.
-
-    Also needs the message of the response with the view, so do ComplainView.message = await ctx.send('foo').
-
-    Returns
-    -------
-    'timeout' on timeout.
-    None if nothing happened yet.
-    """
-    def __init__(self, ctx: commands.Context, message: Optional[discord.Message] = None):
-        super().__init__(timeout=settings.INTERACTION_TIMEOUT)
-        self.value = None
-        self.ctx = ctx
-        self.message = message
-
-    @discord.ui.button(custom_id="complain", style=discord.ButtonStyle.grey, label='Complain')
-    async def button_complain(self, button: discord.ui.Button, interaction: discord.Interaction):
-        """Complain button"""
-        response = (
-            f'What the hell is this nonsense, where are my old commands??!!!??\n\n'
-            f'**THE DEV IS A BLOODY GOBSHITE!** {emojis.SAD_ANGRY}\n\n'
-            f'**BRING ME THE MANAGER!** {emojis.PEPE_ANGRY_POLICE}\n\n'
-            f'**I DEMAND MY MONEY BACK!** {emojis.PEPE_TABLESLAM}\n\n'
-        )
-        embed = discord.Embed(
-            color = settings.EMBED_COLOR,
-            title = f'{self.ctx.author.name} IS COMPLAINING'.upper(),
-            description = response
-        )
-        image = discord.File(settings.IMG_CRANKY, filename='cranky.png')
-        image_url = 'attachment://cranky.png'
-        embed.set_thumbnail(url=image_url)
-        self.disable_all_items()
-        await self.message.edit(view=self)
-        await interaction.response.send_message(embed=embed, file=image)
-        self.stop()
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        #if interaction.user.id != self.ctx.author.id:
-         #   await interaction.response.send_message(strings.MSG_INTERACTION_ERROR, ephemeral=True)
-          #  return False
-        return True
-
-    async def on_timeout(self) -> None:
-        self.value = 'timeout'
-        await self.message.edit(view=None)
-        self.stop()
-
-
-class TimeJumpCalculatorView(discord.ui.View):
+class TimeJumpCalculatorView(discord.ui.DesignerView):
     """View with interactions to manually set stats, gear and enchants in the time jump score calculator.
 
     Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
@@ -534,13 +492,31 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.option_stats = option_stats
         self.all_items = all_items
         self.embed_function = embed_function
-        self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='sword', all_items=all_items,
-                                                              placeholder='Change sword', profile_data=profile_data))
-        self.add_item(components.TimeJumpCalculatorGearSelect(gear_type='armor', all_items=all_items,
-                                                              placeholder='Change armor', profile_data=profile_data))
-        self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='sword', placeholder='Change sword enchant'))
-        self.add_item(components.TimeJumpCalculatorEnchantSelect(enchant_type='armor', placeholder='Change armor enchant'))
-        self.add_item(components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats'))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.TimeJumpCalculatorGearSelect(gear_type='sword', all_items=all_items, placeholder='Change sword', profile_data=profile_data)
+            )
+        )
+        self.add_item(
+            discord.ui.ActionRow(
+                components.TimeJumpCalculatorGearSelect(gear_type='armor', all_items=all_items, placeholder='Change armor', profile_data=profile_data),
+            )
+        )
+        self.add_item(
+            discord.ui.ActionRow(
+                components.TimeJumpCalculatorEnchantSelect(enchant_type='sword', placeholder='Change sword enchant')
+            )
+        )
+        self.add_item(
+            discord.ui.ActionRow(
+                components.TimeJumpCalculatorEnchantSelect(enchant_type='armor', placeholder='Change armor enchant')
+            )
+        )
+        self.add_item(
+            discord.ui.ActionRow(
+                components.TimeJumpCalculatorChangeStatsButton(custom_id='change_stats', label='Change stats')
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -560,7 +536,7 @@ class TimeJumpCalculatorView(discord.ui.View):
         self.stop()
 
 
-class DropChanceCalculatorView(discord.ui.View):
+class DropChanceCalculatorView(discord.ui.DesignerView):
     """View with a drop type select.
     Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
 
@@ -598,7 +574,11 @@ class DropChanceCalculatorView(discord.ui.View):
         self.lootbox_boost_percentage = lootbox_boost_percentage
         self.claus_belt_artifact = claus_belt_artifact
         self.vampire_teeth_artifact = vampire_teeth_artifact
-        self.add_item(components.DropTypeSelect(self.drop_types, self.active_drop_type, self.placeholder))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.DropTypeSelect(drop_types, active_drop_type, placeholder)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -611,7 +591,7 @@ class DropChanceCalculatorView(discord.ui.View):
         self.stop()
 
 
-class PetTierView(discord.ui.View):
+class PetTierView(discord.ui.DesignerView):
     """View with a pet tier select.
     Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
 
@@ -634,7 +614,7 @@ class PetTierView(discord.ui.View):
         self.embed_function = embed_function
         self.tt_no = tt_no
         self.pet_tier = pet_tier
-        self.add_item(components.PetTierSelect(self.pet_tier, 'Choose pet tier ...'))
+        self.add_item(discord.ui.ActionRow(components.PetTierSelect(self.pet_tier, 'Choose pet tier ...')))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -647,7 +627,7 @@ class PetTierView(discord.ui.View):
         self.stop()
 
 
-class ItemView(discord.ui.View):
+class ItemView(discord.ui.DesignerView):
     """View with an item select.
     Also needs the interaction of the response with the view, so do TopicView.interaction = await ctx.respond('foo').
 
@@ -673,7 +653,11 @@ class ItemView(discord.ui.View):
         self.items = items
         self.active_item = active_item
         self.placeholder = placeholder
-        self.add_item(components.ItemSelect(self.items, self.active_item, self.placeholder))
+        self.add_item(
+            discord.ui.ActionRow(
+                components.ItemSelect(self.items, self.active_item, placeholder)
+            )
+        )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         #if interaction.user.id != self.user.id:
@@ -686,7 +670,7 @@ class ItemView(discord.ui.View):
         self.stop()
 
 
-class SettingsUserView(discord.ui.View):
+class SettingsUserView(discord.ui.DesignerView):
     """View with a all components to manage user settings.
     Also needs the interaction of the response with the view, so do view.interaction = await ctx.respond('foo').
 
@@ -713,7 +697,7 @@ class SettingsUserView(discord.ui.View):
         self.user = ctx.author
         self.user_settings = user_settings
         self.embed_function = embed_function
-        self.add_item(components.ManageUserSettingsSelect(self))
+        self.add_item(discord.ui.ActionRow(components.ManageUserSettingsSelect(self)))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.user:

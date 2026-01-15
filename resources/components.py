@@ -8,6 +8,17 @@ import discord
 from resources import emojis, strings, modals
 
 
+class AbortButton(discord.ui.Button):
+    """Abort button"""
+    def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
+        super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
+                         disabled=disabled)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        self.value = self.custom_id
+        self.view.stop()
+
+
 class AreaCheckSelect(discord.ui.Select):
     """Area check select"""
     def __init__(self, active_area: int):
@@ -17,21 +28,26 @@ class AreaCheckSelect(discord.ui.Select):
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
         super().__init__(placeholder='Choose area ...', min_values=1, max_values=1, options=options,
-                         custom_id='select_area', row=0)
+                         custom_id='select_area')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
         embed = await self.view.function_embed(self.view.active_area, self.view.user_at, self.view.user_def,
                                                self.view.user_life)
-        for child in self.view.children.copy():
-            if child.custom_id == 'select_area':
-                self.view.remove_item(child)
-                self.view.add_item(AreaCheckSelect(self.view.active_area))
-            if child.custom_id == 'next':
-                child.disabled = True if self.view.active_area == 21 else False
-            if child.custom_id == 'prev':
-                child.disabled = True if self.view.active_area == 1 else False
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_area':
+                    options = []
+                    for area_no in range(1,22):
+                        label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                        emoji = '🔹' if area_no == self.view.active_area else None
+                        options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                    child.options = options
+                if child.custom_id == 'next':
+                    child.disabled = True if self.view.active_area == 21 else False
+                if child.custom_id == 'prev':
+                    child.disabled = True if self.view.active_area == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -39,7 +55,7 @@ class AreaDungeonCheckSwitchButton(discord.ui.Button):
     """Button for area/dungeon check that switches to the opposite check"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         await interaction.response.edit_message()
@@ -63,7 +79,7 @@ class AreaDungeonGuideSwitchButton(discord.ui.Button):
     """Button for area/dungeon guide that switches to the opposite guide"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         await interaction.response.edit_message()
@@ -86,34 +102,37 @@ class AreaCheckPaginatorButton(discord.ui.Button):
     """Paginator button for area check view"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         if self.custom_id == 'prev':
             self.view.active_area -= 1
             if self.view.active_area == 1: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'next':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'next':
+                        child.disabled = False
+                        break
         elif self.custom_id == 'next':
             self.view.active_area += 1
             if self.view.active_area == 21: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
         else:
             return
-        for child in self.view.children:
-            if child.custom_id == 'select_area':
-                options = []
-                for area_no in range(1,22):
-                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
-                    emoji = '🔹' if area_no == self.view.active_area else None
-                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_area':
+                    options = []
+                    for area_no in range(1,22):
+                        label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                        emoji = '🔹' if area_no == self.view.active_area else None
+                        options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.function_embed(self.view.active_area, self.view.user_at, self.view.user_def,
                                                self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
@@ -128,20 +147,25 @@ class AreaGuideSelect(discord.ui.Select):
             emoji = '🔹' if area_no == active_area else None
             options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
         super().__init__(placeholder='Choose area ...', min_values=1, max_values=1, options=options,
-                         custom_id='select_area', row=0)
+                         custom_id='select_area')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_area = int(select_value)
         embed = await self.view.function_embed(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
-        for child in self.view.children.copy():
-            if child.custom_id == 'select_area':
-                self.view.remove_item(child)
-                self.view.add_item(AreaGuideSelect(self.view.active_area))
-            if child.custom_id == 'next':
-                child.disabled = True if self.view.active_area == 21 else False
-            if child.custom_id == 'prev':
-                child.disabled = True if self.view.active_area == 1 else False
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_area':
+                    options = []
+                    for area_no in range(1,22):
+                        label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                        emoji = '🔹' if area_no == self.view.active_area else None
+                        options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                    child.options = options
+                if child.custom_id == 'next':
+                    child.disabled = True if self.view.active_area == 21 else False
+                if child.custom_id == 'prev':
+                    child.disabled = True if self.view.active_area == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -149,7 +173,7 @@ class AreaGuidePaginatorButton(discord.ui.Button):
     """Paginator button for area guide view"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         if self.custom_id == 'prev':
@@ -162,21 +186,23 @@ class AreaGuidePaginatorButton(discord.ui.Button):
         elif self.custom_id == 'next':
             self.view.active_area += 1
             if self.view.active_area == 21: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
         else:
             return
-        for child in self.view.children:
-            if child.custom_id == 'select_area':
-                options = []
-                for area_no in range(1,22):
-                    label = f'Area {area_no}' if area_no != 21 else 'The TOP'
-                    emoji = '🔹' if area_no == self.view.active_area else None
-                    options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_area':
+                    options = []
+                    for area_no in range(1,22):
+                        label = f'Area {area_no}' if area_no != 21 else 'The TOP'
+                        emoji = '🔹' if area_no == self.view.active_area else None
+                        options.append(discord.SelectOption(label=label, value=str(area_no), emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.function_embed(self.view.ctx, self.view.active_area, self.view.db_user, self.view.full_guide)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
@@ -185,7 +211,7 @@ class CraftingRecalculateButton(discord.ui.Button):
     """Recalculation button for the crafting calculator"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         modal = modals.CraftingCalculatorAmountModal(self.view)
@@ -202,21 +228,27 @@ class DungeonCheckSelect(discord.ui.Select):
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
         super().__init__(placeholder='Choose dungeon ...', min_values=1, max_values=1, options=options,
-                         custom_id='select_dungeon', row=0)
+                         custom_id='select_dungeon')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
         embed = await self.view.function_embed(self.view.active_dungeon, self.view.user_at, self.view.user_def,
                                                self.view.user_life)
-        for child in self.view.children.copy():
-            if child.custom_id == 'select_dungeon':
-                self.view.remove_item(child)
-                self.view.add_item(DungeonCheckSelect(self.view.active_dungeon))
-            if child.custom_id == 'next':
-                child.disabled = True if self.view.active_dungeon == 21 else False
-            if child.custom_id == 'prev':
-                child.disabled = True if self.view.active_dungeon == 1 else False
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_dungeon':
+                    options = []
+                    for dungeon_no in strings.DUNGEONS:
+                        label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                        label = label.replace('.','-')
+                        emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                        options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                    child.options = options
+                if child.custom_id == 'next':
+                    child.disabled = True if self.view.active_dungeon == 21 else False
+                if child.custom_id == 'prev':
+                    child.disabled = True if self.view.active_dungeon == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -224,7 +256,7 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
     """Paginator button for dungeon check view"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         if self.custom_id == 'prev':
@@ -235,10 +267,11 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
             else:
                 self.view.active_dungeon -= 1
             if self.view.active_dungeon == 1: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'next':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'next':
+                        child.disabled = False
+                        break
         elif self.custom_id == 'next':
             if self.view.active_dungeon == 15:
                 self.view.active_dungeon = 15.2
@@ -247,22 +280,24 @@ class DungeonCheckPaginatorButton(discord.ui.Button):
             else:
                 self.view.active_dungeon += 1
             if self.view.active_dungeon == 21: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
         else:
             return
-        for child in self.view.children:
-            if child.custom_id == 'select_dungeon':
-                options = []
-                for dungeon_no in strings.DUNGEONS:
-                    label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
-                    label = label.replace('.','-')
-                    emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
-                    options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_dungeon':
+                    options = []
+                    for dungeon_no in strings.DUNGEONS:
+                        label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                        label = label.replace('.','-')
+                        emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                        options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.function_embed(self.view.active_dungeon, self.view.user_at, self.view.user_def,
                                                self.view.user_life)
         await interaction.response.edit_message(embed=embed, view=self.view)
@@ -278,20 +313,26 @@ class DungeonGuideSelect(discord.ui.Select):
             emoji = '🔹' if dungeon_no == active_dungeon else None
             options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
         super().__init__(placeholder='Choose dungeon ...', min_values=1, max_values=1, options=options,
-                         custom_id='select_dungeon', row=0)
+                         custom_id='select_dungeon')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_dungeon = float(select_value)
         embed = await self.view.function_embed(self.view.active_dungeon)
-        for child in self.view.children.copy():
-            if child.custom_id == 'select_dungeon':
-                self.view.remove_item(child)
-                self.view.add_item(DungeonGuideSelect(self.view.active_dungeon))
-            if child.custom_id == 'next':
-                child.disabled = True if self.view.active_dungeon == 21 else False
-            if child.custom_id == 'prev':
-                child.disabled = True if self.view.active_dungeon == 1 else False
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_dungeon':
+                    options = []
+                    for dungeon_no in strings.DUNGEONS:
+                        label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                        label = label.replace('.','-')
+                        emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                        options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                    child.options = options
+                if child.custom_id == 'next':
+                    child.disabled = True if self.view.active_dungeon == 21 else False
+                if child.custom_id == 'prev':
+                    child.disabled = True if self.view.active_dungeon == 1 else False
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
@@ -299,7 +340,7 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
     """Paginator button for dungeon guide view"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=1)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         if self.custom_id == 'prev':
@@ -310,10 +351,11 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
             else:
                 self.view.active_dungeon -= 1
             if self.view.active_dungeon == 1: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'next':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'next':
+                        child.disabled = False
+                        break
         elif self.custom_id == 'next':
             if self.view.active_dungeon == 15:
                 self.view.active_dungeon = 15.2
@@ -322,50 +364,53 @@ class DungeonGuidePaginatorButton(discord.ui.Button):
             else:
                 self.view.active_dungeon += 1
             if self.view.active_dungeon == 21: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
         else:
             return
-        for child in self.view.children:
-            if child.custom_id == 'select_dungeon':
-                options = []
-                for dungeon_no in strings.DUNGEONS:
-                    label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
-                    label = label.replace('.','-')
-                    emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
-                    options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_dungeon':
+                    options = []
+                    for dungeon_no in strings.DUNGEONS:
+                        label = f'Dungeon {dungeon_no:g}' if dungeon_no != 21 else 'EPIC NPC fight'
+                        label = label.replace('.','-')
+                        emoji = '🔹' if dungeon_no == self.view.active_dungeon else None
+                        options.append(discord.SelectOption(label=label, value=str(dungeon_no), emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.function_embed(self.view.active_dungeon)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
 class TopicSelect(discord.ui.Select):
     """Topic Select"""
-    def __init__(self, topics: dict, active_topic: str, placeholder: str, row: Optional[int] = None):
+    def __init__(self, topics: dict, active_topic: str, placeholder: str):
         self.topics = topics
         options = []
         for topic in topics.keys():
             label = topic
             emoji = '🔹' if topic == active_topic else None
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id='select_topic')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_topic = select_value
-        for child in self.view.children:
-            if child.custom_id == 'select_topic':
-                options = []
-                for topic in self.topics.keys():
-                    label = topic
-                    emoji = '🔹' if topic == self.view.active_topic else None
-                    options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_topic':
+                    options = []
+                    for topic in self.topics.keys():
+                        label = topic
+                        emoji = '🔹' if topic == self.view.active_topic else None
+                        options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.topics[select_value]()
         await interaction.response.edit_message(embed=embed, view=self.view)
 
@@ -380,23 +425,26 @@ class PaginatorButton(discord.ui.Button):
         if self.custom_id == 'prev':
             self.view.active_page -= 1
             if self.view.active_page == 1: self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'next':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'next':
+                        child.disabled = False
+                        break
         elif self.custom_id == 'next':
             self.view.active_page += 1
             if self.view.active_page == len(self.view.pages): self.disabled = True
-            for child in self.view.children:
-                if child.custom_id == 'prev':
-                    child.disabled = False
-                    break
+            for action_row in self.view.children.copy():
+                for child in action_row.children.copy():
+                    if child.custom_id == 'prev':
+                        child.disabled = False
+                        break
         else:
             return
-        for child in self.view.children:
-            if child.custom_id == 'pages':
-                child.label = f'{self.view.active_page}/{len(self.view.pages)}'
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'pages':
+                    child.label = f'{self.view.active_page}/{len(self.view.pages)}'
+                    break
         await interaction.response.edit_message(embed=self.view.pages[self.view.active_page-1], view=self.view)
 
 
@@ -413,28 +461,29 @@ class CustomButton(discord.ui.Button):
 
 class DropTypeSelect(discord.ui.Select):
     """Drop type select"""
-    def __init__(self, drop_types: List[str], active_drop_type: str, placeholder: str, row: Optional[int] = None):
+    def __init__(self, drop_types: List[str], active_drop_type: str, placeholder: str):
         self.drop_types = drop_types
         options = []
         for drop_type in drop_types:
             label = drop_type
             emoji = '🔹' if drop_type == active_drop_type else None
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id='select_type')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         self.view.active_drop_type = select_value
-        for child in self.view.children:
-            if child.custom_id == 'select_type':
-                options = []
-                for drop_type in self.drop_types:
-                    label = drop_type
-                    emoji = '🔹' if drop_type == self.view.active_drop_type else None
-                    options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_type':
+                    options = []
+                    for drop_type in self.drop_types:
+                        label = drop_type
+                        emoji = '🔹' if drop_type == self.view.active_drop_type else None
+                        options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
+                    child.options = options
+                    break
         if 'lootbox' in self.view.active_drop_type.lower():
             boost_percentage = self.view.lootbox_boost_percentage
             world_boost = self.view.lootbox_world_boost
@@ -449,7 +498,7 @@ class DropTypeSelect(discord.ui.Select):
 
 class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
     """Enchant select"""
-    def __init__(self, enchant_type: Literal['armor', 'sword'], placeholder: str, row: Optional[int] = None):
+    def __init__(self, enchant_type: Literal['armor', 'sword'], placeholder: str):
         enchants = [
             'OMEGA',
             'ULTRA-OMEGA',
@@ -462,21 +511,22 @@ class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
             options.append(discord.SelectOption(label=enchant, value=enchant, emoji=emojis.PR_ENCHANTER))
         self.enchants = enchants
         self.enchant_type = enchant_type
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id=f'select_enchant_{enchant_type}')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = self.values[0]
         if select_value == 'None': select_value = 'No'
         self.view.profile_data[f'enchant_{self.enchant_type}'] = select_value
-        for child in self.view.children:
-            if child.custom_id == self.custom_id:
-                options = []
-                options.append(discord.SelectOption(label='None', value='None', emoji=None))
-                for enchant in self.enchants:
-                    options.append(discord.SelectOption(label=enchant, value=enchant, emoji=emojis.PR_ENCHANTER))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == self.custom_id:
+                    options = []
+                    options.append(discord.SelectOption(label='None', value='None', emoji=None))
+                    for enchant in self.enchants:
+                        options.append(discord.SelectOption(label=enchant, value=enchant, emoji=emojis.PR_ENCHANTER))
+                    child.options = options
+                    break
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
                                                self.view.boosts_data, self.view.option_inventory, self.view.option_stats)
         await interaction.response.edit_message(embed=embed, view=self.view)
@@ -484,8 +534,7 @@ class TimeJumpCalculatorEnchantSelect(discord.ui.Select):
 
 class TimeJumpCalculatorGearSelect(discord.ui.Select):
     """Gear select"""
-    def __init__(self, gear_type: Literal['armor', 'sword'], all_items: dict, placeholder: str, profile_data: dict,
-                 row: Optional[int] = None):
+    def __init__(self, gear_type: Literal['armor', 'sword'], all_items: dict, placeholder: str, profile_data: dict):
         options = []
         if profile_data[gear_type] is not None:
             options.append(discord.SelectOption(label='None', value='None', emoji=None))
@@ -499,7 +548,7 @@ class TimeJumpCalculatorGearSelect(discord.ui.Select):
                 if item_counter == 25: break
         self.gear_type = gear_type
         self.all_items = all_items
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id=f'select_gear_{gear_type}')
 
     async def callback(self, interaction: discord.Interaction):
@@ -508,22 +557,23 @@ class TimeJumpCalculatorGearSelect(discord.ui.Select):
             self.view.profile_data[self.gear_type] = None
         else:
             self.view.profile_data[self.gear_type] = self.all_items[select_value]
-        for child in self.view.children:
-            if child.custom_id == self.custom_id:
-                options = []
-                if self.view.profile_data[self.gear_type] is not None:
-                    options.append(discord.SelectOption(label='None', value='None', emoji=None))
-                item_counter = 1
-                for item in self.all_items.values():
-                    if item.score == 0: continue
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == self.custom_id:
+                    options = []
                     if self.view.profile_data[self.gear_type] is not None:
-                        if self.view.profile_data[self.gear_type].name == item.name: continue
-                    if item.item_type == self.gear_type:
-                        options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
-                        item_counter += 1
-                        if item_counter == 25: break
-                child.options = options
-                break
+                        options.append(discord.SelectOption(label='None', value='None', emoji=None))
+                    item_counter = 1
+                    for item in self.all_items.values():
+                        if item.score == 0: continue
+                        if self.view.profile_data[self.gear_type] is not None:
+                            if self.view.profile_data[self.gear_type].name == item.name: continue
+                        if item.item_type == self.gear_type:
+                            options.append(discord.SelectOption(label=item.name, value=item.name, emoji=item.emoji))
+                            item_counter += 1
+                            if item_counter == 25: break
+                    child.options = options
+                    break
         embed = await self.view.embed_function(self.view.area_no, self.view.inventory, self.view.profile_data,
                                                self.view.boosts_data,
                                                self.view.option_inventory, self.view.option_stats)
@@ -534,7 +584,7 @@ class TimeJumpCalculatorChangeStatsButton(discord.ui.Button):
     """Button to open a modal to input stats"""
     def __init__(self, custom_id: str, label: str, disabled: bool = False, emoji: Optional[discord.PartialEmoji] = None):
         super().__init__(style=discord.ButtonStyle.grey, custom_id=custom_id, label=label, emoji=emoji,
-                         disabled=disabled, row=None)
+                         disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction) -> None:
         modal = modals.TimeJumpCalculatorStatsModal(self.view)
@@ -543,8 +593,7 @@ class TimeJumpCalculatorChangeStatsButton(discord.ui.Button):
 
 class PetTierSelect(discord.ui.Select):
     """Pet tier Select"""
-    def __init__(self, pet_tier: int, placeholder: Optional[str] = 'Choose pet tier ...',
-                 row: Optional[int] = None):
+    def __init__(self, pet_tier: int, placeholder: Optional[str] = 'Choose pet tier ...'):
         pet_tiers = {0: 'All tiers'}
         for tier in range(1,21):
             pet_tiers[tier] = f'Tier {tier}'
@@ -554,35 +603,36 @@ class PetTierSelect(discord.ui.Select):
             emoji = '🔹' if tier == pet_tier else None
             options.append(discord.SelectOption(label=label, value=str(tier), emoji=emoji))
         self.pet_tiers = pet_tiers
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id='select_tier')
 
     async def callback(self, interaction: discord.Interaction):
         select_value = int(self.values[0])
         self.view.pet_tier = select_value
-        for child in self.view.children:
-            if child.custom_id == 'select_tier':
-                options = []
-                for tier, label in self.pet_tiers.items():
-                    label = label
-                    emoji = '🔹' if tier == self.view.pet_tier else None
-                    options.append(discord.SelectOption(label=label, value=str(tier), emoji=emoji))
-                child.options = options
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if child.custom_id == 'select_tier':
+                    options = []
+                    for tier, label in self.pet_tiers.items():
+                        label = label
+                        emoji = '🔹' if tier == self.view.pet_tier else None
+                        options.append(discord.SelectOption(label=label, value=str(tier), emoji=emoji))
+                    child.options = options
+                    break
         embed = await self.view.embed_function(self.view.tt_no, self.view.pet_tier)
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 
 class ItemSelect(discord.ui.Select):
     """Item Select"""
-    def __init__(self, items: dict, active_item: str, placeholder: str, row: Optional[int] = None):
+    def __init__(self, items: dict, active_item: str, placeholder: str):
         self.items = items
         options = []
         for item, item_data in items.items():
             label = item
             emoji = item_data[0]
             options.append(discord.SelectOption(label=label, value=label, emoji=emoji))
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options,
                          custom_id='select_item')
 
     async def callback(self, interaction: discord.Interaction):
@@ -594,7 +644,7 @@ class ItemSelect(discord.ui.Select):
 
 class ManageUserSettingsSelect(discord.ui.Select):
     """Select to change user settings"""
-    def __init__(self, view: discord.ui.View, row: Optional[int] = None):
+    def __init__(self, view: discord.ui.View):
         options = []
         label_ascended = 'Set as not ascended' if view.user_settings.ascended else 'Set as ascended'
         quick_trade_emoji = emojis.ENABLED if view.user_settings.quick_trade_enabled else emojis.DISABLED
@@ -604,7 +654,7 @@ class ManageUserSettingsSelect(discord.ui.Select):
                                             value='toggle_ascension'))
         options.append(discord.SelectOption(label='Quick trade calculator', emoji=quick_trade_emoji,
                                             value='toggle_quick_trade'))
-        super().__init__(placeholder='Change settings', min_values=1, max_values=1, options=options, row=row,
+        super().__init__(placeholder='Change settings', min_values=1, max_values=1, options=options,
                          custom_id='manage_user_settings')
 
     async def callback(self, interaction: discord.Interaction):
@@ -628,11 +678,20 @@ class ManageUserSettingsSelect(discord.ui.Select):
             modal = modals.SetCurrentTTModal(self.view)
             await interaction.response.send_modal(modal)
             return
-        for child in self.view.children.copy():
-            if isinstance(child, ManageUserSettingsSelect):
-                self.view.remove_item(child)
-                self.view.add_item(ManageUserSettingsSelect(self.view))
-                break
+        for action_row in self.view.children.copy():
+            for child in action_row.children.copy():
+                if isinstance(child, ManageUserSettingsSelect):
+                    options = []
+                    label_ascended = 'Set as not ascended' if self.view.user_settings.ascended else 'Set as ascended'
+                    quick_trade_emoji = emojis.ENABLED if self.view.user_settings.quick_trade_enabled else emojis.DISABLED
+                    options.append(discord.SelectOption(label='Set current TT', emoji=None,
+                                            value='set_tt'))
+                    options.append(discord.SelectOption(label=label_ascended, emoji=None,
+                                            value='toggle_ascension'))
+                    options.append(discord.SelectOption(label='Quick trade calculator', emoji=quick_trade_emoji,
+                                            value='toggle_quick_trade'))
+                    child.options = options
+                    break
         embed = await self.view.embed_function(self.view.ctx, self.view.user_settings)
         if interaction.response.is_done():
             await interaction.message.edit(embed=embed, view=self.view)
