@@ -108,6 +108,9 @@ async def embed_cards_overview() -> discord.Embed:
         f'{emojis.BP} **Duration**: `5`m\n'
         f'{emojis.BP} **Source**: {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
+    artifacts = (
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX} `Deck box`: `2.5x` rewards & `1.2x` chance to get golden cards\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'CARDS',
@@ -118,6 +121,7 @@ async def embed_cards_overview() -> discord.Embed:
     embed.add_field(name='PLAYING CARDS', value=playing_cards, inline=False)
     embed.add_field(name='GOLDEN CARDS', value=golden_cards, inline=False)
     embed.add_field(name='ROUND CARD', value=round_card, inline=False)
+    embed.add_field(name='ARTIFACTS THAT AFFECT CARD HAND', value=artifacts, inline=False)
     return embed
 
 

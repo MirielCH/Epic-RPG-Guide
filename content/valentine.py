@@ -77,12 +77,12 @@ async def embed_valentine_guide() -> discord.Embed:
     )
     titles = (
         f'{emojis.BP} **Wood you be my valentine?** (bought in {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]})\n'
-        f'{emojis.BP} **lovely fren** (Achievement #220)\n'
-        f'{emojis.BP} **Heart broken** (Achievement #221)\n'
+        f'{emojis.BP} **lovely fren** (Achievement #234)\n'
+        f'{emojis.BP} **Heart broken** (Achievement #235)\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on February 13, 2025\n'
-        f'{emojis.BP} Event ended on February 26, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Event started on February 13, 2026\n'
+        f'{emojis.BP} Event ended on February 26, 2026, 23:55 UTC\n'
         f'{emojis.BP} Love tokens and coins can be used until March 5, 23:55 UTC\n'
     )
     tldr_guide = (
@@ -106,7 +106,7 @@ async def embed_valentine_guide() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'VALENTINE EVENT 2025 {emojis.COIN_LOVE}',
+        title = f'VALENTINE EVENT 2026 {emojis.COIN_LOVE}',
         description = 'Voulez-vous trinquer avec moi, ce soir ?'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)

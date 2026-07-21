@@ -104,14 +104,16 @@ async def embed_monsters(amount_found: int, monsters: Tuple[database.Monster], n
     monster = type(database.Monster)
     for monster in monsters:
         area_from, area_to = monster.areas
+        area_from_str = 'Galaxy' if area_from == 22 else area_from
+        area_to_str = 'Galaxy' if area_from == 22 else area_to
         if area_from == area_to:
             field_value = (
-                f'{emojis.BP} Found in area **{area_from}** with '
+                f'{emojis.BP} Found in area **{area_from_str}** with '
                 f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         else:
             field_value = (
-                f'{emojis.BP} Found in areas **{area_from}~{area_to}** with '
+                f'{emojis.BP} Found in areas **{area_from_str}~{area_to_str}** with '
                 f'{strings.SLASH_COMMANDS_EPIC_RPG[monster.activity]}'
             )
         if monster.drop_name is not None:

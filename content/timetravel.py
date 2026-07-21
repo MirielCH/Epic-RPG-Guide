@@ -84,9 +84,6 @@ async def command_time_travel_bonuses(ctx: discord.ApplicationContext, timetrave
     if timetravel is None:
         user: database.User = await database.get_user(ctx.author.id)
         timetravel = user.tt
-    if timetravel == 1_000_000:
-        await ctx.respond('https://c.tenor.com/OTU2-ychJwsAAAAC/lightning-squidward.gif')
-        return
     tt: database.TimeTravel = await database.get_time_travel(timetravel)
     embed = await embed_time_travel_bonuses(tt, mytt)
     await ctx.respond(embed=embed)
@@ -375,9 +372,13 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         f'{emojis.BP} ~{coin_cap} {emojis.COIN} coins\n'
         f'{emojis.BP} Use {strings.SLASH_COMMANDS_GUIDE["coin cap calculator"]} to see your exact cap\n'
     )
-    work_multiplier = (
+    command_yield_farm = (
         f'{emojis.BP} `{crops_special_min:,}`, `{crops_special_med:,}` or `{crops_special_max:,}` {emojis.BREAD}'
         f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from special seeds\n'
+        f'{emojis.BP} `{crops_normal_min:,}` or `{crops_normal_max:,}` {emojis.BREAD}'
+        f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from normal seeds\n'
+    )
+    command_yield_work = (
         f'{emojis.BP} `{crops_normal_min:,}` or `{crops_normal_max:,}` {emojis.BREAD}'
         f'{emojis.CARROT}{emojis.POTATO} with {strings.SLASH_COMMANDS_EPIC_RPG["farm"]} from normal seeds\n'
         f'{emojis.BP} ~`{watermelon_min:,}` - `{watermelon_max:,}` {emojis.WATERMELON} with '
@@ -471,7 +472,8 @@ async def embed_time_travel_bonuses(tt: database.TimeTravel, mytt: bool = False)
         description = embed_description
     )
     embed.add_field(name='UNLOCKS & BONUSES', value=unlocks, inline=False)
-    embed.add_field(name='COMMAND YIELD', value=work_multiplier, inline=False)
+    embed.add_field(name='COMMAND YIELD (FARM)', value=command_yield_farm, inline=False)
+    embed.add_field(name='COMMAND YIELD (WORK)', value=command_yield_work, inline=False)
     embed.add_field(name='COIN CAP', value=field_coin_cap, inline=False)
     if not mytt and tt.tt != 0:
         if 1 <= tt.tt <= 3:

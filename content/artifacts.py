@@ -14,6 +14,7 @@ TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
 TOPIC_ARTIFACTS_COIN_RING = 'Coin ring'
 TOPIC_ARTIFACTS_CLAUS_BELT = 'Claus belt'
 TOPIC_ARTIFACTS_COWBOY_BOOTS = 'Cowboy boots'
+TOPIC_ARTIFACTS_DECK_BOX = 'Deck box'
 TOPIC_ARTIFACTS_GOLDEN_PAN = 'Golden pan'
 TOPIC_ARTIFACTS_MASTER_KEY = 'Master key'
 TOPIC_ARTIFACTS_POCKET_WATCH = 'Pocket watch'
@@ -31,6 +32,7 @@ TOPICS_ARTIFACTS = [
     TOPIC_ARTIFACTS_CLAUS_BELT,
     TOPIC_ARTIFACTS_COIN_RING,
     TOPIC_ARTIFACTS_COWBOY_BOOTS,
+    TOPIC_ARTIFACTS_DECK_BOX,
     TOPIC_ARTIFACTS_GOLDEN_PAN,
     TOPIC_ARTIFACTS_MASTER_KEY,
     TOPIC_ARTIFACTS_POCKET_WATCH,
@@ -53,6 +55,7 @@ async def command_artifacts_guide(ctx: discord.ApplicationContext, topic: str) -
         TOPIC_ARTIFACTS_CLAUS_BELT: embed_artifacts_claus_belt,
         TOPIC_ARTIFACTS_COIN_RING: embed_artifacts_coin_ring,
         TOPIC_ARTIFACTS_COWBOY_BOOTS: embed_artifacts_cowboy_boots,
+        TOPIC_ARTIFACTS_DECK_BOX: embed_artifacts_deck_box,
         TOPIC_ARTIFACTS_GOLDEN_PAN: embed_artifacts_golden_pan,
         TOPIC_ARTIFACTS_MASTER_KEY: embed_artifacts_master_key,
         TOPIC_ARTIFACTS_POCKET_WATCH: embed_artifacts_pocket_watch,
@@ -385,7 +388,7 @@ async def embed_artifacts_bunny_mask() -> discord.Embed:
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg eat"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}\n'
-        f'{emojis.BP} {emojis.BLANK} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_BUNNY_MASK_PART_C} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -404,6 +407,7 @@ async def embed_artifacts_void_tome() -> discord.Embed:
         f'{emojis.BP} Increases the VOID contribution rewards by `1.2x`\n'
         f'{emojis.BP} Gives you a {emojis.VOIDICE} VOIDice every time you time travel\n'
         f'{emojis.DETAIL} Using the item will reward you with `0`~`5` {emojis.TIME_TRAVEL} time travels\n'
+        f'{emojis.BP} Increases the amount of {emojis.DRAGON_FUEL} dragon fuel from dungeons by `2x`\n'
     )
     parts = (
         f'{emojis.BP} {emojis.ARTIFACT_VOID_TOME_PART_A} `Part A` • Drops from beating dungeon 16\n'
@@ -421,12 +425,33 @@ async def embed_artifacts_void_tome() -> discord.Embed:
     return embed
 
 
+async def embed_artifacts_deck_box() -> discord.Embed:
+    """Deck box artifact embed"""
+    effects = (
+        f'{emojis.BP} Increases {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]} rewards by `2.5x`\n'
+        f'{emojis.BP} Increases the chance to get golden cards by `1.2x`\n'
+    )
+    parts = (
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_A} `Part A` • Get a pair or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_B} `Part B` • Get a hand with 5/5 owned cards in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_C} `Part C` • Get a straight or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a card hand {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = f'DECK BOX {emojis.ARTIFACT_DECK_BOX}',
+    )
+    embed.add_field(name='EFFECT', value=effects, inline=False)
+    embed.add_field(name='ARTIFACT PARTS', value=parts, inline=False)
+    return embed
+
+
 async def embed_artifacts_source_summary() -> discord.Embed:
     """Artifacts sources"""
     bunny_mask = (
         f'{emojis.ARTIFACT_BUNNY_MASK_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg eat"]}\n'
         f'{emojis.ARTIFACT_BUNNY_MASK_PART_B} `Part B` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg slots"]}\n'
-        f'{emojis.BLANK} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
+        f'{emojis.ARTIFACT_BUNNY_MASK_PART_C} `Part C` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["egg god"]}\n'
     )
     chocolate_box = (
         f'{emojis.ARTIFACT_CHOCOLATE_BOX_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["love share"]}\n'
@@ -448,6 +473,12 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     cowboy_boots = (
         f'{emojis.ARTIFACT_COWBOY_BOOTS_PART_A} `Part A` • Drops from {strings.SLASH_COMMANDS_EPIC_RPG["hf lightspeed"]}\n'
         f'{emojis.ARTIFACT_COWBOY_BOOTS_PART_B} `Part B` • Drops from starting {strings.SLASH_COMMANDS_EPIC_RPG["hf megarace"]} '
+    )
+    deck_box = (
+        f'{emojis.ARTIFACT_DECK_BOX_PART_A} `Part A` • Get a pair or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.ARTIFACT_DECK_BOX_PART_B} `Part B` • Get a hand with 5/5 owned cards in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.ARTIFACT_DECK_BOX_PART_C} `Part C` • Get a straight or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a card hand {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
     golden_pan = (
         f'{emojis.ARTIFACT_GOLDEN_PAN_PART_A} `Part A` • Drops from level ups (except from cooking)\n'
@@ -515,6 +546,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
     embed.add_field(name=f'CLAUS BELT {emojis.ARTIFACT_CLAUS_BELT}', value=claus_belt, inline=False)
     embed.add_field(name=f'COIN RING {emojis.ARTIFACT_COIN_RING}', value=coin_ring, inline=False)
     embed.add_field(name=f'COWBOY BOOTS {emojis.ARTIFACT_COWBOY_BOOTS}', value=cowboy_boots, inline=False)
+    embed.add_field(name=f'DECK BOX {emojis.ARTIFACT_DECK_BOX}', value=deck_box, inline=False)
     embed.add_field(name=f'GOLDEN PAN {emojis.ARTIFACT_GOLDEN_PAN}', value=golden_pan, inline=False)
     embed.add_field(name=f'MASTER KEY {emojis.ARTIFACT_MASTER_KEY}', value=master_key, inline=False)
     embed.add_field(name=f'POCKET WATCH {emojis.ARTIFACT_POCKET_WATCH}', value=pocket_watch, inline=False)

@@ -753,9 +753,10 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
         return embed
 
     if profession == 'crafter':
+        """
         multiplier = 1 * multiplier_weekly * multiplier_boosts
         async def calculate_logs(item_amount: int, returned_percentage: float, level: int) -> int:
-            """Calculates how many logs it needs for a certain amount of epic logs"""
+            # Calculates how many logs it needs for a certain amount of epic logs
             base_log_amount_upper = 100_000_000_000
             base_log_amount_lower = 0
             while True:
@@ -860,4 +861,6 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
                 name=f'TOTAL {from_level} - {to_level}', value=output_total, inline=False
             )
         embed.add_field(name='NOTE', value=note)
+        """
+        embed.description = 'The crafter profession calculator is currently disabled for debugging reasons.'
         return embed

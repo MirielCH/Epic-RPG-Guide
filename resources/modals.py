@@ -117,21 +117,21 @@ class SetCurrentTTModal(Modal):
         self.view = view
         self.add_item(
             InputText(
-                label='Your current TT [0-9,999]',
+                label='Your current TT [0-100,000,000,000]:',
                 placeholder="Enter TT number ..."
             )
         )
 
     async def callback(self, interaction: discord.Interaction):
         tt_no = self.children[0].value.lower()
-        msg_error = 'Invalid TT number. Please enter a number between 0 and 9,999.'
+        msg_error = 'Invalid TT number. Please enter a number between 0 and 100,000,000,000.'
         try:
             tt_no = int(tt_no)
         except:
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return
-        if not 0 <= tt_no <= 999999:
+        if not 0 <= tt_no <= 100_000_000_000:
             await interaction.response.edit_message(view=self.view)
             await interaction.followup.send(msg_error, ephemeral=True)
             return

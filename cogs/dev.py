@@ -125,7 +125,7 @@ class DevCog(commands.Cog):
         ctx: discord.ApplicationContext,
         code: Option(str, 'Code to add'),
         content: Option(str, 'Content of the code'),
-        temporary: Option(bool, 'Whether the code is temporary or permanent', default=False),
+        temporary: Option(bool, 'Whether the code is temporary or permanent', default=True),
     ) -> None:
         """Adds a code to the database"""
 

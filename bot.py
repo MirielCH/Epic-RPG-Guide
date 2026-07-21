@@ -102,7 +102,7 @@ COG_EXTENSIONS = [
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
-    #'cogs.valentine',
+    'cogs.valentine',
     #'cogs.xmas',
 ]
 
