@@ -97,12 +97,12 @@ COG_EXTENSIONS = [
     'cogs.pets',
     'cogs.professions',
     'cogs.settings',
-    #'cogs.summer',
+    'cogs.summer',
     'cogs.timetravel',
     'cogs.titles',
     'cogs.trading',
     'cogs.ultraining',
-    'cogs.valentine',
+    #'cogs.valentine',
     #'cogs.xmas',
 ]
 

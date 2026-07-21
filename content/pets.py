@@ -420,7 +420,7 @@ async def embed_pets_skills_special() -> discord.Embed:
         f'{emojis.DETAIL} You can get multiple, but each time you get one, the drop chance lowers.\n'
     )
     slower = (
-        f'{emojis.BP} Has a `9`% chance to find `1` {emojis.ARENA_COOKIE} arena cookie and a `1`% chance to find `1` {emojis.TIME_COOKIE} TIME cookie in pet adventures\n'
+        f'{emojis.BP} Has a decent chance to find {emojis.ARENA_COOKIE} arena cookies and a low chance to find {emojis.TIME_COOKIE} TIME cookies in pet adventures\n'
         f'{emojis.BP} Adventures take twice as long\n'
         f'{emojis.BP} This skill is unique to the {emojis.PET_TURTLE} turtle pet\n'
         f'{emojis.DETAIL} This pet is a reward in the summer festival'

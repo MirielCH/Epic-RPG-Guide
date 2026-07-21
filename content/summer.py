@@ -8,6 +8,8 @@ from resources import emojis, functions, settings, strings, views
 
 # --- Topics ---
 TOPIC_OVERVIEW = 'Overview'
+TOPIC_BEACH_BALL = 'Beach ball event'
+TOPIC_BEACH_PARTY = 'Beach party event'
 TOPIC_BOOSTS = 'Boosts'
 TOPIC_COLOR_TOURNAMENT = 'Color tournament'
 TOPIC_SURF = 'Surfing'
@@ -15,6 +17,8 @@ TOPIC_SUNGLASSES = 'Sunglasses artifact'
 
 TOPICS = [
     TOPIC_OVERVIEW,
+    TOPIC_BEACH_BALL,
+    TOPIC_BEACH_PARTY,
     TOPIC_BOOSTS,
     TOPIC_COLOR_TOURNAMENT,
     TOPIC_SURF,
@@ -26,6 +30,8 @@ async def command_summer_guide(ctx: discord.ApplicationContext, topic: str) -> N
     """Summer event guide command"""
     topics_functions = {
         TOPIC_OVERVIEW: embed_overview,
+        TOPIC_BEACH_BALL: embed_beach_ball,
+        TOPIC_BEACH_PARTY: embed_beach_party,   
         TOPIC_BOOSTS: embed_boosts,
         TOPIC_COLOR_TOURNAMENT: embed_color_tournament,
         TOPIC_SURF: embed_surf,
@@ -53,6 +59,7 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} Go surfing with {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]} (see topic `Surfing`)\n'
         f'{emojis.DETAIL} This event command has a `4`h cooldown\n'
         f'{emojis.BP} Join the weekly color tournament (see topic `Color tournament`)\n'
+        f'{emojis.BP} Join 2 events (see topics `Beach ball event` and `Beach party event`)\n'
         f'{emojis.BP} Kill the rare {emojis.SMR_SLIME} summer slime in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
         f'to get extra coconuts and a free drink\n'
         f'{emojis.BP} Join the world boss fight to unlock codes (see {strings.SLASH_COMMANDS_EPIC_RPG["smr wb"]})\n'
@@ -64,11 +71,14 @@ async def embed_overview() -> discord.Embed:
     titles = (
         f'{emojis.BP} **SumMEGA** (bought in the {strings.SLASH_COMMANDS_EPIC_RPG["smr shop"]})\n'
         f'{emojis.BP} **BEACH KING** (unlocked by winning the color tournament)\n'
+        f'{emojis.BP} **Surfer** (Achievement #247)\n'
+        f'{emojis.BP} **Chaotic player** (Achievement #248)\n'
+        f'{emojis.BP} **slow fren** (Achievement #249)\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on July 10, 2025\n'
-        f'{emojis.BP} Event ended on July 28, 2025, 23:55 UTC\n'
-        f'{emojis.BP} Love tokens and coins can be used until August 4, 23:55 UTC\n'
+        f'{emojis.BP} Event started on July 21, 2026\n'
+        f'{emojis.BP} Event ended on August 10, 2026, 23:55 UTC\n'
+        f'{emojis.BP} Event items can be used until August 17, 23:55 UTC\n'
     )
     tldr_guide = (
         f'{emojis.BP} Complete daily and weekly {strings.SLASH_COMMANDS_EPIC_RPG["smr tasks"]}\n'
@@ -77,11 +87,11 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["smr drink"]} at least one drink each week to join the color tournament\n'
         f'{emojis.BP} Complete the {strings.SLASH_COMMANDS_EPIC_RPG["smr quest"]} to unlock the '
         f'{emojis.PET_TURTLE} turtle pet\n'
-        f'{emojis.BP} Use your coins for whatever you want in {strings.SLASH_COMMANDS_EPIC_RPG["love shop"]}\n'
+        f'{emojis.BP} Use your coins for whatever you want in {strings.SLASH_COMMANDS_EPIC_RPG["smr shop"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'SUMMER EVENT 2025 {emojis.SMR_DRINK_BLUE}',
+        title = f'SUMMER EVENT 2026 {emojis.SMR_DRINK_BLUE}',
         description = 'Don\'t mind me, just working on my tan.'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
@@ -89,6 +99,87 @@ async def embed_overview() -> discord.Embed:
     embed.add_field(name='TITLES', value=titles, inline=False)
     embed.add_field(name='BONUSES', value=bonuses, inline=False)
     embed.add_field(name='EVENT SCHEDULE', value=schedule, inline=False)
+    return embed
+
+
+async def embed_beach_ball() -> discord.Embed:
+    """Beach ball event embed"""
+    trigger = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["smr use"]} `beach ball`\n'
+        f'{emojis.DETAIL2} Requires `1` {emojis.SMR_BEACHBALL} beach ball\n'
+        f'{emojis.DETAIL} Beach balls are a rare drop from {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]}'
+    )
+    rewards_win = (
+        f'{emojis.BP} `300` {emojis.SMR_COCONUT} coconuts\n'
+        f'{emojis.BP} `2` {emojis.LB_LOOTBOX} lootbox lootboxes\n'
+        f'{emojis.BP} {emojis.SMR_SURFBOARD_BLUE} {strings.SLASH_COMMANDS_EPIC_RPG["smr surf"]} cooldown reset\n'
+    )
+    rewards_lose = (
+        f'{emojis.BP} `150` {emojis.SMR_COCONUT} coconuts\n'
+        f'{emojis.BP} `1` {emojis.LB_LOOTBOX} lootbox lootbox\n'
+    )
+    answers = f'{emojis.BP} `join`'
+    tactics = (
+        f'{emojis.BP} Just... do random stuff when your team is up\n'
+    )
+    note = (
+        f'{emojis.BP} This is a 16 player event\n'
+        f'{emojis.BP} 4 people of each {emojis.SMR_SURFBOARD_PINK}{emojis.SMR_SURFBOARD_BLUE}{emojis.SMR_SURFBOARD_YELLOW}'
+        f'{emojis.SMR_SURFBOARD_GREEN} color team are required\n'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'BEACH BALL EVENT',
+        description = 'This is a multiplayer event in which 4 people of each color team compete for rewards.'
+    )
+    embed.add_field(name='HOW TO START', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='TACTICS', value=tactics, inline=False)
+    embed.add_field(name='REWARDS FOR THE WINNING TEAM', value=rewards_win, inline=False)
+    embed.add_field(name='REWARDS FOR THE LOSING TEAMS', value=rewards_lose, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
+    return embed
+
+
+async def embed_beach_party() -> discord.Embed:
+    """Beach party event embed"""
+    trigger = (
+        f'{emojis.BP} {strings.SLASH_COMMANDS_EPIC_RPG["smr beach party"]}\n'
+        f'{emojis.DETAIL} Requires `3` {emojis.SMR_COCONUT_CHOPPED} chopped coconuts'
+        f'and `10` {emojis.SMR_LOG_PALM} palm logs\n'
+    )
+    rewards = (
+        f'{emojis.BP} {emojis.SMR_COCONUT} Boring beach party boost\n'
+        f'{emojis.BP} {emojis.SMR_COCONUT_CHOPPED} Normal beach party boost\n'
+        f'{emojis.BP} {emojis.SMR_SLIME} Fun beach party boost\n'
+        f'{emojis.BP} {emojis.SMR_POOL_FLOAT} Crazy beach party boost\n'
+        f'{emojis.BP} {emojis.SMR_SURFBOARD_MEGA} Chaotic beach party boost\n'
+    )
+    answers = f'{emojis.BP} `join`'
+    boost = (
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`25`% XP from all sources\n'
+        f'{emojis.DETAIL2} +`15`% profession XP\n'
+        f'{emojis.DETAIL2} +`40`% items from work commands\n'
+        f'{emojis.DETAIL} +`40`% item rarity from work commands\n'
+        f'{emojis.BP} **Duration**: `10`h\n'
+        f'{emojis.BP} **Note**\n'
+        f'{emojis.DETAIL2} All 5 boosts can be active simultaneously\n'
+        f'{emojis.DETAIL} All 5 boosts provide the same benefits\n'
+    )
+    note = (
+        f'{emojis.BP} This is a 4 player event'
+    )
+    embed = discord.Embed(
+        color = settings.EMBED_COLOR,
+        title = 'BEACH PARTY EVENT',
+        description = 'This is a multiplayer event in which 4 people can have a beach party together to get a boost.'
+    )
+    embed.add_field(name='HOW TO START', value=trigger, inline=False)
+    embed.add_field(name='HOW TO JOIN', value=answers, inline=False)
+    embed.add_field(name='POSSIBLE REWARDS', value=rewards, inline=False)
+    embed.add_field(name='BOOST BENEFITS', value=boost, inline=False)
+    embed.add_field(name='NOTE', value=note, inline=False)
     return embed
 
 
