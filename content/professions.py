@@ -317,7 +317,7 @@ async def embed_professions_crafter() -> discord.Embed:
     )
     level_101 =(
         f'{emojis.BP} Increases the percentage of items returned\n'
-        f'{emojis.BP} The percentage increase is `12.5 + (250 * (level - 100)) ^ 0.2`%'
+        f'{emojis.BP} The percentage increase is `12.5 + (225 * (level - 100)) ^ 0.2`%'
     )
     how_to_get_xp = (
         f'{emojis.BP} Craft and dismantle\n'
@@ -788,7 +788,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
             f'{emojis.DETAIL} The smaller the batches, the lower the overall risk.'
         )
 
-        returned_percentage = (12.5 + (250 * (from_level - 100)) ** 0.2) / 100 if from_level > 100 else 0.125
+        returned_percentage = (12.5 + (225 * (from_level - 100)) ** 0.2) / 100 if from_level > 100 else 0.125
         if returned_percentage is None:
             return discord.Embed(description=f'No data found for {profession} level {from_level+1}, sorry.')
         log_amount = await calculate_logs(xp, returned_percentage, from_level)
@@ -808,7 +808,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
                 )
                 current_level -= 1
                 break
-            returned_percentage = (12.5 + (250 * (current_level - 101)) ** 0.2) / 100 if current_level - 1 > 100 else 0.125
+            returned_percentage = (12.5 + (225 * (current_level - 101)) ** 0.2) / 100 if current_level - 1 > 100 else 0.125
             log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
             log_amount = ceil(log_amount / multiplier)
             output = (
@@ -827,7 +827,7 @@ async def embed_professions_calculator(ctx: discord.ApplicationContext,
                     )
                     break
                 xp_total += level_xp
-                returned_percentage = (12.5 + (250 * (current_level - 101)) ** 0.2) / 100 if current_level - 1 > 100 else 0.125
+                returned_percentage = (12.5 + (225 * (current_level - 101)) ** 0.2) / 100 if current_level - 1 > 100 else 0.125
                 log_amount = await calculate_logs(level_xp, returned_percentage, current_level-1)
                 log_amount = ceil(log_amount / multiplier)
                 log_amount_total += log_amount

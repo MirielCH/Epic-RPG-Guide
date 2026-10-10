@@ -91,7 +91,7 @@ async def embed_overview() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'SUMMER EVENT 2026 {emojis.SMR_DRINK_BLUE}',
+        title = f'SUMMER EVENT 2026 {emojis.SMR_BEACHBALL}',
         description = 'Don\'t mind me, just working on my tan.'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)
@@ -158,11 +158,17 @@ async def embed_beach_party() -> discord.Embed:
     answers = f'{emojis.BP} `join`'
     boost = (
         f'{emojis.BP} **Boosts**\n'
-        f'{emojis.DETAIL2} +`25`% XP from all sources\n'
-        f'{emojis.DETAIL2} +`15`% profession XP\n'
-        f'{emojis.DETAIL2} +`40`% items from work commands\n'
-        f'{emojis.DETAIL} +`40`% item rarity from work commands\n'
-        f'{emojis.BP} **Duration**: `10`h\n'
+        f'{emojis.DETAIL2} +`10`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.DETAIL2} +`10`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`10`% items from work commands\n'
+        f'{emojis.DETAIL} +`10`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
+        f'{emojis.BP} **Duration**:\n'
+        f'{emojis.DETAIL2} Boring beach party: `6`h\n'
+        f'{emojis.DETAIL2} Normal beach party: `8`h\n'
+        f'{emojis.DETAIL2} Fun beach party: `10`h\n'
+        f'{emojis.DETAIL2} Crazy beach party: `12`h\n'
+        f'{emojis.DETAIL} Chaotic beach party: `1`d\n'
         f'{emojis.BP} **Note**\n'
         f'{emojis.DETAIL2} All 5 boosts can be active simultaneously\n'
         f'{emojis.DETAIL} All 5 boosts provide the same benefits\n'
@@ -234,6 +240,16 @@ async def embed_boosts() -> discord.Embed:
         f'{emojis.DETAIL} +`5`% coins from all sources except selling & miniboss\n'
         f'{emojis.BP} **Duration**: `2`m\n'
     )
+    boost_beach_party = (
+        f'{emojis.BP} **Source**: {strings.SLASH_COMMANDS_EPIC_RPG["smr beach party"]}\n'
+        f'{emojis.BP} **Boosts**\n'
+        f'{emojis.DETAIL2} +`10`% lootbox drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]} '
+        f'and {strings.SLASH_COMMANDS_EPIC_RPG["adventure"]}\n'
+        f'{emojis.DETAIL2} +`10`% mob drop chance in {strings.SLASH_COMMANDS_EPIC_RPG["hunt"]}\n'
+        f'{emojis.DETAIL2} +`10`% items from work commands\n'
+        f'{emojis.DETAIL2} +`10`% items from {strings.SLASH_COMMANDS_EPIC_RPG["farm"]}\n'
+        f'{emojis.BP} **Duration**: `10`h\n'
+    )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = f'SUMMER EVENT BOOSTS {emojis.SMR_DRINK_BLUE}{emojis.SMR_DRINK_GREEN}{emojis.SMR_DRINK_PINK}{emojis.SMR_DRINK_YELLOW}',
@@ -245,6 +261,7 @@ async def embed_boosts() -> discord.Embed:
     embed.add_field(name=f'PINK DRINK {emojis.SMR_DRINK_PINK}', value=boost_drink_pink, inline=False)
     embed.add_field(name=f'YELLOW DRINK {emojis.SMR_DRINK_YELLOW}', value=boost_drink_yellow, inline=False)
     embed.add_field(name=f'CHOPPED COCONUT {emojis.SMR_COCONUT_CHOPPED}', value=boost_chopped_coconut, inline=False)
+    embed.add_field(name=f'BEACH PARTY {emojis.SMR_COCONUT}{emojis.SMR_COCONUT_CHOPPED}{emojis.SMR_SLIME}{emojis.SMR_POOL_FLOAT}{emojis.SMR_SURFBOARD_MEGA}', value=boost_beach_party, inline=False)
     return embed
 
 

@@ -315,7 +315,7 @@ async def embed_pets_skills_advanced() -> discord.Embed:
         f'{emojis.DETAIL} Fusing ascended pets combines the ascended skills into one (e.g. F+E=D)\n'
     )
     fighter = (
-        f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9\n'
+        f'{emojis.BP} Pet can be used to acquire {emojis.DRAGON_ESSENCE} dragon essence in D1-D9 and D16-D20\n'
         f'{emojis.BP} You have a `25`% base chance to get at least `1` essence after the dungeon\n'
         f'{emojis.DETAIL2} This chance increases by `7.5`% per rank\n'
         f'{emojis.DETAIL2} You have a small chance to get up to `3` essences\n'

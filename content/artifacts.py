@@ -273,7 +273,7 @@ async def embed_artifacts_pocket_watch() -> discord.Embed:
     effects = (
         f'{emojis.BP} Doubles the duration of all boosts\n'
         f'{emojis.BP} Unlocks a personal cooldown reduction\n'
-        f'{emojis.DETAIL2} Increases with time travels (up to `5`%)\n'
+        f'{emojis.DETAIL2} Increases with time travels (up to `12.5`%)\n'
         f'{emojis.DETAIL} Your current reduction is shown in {strings.SLASH_COMMANDS_EPIC_RPG["artifacts"]}\n'
     )
     affected_commands = (

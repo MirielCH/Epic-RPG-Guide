@@ -986,7 +986,7 @@ SLASH_COMMANDS_GUIDE = {
     'guild guide': '</guild guide:972045824869679134>',
     'halloween guide': '</halloween guide:1431355031419883611>',
     'help': '</help:972045824869679137>',
-    'hf guide': '</hf guide:1409985665919221960>',
+    'hf guide': '</hf guide:1546585145467867346>',
     'horse boost calculator': '</horse boost calculator:972045824869679136>',
     'horse guide': '</horse guide:972045824869679136>',
     'horse training calculator': '</horse training calculator:972045824869679136>',
