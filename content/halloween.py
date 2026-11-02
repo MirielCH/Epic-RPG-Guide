@@ -78,13 +78,13 @@ async def embed_overview() -> discord.Embed:
         f'{emojis.DETAIL2} +`10`% profession XP\n'
         f'{emojis.DETAIL} -`10`% pet adventure time if pet returns while boost is active\n'
 
-        f'{emojis.BP} **Duration**: `2`h `30`m\n'
+        f'{emojis.BP} **Duration**: `4`h\n'
     )
     schedule = (
-        f'{emojis.BP} Event started on October 20, 2025\n'
+        f'{emojis.BP} Event started on October 24, 2026\n'
         #f'{emojis.BP} World boss fight ends on October 31, 2022, 23:55 UTC\n'
-        f'{emojis.BP} Event ends on November 16, 2025, 23:55 UTC\n'
-        f'{emojis.BP} Items will vanish on November 23, 2025, 23:55 UTC\n'
+        f'{emojis.BP} Event ends on November 16, 2026, 23:55 UTC\n'
+        f'{emojis.BP} Items will vanish on November 23, 2026, 23:55 UTC\n'
         f'{emojis.DETAIL} Exceptions: {emojis.TIME_COOKIE} TIME cookies and {emojis.ARTIFACT_VAMPIRE_TEETH} vampire '
         f'teeth'
     )
@@ -106,7 +106,7 @@ async def embed_overview() -> discord.Embed:
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
-        title = f'HALLOWEEN EVENT 2025 {emojis.HAL_PUMPKIN}',
+        title = f'HALLOWEEN EVENT 2026 {emojis.HAL_PUMPKIN}',
         description = 'Boo!'
     )
     embed.add_field(name='TL;DR GUIDE', value=tldr_guide, inline=False)

@@ -3,10 +3,11 @@
 from argparse import ArgumentError
 from dataclasses import dataclass
 from datetime import datetime
-from multiprocessing.sharedctypes import Value
+import hashlib
+import hmac
 import sqlite3
 import traceback
-from typing import NamedTuple, Optional, Tuple, Union
+from typing import Any, NamedTuple, Optional, Tuple, Union
 
 import discord
 from discord import utils
@@ -28,6 +29,10 @@ INTERNAL_ERROR_NO_ARGUMENTS = 'You need to specify at least one keyword argument
 INTERNAL_ERROR_INVALID_ARGUMENTS = 'Invalid value {value} for argument {argument}.\nTable: {table}\nFunction: {function}'
 INTERNAL_ERROR_DICT_TO_OBJECT = 'Error converting record into object\nFunction: {function}\nRecord: {record}\n'
 INTERNAL_ERROR_SQLITE3 = 'Error executing SQL.\nError: {error}\nTable: {table}\nFunction: {function}\nSQL: {sql}'
+
+# --- Encryption ---
+def create_hash(value: Any) -> str:
+    return hmac.new(settings.HMAC_KEY, str(value).encode(), hashlib.sha256).hexdigest()
 
 
 class FirstTimeUser(Exception):
@@ -1204,7 +1209,7 @@ async def get_user_count() -> int:
     """
     table = 'users'
     function_name = 'get_user_count'
-    sql = f'SELECT COUNT(user_id) FROM {table}'
+    sql = f'SELECT COUNT(user_id_hash) FROM {table}'
     try:
         cur = ERG_DB.cursor()
         cur.execute(sql)
@@ -1233,11 +1238,11 @@ async def get_user(user_id: int) -> User:
     """
     table = 'users'
     function_name = 'get_user'
-    sql = f'SELECT * FROM {table} WHERE user_id = ?'
+    sql = f'SELECT * FROM {table} WHERE user_id_hash = ?'
     try:
         ERG_DB.row_factory = sqlite3.Row
         cur=ERG_DB.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (create_hash(user_id),))
         record = cur.fetchone()
     except sqlite3.Error as error:
         await log_error(
@@ -1245,55 +1250,17 @@ async def get_user(user_id: int) -> User:
         )
         raise
     if not record:
-        cur.execute(f'INSERT INTO {table} VALUES (?, ?, ?, ?)', (user_id, 0, False, True))
+        cur.execute(f'INSERT INTO {table} VALUES (?, ?, ?, ?)', (create_hash(user_id), 0, False, True))
         raise FirstTimeUser
     record = dict(record)
     user = User(
         ascended = bool(record['ascended']),
         quick_trade_enabled = bool(record['quick_trade_enabled']),
         tt = record['tt'],
-        user_id = record['user_id'],
+        user_id = user_id,
     )
 
     return user
-
-
-async def get_all_users() -> Tuple[User]:
-    """Returns all user settings from table "users".
-    This is only used for migration, can be deleted afterwards.
-
-    Returns:
-        Tuple with User objects
-
-    Raises:
-        FirstTimeUser if there are no settings stored.
-        sqlite3.Error if something happened within the database. Also logs it to the database.
-    """
-    table = 'users'
-    function_name = 'get_user'
-    sql = f'SELECT * FROM {table}'
-    try:
-        ERG_DB.row_factory = sqlite3.Row
-        cur=ERG_DB.cursor()
-        cur.execute(sql)
-        records = cur.fetchall()
-    except sqlite3.Error as error:
-        await log_error(
-            INTERNAL_ERROR_SQLITE3.format(error=error, table=table, function=function_name, sql=sql)
-        )
-        raise
-    users = []
-    for record in records:
-        if record['ascended'] not in ('ascended', 'not ascended'): raise BaseException('Already migrated.')
-        user = User(
-            ascended = True if record['ascended'] == 'ascended' else False,
-            quick_trade_enabled = bool(record['quick_trade_enabled']),
-            tt = record['tt'],
-            user_id = record['user_id'],
-        )
-        users.append(user)
-
-    return tuple(users)
 
 
 async def get_monster_by_name(name: str) -> Monster:
@@ -1559,8 +1526,8 @@ async def _update_user(user: User, **kwargs) -> None:
         for kwarg in kwargs:
             sql = f'{sql} {kwarg} = :{kwarg},'
         sql = sql.strip(",")
-        kwargs['user_id'] = user.user_id
-        sql = f'{sql} WHERE user_id = :user_id'
+        kwargs['user_id_hash'] = create_hash(user.user_id)
+        sql = f'{sql} WHERE user_id_hash = :user_id_hash'
         cur.execute(sql, kwargs)
     except sqlite3.Error as error:
         await log_error(

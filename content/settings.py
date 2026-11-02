@@ -1,11 +1,13 @@
 # settings.py
 """Contains user settings commands"""
 
+import asyncio
+
 import discord
 from discord.ext import commands
 
 import database
-from resources import emojis, settings, views
+from resources import emojis, functions, settings, views
 
 
 # --- Choices ---
@@ -53,6 +55,44 @@ async def command_set_progress(ctx: discord.ApplicationContext, timetravel: int,
         )
     else:
         await ctx.respond('Welp, something went wrong here.', ephemeral=True)
+
+
+async def command_purge_data(bot: discord.Bot, ctx: discord.ApplicationContext) -> None:
+    """Purge data command"""
+    user_settings = await database.get_user(ctx.author.id)
+    answer_aborted = f'**{ctx.author.global_name}**, phew, was worried there for a second.'
+    answer = (
+        f'{emojis.CHECK_WARN} **{ctx.author.global_name}**, this will purge all your data from Epic RPG Guide {emojis.CHECK_WARN}\n\n'
+        f'You will of course be able to start using Epic RPG Guide again, but you will have to reregister.\n'
+        f'Are you **SURE**?'
+    )
+    view = views.ConfirmCancelView(ctx)
+    interaction = await ctx.respond(answer, view=view)
+    view.interaction = interaction
+    await view.wait()
+    if view.value is None:
+        await functions.edit_interaction(interaction, content=f'**{ctx.author.name}**, you didn\'t answer in time.',
+                                         view=None)
+    elif view.value == 'confirm':
+        cur = database.ERG_DB.cursor()
+        await functions.edit_interaction(
+            interaction, content='Purging data...',
+            view=None
+        )
+        cur.execute('DELETE FROM users WHERE user_id=?', (ctx.author.id,))
+        await asyncio.sleep(1)
+        await functions.edit_interaction(
+            interaction,
+            content=(
+                f'{emojis.ENABLED} **{ctx.author.global_name}**, you are now gone and forgotton. '
+                f'Thanks for using me!'
+            ),
+            view=None
+        )   
+    else:
+        await functions.edit_interaction(
+            interaction, content=answer_aborted, view=None
+        )
 
 
 # --- Embeds ---

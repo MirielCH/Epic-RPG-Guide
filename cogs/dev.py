@@ -2,6 +2,7 @@
 """Contains internal dev commands"""
 
 import importlib
+import re
 import sys
 
 import discord
@@ -143,6 +144,64 @@ class DevCog(commands.Cog):
 
         await database.delete_code(code)
         await ctx.respond('Done')
+
+    @dev.command(name='migrate-database')
+    @commands.is_owner()
+    async def dev_migrate_users(
+        self,
+        ctx: discord.ApplicationContext,
+    ) -> None:
+        """Migrates the users table to a new one with encrypted user ids"""
+
+        def quotes(name: str) -> str:
+            return '"' + name.replace('"', '""') + '"'
+        
+        await ctx.defer()
+
+        database.ERG_DB.create_function("uid_hash", 1, lambda value: database.create_hash(value))
+        db_create_users_sql = database.ERG_DB.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='users'").fetchone()[0]
+        db_extras_users = [
+            record[0] for record in database.ERG_DB.execute(
+                "SELECT sql FROM sqlite_master WHERE tbl_name='users' "
+                "AND type IN ('index','trigger') AND sql IS NOT NULL"
+            )
+        ]
+
+        try:
+            database.ERG_DB.execute("BEGIN")
+
+            # Migrate table "users"
+            new_sql_users = re.sub(r'^CREATE TABLE\s+\S+', 'CREATE TABLE users_new', db_create_users_sql, flags=re.IGNORECASE)
+            new_sql_users, number_of_replacements = re.subn(r'\buser_id\b\s+INTEGER\b', 'user_id_hash TEXT',
+                                                            new_sql_users, flags=re.IGNORECASE)
+            if number_of_replacements != 1:
+                raise Exception("Column user_id not found in table 'users', check db_create_users_sql")
+            database.ERG_DB.execute(new_sql_users)
+
+            insert_columns = "user_id_hash, tt, ascended, quick_trade_enabled"
+            select_columns = "uid_hash(user_id), tt, ascended, quick_trade_enabled"
+            database.ERG_DB.execute(f"INSERT INTO users_new ({insert_columns}) SELECT {select_columns} FROM users")
+
+            users_count_old = database.ERG_DB.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+            users_count_new = database.ERG_DB.execute("SELECT COUNT(*) FROM users_new").fetchone()[0]
+            if users_count_old != users_count_new:
+                raise Exception(f"Row count mismatch: Found {users_count_old} old reminders, but only migrated {users_count_new} reminders.")
+
+            database.ERG_DB.execute("DROP TABLE users")
+            database.ERG_DB.execute("ALTER TABLE users_new RENAME TO users")
+
+            for sql in db_extras_users:
+                database.ERG_DB.execute(sql.replace('user_id', 'user_id_hash'))
+
+            # Commit
+            database.ERG_DB.execute("COMMIT")
+            database.ERG_DB.execute("VACUUM")
+            answer = f'Done.'
+        except Exception as error:
+            database.ERG_DB.execute("ROLLBACK")
+            answer = f'Migration failed:\n```{str(error)}```'
+
+        await ctx.respond(answer)
 
 
 # Initialization

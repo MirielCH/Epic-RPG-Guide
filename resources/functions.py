@@ -16,6 +16,8 @@ from resources import emojis, settings, strings, views
 USER_ID_FROM_ICON_URL = re.compile(r"avatars\/(.+?)\/")
 
 
+
+# --- Miscellaneous ---
 def await_coroutine(coro):
     """Function to call a coroutine outside of an async function"""
     while True:
@@ -35,11 +37,6 @@ async def edit_interaction(interaction: Union[discord.Interaction, discord.Webho
         await interaction.edit(content=content, embed=embed, view=view)
     else:
         await interaction.edit_original_response(content=content, file=file, embed=embed, view=view)
-
-
-def round_school(number: float) -> int:
-    quotient, rest = divmod(number, 1)
-    return int(quotient + ((rest >= 0.5) if (number > 0) else (rest > 0.5)))
 
 
 async def send_slash_migration_message(ctx: commands.Context, new_command: str) -> None:

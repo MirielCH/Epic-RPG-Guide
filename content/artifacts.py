@@ -435,7 +435,7 @@ async def embed_artifacts_deck_box() -> discord.Embed:
         f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_A} `Part A` • Get a pair or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_B} `Part B` • Get a hand with 5/5 owned cards in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
         f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_C} `Part C` • Get a straight or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
-        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a card hand {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.BP} {emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a straight or worse in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
@@ -478,7 +478,7 @@ async def embed_artifacts_source_summary() -> discord.Embed:
         f'{emojis.ARTIFACT_DECK_BOX_PART_A} `Part A` • Get a pair or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
         f'{emojis.ARTIFACT_DECK_BOX_PART_B} `Part B` • Get a hand with 5/5 owned cards in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
         f'{emojis.ARTIFACT_DECK_BOX_PART_C} `Part C` • Get a straight or better in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
-        f'{emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a card hand {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
+        f'{emojis.ARTIFACT_DECK_BOX_PART_D} `Part D` • Get a straight or worse in {strings.SLASH_COMMANDS_EPIC_RPG["cards hand"]}\n'
     )
     golden_pan = (
         f'{emojis.ARTIFACT_GOLDEN_PAN_PART_A} `Part A` • Drops from level ups (except from cooking)\n'

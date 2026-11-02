@@ -109,7 +109,7 @@ async def command_about(bot: discord.Bot, ctx: discord.ApplicationContext) -> No
 async def embed_help_guides() -> discord.Embed:
     """Main menu embed"""
     seasonal_event = (
-        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["hf guide"]}\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["halloween guide"]}\n'
     )
     guides = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["alchemy guide"]}\n'
@@ -155,13 +155,14 @@ async def embed_help_guides() -> discord.Embed:
     field_settings = (
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["settings"]} : View your current settings\n'
         f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["set progress"]} : Set your progress to get fitting guides\n'
+        f'{emojis.BP} {strings.SLASH_COMMANDS_GUIDE["purge data"]} : Delete your user data\n'
     )
     embed = discord.Embed(
         color = settings.EMBED_COLOR,
         title = 'EPIC RPG GUIDES',
     )
     embed.set_footer(text='Note: This is not an official bot.')
-    embed.add_field(name=f'HORSE FESTIVAL GUIDE {emojis.HORSE_T10}', value=seasonal_event, inline=False)
+    embed.add_field(name=f'HALLOWEEN GUIDE {emojis.HAL_PUMPKIN}', value=seasonal_event, inline=False)
     embed.add_field(name='GUIDES', value=guides, inline=False)
     embed.add_field(name='ACHIEVEMENTS / TITLES', value=achievements, inline=False)
     embed.add_field(name='MONSTERS', value=monsters, inline=False)

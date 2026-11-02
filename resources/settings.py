@@ -1,16 +1,39 @@
 # settings.py
 
+import hashlib
+import hmac
+from pathlib import Path
 import os
+import secrets
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 
 
-# Read tokens
+# Read .env data
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DBL_TOKEN = os.getenv('DBL_TOKEN')
 if DBL_TOKEN == 'none': DBL_TOKEN = None
 DEBUG_MODE = True if os.getenv('DEBUG_MODE') == 'ON' else False
+
+_encryption_secret_key = os.getenv('ENCRYPTION_SECRET_KEY')
+if not _encryption_secret_key:
+    _encryption_secret_key = secrets.token_hex(32)
+    ENV_FILE = Path(".env")
+    env_content = ENV_FILE.read_text(encoding="utf-8")
+    if "ENCRYPTION_SECRET_KEY" in env_content:
+        set_key(ENV_FILE, "ENCRYPTION_SECRET_KEY", _encryption_secret_key, "never")
+    else:
+        with open(ENV_FILE, "a") as file:
+            file.write(
+                f"\n\n"
+                f"# Required. Secret key the bot uses to hash/encrypt Discord API data with before storing it in the database.\n"
+                f"# If no key is provided, the bot will generate one on the first start.\n"
+                f"# IF YOU LOSE THIS KEY, EPIC RPG GUIDE WILL NO LONGER BE ABLE TO MATCH ANY STORED DATA TO YOUR USERS AND ASK THEM TO REGISTER AGAIN.\n"
+                f"ENCRYPTION_SECRET_KEY={_encryption_secret_key}"
+            )
+    print('No secret key found, generated a new one.')
+HMAC_KEY = hmac.new(_encryption_secret_key.encode(), 'hmac-key'.encode(), hashlib.sha256).digest()
 
 # Get bot directory
 BOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
