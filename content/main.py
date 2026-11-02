@@ -268,7 +268,7 @@ async def embed_about(
         f'{emojis.BP} Everyone contributing one way or the other'
     )
     documents = (
-        f'{emojis.BP} [Privacy Policy](https://erg.zoneseven.ch/privacy.html)\n'
+        f'{emojis.BP} [Privacy Policy](https://github.com/MirielCH/Epic-RPG-Guide/blob/master/PRIVACY.md)\n'
         f'{emojis.BP} [Terms of Service](https://erg.zoneseven.ch/terms.html)\n'
     )
     dev_stuff = (

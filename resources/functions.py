@@ -1139,9 +1139,9 @@ async def extract_horse_data_from_horse_embed(ctx: discord.ApplicationContext,
         r'boost d[eo] cavalo\*\* - (.+?)%', #Portuguese
     ]
     search_patterns_epicness = [
-        r'epicness\*\* - (.+?)\n', #English
-        r'epicidad del? caballo\*\* - (.+?)\n', #Spanish
-        r'epicidade d[eo] cavalo\*\* - (.+?)\n', #Portuguese
+        r'epicness\*\* - (.+?)\/', #English
+        r'epicidad del? caballo\*\* - (.+?)\/', #Spanish
+        r'epicidade d[eo] cavalo\*\* - (.+?)\/', #Portuguese
     ]
     tier_match = await get_match_from_patterns(search_patterns_tier, data_field.value.lower())
     level_match = await get_match_from_patterns(search_patterns_level, data_field.value.lower())
